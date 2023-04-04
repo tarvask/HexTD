@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0cf3b2724f54f8ea8e837c0e061abe2, type: 3}
+  m_Name: UiPrefabHolder
+  m_EditorClassIdentifier: 
+  pathsEditorInfoPanelView: {fileID: -5196661829119168203, guid: 285568a645745ef4eae22270bcd0162f, type: 3}
+  editorInfoPanelView: {fileID: 9073617807318452683, guid: 4ecb619416bbd4d078f92518286e112b, type: 3}
