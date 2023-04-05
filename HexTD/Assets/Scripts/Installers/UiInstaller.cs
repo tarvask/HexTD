@@ -1,4 +1,5 @@
 ﻿using Configs;
+using Plugins.Zenject.Source.Install;
 using UI.InfoPanel;
 using UI.PathEditorPanel;
 using UnityEngine;

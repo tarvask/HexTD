@@ -1,7 +1,7 @@
 ﻿using Configs;
-using Configs.Constants;
 using HexSystem;
 using MapEditor;
+using Plugins.Zenject.Source.Install;
 using UnityEngine;
 using Zenject;
 

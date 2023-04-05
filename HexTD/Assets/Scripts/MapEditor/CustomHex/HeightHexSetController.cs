@@ -1,5 +1,4 @@
-﻿using Configs.Constants;
-using HexSystem;
+﻿using HexSystem;
 
 namespace MapEditor.CustomHex
 {
