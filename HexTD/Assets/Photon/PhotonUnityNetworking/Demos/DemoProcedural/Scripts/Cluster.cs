@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
-using ExitGames.Client.Photon;
-using Photon.PhotonUnityNetworking.Code;
+
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoProcedural.Scripts
+using ExitGames.Client.Photon;
+
+namespace Photon.Pun.Demo.Procedural
 {
     /// <summary>
     /// The Cluster component has references to all Blocks that are part of this Cluster.

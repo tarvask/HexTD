@@ -1,10 +1,9 @@
 #if !NOT_UNITY3D
 
-using Plugins.Zenject.Source.Internal;
+using ModestTree;
 using UnityEngine;
-using Zenject;
 
-namespace Plugins.Zenject.Source.Runtime.Kernels
+namespace Zenject
 {
     public abstract class MonoKernel : MonoBehaviour
     {

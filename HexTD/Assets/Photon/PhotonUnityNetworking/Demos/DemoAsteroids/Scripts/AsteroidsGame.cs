@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoAsteroids.Scripts
+namespace Photon.Pun.Demo.Asteroids
 {
     public class AsteroidsGame
     {

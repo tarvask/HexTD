@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using Plugins.Zenject.Source.Binding.BindInfo;
-using Zenject;
 
-namespace Plugins.Zenject.OptionalExtras.Signals.Internal.Binders
+namespace Zenject
 {
     [NoReflectionBaking]
     public class SignalCopyBinder

@@ -1,10 +1,9 @@
 ﻿using ExitGames.Client.Photon;
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoProcedural.Scripts
+namespace Photon.Pun.Demo.Procedural
 {
     /// <summary>
     /// The Ingame Control Panel basically controls the WorldGenerator.

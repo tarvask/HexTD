@@ -6,11 +6,10 @@
 
 using System.IO;
 using System.Linq;
-using Plugins.NativeFileSODemo.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Plugins.NativeFileSODemo.Samples {
+namespace Keiwando.NFSO.Samples {
 
 	public class TestController : MonoBehaviour {
 

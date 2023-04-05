@@ -1,43 +1,43 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using vietlabs.fr2;
 
-namespace Plugins.FindReference2.Editor.Script.UI
+public class FR2_DeleteButton
 {
-	public class FR2_DeleteButton
-	{
-		public string warningMessage;
-		public string confirmMessage;
-		public GUIContent deleteLabel;
-		public bool hasConfirm;
+	public string warningMessage;
+	public string confirmMessage;
+	public GUIContent deleteLabel;
+	public bool hasConfirm;
 	
-		public bool Draw(Action onConfirmDelete)
+	public bool Draw(Action onConfirmDelete)
+	{
+		GUILayout.BeginHorizontal();
 		{
-			GUILayout.BeginHorizontal();
+			EditorGUILayout.HelpBox(warningMessage, MessageType.Warning);
+			GUILayout.BeginVertical();
 			{
-				EditorGUILayout.HelpBox(warningMessage, MessageType.Warning);
-				GUILayout.BeginVertical();
+				GUILayout.Space(2f);
+				hasConfirm = GUILayout.Toggle(hasConfirm, confirmMessage);
+				EditorGUI.BeginDisabledGroup(!hasConfirm);
 				{
-					GUILayout.Space(2f);
-					hasConfirm = GUILayout.Toggle(hasConfirm, confirmMessage);
-					EditorGUI.BeginDisabledGroup(!hasConfirm);
+					GUI2.BackgroundColor(() =>
 					{
-						GUI2.BackgroundColor(() =>
+						if (GUILayout.Button(deleteLabel, EditorStyles.miniButton))
 						{
-							if (GUILayout.Button(deleteLabel, EditorStyles.miniButton))
-							{
-								hasConfirm = false;
-								onConfirmDelete();
-								GUIUtility.ExitGUI();
-							}
-						}, GUI2.darkRed, 0.8f);
-					}
-					EditorGUI.EndDisabledGroup();
+							hasConfirm = false;
+							onConfirmDelete();
+							GUIUtility.ExitGUI();
+						}
+					}, GUI2.darkRed, 0.8f);
 				}
-				GUILayout.EndVertical();
+				EditorGUI.EndDisabledGroup();
 			}
-			GUILayout.EndHorizontal();
-			return false;
+			GUILayout.EndVertical();
 		}
+		GUILayout.EndHorizontal();
+		return false;
 	}
 }

@@ -9,7 +9,7 @@ using UnityEngine;
 using CBParams = System.Collections.Generic.List<System.Collections.Generic.List<string>>;
 using Object = UnityEngine.Object;
 
-namespace Plugins.FindReference2.Editor.Script
+namespace vietlabs.fr2
 {
 	internal class FR2_DuplicateTree2 : IRefDraw
 	{

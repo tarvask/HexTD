@@ -1,15 +1,9 @@
 #if !NOT_UNITY3D
 
 using System.Collections.Generic;
-using Plugins.Zenject.Source.Binding.BindInfo;
-using Plugins.Zenject.Source.Injection;
-using Plugins.Zenject.Source.Install.Contexts;
-using Plugins.Zenject.Source.Internal;
-using Plugins.Zenject.Source.Main;
-using Plugins.Zenject.Source.Providers.PrefabProviders;
-using Zenject;
+using ModestTree;
 
-namespace Plugins.Zenject.Source.Providers.SubContainerCreators
+namespace Zenject
 {
     [NoReflectionBaking]
     public class SubContainerCreatorByNewPrefab : ISubContainerCreator

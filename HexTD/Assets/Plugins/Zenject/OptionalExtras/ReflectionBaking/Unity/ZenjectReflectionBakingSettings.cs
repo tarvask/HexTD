@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Plugins.Zenject.OptionalExtras.ReflectionBaking.Unity
+namespace Zenject.ReflectionBaking
 {
     public class ZenjectReflectionBakingSettings : ScriptableObject
     {

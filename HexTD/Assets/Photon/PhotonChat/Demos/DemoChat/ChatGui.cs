@@ -6,14 +6,19 @@
 
 using System;
 using System.Collections.Generic;
-using Photon.PhotonChat.Code;
-using Photon.PhotonUnityNetworking.Code;
+
 using UnityEngine;
 using UnityEngine.UI;
-using Extensions = Photon.PhotonRealtime.Code.Extensions;
+
+using Photon.Chat;
+using Photon.Realtime;
+using AuthenticationValues = Photon.Chat.AuthenticationValues;
+#if PHOTON_UNITY_NETWORKING
+using Photon.Pun;
+#endif
 
 
-namespace Photon.PhotonChat.Demos.DemoChat
+namespace Photon.Chat.Demo
 {
     /// <summary>
     /// This simple Chat UI demonstrate basics usages of the Chat Api
@@ -468,7 +473,7 @@ namespace Photon.PhotonChat.Demos.DemoChat
         /// <inheritdoc />
         public void OnSubscribed(string channel, string[] users, Dictionary<object, object> properties)
         {
-            Debug.LogFormat("OnSubscribed: {0}, users.Count: {1} Channel-props: {2}.", channel, users.Length, Extensions.ToStringFull(properties));
+            Debug.LogFormat("OnSubscribed: {0}, users.Count: {1} Channel-props: {2}.", channel, users.Length, properties.ToStringFull());
         }
 
         private void InstantiateChannelButton(string channelName)

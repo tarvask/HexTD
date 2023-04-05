@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Plugins.FindReference2.Editor.Script.UI;
 using UnityEditor;
 using UnityEngine;
 
-namespace Plugins.FindReference2.Editor.Script
+namespace vietlabs.fr2
 {
 	public class AssetType
 	{

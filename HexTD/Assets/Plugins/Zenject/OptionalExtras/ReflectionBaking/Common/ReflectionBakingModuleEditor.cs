@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Plugins.Zenject.Source.Internal;
-using Plugins.Zenject.Source.Util;
-using Zenject;
+using ModestTree;
+using Zenject.Internal;
 using Zenject.ReflectionBaking.Mono.Cecil;
 using Zenject.ReflectionBaking.Mono.Cecil.Cil;
 using Zenject.ReflectionBaking.Mono.Collections.Generic;
 using MethodAttributes = Zenject.ReflectionBaking.Mono.Cecil.MethodAttributes;
 
-namespace Plugins.Zenject.OptionalExtras.ReflectionBaking.Common
+namespace Zenject.ReflectionBaking
 {
     public class ReflectionBakingModuleEditor
     {
@@ -109,7 +108,7 @@ namespace Plugins.Zenject.OptionalExtras.ReflectionBaking.Common
             _injectMemberInfoType = _module.ImportType<InjectTypeInfo.InjectMemberInfo>();
             _injectMemberInfoConstructor = _module.ImportMethod<InjectTypeInfo.InjectMemberInfo>(".ctor");
 
-            _preserveConstructor = _module.ImportMethod<global::Zenject.Internal.PreserveAttribute>(".ctor");
+            _preserveConstructor = _module.ImportMethod<Zenject.Internal.PreserveAttribute>(".ctor");
             _constructorInfoConstructor = _module.ImportMethod<InjectTypeInfo.InjectConstructorInfo>(".ctor");
 
             _injectableInfoType = _module.ImportType<InjectableInfo>();

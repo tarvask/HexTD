@@ -8,12 +8,13 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
-using UnityEditor;
-
-namespace Photon.PhotonUnityNetworking.Code.Editor.Views
+namespace Photon.Pun
 {
+    using UnityEditor;
+    using UnityEngine;
+
     [CustomEditor(typeof(MonoBehaviourPun))]
-    public abstract class MonoBehaviourPunEditor : UnityEditor.Editor
+    public abstract class MonoBehaviourPunEditor : Editor
     {
         MonoBehaviourPun mbTarget;
 

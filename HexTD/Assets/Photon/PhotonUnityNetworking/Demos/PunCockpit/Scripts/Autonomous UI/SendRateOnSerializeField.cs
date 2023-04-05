@@ -5,11 +5,10 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Autonomous_UI
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// PhotonNetwork.SerializationRate InputField

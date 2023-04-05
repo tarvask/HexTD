@@ -33,7 +33,7 @@
 
 using System;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoProcedural.Scripts
+namespace Simplex
 {
     /// <summary>
     /// Implementation of the Perlin simplex noise, an improved Perlin noise algorithm.
@@ -86,7 +86,7 @@ namespace Photon.PhotonUnityNetworking.Demos.DemoProcedural.Scripts
         static Noise()
         {
             perm = new byte[permOriginal.Length];
-            Noise.permOriginal.CopyTo(perm, 0);
+            Simplex.Noise.permOriginal.CopyTo(perm, 0);
         }
 
         public static int Seed
@@ -97,7 +97,7 @@ namespace Photon.PhotonUnityNetworking.Demos.DemoProcedural.Scripts
                 if (value == 0)
                 {
                     perm = new byte[permOriginal.Length];
-                    Noise.permOriginal.CopyTo(perm, 0);
+                    Simplex.Noise.permOriginal.CopyTo(perm, 0);
                 }
                 else
                 {

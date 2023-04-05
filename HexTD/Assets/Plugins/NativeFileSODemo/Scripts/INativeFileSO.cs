@@ -6,7 +6,7 @@
 
 using System;
 
-namespace Plugins.NativeFileSODemo.Scripts { 
+namespace Keiwando.NFSO { 
 
 	public interface INativeFileSO {
 

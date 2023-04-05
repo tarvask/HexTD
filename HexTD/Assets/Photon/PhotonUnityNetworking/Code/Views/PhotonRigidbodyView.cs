@@ -9,11 +9,11 @@
 // ----------------------------------------------------------------------------
 
 
-using Photon.PhotonUnityNetworking.Code.Interfaces;
-using UnityEngine;
-
-namespace Photon.PhotonUnityNetworking.Code.Views
+namespace Photon.Pun
 {
+    using UnityEngine;
+
+
     [RequireComponent(typeof(Rigidbody))]
     [AddComponentMenu("Photon Networking/Photon Rigidbody View")]
     public class PhotonRigidbodyView : MonoBehaviourPun, IPunObservable

@@ -9,16 +9,20 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using System;
+using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
 using UnityEditor;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer.Editor
+using Photon.Pun;
+using Photon.Realtime;
+
+namespace Photon.Pun.UtilityScripts
 {
 #pragma warning disable 0618
 	[CustomEditor(typeof(PunTeams))]
-	public class PunTeamsInspector : UnityEditor.Editor {
+	public class PunTeamsInspector : Editor {
 
 
 		Dictionary<PunTeams.Team, bool> _Foldouts ;

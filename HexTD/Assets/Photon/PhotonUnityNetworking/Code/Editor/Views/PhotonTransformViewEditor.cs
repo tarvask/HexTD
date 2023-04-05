@@ -9,14 +9,14 @@
 // ----------------------------------------------------------------------------
 
 
-using Photon.PhotonUnityNetworking.Code.Views;
-using UnityEditor;
-using UnityEngine;
-
-namespace Photon.PhotonUnityNetworking.Code.Editor.Views
+namespace Photon.Pun
 {
+    using UnityEditor;
+    using UnityEngine;
+
+
     [CustomEditor(typeof(PhotonTransformView))]
-    public class PhotonTransformViewEditor : UnityEditor.Editor
+    public class PhotonTransformViewEditor : Editor
     {
         private bool helpToggle = false;
 

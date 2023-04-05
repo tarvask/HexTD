@@ -8,17 +8,18 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Photon.PhotonUnityNetworking.Code;
-using Photon.PhotonUnityNetworking.Code.Interfaces;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.PhotonView
+using Photon.Pun;
+using Photon.Realtime;
+
+namespace Photon.Pun.UtilityScripts
 {
     /// <summary>
     /// Smoothed out movement for network gameobjects
     /// </summary>
-    [RequireComponent(typeof(Code.PhotonView))]
-    public class SmoothSyncMovement : MonoBehaviourPun, IPunObservable
+    [RequireComponent(typeof(PhotonView))]
+    public class SmoothSyncMovement : Photon.Pun.MonoBehaviourPun, IPunObservable
     {
         public float SmoothingDelay = 5;
         public void Awake()

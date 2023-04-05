@@ -6,10 +6,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Generic;
-using Photon.PhotonRealtime.Code;
+
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Lists
+using Photon.Realtime;
+
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// Region list UI View.

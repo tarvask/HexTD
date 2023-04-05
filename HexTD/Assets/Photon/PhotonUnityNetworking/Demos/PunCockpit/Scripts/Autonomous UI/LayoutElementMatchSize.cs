@@ -8,7 +8,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Autonomous_UI
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// Force a LayoutElement to march a RectTransform sizeDelta. Useful for complex child content 

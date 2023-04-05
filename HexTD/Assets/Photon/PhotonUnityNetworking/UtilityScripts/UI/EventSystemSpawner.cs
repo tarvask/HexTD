@@ -11,7 +11,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.UI
+namespace Photon.Pun.UtilityScripts
 {
     /// <summary>
     /// Event system spawner. Will add an EventSystem GameObject with an EventSystem component and a StandaloneInputModule component.

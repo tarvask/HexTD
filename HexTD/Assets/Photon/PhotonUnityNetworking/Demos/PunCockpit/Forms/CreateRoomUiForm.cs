@@ -5,13 +5,17 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Collections;
 using System.Linq;
-using Photon.PhotonRealtime.Code;
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Forms
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
+
+using Photon.Realtime;
+
+namespace Photon.Pun.Demo.Cockpit.Forms
 {
     /// <summary>
     /// Create room user interface form.

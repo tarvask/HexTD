@@ -1,9 +1,10 @@
 #if UNITY_EDITOR
 
+using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace Plugins.Zenject.OptionalExtras.TestFramework
+namespace Zenject
 {
     public class SceneTestFixtureSceneReference : ScriptableObject
     {

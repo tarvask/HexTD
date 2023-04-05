@@ -14,12 +14,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using ExitGames.Client.Photon;
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.Room
+namespace Photon.Pun.UtilityScripts
 {
     /// <summary>This is a basic, network-synced CountdownTimer based on properties.</summary>
     /// <remarks>

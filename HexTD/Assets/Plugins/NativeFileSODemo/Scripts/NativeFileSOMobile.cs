@@ -5,8 +5,10 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
+using AOT;
+using UnityEngine;
 
-namespace Plugins.NativeFileSODemo.Scripts {
+namespace Keiwando.NFSO {
 
 	/// <summary>
 	/// Provides methods for native file open and share functionality on 

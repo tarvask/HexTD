@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoProcedural.Scripts
+namespace Photon.Pun.Demo.Procedural
 {
     /// <summary>
     /// Simple Input Handler to control the camera.

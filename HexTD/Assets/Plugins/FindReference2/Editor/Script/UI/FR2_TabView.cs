@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace Plugins.FindReference2.Editor.Script.UI
+namespace vietlabs.fr2
 {
 	public class DrawCallback
 	{

@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 using System.Reflection;
-using Plugins.Zenject.Source.Internal;
+using ModestTree;
 using UnityEditor;
 using UnityEngine;
 
-namespace Plugins.Zenject.OptionalExtras.ReflectionBaking.Unity
+namespace Zenject.ReflectionBaking
 {
     public static class ReflectionBakingInternalUtil
     {

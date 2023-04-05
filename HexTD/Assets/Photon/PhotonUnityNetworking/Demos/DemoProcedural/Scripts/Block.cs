@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoProcedural.Scripts
+namespace Photon.Pun.Demo.Procedural
 {
     /// <summary>
     /// The Block component is attach to each instantiated Block at runtime.

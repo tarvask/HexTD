@@ -9,7 +9,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Photon.PhotonChat.Demos.DemoChat
+
+namespace Photon.Chat.Demo
 {
     public class ChannelSelector : MonoBehaviour, IPointerClickHandler
     {

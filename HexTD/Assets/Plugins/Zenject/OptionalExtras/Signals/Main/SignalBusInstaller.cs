@@ -1,9 +1,6 @@
-using Plugins.Zenject.OptionalExtras.Signals.Internal;
-using Plugins.Zenject.OptionalExtras.Signals.Internal.Binders.DeclareSignal;
-using Plugins.Zenject.Source.Install;
-using Plugins.Zenject.Source.Internal;
+using ModestTree;
 
-namespace Plugins.Zenject.OptionalExtras.Signals.Main
+namespace Zenject
 {
     // Note that you only need to install this once
     public class SignalBusInstaller : Installer<SignalBusInstaller>

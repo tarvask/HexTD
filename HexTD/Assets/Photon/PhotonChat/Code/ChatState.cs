@@ -4,7 +4,7 @@
 // <copyright company="Exit Games GmbH">Photon Chat Api - Copyright (C) 2014 Exit Games GmbH</copyright>
 // ----------------------------------------------------------------------------------------------------------------------
 
-namespace Photon.PhotonChat.Code
+namespace Photon.Chat
 {
     /// <summary>Possible states for a Chat Client.</summary>
     public enum ChatState

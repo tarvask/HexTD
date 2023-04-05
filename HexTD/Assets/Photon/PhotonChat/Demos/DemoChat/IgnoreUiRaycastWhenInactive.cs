@@ -7,7 +7,8 @@
 
 using UnityEngine;
 
-namespace Photon.PhotonChat.Demos.DemoChat
+
+namespace Photon.Chat.Demo
 {
     public class IgnoreUiRaycastWhenInactive : MonoBehaviour, ICanvasRaycastFilter
     {

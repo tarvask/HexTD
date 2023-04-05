@@ -9,12 +9,12 @@
 // ----------------------------------------------------------------------------
 
 
-using System.Collections.Generic;
-using Photon.PhotonUnityNetworking.Code.Interfaces;
-using UnityEngine;
-
-namespace Photon.PhotonUnityNetworking.Code.Views
+namespace Photon.Pun
 {
+    using UnityEngine;
+    using System.Collections.Generic;
+
+
     /// <summary>
     /// This class helps you to synchronize position, rotation and scale
     /// of a GameObject. It also gives you many different options to make

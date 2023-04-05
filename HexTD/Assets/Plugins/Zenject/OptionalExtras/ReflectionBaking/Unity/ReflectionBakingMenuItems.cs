@@ -1,11 +1,11 @@
 #if !NOT_UNITY3D
 
 using System.IO;
-using Plugins.Zenject.Source.Editor;
 using UnityEditor;
 using UnityEngine;
+using Zenject.Internal;
 
-namespace Plugins.Zenject.OptionalExtras.ReflectionBaking.Unity
+namespace Zenject.ReflectionBaking
 {
     public static class ReflectionBakingMenuItems
     {

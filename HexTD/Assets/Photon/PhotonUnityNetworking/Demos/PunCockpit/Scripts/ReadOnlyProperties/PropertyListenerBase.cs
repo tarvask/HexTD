@@ -6,10 +6,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
+
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.ReadOnlyProperties
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// Property listener base.

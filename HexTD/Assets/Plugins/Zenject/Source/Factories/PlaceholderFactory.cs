@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+#if !NOT_UNITY3D
 using JetBrains.Annotations;
-using Plugins.Zenject.Source.Injection;
+#endif
 
-namespace Plugins.Zenject.Source.Factories
+namespace Zenject
 {
     // Zero parameters
     public class PlaceholderFactory<TValue> : PlaceholderFactoryBase<TValue>, IFactory<TValue>

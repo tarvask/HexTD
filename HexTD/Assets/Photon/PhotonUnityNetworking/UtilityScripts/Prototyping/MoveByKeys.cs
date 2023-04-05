@@ -17,10 +17,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.Prototyping
+using Photon.Pun;
+using Photon.Realtime;
+
+namespace Photon.Pun.UtilityScripts
 {
 
     /// <summary>
@@ -34,8 +36,8 @@ namespace Photon.PhotonUnityNetworking.UtilityScripts.Prototyping
     /// JumpForce defines how high the object "jumps". 
     /// JumpTimeout defines after how many seconds you can jump again.
     /// </remarks>
-    [RequireComponent(typeof(Code.PhotonView))]
-    public class MoveByKeys : MonoBehaviourPun
+    [RequireComponent(typeof(PhotonView))]
+    public class MoveByKeys : Photon.Pun.MonoBehaviourPun
     {
         public float Speed = 10f;
         public float JumpForce = 200f;

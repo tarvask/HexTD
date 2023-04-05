@@ -5,11 +5,13 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.UI;
+using System.Collections;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Forms
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
+
+namespace Photon.Pun.Demo.Cockpit.Forms
 {
     /// <summary>
     /// Level Loading UI Form.

@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.UI
+namespace Photon.Pun.UtilityScripts
 {
 	/// <summary>
 	/// Button inside scroll list will stop scrolling ability of scrollRect container, so that when pressing down on a button and draggin up and down will not affect scrolling.

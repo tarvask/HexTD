@@ -12,10 +12,10 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts.BezierCurve.Editor
+namespace Photon.Pun.Demo.SlotRacer.Utils
 {
 	[CustomEditor(typeof(Line))]
-	public class LineInspector : UnityEditor.Editor
+	public class LineInspector : Editor
 	{
 
 		private void OnSceneGUI()

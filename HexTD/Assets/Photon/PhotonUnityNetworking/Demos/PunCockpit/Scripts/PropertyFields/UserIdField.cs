@@ -8,7 +8,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.PropertyFields
+namespace Photon.Pun.Demo.Cockpit
 {
 	/// <summary>
 	/// User identifier InputField.

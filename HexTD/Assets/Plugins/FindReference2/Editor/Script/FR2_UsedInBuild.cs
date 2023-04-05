@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace Plugins.FindReference2.Editor.Script
+namespace vietlabs.fr2
 {
 	public class FR2_UsedInBuild : IRefDraw
 	{

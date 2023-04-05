@@ -9,26 +9,24 @@
 // ----------------------------------------------------------------------------
 
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using ExitGames.Client.Photon;
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonRealtime.Code.Unity.Editor;
-using Photon.PhotonUnityNetworking.Code.Interfaces;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-
-namespace Photon.PhotonUnityNetworking.Code
+namespace Photon.Pun
 {
+    using System.Diagnostics;
+    using UnityEngine;
+    using System;
+    using System.Linq;
+    using System.Collections.Generic;
+    using ExitGames.Client.Photon;
+    using UnityEngine.SceneManagement;
+
+    using Photon.Realtime;
     using Debug = UnityEngine.Debug;
     using Hashtable = ExitGames.Client.Photon.Hashtable;
 
     #if UNITY_EDITOR
     using UnityEditor;
-#endif
+    using System.IO;
+    #endif
 
 
     public struct InstantiateParameters
@@ -276,7 +274,7 @@ namespace Photon.PhotonUnityNetworking.Code
         /// These values set the userId, if and how that userId gets verified (server-side), etc..
         ///
         /// If authentication fails for any values, PUN will call your implementation of OnCustomAuthenticationFailed(string debugMessage).
-        /// See <see cref="IConnectionCallbacks.OnCustomAuthenticationFailed"/>.
+        /// See <see cref="Photon.Realtime.IConnectionCallbacks.OnCustomAuthenticationFailed"/>.
         /// </remarks>
         public static AuthenticationValues AuthValues
         {
@@ -2480,7 +2478,7 @@ namespace Photon.PhotonUnityNetworking.Code
                 return null;
             }
 
-            InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
+            Pun.InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
             return NetworkInstantiate(netParams, false);
         }
 
@@ -2500,7 +2498,7 @@ namespace Photon.PhotonUnityNetworking.Code
 
             if (LocalPlayer.IsMasterClient)
             {
-                InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
+                Pun.InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, data, currentLevelPrefix, null, LocalPlayer, ServerTimestamp);
                 return NetworkInstantiate(netParams, true);
             }
 
@@ -2570,14 +2568,14 @@ namespace Photon.PhotonUnityNetworking.Code
             }
 
 
-            InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, incomingInstantiationData, objLevelPrefix, viewsIDs, creator, serverTime);
+            Pun.InstantiateParameters netParams = new InstantiateParameters(prefabName, position, rotation, group, incomingInstantiationData, objLevelPrefix, viewsIDs, creator, serverTime);
             return NetworkInstantiate(netParams, false, true);
         }
 
 
         private static readonly HashSet<string> PrefabsWithoutMagicCallback = new HashSet<string>();
 
-        private static GameObject NetworkInstantiate(InstantiateParameters parameters, bool roomObject = false, bool instantiateEvent = false)
+        private static GameObject NetworkInstantiate(Pun.InstantiateParameters parameters, bool roomObject = false, bool instantiateEvent = false)
         {
             //Instantiate(name, pos, rot)
             //pv[] GetPhotonViewsInChildren()
@@ -2676,7 +2674,7 @@ namespace Photon.PhotonUnityNetworking.Code
         private static readonly Hashtable SendInstantiateEvHashtable = new Hashtable();                             // SendInstantiate reuses this to reduce GC
         private static readonly RaiseEventOptions SendInstantiateRaiseEventOptions = new RaiseEventOptions();       // SendInstantiate reuses this to reduce GC
 
-        internal static bool SendInstantiate(InstantiateParameters parameters, bool roomObject = false)
+        internal static bool SendInstantiate(Pun.InstantiateParameters parameters, bool roomObject = false)
         {
             // first viewID is now also the gameobject's instantiateId
             int instantiateId = parameters.viewIDs[0];   // LIMITS PHOTONVIEWS&PLAYERS

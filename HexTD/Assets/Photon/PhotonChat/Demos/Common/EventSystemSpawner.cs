@@ -11,7 +11,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Photon.PhotonChat.Demos.Common
+namespace Photon.Chat.UtilityScripts
 {
     /// <summary>
     /// Event system spawner. Will add an EventSystem GameObject with an EventSystem component and a StandaloneInputModule component.

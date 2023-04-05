@@ -1,138 +1,135 @@
+using Sirenix.OdinInspector.Editor;
+using Sirenix.Utilities;
+using Sirenix.Utilities.Editor;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Sirenix.OdinInspector.Editor;
-using Sirenix.Utilities;
-using Sirenix.Utilities.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Plugins.OdinExtensions.Editor
+public class ScriptableObjectCreator : OdinMenuEditorWindow
 {
-    public class ScriptableObjectCreator : OdinMenuEditorWindow
+    private static HashSet<Type> scriptableObjectTypes = new HashSet<Type>(AssemblyUtilities
+        .GetTypes(AssemblyTypeFlags.CustomTypes)
+        .Where(t =>
+            t.IsClass &&
+            typeof(ScriptableObject).IsAssignableFrom(t) &&
+            !typeof(EditorWindow).IsAssignableFrom(t) &&
+            !typeof(Editor).IsAssignableFrom(t)));
+
+    [MenuItem("Assets/Create Scriptable Object", priority = -1000)]
+    private static void ShowDialog()
     {
-        private static HashSet<Type> scriptableObjectTypes = new HashSet<Type>(AssemblyUtilities
-            .GetTypes(AssemblyTypeFlags.CustomTypes)
-            .Where(t =>
-                t.IsClass &&
-                typeof(ScriptableObject).IsAssignableFrom(t) &&
-                !typeof(EditorWindow).IsAssignableFrom(t) &&
-                !typeof(UnityEditor.Editor).IsAssignableFrom(t)));
-
-        [MenuItem("Assets/Create Scriptable Object", priority = -1000)]
-        private static void ShowDialog()
+        var path = "Assets";
+        var obj = Selection.activeObject;
+        if (obj && AssetDatabase.Contains(obj))
         {
-            var path = "Assets";
-            var obj = Selection.activeObject;
-            if (obj && AssetDatabase.Contains(obj))
+            path = AssetDatabase.GetAssetPath(obj);
+            if (!Directory.Exists(path))
             {
-                path = AssetDatabase.GetAssetPath(obj);
-                if (!Directory.Exists(path))
-                {
-                    path = Path.GetDirectoryName(path);
-                }
-            }
-
-            var window = CreateInstance<ScriptableObjectCreator>();
-            window.ShowUtility();
-            window.position = GUIHelper.GetEditorWindowRect().AlignCenter(800, 500);
-            window.titleContent = new GUIContent(path);
-            window.targetFolder = path.Trim('/');
-        }
-
-        private ScriptableObject previewObject;
-        private string targetFolder;
-        private Vector2 scroll;
-
-        private Type SelectedType
-        {
-            get
-            {
-                var m = this.MenuTree.Selection.LastOrDefault();
-                return m == null ? null : m.Value as Type;
+                path = Path.GetDirectoryName(path);
             }
         }
 
-        protected override OdinMenuTree BuildMenuTree()
+        var window = CreateInstance<ScriptableObjectCreator>();
+        window.ShowUtility();
+        window.position = GUIHelper.GetEditorWindowRect().AlignCenter(800, 500);
+        window.titleContent = new GUIContent(path);
+        window.targetFolder = path.Trim('/');
+    }
+
+    private ScriptableObject previewObject;
+    private string targetFolder;
+    private Vector2 scroll;
+
+    private Type SelectedType
+    {
+        get
         {
-            this.MenuWidth = 270;
-            this.WindowPadding = Vector4.zero;
-
-            OdinMenuTree tree = new OdinMenuTree(false);
-            tree.Config.DrawSearchToolbar = true;
-            tree.DefaultMenuStyle = OdinMenuStyle.TreeViewStyle;
-            tree.AddRange(scriptableObjectTypes.Where(x => !x.IsAbstract), GetMenuPathForType).AddThumbnailIcons();
-            tree.SortMenuItemsByName();
-            tree.Selection.SelectionConfirmed += x => this.CreateAsset();
-            tree.Selection.SelectionChanged += e =>
-            {
-                if (this.previewObject && !AssetDatabase.Contains(this.previewObject))
-                {
-                    DestroyImmediate(this.previewObject);
-                }
-
-                if (e != SelectionChangedType.ItemAdded)
-                {
-                    return;
-                }
-
-                var t = this.SelectedType;
-                if (t != null && !t.IsAbstract)
-                {
-                    this.previewObject = CreateInstance(t) as ScriptableObject;
-                }
-            };
-
-            return tree;
+            var m = this.MenuTree.Selection.LastOrDefault();
+            return m == null ? null : m.Value as Type;
         }
+    }
 
-        private string GetMenuPathForType(Type t)
+    protected override OdinMenuTree BuildMenuTree()
+    {
+        this.MenuWidth = 270;
+        this.WindowPadding = Vector4.zero;
+
+        OdinMenuTree tree = new OdinMenuTree(false);
+        tree.Config.DrawSearchToolbar = true;
+        tree.DefaultMenuStyle = OdinMenuStyle.TreeViewStyle;
+        tree.AddRange(scriptableObjectTypes.Where(x => !x.IsAbstract), GetMenuPathForType).AddThumbnailIcons();
+        tree.SortMenuItemsByName();
+        tree.Selection.SelectionConfirmed += x => this.CreateAsset();
+        tree.Selection.SelectionChanged += e =>
         {
-            if (t != null && scriptableObjectTypes.Contains(t))
+            if (this.previewObject && !AssetDatabase.Contains(this.previewObject))
             {
-                var name = t.Name.Split('`').First().SplitPascalCase();
-                return GetMenuPathForType(t.BaseType) + "/" + name;
+                DestroyImmediate(this.previewObject);
             }
 
-            return "";
+            if (e != SelectionChangedType.ItemAdded)
+            {
+                return;
+            }
+
+            var t = this.SelectedType;
+            if (t != null && !t.IsAbstract)
+            {
+                this.previewObject = CreateInstance(t) as ScriptableObject;
+            }
+        };
+
+        return tree;
+    }
+
+    private string GetMenuPathForType(Type t)
+    {
+        if (t != null && scriptableObjectTypes.Contains(t))
+        {
+            var name = t.Name.Split('`').First().SplitPascalCase();
+            return GetMenuPathForType(t.BaseType) + "/" + name;
         }
 
-        protected override IEnumerable<object> GetTargets()
+        return "";
+    }
+
+    protected override IEnumerable<object> GetTargets()
+    {
+        yield return this.previewObject;
+    }
+
+    protected override void DrawEditor(int index)
+    {
+        this.scroll = GUILayout.BeginScrollView(this.scroll);
         {
-            yield return this.previewObject;
+            base.DrawEditor(index);
         }
+        GUILayout.EndScrollView();
 
-        protected override void DrawEditor(int index)
+        if (this.previewObject)
         {
-            this.scroll = GUILayout.BeginScrollView(this.scroll);
+            GUILayout.FlexibleSpace();
+            SirenixEditorGUI.HorizontalLineSeparator(1);
+            if (GUILayout.Button("Create Asset", GUILayoutOptions.Height(30)))
             {
-                base.DrawEditor(index);
-            }
-            GUILayout.EndScrollView();
-
-            if (this.previewObject)
-            {
-                GUILayout.FlexibleSpace();
-                SirenixEditorGUI.HorizontalLineSeparator(1);
-                if (GUILayout.Button("Create Asset", GUILayoutOptions.Height(30)))
-                {
-                    this.CreateAsset();
-                }
+                this.CreateAsset();
             }
         }
+    }
 
-        private void CreateAsset()
+    private void CreateAsset()
+    {
+        if (this.previewObject)
         {
-            if (this.previewObject)
-            {
-                var dest = this.targetFolder + "/new " + this.MenuTree.Selection.First().Name.ToLower() + ".asset";
-                dest = AssetDatabase.GenerateUniqueAssetPath(dest);
-                AssetDatabase.CreateAsset(this.previewObject, dest);
-                AssetDatabase.Refresh();
-                Selection.activeObject = this.previewObject;
-                EditorApplication.delayCall += this.Close;
-            }
+            var dest = this.targetFolder + "/new " + this.MenuTree.Selection.First().Name.ToLower() + ".asset";
+            dest = AssetDatabase.GenerateUniqueAssetPath(dest);
+            AssetDatabase.CreateAsset(this.previewObject, dest);
+            AssetDatabase.Refresh();
+            Selection.activeObject = this.previewObject;
+            EditorApplication.delayCall += this.Close;
         }
     }
 }

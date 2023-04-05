@@ -2,15 +2,14 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Plugins.Zenject.OptionalExtras.ReflectionBaking.Common;
-using Plugins.Zenject.Source.Internal;
+using ModestTree;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
 using Zenject.ReflectionBaking.Mono.Cecil;
 using Debug = UnityEngine.Debug;
 
-namespace Plugins.Zenject.OptionalExtras.ReflectionBaking.Unity
+namespace Zenject.ReflectionBaking
 {
     public static class ReflectionBakingBuildObserver
     {

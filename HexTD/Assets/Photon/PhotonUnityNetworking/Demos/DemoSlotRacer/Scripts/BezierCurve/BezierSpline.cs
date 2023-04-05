@@ -9,10 +9,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts.BezierCurve
+using System;
+
+namespace Photon.Pun.Demo.SlotRacer.Utils
 {
 	public class BezierSpline : MonoBehaviour
 	{

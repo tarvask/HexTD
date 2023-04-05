@@ -7,7 +7,7 @@
 
 using System.Collections.Generic;
 
-namespace Photon.PhotonUnityNetworking.Demos.Shared_Assets.Scripts
+namespace Photon.Pun.Demo.Shared
 {
 	/// <summary>
 	/// Document links.

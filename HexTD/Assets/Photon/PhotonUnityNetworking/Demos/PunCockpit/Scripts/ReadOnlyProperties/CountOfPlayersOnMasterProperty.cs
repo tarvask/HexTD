@@ -5,11 +5,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.ReadOnlyProperties
+using Photon.Realtime;
+
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// PhotonNetwork.CountOfPlayersOnMaster UI property.

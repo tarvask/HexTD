@@ -1,6 +1,6 @@
 using System;
 
-namespace Plugins.Zenject.OptionalExtras.TestFramework
+namespace Zenject
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class ValidateOnlyAttribute : Attribute

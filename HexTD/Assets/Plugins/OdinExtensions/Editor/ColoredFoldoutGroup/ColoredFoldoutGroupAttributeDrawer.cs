@@ -2,38 +2,35 @@ using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities.Editor;
 using UnityEngine;
 
-namespace Plugins.OdinExtensions.Editor.ColoredFoldoutGroup
+public class ColoredFoldoutGroupAttributeDrawer : OdinGroupDrawer<ColoredFoldoutGroupAttribute>
 {
-    public class ColoredFoldoutGroupAttributeDrawer : OdinGroupDrawer<ColoredFoldoutGroupAttribute>
+    private LocalPersistentContext<bool> isExpanded;
+
+    protected override void Initialize()
     {
-        private LocalPersistentContext<bool> isExpanded;
+        this.isExpanded = this.GetPersistentValue<bool>(
+            "ColoredFoldoutGroupAttributeDrawer.isExpanded",
+            GeneralDrawerConfig.Instance.ExpandFoldoutByDefault);
+    }
 
-        protected override void Initialize()
+    protected override void DrawPropertyLayout(GUIContent label)
+    {
+        GUIHelper.PushColor(new Color(this.Attribute.R, this.Attribute.G, this.Attribute.B, this.Attribute.A));
+        SirenixEditorGUI.BeginBox();
+        SirenixEditorGUI.BeginBoxHeader();
+        GUIHelper.PopColor(); 
+        this.isExpanded.Value = SirenixEditorGUI.Foldout(this.isExpanded.Value, label);
+        SirenixEditorGUI.EndBoxHeader();
+
+        if (SirenixEditorGUI.BeginFadeGroup(this, this.isExpanded.Value))
         {
-            this.isExpanded = this.GetPersistentValue<bool>(
-                "ColoredFoldoutGroupAttributeDrawer.isExpanded",
-                GeneralDrawerConfig.Instance.ExpandFoldoutByDefault);
-        }
-
-        protected override void DrawPropertyLayout(GUIContent label)
-        {
-            GUIHelper.PushColor(new Color(this.Attribute.R, this.Attribute.G, this.Attribute.B, this.Attribute.A));
-            SirenixEditorGUI.BeginBox();
-            SirenixEditorGUI.BeginBoxHeader();
-            GUIHelper.PopColor(); 
-            this.isExpanded.Value = SirenixEditorGUI.Foldout(this.isExpanded.Value, label);
-            SirenixEditorGUI.EndBoxHeader();
-
-            if (SirenixEditorGUI.BeginFadeGroup(this, this.isExpanded.Value))
+            for (int i = 0; i < this.Property.Children.Count; i++)
             {
-                for (int i = 0; i < this.Property.Children.Count; i++)
-                {
-                    this.Property.Children[i].Draw();
-                }
+                this.Property.Children[i].Draw();
             }
-
-            SirenixEditorGUI.EndFadeGroup();
-            SirenixEditorGUI.EndBox();
         }
+
+        SirenixEditorGUI.EndFadeGroup();
+        SirenixEditorGUI.EndBox();
     }
 }

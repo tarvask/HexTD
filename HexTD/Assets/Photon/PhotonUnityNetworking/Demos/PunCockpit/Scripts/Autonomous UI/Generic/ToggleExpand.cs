@@ -8,7 +8,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Autonomous_UI.Generic
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// UI toggle to activate GameObject.

@@ -5,11 +5,10 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
 using UnityEngine.UI;
+using Photon.Realtime;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.ReadOnlyProperties
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
 	/// PhotonNetwork.Server UI property

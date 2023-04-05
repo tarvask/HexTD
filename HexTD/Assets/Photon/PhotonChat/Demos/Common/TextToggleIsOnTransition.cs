@@ -7,11 +7,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using UnityEngine;
+using UnityEngine;  
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Photon.PhotonChat.Demos.Common
+namespace Photon.Chat.UtilityScripts
 {
 
 	/// <summary>

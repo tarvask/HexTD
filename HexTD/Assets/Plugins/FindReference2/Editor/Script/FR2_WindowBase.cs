@@ -1,7 +1,9 @@
-﻿using UnityEditor;
+﻿using System;
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-namespace Plugins.FindReference2.Editor.Script
+namespace vietlabs.fr2
 {
 	public interface IWindow
 	{

@@ -12,10 +12,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+
 using UnityEditor;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Code.Editor
+namespace Photon.Pun
 {
     [Serializable]
     public class SceneSetting

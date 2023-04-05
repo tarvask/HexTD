@@ -9,16 +9,20 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Generic;
-using Photon.PhotonUnityNetworking.Code;
-using Photon.PhotonUnityNetworking.Code.Interfaces;
+
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.Culling
+using Photon.Pun;
+
+namespace Photon.Pun.UtilityScripts
 {
+    using ExitGames.Client.Photon;
+
+
     /// <summary>
     ///     Handles the network culling.
     /// </summary>
-    [RequireComponent(typeof(Code.PhotonView))]
+    [RequireComponent(typeof(PhotonView))]
     public class CullingHandler : MonoBehaviour, IPunObservable
     {
         #region VARIABLES
@@ -29,7 +33,7 @@ namespace Photon.PhotonUnityNetworking.UtilityScripts.Culling
 
         private List<byte> previousActiveCells, activeCells;
 
-        private Code.PhotonView pView;
+        private PhotonView pView;
 
         private Vector3 lastPosition, currentPosition;
         
@@ -51,7 +55,7 @@ namespace Photon.PhotonUnityNetworking.UtilityScripts.Culling
         {
             if (this.pView == null)
             {
-                this.pView = GetComponent<Code.PhotonView>();
+                this.pView = GetComponent<PhotonView>();
 
                 if (!this.pView.IsMine)
                 {

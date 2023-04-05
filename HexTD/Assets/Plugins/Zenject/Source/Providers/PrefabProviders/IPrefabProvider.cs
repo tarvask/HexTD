@@ -1,6 +1,6 @@
 #if !NOT_UNITY3D
 
-namespace Plugins.Zenject.Source.Providers.PrefabProviders
+namespace Zenject
 {
     public interface IPrefabProvider
     {

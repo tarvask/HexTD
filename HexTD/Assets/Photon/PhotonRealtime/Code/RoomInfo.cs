@@ -14,11 +14,15 @@
 #endif
 
 
-namespace Photon.PhotonRealtime.Code
+namespace Photon.Realtime
 {
-#if SUPPORTED_UNITY || NETFX_CORE
+    using System.Collections;
+    using ExitGames.Client.Photon;
+
+    #if SUPPORTED_UNITY || NETFX_CORE
     using Hashtable = ExitGames.Client.Photon.Hashtable;
-#endif
+    using SupportClass = ExitGames.Client.Photon.SupportClass;
+    #endif
 
 
     /// <summary>

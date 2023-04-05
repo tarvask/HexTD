@@ -7,7 +7,7 @@
 using System;
 using UnityEngine;
 
-namespace Plugins.NativeFileSODemo.Scripts { 
+namespace Keiwando.NFSO { 
 
 	public class NativeFileSOUnityEvent : MonoBehaviour {
 

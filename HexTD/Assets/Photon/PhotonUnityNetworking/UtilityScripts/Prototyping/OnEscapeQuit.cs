@@ -8,10 +8,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Diagnostics;
 using UnityEngine;
+using System.Collections;
+using System.Diagnostics;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.Prototyping
+namespace Photon.Pun.UtilityScripts
 {
     /// <summary>
     /// This component will quit the application when escape key is pressed

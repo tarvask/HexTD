@@ -1,15 +1,14 @@
 using System;
 using System.Collections;
+using Zenject.Internal;
+using ModestTree;
+using Assert = ModestTree.Assert;
 using System.Linq;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
-using Plugins.Zenject.Source.Install.Contexts;
-using Plugins.Zenject.Source.Main;
-using Plugins.Zenject.Source.Runtime.Kernels;
 using UnityEngine;
-using Assert = Plugins.Zenject.Source.Internal.Assert;
 
-namespace Plugins.Zenject.OptionalExtras.TestFramework
+namespace Zenject
 {
     public abstract class ZenjectIntegrationTestFixture
     {

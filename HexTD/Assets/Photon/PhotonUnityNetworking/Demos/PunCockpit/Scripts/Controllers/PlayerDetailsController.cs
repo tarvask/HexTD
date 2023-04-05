@@ -4,18 +4,18 @@
 // </copyright>
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
-
+ 
 using System.Collections;
 using System.Collections.Generic;
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
-using Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Lists;
-using Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer;
+
 using UnityEngine;
 using UnityEngine.UI;
+
+using Photon.Realtime;
+using Photon.Pun.UtilityScripts;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Controllers
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// Controller for the Playerdetails UI view

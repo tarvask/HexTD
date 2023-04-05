@@ -9,11 +9,10 @@
 // ----------------------------------------------------------------------------
 
 using ExitGames.Client.Photon;
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
+using Photon.Realtime;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Demos
+namespace Photon.Pun.Demo
 {
 
     /// <summary>

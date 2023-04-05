@@ -4,7 +4,7 @@ using System.IO;
 using System.Reflection;
 using Zenject.ReflectionBaking.Mono.Cecil;
 
-namespace Plugins.Zenject.OptionalExtras.ReflectionBaking.Unity
+namespace Zenject.ReflectionBaking
 {
     public class UnityAssemblyResolver : BaseAssemblyResolver
     {

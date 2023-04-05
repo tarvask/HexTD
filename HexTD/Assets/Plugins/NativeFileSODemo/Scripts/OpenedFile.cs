@@ -6,7 +6,7 @@
 
 using System.IO;
 
-namespace Plugins.NativeFileSODemo.Scripts {
+namespace Keiwando.NFSO {
 
 	/// <summary>
 	/// Stores basic information about a file which has been chosen by the user

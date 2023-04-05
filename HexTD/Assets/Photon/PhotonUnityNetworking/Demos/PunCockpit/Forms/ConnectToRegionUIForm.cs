@@ -6,10 +6,10 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Forms
+namespace Photon.Pun.Demo.Cockpit.Forms
 {
     /// <summary>
     /// Manager for ConnectToRegion UI Form

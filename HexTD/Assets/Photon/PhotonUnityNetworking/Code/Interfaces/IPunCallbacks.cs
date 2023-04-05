@@ -1,9 +1,10 @@
 ﻿
-using Photon.PhotonRealtime.Code;
-using UnityEngine;
-
-namespace Photon.PhotonUnityNetworking.Code.Interfaces
+namespace Photon.Pun
 {
+    using UnityEngine;
+    using Photon.Realtime;
+
+
     /// <summary>Defines the OnPhotonSerializeView method to make it easy to implement correctly for observable scripts.</summary>
     /// \ingroup callbacks
     public interface IPunObservable

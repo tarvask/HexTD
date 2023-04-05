@@ -7,10 +7,11 @@
 #if UNITY_STANDALONE_OSX || UNITY_EDITOR_OSX
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
+using System.Linq;
+using UnityEngine;
 
-namespace Plugins.NativeFileSODemo.Scripts {
+namespace Keiwando.NFSO {
 
 	public class NativeFileSOMac: INativeFileSODesktop {
 

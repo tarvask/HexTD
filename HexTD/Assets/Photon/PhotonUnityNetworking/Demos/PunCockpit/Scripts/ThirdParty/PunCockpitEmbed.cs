@@ -9,12 +9,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
-using Photon.PhotonUnityNetworking.Code;
-using Photon.PhotonUnityNetworking.UtilityScripts.Prototyping;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.ThirdParty
+using Photon.Pun.UtilityScripts;
+
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// Use this in scenes you want to leave Control for connection and pun related commands to Cockpit.

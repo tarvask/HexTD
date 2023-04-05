@@ -1,9 +1,8 @@
-using Plugins.Zenject.Source.Install.Contexts;
-using Plugins.Zenject.Source.Internal;
+using ModestTree;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Plugins.Zenject.OptionalExtras.TestFramework
+namespace Zenject.Internal
 {
     public static class ZenjectTestUtil
     {

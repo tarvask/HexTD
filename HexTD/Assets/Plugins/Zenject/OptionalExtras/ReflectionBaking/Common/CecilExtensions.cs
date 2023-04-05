@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Plugins.Zenject.Source.Internal;
+using ModestTree;
 using Zenject.ReflectionBaking.Mono.Cecil;
 using Zenject.ReflectionBaking.Mono.Collections.Generic;
 using ICustomAttributeProvider = Zenject.ReflectionBaking.Mono.Cecil.ICustomAttributeProvider;
 
-namespace Plugins.Zenject.OptionalExtras.ReflectionBaking.Common
+namespace Zenject.ReflectionBaking
 {
     public static class CecilExtensions
     {

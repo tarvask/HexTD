@@ -5,11 +5,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Photon.PhotonUnityNetworking.Demos.Shared_Assets.Scripts;
+using Photon.Pun.Demo.Shared;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Autonomous_UI
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// Open an Url on Pointer Click.

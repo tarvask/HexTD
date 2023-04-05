@@ -10,11 +10,13 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using ExitGames.Client.Photon;
-using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.Debugging
+using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
+
+namespace Photon.Pun.UtilityScripts
 {
     /// <summary>
     /// Basic GUI to show traffic and health statistics of the connection to Photon,

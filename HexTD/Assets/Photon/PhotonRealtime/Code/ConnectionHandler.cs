@@ -9,16 +9,15 @@
 // ----------------------------------------------------------------------------
 
 
-using System;
-using System.Diagnostics;
-
 #if UNITY_4_7 || UNITY_5 || UNITY_5_3_OR_NEWER
 #define SUPPORTED_UNITY
 #endif
 
 
-namespace Photon.PhotonRealtime.Code
+namespace Photon.Realtime
 {
+    using System;
+    using System.Diagnostics;
     using SupportClass = ExitGames.Client.Photon.SupportClass;
 
     #if SUPPORTED_UNITY

@@ -1,8 +1,7 @@
-﻿using Photon.PhotonUnityNetworking.Code;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoAsteroids.Scripts.Lobby
+namespace Photon.Pun.Demo.Asteroids
 {
     public class RoomListEntry : MonoBehaviour
     {

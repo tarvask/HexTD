@@ -9,12 +9,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
-using Photon.PhotonUnityNetworking.Code;
-using Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer;
+
 using UnityEngine;
+
+using Photon.Pun.UtilityScripts;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.PhotonUnityNetworking.Demos.DemoAsteroids.Scripts.Game
+namespace Photon.Pun.Demo.Asteroids
 {
     public class Spaceship : MonoBehaviour
     {

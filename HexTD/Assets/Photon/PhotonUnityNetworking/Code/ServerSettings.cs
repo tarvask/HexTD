@@ -9,13 +9,14 @@
 // ----------------------------------------------------------------------------
 
 
-using System;
-using System.Collections.Generic;
-using Photon.PhotonRealtime.Code;
-using UnityEngine;
-
-namespace Photon.PhotonUnityNetworking.Code
+namespace Photon.Pun
 {
+    using System;
+    using System.Collections.Generic;
+    using ExitGames.Client.Photon;
+    using Photon.Realtime;
+    using UnityEngine;
+
     /// <summary>
     /// Collection of connection-relevant settings, used internally by PhotonNetwork.ConnectUsingSettings.
     /// </summary>

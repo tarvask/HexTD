@@ -6,7 +6,7 @@
 
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts
+namespace Photon.Pun.Demo.Cockpit
 {
     /// <summary>
     /// Infos panel placeholder. Defines the place where the infos panel should go. It will request InfoPanel when Component is enabled.

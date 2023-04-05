@@ -8,12 +8,12 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonUnityNetworking.Demos.PunBasics_Tutorial.Scripts
+using Photon.Realtime;
+
+namespace Photon.Pun.Demo.PunBasics
 {
 	#pragma warning disable 649
 

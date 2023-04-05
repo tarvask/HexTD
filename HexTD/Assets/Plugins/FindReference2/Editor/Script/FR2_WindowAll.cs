@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Plugins.FindReference2.Editor.Script.UI;
+using System.Globalization;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -8,7 +9,7 @@ using Object = UnityEngine.Object;
 #if UNITY_5_3_OR_NEWER
 #endif
 
-namespace Plugins.FindReference2.Editor.Script
+namespace vietlabs.fr2
 {
 	// filter, ignore anh huong ket qua thi hien mau do
 	// optimize lag duplicate khi use

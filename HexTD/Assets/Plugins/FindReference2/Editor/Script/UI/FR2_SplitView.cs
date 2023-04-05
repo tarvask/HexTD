@@ -2,10 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
+using UnityEngine.Experimental.Rendering;
 
-namespace Plugins.FindReference2.Editor.Script.UI
+namespace vietlabs.fr2
 {
 
     public class FR2_SplitView

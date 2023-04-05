@@ -5,11 +5,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Generic;
-using Photon.PhotonRealtime.Code;
+using ExitGames.Client.Photon;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.PhotonRealtime.Demos.DemoLoadBalancing
+namespace Photon.Realtime.Demo
 {
     public class ConnectAndJoinRandomLb : MonoBehaviour, IConnectionCallbacks, IMatchmakingCallbacks, ILobbyCallbacks
     {

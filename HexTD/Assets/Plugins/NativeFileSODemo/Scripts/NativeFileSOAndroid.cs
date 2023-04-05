@@ -5,6 +5,10 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 //#define UNITY_ANDROID
+using System;
+using System.Linq;
+
+using UnityEngine;
 
 #if UNITY_ANDROID
 namespace Keiwando.NFSO {

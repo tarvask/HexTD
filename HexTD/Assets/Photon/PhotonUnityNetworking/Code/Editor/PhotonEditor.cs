@@ -12,14 +12,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Photon.PhotonRealtime.Code.Unity.Editor;
+using System.Reflection;
+
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.Compilation;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Code.Editor
+namespace Photon.Pun
 {
+    using Realtime;
+
+
     public class PunWizardText
     {
         public string WindowTitle = "PUN Wizard";

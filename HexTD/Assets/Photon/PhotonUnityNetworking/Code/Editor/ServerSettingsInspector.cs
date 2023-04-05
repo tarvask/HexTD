@@ -9,15 +9,20 @@
 // ----------------------------------------------------------------------------
 
 using System;
-using ExitGames.Client.Photon;
-using Photon.PhotonRealtime.Code.Unity.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.Code.Editor
+using Photon.Pun;
+
+using ExitGames.Client.Photon;
+using System.Collections.Generic;
+using System.Reflection;
+using Photon.Realtime;
+
+namespace Photon.Pun
 {
     [CustomEditor(typeof(ServerSettings))]
-    public class ServerSettingsInspector : UnityEditor.Editor
+    public class ServerSettingsInspector : Editor
     {
         private string versionPhoton;
 

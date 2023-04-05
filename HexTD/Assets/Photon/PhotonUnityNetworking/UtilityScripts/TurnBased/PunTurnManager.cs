@@ -8,14 +8,17 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
-using ExitGames.Client.Photon;
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
+
 using UnityEngine;
+
+using Photon.Realtime;
+
+using ExitGames.Client.Photon;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.TurnBased
+namespace Photon.Pun.UtilityScripts
 {
     /// <summary>
     /// Pun turnBased Game manager.
@@ -339,7 +342,7 @@ namespace Photon.PhotonUnityNetworking.UtilityScripts.TurnBased
         /// <param name="room">Room reference</param>
         /// <param name="turn">Turn index</param>
         /// <param name="setStartTime">If set to <c>true</c> set start time.</param>
-        public static void SetTurn(this PhotonRealtime.Code.Room room, int turn, bool setStartTime = false)
+        public static void SetTurn(this Room room, int turn, bool setStartTime = false)
         {
             if (room == null || room.CustomProperties == null)
             {
@@ -394,7 +397,7 @@ namespace Photon.PhotonUnityNetworking.UtilityScripts.TurnBased
         /// <param name="player">Player reference</param>
         public static int GetFinishedTurn(this Player player)
         {
-            PhotonRealtime.Code.Room room = PhotonNetwork.CurrentRoom;
+            Room room = PhotonNetwork.CurrentRoom;
             if (room == null || room.CustomProperties == null || !room.CustomProperties.ContainsKey(TurnPropKey))
             {
                 return 0;
@@ -411,7 +414,7 @@ namespace Photon.PhotonUnityNetworking.UtilityScripts.TurnBased
         /// <param name="turn">Turn Index</param>
         public static void SetFinishedTurn(this Player player, int turn)
         {
-            PhotonRealtime.Code.Room room = PhotonNetwork.CurrentRoom;
+            Room room = PhotonNetwork.CurrentRoom;
             if (room == null || room.CustomProperties == null)
             {
                 return;

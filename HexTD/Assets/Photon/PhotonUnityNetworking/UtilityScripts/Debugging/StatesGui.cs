@@ -7,11 +7,10 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
+using Photon.Realtime;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.Debugging
+namespace Photon.Pun.UtilityScripts
 {
     /// <summary>
     /// Output detailed information about Pun Current states, using the old Unity UI framework.

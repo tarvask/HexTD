@@ -9,13 +9,12 @@
 // ----------------------------------------------------------------------------
 
 
-using System.Collections.Generic;
-using Photon.PhotonRealtime.Code.Unity.Editor;
-using UnityEditor;
-using UnityEngine;
-
-namespace Photon.PhotonUnityNetworking.Code.Editor
+namespace Photon.Pun
 {
+	using System.Collections.Generic;
+    using Realtime;
+    using UnityEditor;
+	using UnityEngine;
     using Debug = UnityEngine.Debug;
 
 

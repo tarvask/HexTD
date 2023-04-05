@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-namespace Plugins.Zenject.Source.Main
+#if !NOT_UNITY3D
+using UnityEngine;
+#endif
+
+namespace Zenject
 {
     // You can optionally inject this interface into your classes/factories
     // rather than using DiContainer which contains many methods you might not need

@@ -5,11 +5,15 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
-using UnityEngine.UI;
 
-namespace Photon.PhotonChat.Demos.DemoChat
+
+using UnityEngine.UI;
+#if PHOTON_UNITY_NETWORKING
+using Photon.Pun;
+#endif
+
+namespace Photon.Chat.Demo
 {
     /// <summary>
     /// This is used in the Editor Splash to properly inform the developer about the chat AppId requirement.

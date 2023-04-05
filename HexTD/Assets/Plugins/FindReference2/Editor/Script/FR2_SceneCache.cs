@@ -7,16 +7,19 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
+#if UNITY_2017_1_OR_NEWER
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
+#endif
 #if SUPPORT_NESTED_PREFAB
+using UnityEditor.Experimental.SceneManagement;
 
 #endif
 
 
-namespace Plugins.FindReference2.Editor.Script
+namespace vietlabs.fr2
 {
 	public class FR2_SceneCache
 	{

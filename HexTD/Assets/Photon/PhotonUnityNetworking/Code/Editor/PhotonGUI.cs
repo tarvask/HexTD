@@ -9,11 +9,10 @@
 // ----------------------------------------------------------------------------
 
 
-using Photon.PhotonUnityNetworking.Code.Editor.ReordableList;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
-namespace Photon.PhotonUnityNetworking.Code.Editor
+namespace Photon.Pun
 {
     public class PhotonGUI
     {
