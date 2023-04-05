@@ -1,5 +1,4 @@
 ﻿using Configs;
-using Configs.Constants;
 using HexSystem;
 using MapEditor;
 using UnityEngine;

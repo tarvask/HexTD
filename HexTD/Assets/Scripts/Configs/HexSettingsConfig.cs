@@ -1,5 +1,4 @@
-﻿using MapEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Configs
 {

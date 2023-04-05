@@ -1,6 +1,4 @@
-﻿using Configs;
-using HexSystem;
-using InputSystem;
+﻿using InputSystem;
 using MapEditor;
 using MapEditor.CustomHex;
 using PathSystem;

@@ -1,8 +1,7 @@
 ﻿using Configs;
 using InputSystem;
-using MapEditor;
-using UnityEngine;
 using Zenject;
+using UnityEngine;
 
 namespace Installers
 {
