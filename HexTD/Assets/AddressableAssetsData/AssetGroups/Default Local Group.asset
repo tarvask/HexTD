@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 803de64fb7cf5ff4899f4ed51732eae5
+  m_SerializeEntries:
+  - m_GUID: 199a33f45cfac401483dd2a7763c5819
+    m_Address: Assets/Prefabs/UI/Loading Window/Loading Window.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: f0791b93d5e1a4e45a0ea18f79db2611
+    m_Address: Assets/Prefabs/UI/Common/Windows/NoConnectionWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3ec02984d4bb4544aa626424941dabb8, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: a44d9ee9ae29a4f458793155e153cb3c, type: 2}
+    - {fileID: 11400000, guid: 0c814716190378649a46731582a487ba, type: 2}
