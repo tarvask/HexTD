@@ -1,4 +1,4 @@
-using Photon.PhotonRealtime.Code;
+using Photon.Realtime;
 
 namespace Match.EventBus
 {

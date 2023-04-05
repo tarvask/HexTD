@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Photon.PhotonUnityNetworking.UtilityScripts.Prototyping
+namespace Photon.Pun.UtilityScripts
 {
     public static class PhotonRoomNameSaver
     {

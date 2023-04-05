@@ -1,7 +1,6 @@
 ﻿using Configs;
 using HexSystem;
 using MapEditor;
-using Plugins.Zenject.Source.Install;
 using UnityEngine;
 using Zenject;
 

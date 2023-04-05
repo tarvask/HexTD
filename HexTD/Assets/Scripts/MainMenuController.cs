@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Match.Field.Tower;
 using Match.Windows.MainMenu;
-using Photon.PhotonUnityNetworking.UtilityScripts.Prototyping;
+using Photon.Pun.UtilityScripts;
 using Tools;
 using UniRx;
 using UnityEngine;

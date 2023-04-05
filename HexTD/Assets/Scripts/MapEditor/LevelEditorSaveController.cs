@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using HexSystem;
+using Keiwando.NFSO;
 using Newtonsoft.Json;
 using PathSystem;
-using Plugins.NativeFileSODemo.Scripts;
 using Application = UnityEngine.Application;
 
 namespace MapEditor

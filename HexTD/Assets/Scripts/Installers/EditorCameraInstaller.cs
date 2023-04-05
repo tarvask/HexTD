@@ -1,8 +1,7 @@
 ﻿using Configs;
 using InputSystem;
-using Plugins.Zenject.Source.Install;
-using UnityEngine;
 using Zenject;
+using UnityEngine;
 
 namespace Installers
 {

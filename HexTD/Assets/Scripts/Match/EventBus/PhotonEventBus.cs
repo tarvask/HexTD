@@ -1,6 +1,6 @@
 using ExitGames.Client.Photon;
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
+using Photon.Pun;
+using Photon.Realtime;
 
 namespace Match.EventBus
 {

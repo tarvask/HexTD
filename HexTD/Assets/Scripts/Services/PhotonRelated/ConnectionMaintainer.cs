@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
-using Photon.PhotonRealtime.Code;
-using Photon.PhotonUnityNetworking.Code;
-using Photon.PhotonUnityNetworking.UtilityScripts.Prototyping;
+using Photon.Pun;
+using Photon.Pun.UtilityScripts;
+using Photon.Realtime;
 using UniRx;
 using UnityEngine;
 
