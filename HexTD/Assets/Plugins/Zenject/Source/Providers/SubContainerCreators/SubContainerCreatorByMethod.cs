@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
-using ModestTree;
+using Plugins.Zenject.Source.Injection;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Providers.SubContainerCreators
 {
     // Zero parameters
 
@@ -168,7 +171,7 @@ namespace Zenject
     {
         readonly
 #if !NET_4_6
-            ModestTree.Util.
+            Internal.
 #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4> _installMethod;
 
@@ -176,7 +179,7 @@ namespace Zenject
             DiContainer container,
             SubContainerCreatorBindInfo containerBindInfo,
 #if !NET_4_6
-            ModestTree.Util.
+            Internal.
 #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4> installMethod)
             : base(container, containerBindInfo)
@@ -214,7 +217,7 @@ namespace Zenject
     {
         readonly
 #if !NET_4_6
-            ModestTree.Util.
+            Internal.
 #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5> _installMethod;
 
@@ -222,7 +225,7 @@ namespace Zenject
             DiContainer container,
             SubContainerCreatorBindInfo containerBindInfo,
 #if !NET_4_6
-            ModestTree.Util.
+            Internal.
 #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5> installMethod)
             : base(container, containerBindInfo)
@@ -262,7 +265,7 @@ namespace Zenject
     {
         readonly
 #if !NET_4_6
-            ModestTree.Util.
+            Internal.
 #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6> _installMethod;
 
@@ -270,7 +273,7 @@ namespace Zenject
             DiContainer container,
             SubContainerCreatorBindInfo containerBindInfo,
 #if !NET_4_6
-            ModestTree.Util.
+            Internal.
 #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6> installMethod)
             : base(container, containerBindInfo)
@@ -312,7 +315,7 @@ namespace Zenject
     {
         readonly
 #if !NET_4_6
-            ModestTree.Util.
+            Internal.
 #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TParam7, TParam8, TParam9, TParam10> _installMethod;
 
@@ -320,7 +323,7 @@ namespace Zenject
             DiContainer container,
             SubContainerCreatorBindInfo containerBindInfo,
 #if !NET_4_6
-            ModestTree.Util.
+            Internal.
 #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TParam7, TParam8, TParam9, TParam10> installMethod)
             : base(container, containerBindInfo)

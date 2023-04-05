@@ -12,12 +12,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.UI
 {
     /// <summary>
     /// Tab view manager. Handles Tab views activation and deactivation, and provides a Unity Event Callback when a tab was selected.

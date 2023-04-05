@@ -1,7 +1,7 @@
-﻿namespace Photon.Pun
-{
-    using Photon.Realtime;
+﻿using Photon.PhotonRealtime.Code;
 
+namespace Photon.PhotonUnityNetworking.Code.Interfaces
+{
     /// <summary>
     /// Empty Base class for all PhotonView callbacks.
     /// </summary>

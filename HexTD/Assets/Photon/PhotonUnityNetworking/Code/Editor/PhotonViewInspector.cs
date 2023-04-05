@@ -9,16 +9,19 @@
 // ----------------------------------------------------------------------------
 
 using System;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonRealtime.Code.Unity.Editor;
+using Photon.PhotonUnityNetworking.Code.Editor.ReordableList;
+using Photon.PhotonUnityNetworking.Code.Interfaces;
+using Photon.PhotonUnityNetworking.Code.Views;
 using UnityEditor;
 using UnityEngine;
 
-using Photon.Realtime;
-
-namespace Photon.Pun
+namespace Photon.PhotonUnityNetworking.Code.Editor
 {
     [CustomEditor(typeof(PhotonView))]
     [CanEditMultipleObjects]
-    internal class PhotonViewInspector : Editor
+    internal class PhotonViewInspector : UnityEditor.Editor
     {
         private PhotonView m_Target;
 

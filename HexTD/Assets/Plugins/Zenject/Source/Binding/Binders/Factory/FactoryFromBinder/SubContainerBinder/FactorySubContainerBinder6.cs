@@ -1,21 +1,27 @@
-using System;
+using Plugins.Zenject.Source.Binding.Binders.GameObject;
+using Plugins.Zenject.Source.Binding.BindInfo;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Plugins.Zenject.Source.Providers;
+using Plugins.Zenject.Source.Providers.PrefabProviders;
+using Plugins.Zenject.Source.Providers.SubContainerCreators;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Binding.Binders.Factory.FactoryFromBinder.SubContainerBinder
 {
     [NoReflectionBaking]
     public class FactorySubContainerBinder<TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TContract>
         : FactorySubContainerBinderWithParams<TContract>
     {
         public FactorySubContainerBinder(
-            DiContainer bindContainer, BindInfo bindInfo, FactoryBindInfo factoryBindInfo, object subIdentifier)
+            DiContainer bindContainer, BindInfo.BindInfo bindInfo, FactoryBindInfo factoryBindInfo, object subIdentifier)
             : base(bindContainer, bindInfo, factoryBindInfo, subIdentifier)
         {
         }
 
         public ScopeConcreteIdArgConditionCopyNonLazyBinder ByMethod(
 #if !NET_4_6
-            ModestTree.Util.
-#endif
+            #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6> installerMethod)
         {
             var subcontainerBindInfo = new SubContainerCreatorBindInfo();
@@ -32,8 +38,7 @@ namespace Zenject
 #if !NOT_UNITY3D
         public NameTransformScopeConcreteIdArgConditionCopyNonLazyBinder ByNewGameObjectMethod(
 #if !NET_4_6
-            ModestTree.Util.
-#endif
+            #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6> installerMethod)
         {
             var gameObjectInfo = new GameObjectCreationParameters();
@@ -50,8 +55,7 @@ namespace Zenject
         public NameTransformScopeConcreteIdArgConditionCopyNonLazyBinder ByNewPrefabMethod(
             UnityEngine.Object prefab,
 #if !NET_4_6
-            ModestTree.Util.
-#endif
+            #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6> installerMethod)
         {
             BindingUtil.AssertIsValidPrefab(prefab);
@@ -72,8 +76,7 @@ namespace Zenject
         public NameTransformScopeConcreteIdArgConditionCopyNonLazyBinder ByNewPrefabResourceMethod(
             string resourcePath,
 #if !NET_4_6
-            ModestTree.Util.
-#endif
+            #endif
             Action<DiContainer, TParam1, TParam2, TParam3, TParam4, TParam5, TParam6> installerMethod)
         {
             BindingUtil.AssertIsValidResourcePath(resourcePath);

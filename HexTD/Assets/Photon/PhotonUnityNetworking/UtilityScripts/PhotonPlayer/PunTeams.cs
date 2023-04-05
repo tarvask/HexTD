@@ -14,15 +14,12 @@
 
 using System;
 using System.Collections.Generic;
-
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
-
-using Photon.Pun;
-using Photon.Realtime;
-using ExitGames.Client.Photon;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer
 {
     /// <summary>
     /// Implements teams in a room/game with help of player properties. Access them by Player.GetTeam extension.

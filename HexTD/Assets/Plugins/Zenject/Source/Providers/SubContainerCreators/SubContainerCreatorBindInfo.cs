@@ -1,6 +1,7 @@
 using System;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Providers.SubContainerCreators
 {
     [NoReflectionBaking]
     public class SubContainerCreatorBindInfo

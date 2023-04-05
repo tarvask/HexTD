@@ -9,14 +9,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
-
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Photon.Realtime;
-using Photon.Pun.UtilityScripts;
-
-namespace Photon.Pun.Demo.Cockpit
+namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Lists
 {
     /// <summary>
     /// Player list cell representing a given PhotonPlayer

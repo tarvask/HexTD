@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using ModestTree;
+using Plugins.Zenject.Source.Internal;
+using Zenject;
 
-namespace Zenject.Internal
+namespace Plugins.Zenject.Source.Main
 {
     [NoReflectionBaking]
     public class SingletonMarkRegistry

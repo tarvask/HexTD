@@ -4,13 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ModestTree;
+using Plugins.Zenject.Source.Install.Contexts;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Util;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Zenject.Internal
+namespace Plugins.Zenject.Source.Editor
 {
     public static class ZenUnityEditorUtil
     {

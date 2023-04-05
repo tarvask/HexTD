@@ -1,6 +1,9 @@
 using System;
+using Plugins.Zenject.OptionalExtras.Signals.Internal.Binders.DeclareSignal;
+using Plugins.Zenject.OptionalExtras.Signals.Main;
+using Plugins.Zenject.Source.Main;
 
-namespace Zenject
+namespace Plugins.Zenject.OptionalExtras.Signals.Internal.Binders.BindSignal
 {
     // Note that there's a reason we don't just have a generic
     // argument for signal type - because when using struct type signals it throws

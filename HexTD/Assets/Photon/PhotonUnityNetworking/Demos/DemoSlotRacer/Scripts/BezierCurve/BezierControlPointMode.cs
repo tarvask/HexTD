@@ -9,7 +9,7 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Photon.Pun.Demo.SlotRacer.Utils
+namespace Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts.BezierCurve
 {
 	public enum BezierControlPointMode {
 		Free,

@@ -5,11 +5,11 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
-namespace Keiwando.NFSO {
+namespace Plugins.NativeFileSODemo.Scripts {
 
 	/// <summary>
 	/// Provides methods for native file open and save functionality which is

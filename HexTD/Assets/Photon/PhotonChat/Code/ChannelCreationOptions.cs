@@ -4,7 +4,7 @@
 // <copyright company="Exit Games GmbH">Photon Chat Api - Copyright (C) 2018 Exit Games GmbH</copyright>
 // ----------------------------------------------------------------------------------------------------------------------
 
-namespace Photon.Chat
+namespace Photon.PhotonChat.Code
 {
     public class ChannelCreationOptions
     {

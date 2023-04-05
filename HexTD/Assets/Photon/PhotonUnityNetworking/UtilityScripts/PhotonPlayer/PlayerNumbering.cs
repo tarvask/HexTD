@@ -10,14 +10,12 @@
 
 using System.Collections.Generic;
 using System.Linq;
-
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
-
-using Photon.Pun;
-using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer
 {
     /// <summary>
     /// Implements consistent numbering in a room/game with help of room properties. Access them by Player.GetPlayerNumber() extension.

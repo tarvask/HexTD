@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Photon.Pun
+namespace Photon.PhotonUnityNetworking.Code.Utilities
 {
 
     public static class NestedComponentUtilities

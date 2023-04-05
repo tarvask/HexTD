@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Plugins.FindReference2.Editor.Script.UI;
 using UnityEditor;
 using UnityEngine;
 
-namespace vietlabs.fr2
+namespace Plugins.FindReference2.Editor.Script
 {
 	[InitializeOnLoad]
 	public class FR2_CacheHelper : AssetPostprocessor

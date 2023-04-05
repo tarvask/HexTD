@@ -1,13 +1,18 @@
 using System.Collections.Generic;
 using System.Linq;
+using Plugins.Zenject.Source.Binding.Binders.Factory.FactoryToChoiceBinder;
+using Plugins.Zenject.Source.Binding.BindInfo;
+using Plugins.Zenject.Source.Injection;
+using Plugins.Zenject.Source.Main;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Binding.Binders.Factory.FactoryArgumentsToChoiceBinder
 {
     [NoReflectionBaking]
     public class FactoryArgumentsToChoiceBinder<TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TContract> : FactoryToChoiceBinder<TParam1, TParam2, TParam3, TParam4, TParam5, TParam6, TContract>
     {
         public FactoryArgumentsToChoiceBinder(
-            DiContainer bindContainer, BindInfo bindInfo, FactoryBindInfo factoryBindInfo)
+            DiContainer bindContainer, BindInfo.BindInfo bindInfo, FactoryBindInfo factoryBindInfo)
             : base(bindContainer, bindInfo, factoryBindInfo)
         {
         }

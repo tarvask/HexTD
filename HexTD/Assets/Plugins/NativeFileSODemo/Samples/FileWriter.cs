@@ -6,7 +6,7 @@
 
 using System.IO;
 
-namespace Keiwando.NFSO.Samples { 
+namespace Plugins.NativeFileSODemo.Samples { 
 
 	public class FileWriter {
 

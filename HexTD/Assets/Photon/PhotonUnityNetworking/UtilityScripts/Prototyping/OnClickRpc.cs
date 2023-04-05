@@ -8,14 +8,12 @@
 
 
 using System.Collections;
+using Photon.PhotonUnityNetworking.Code;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
-
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.Prototyping
 {
-    using UnityEngine;
-    using UnityEngine.EventSystems;
-
-
     /// <summary>
     /// This component will instantiate a network GameObject when in a room and the user click on that component's GameObject.
     /// Uses PhysicsRaycaster for positioning.

@@ -5,7 +5,8 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 using System;
-namespace Keiwando.NFSO {
+
+namespace Plugins.NativeFileSODemo.Scripts {
 
 	public interface INativeFileSODesktop: INativeFileSO {
 

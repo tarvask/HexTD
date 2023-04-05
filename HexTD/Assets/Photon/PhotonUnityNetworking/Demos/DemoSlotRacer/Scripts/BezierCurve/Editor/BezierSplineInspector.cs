@@ -12,10 +12,10 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Photon.Pun.Demo.SlotRacer.Utils
+namespace Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts.BezierCurve.Editor
 {
 	[CustomEditor(typeof(BezierSpline))]
-	public class BezierSplineInspector : Editor
+	public class BezierSplineInspector : UnityEditor.Editor
 	{
 		private const int stepsPerCurve = 10;
 		private const float directionScale = 0.5f;

@@ -5,10 +5,6 @@
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 //#define UNITY_IOS
-using System;
-using System.Runtime.InteropServices;
-using System.Linq;
-using UnityEngine;
 
 #if UNITY_IOS
 

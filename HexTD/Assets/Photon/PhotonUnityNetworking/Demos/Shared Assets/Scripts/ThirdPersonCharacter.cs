@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UnityStandardAssets.Characters.ThirdPerson.PunDemos
+namespace Photon.PhotonUnityNetworking.Demos.Shared_Assets.Scripts
 {
 	[RequireComponent(typeof(Rigidbody))]
 	[RequireComponent(typeof(CapsuleCollider))]

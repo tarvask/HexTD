@@ -5,11 +5,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Linq;
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine.UI;
 
-using System.Linq;
-
-namespace Photon.Pun.Demo.Cockpit
+namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.ReadOnlyProperties
 {
 
     /// <summary>

@@ -1,4 +1,6 @@
-namespace Zenject
+using Zenject;
+
+namespace Plugins.Zenject.Source.Factories.Pooling.Static
 {
     public class PoolableStaticMemoryPool<TValue> : StaticMemoryPool<TValue>
         where TValue : class, IPoolable, new()

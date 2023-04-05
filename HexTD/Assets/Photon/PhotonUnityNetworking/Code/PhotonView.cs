@@ -9,15 +9,17 @@
 // ----------------------------------------------------------------------------
 
 
-namespace Photon.Pun
-{
-    using System;
-    using UnityEngine;
-    using UnityEngine.Serialization;
-    using System.Collections.Generic;
-    using Photon.Realtime;
+using System;
+using System.Collections.Generic;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code.Interfaces;
+using Photon.PhotonUnityNetworking.Code.Utilities;
+using UnityEngine;
+using UnityEngine.Serialization;
 
-    #if UNITY_EDITOR
+namespace Photon.PhotonUnityNetworking.Code
+{
+#if UNITY_EDITOR
     using UnityEditor;
     #endif
 

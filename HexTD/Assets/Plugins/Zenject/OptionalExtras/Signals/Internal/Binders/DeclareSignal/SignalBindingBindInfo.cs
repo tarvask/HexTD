@@ -1,6 +1,7 @@
 using System;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.OptionalExtras.Signals.Internal.Binders.DeclareSignal
 {
     [NoReflectionBaking]
     public class SignalBindingBindInfo

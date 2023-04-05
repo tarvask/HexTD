@@ -9,15 +9,15 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
-
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
+using Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer;
+using Photon.PhotonUnityNetworking.UtilityScripts.Room;
 using UnityEngine;
 using UnityEngine.UI;
-
-using Photon.Realtime;
-using Photon.Pun.UtilityScripts;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.Pun.Demo.Asteroids
+namespace Photon.PhotonUnityNetworking.Demos.DemoAsteroids.Scripts.Game
 {
     public class AsteroidsGameManager : MonoBehaviourPunCallbacks
     {

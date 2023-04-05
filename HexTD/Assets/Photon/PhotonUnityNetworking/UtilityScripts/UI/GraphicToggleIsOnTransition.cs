@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.UI
 {
     /// <summary>
     /// Use this on toggles texts to have some color transition on the text depending on the isOn State.

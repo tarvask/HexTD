@@ -6,9 +6,10 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine.UI;
 
-namespace Photon.Pun.Demo.Cockpit
+namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.ReadOnlyProperties
 {
     /// <summary>
     /// PhotonNetwork.CurrentRoom.PlayerTtl UI property.

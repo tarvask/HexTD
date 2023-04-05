@@ -11,13 +11,11 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using ExitGames.Client.Photon;
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
 
-using Photon.Pun;
-using Photon.Realtime;
-using ExitGames.Client.Photon;
-
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.Debugging
 {
     /// <summary>
     /// This MonoBehaviour is a basic GUI for the Photon client's network-simulation feature.

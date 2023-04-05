@@ -1,4 +1,7 @@
-namespace Zenject
+using Plugins.Zenject.Source.Main;
+using Zenject;
+
+namespace Plugins.Zenject.OptionalExtras.Signals.Internal.Binders.DeclareSignal
 {
     [NoReflectionBaking]
     public class DeclareSignalRequireHandlerAsyncTickPriorityCopyBinder : DeclareSignalAsyncTickPriorityCopyBinder

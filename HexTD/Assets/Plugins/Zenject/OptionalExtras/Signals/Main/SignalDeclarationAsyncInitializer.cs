@@ -1,7 +1,11 @@
 using System.Collections.Generic;
-using ModestTree;
+using Plugins.Zenject.OptionalExtras.Signals.Internal;
+using Plugins.Zenject.Source.Injection;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Runtime;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.OptionalExtras.Signals.Main
 {
     // This class just exists to solve a circular dependency that would otherwise happen if we
     // attempted to inject TickableManager into either SignalDeclaration or SignalBus

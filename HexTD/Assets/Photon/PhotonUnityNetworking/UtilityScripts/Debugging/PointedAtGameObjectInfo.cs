@@ -7,16 +7,10 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
-using Photon.Pun;
-using Photon.Realtime;
-
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.Debugging
 {
     /// <summary>
     /// Display ViewId, OwnerActorNr, IsCeneView and IsMine when clicked.
@@ -40,7 +34,7 @@ namespace Photon.Pun.UtilityScripts
             Instance = this;
         }
 
-        public void SetFocus(PhotonView pv)
+        public void SetFocus(Code.PhotonView pv)
         {
 
             focus = pv != null ? pv.transform : null;
@@ -57,7 +51,7 @@ namespace Photon.Pun.UtilityScripts
             }
         }
 
-        public void RemoveFocus(PhotonView pv)
+        public void RemoveFocus(Code.PhotonView pv)
         {
             if (pv == null)
             {

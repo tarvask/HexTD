@@ -9,12 +9,12 @@
 // ----------------------------------------------------------------------------
 
 
-namespace Photon.Pun
+using Photon.PhotonUnityNetworking.Code.Views;
+using UnityEditor;
+using UnityEngine;
+
+namespace Photon.PhotonUnityNetworking.Code.Editor.Views
 {
-    using UnityEditor;
-    using UnityEngine;
-
-
     [CustomEditor(typeof (PhotonRigidbody2DView))]
     public class PhotonRigidbody2DViewEditor : MonoBehaviourPunEditor
     {

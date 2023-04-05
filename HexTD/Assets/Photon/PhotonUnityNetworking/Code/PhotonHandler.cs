@@ -9,16 +9,15 @@
 // ----------------------------------------------------------------------------
 
 
-namespace Photon.Pun
+using System;
+using System.Collections.Generic;
+using ExitGames.Client.Photon;
+using Photon.PhotonRealtime.Code;
+using UnityEngine;
+using UnityEngine.Profiling;
+
+namespace Photon.PhotonUnityNetworking.Code
 {
-    using System;
-    using System.Collections.Generic;
-    using ExitGames.Client.Photon;
-    using Photon.Realtime;
-    using UnityEngine;
-    using UnityEngine.Profiling;
-
-
     /// <summary>
     /// Internal MonoBehaviour that allows Photon to run an Update loop.
     /// </summary>

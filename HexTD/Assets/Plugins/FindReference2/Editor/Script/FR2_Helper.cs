@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace vietlabs.fr2
+namespace Plugins.FindReference2.Editor.Script
 {
 	public class FR2_Helper
 	{

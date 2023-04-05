@@ -9,15 +9,12 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
-
-namespace Photon.Pun.Demo.SlotRacer
+namespace Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts
 {
     /// <summary>
     /// Slot racer splash screen. Inform about the slotRacer demo and the Cockpit control setup

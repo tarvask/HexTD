@@ -2,35 +2,38 @@ using Sirenix.OdinInspector.Editor;
 using Sirenix.Utilities.Editor;
 using UnityEngine;
 
-public class ColoredFoldoutGroupAttributeDrawer : OdinGroupDrawer<ColoredFoldoutGroupAttribute>
+namespace Plugins.OdinExtensions.Editor.ColoredFoldoutGroup
 {
-    private LocalPersistentContext<bool> isExpanded;
-
-    protected override void Initialize()
+    public class ColoredFoldoutGroupAttributeDrawer : OdinGroupDrawer<ColoredFoldoutGroupAttribute>
     {
-        this.isExpanded = this.GetPersistentValue<bool>(
-            "ColoredFoldoutGroupAttributeDrawer.isExpanded",
-            GeneralDrawerConfig.Instance.ExpandFoldoutByDefault);
-    }
+        private LocalPersistentContext<bool> isExpanded;
 
-    protected override void DrawPropertyLayout(GUIContent label)
-    {
-        GUIHelper.PushColor(new Color(this.Attribute.R, this.Attribute.G, this.Attribute.B, this.Attribute.A));
-        SirenixEditorGUI.BeginBox();
-        SirenixEditorGUI.BeginBoxHeader();
-        GUIHelper.PopColor(); 
-        this.isExpanded.Value = SirenixEditorGUI.Foldout(this.isExpanded.Value, label);
-        SirenixEditorGUI.EndBoxHeader();
-
-        if (SirenixEditorGUI.BeginFadeGroup(this, this.isExpanded.Value))
+        protected override void Initialize()
         {
-            for (int i = 0; i < this.Property.Children.Count; i++)
-            {
-                this.Property.Children[i].Draw();
-            }
+            this.isExpanded = this.GetPersistentValue<bool>(
+                "ColoredFoldoutGroupAttributeDrawer.isExpanded",
+                GeneralDrawerConfig.Instance.ExpandFoldoutByDefault);
         }
 
-        SirenixEditorGUI.EndFadeGroup();
-        SirenixEditorGUI.EndBox();
+        protected override void DrawPropertyLayout(GUIContent label)
+        {
+            GUIHelper.PushColor(new Color(this.Attribute.R, this.Attribute.G, this.Attribute.B, this.Attribute.A));
+            SirenixEditorGUI.BeginBox();
+            SirenixEditorGUI.BeginBoxHeader();
+            GUIHelper.PopColor(); 
+            this.isExpanded.Value = SirenixEditorGUI.Foldout(this.isExpanded.Value, label);
+            SirenixEditorGUI.EndBoxHeader();
+
+            if (SirenixEditorGUI.BeginFadeGroup(this, this.isExpanded.Value))
+            {
+                for (int i = 0; i < this.Property.Children.Count; i++)
+                {
+                    this.Property.Children[i].Draw();
+                }
+            }
+
+            SirenixEditorGUI.EndFadeGroup();
+            SirenixEditorGUI.EndBox();
+        }
     }
 }

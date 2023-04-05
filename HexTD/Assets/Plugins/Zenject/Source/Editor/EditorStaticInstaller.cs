@@ -1,5 +1,8 @@
 
-namespace Zenject
+using Plugins.Zenject.Source.Install;
+using Plugins.Zenject.Source.Install.Contexts;
+
+namespace Plugins.Zenject.Source.Editor
 {
     // Derive from this class, add [InitializeOnLoad], and then call Install
     // in a static constructor to add some editor time bindings

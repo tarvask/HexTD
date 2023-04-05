@@ -1,10 +1,11 @@
-﻿using ExitGames.Client.Photon;
-using Photon.Realtime;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ExitGames.Client.Photon;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.Pun.Demo.Asteroids
+namespace Photon.PhotonUnityNetworking.Demos.DemoAsteroids.Scripts.Lobby
 {
     public class LobbyMainPanel : MonoBehaviourPunCallbacks
     {

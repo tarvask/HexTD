@@ -11,7 +11,7 @@
 
 using UnityEngine;
 
-namespace Photon.Pun.Demo.SlotRacer.Utils
+namespace Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts.BezierCurve
 {
 	[ExecuteInEditMode]
 	public class SplineWalker : MonoBehaviour {

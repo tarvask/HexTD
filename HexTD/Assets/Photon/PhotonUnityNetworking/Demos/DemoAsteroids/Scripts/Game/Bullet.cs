@@ -1,7 +1,7 @@
-﻿using Photon.Realtime;
+﻿using Photon.PhotonRealtime.Code;
 using UnityEngine;
 
-namespace Photon.Pun.Demo.Asteroids
+namespace Photon.PhotonUnityNetworking.Demos.DemoAsteroids.Scripts.Game
 {
     public class Bullet : MonoBehaviour
     {

@@ -8,8 +8,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-
-namespace Photon.Chat.Demo
+namespace Photon.PhotonChat.Demos.DemoChat
 {
     [RequireComponent(typeof(ChatGui))]
     public class NamePickGui : MonoBehaviour

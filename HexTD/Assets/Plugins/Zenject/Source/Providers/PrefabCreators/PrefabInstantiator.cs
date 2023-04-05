@@ -3,11 +3,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Zenject.Internal;
-using ModestTree;
+using Plugins.Zenject.Source.Binding.BindInfo;
+using Plugins.Zenject.Source.Injection;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Plugins.Zenject.Source.Providers.PrefabProviders;
+using Plugins.Zenject.Source.Util;
 using UnityEngine;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Providers.PrefabCreators
 {
     [NoReflectionBaking]
     public class PrefabInstantiator : IPrefabInstantiator

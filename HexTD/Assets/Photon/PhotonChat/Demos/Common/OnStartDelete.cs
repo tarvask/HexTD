@@ -10,7 +10,7 @@
 
 using UnityEngine;
 
-namespace Photon.Chat.UtilityScripts
+namespace Photon.PhotonChat.Demos.Common
 {
     /// <summary>This component will destroy the GameObject it is attached to (in Start()).</summary>
     public class OnStartDelete : MonoBehaviour

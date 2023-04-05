@@ -8,11 +8,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
 
-namespace Photon.Pun.Demo.Hub
+namespace Photon.PhotonUnityNetworking.Demos.DemoHub.Scripts
 {
 	/// <summary>
 	/// Present a button on all launched demos from hub to allow getting back to the demo hub.

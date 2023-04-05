@@ -8,12 +8,12 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.PhotonUnityNetworking.Code;
+using Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer;
 using UnityEngine;
-
 using Random = UnityEngine.Random;
-using Photon.Pun.UtilityScripts;
 
-namespace Photon.Pun.Demo.Asteroids
+namespace Photon.PhotonUnityNetworking.Demos.DemoAsteroids.Scripts.Game
 {
     public class Asteroid : MonoBehaviour
     {

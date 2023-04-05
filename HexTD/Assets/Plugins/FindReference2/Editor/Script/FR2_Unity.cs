@@ -55,23 +55,19 @@
 #define UNITY_SCENE_MANAGER
 #endif
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using UnityEditor;
-
 #if FR2_ADDRESSABLE
 using UnityEditor.AddressableAssets;
 #endif
-
-using UnityEngine;
-using Object = UnityEngine.Object;
-#if UNITY_SCENE_MANAGER
-using UnityEngine.SceneManagement;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
-#endif
-namespace vietlabs.fr2
+namespace Plugins.FindReference2.Editor.Script
 {
 	public class FR2_Unity
 	{

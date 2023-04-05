@@ -7,9 +7,7 @@ using System.Threading;
 using UnityEditor;
 using UnityEngine;
 
-
-
-namespace vietlabs.fr2
+namespace Plugins.FindReference2.Editor.Script
 {
 	public class FR2_Export
 	{

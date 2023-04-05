@@ -1,7 +1,8 @@
 using System;
 using System.Diagnostics;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Util
 {
     [DebuggerStepThrough]
     [NoReflectionBaking]

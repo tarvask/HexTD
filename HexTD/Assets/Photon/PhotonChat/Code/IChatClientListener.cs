@@ -5,11 +5,10 @@
 // ----------------------------------------------------------------------------------------------------------------------
 
 
-namespace Photon.Chat
-{
-    using System.Collections.Generic;
-    using ExitGames.Client.Photon;
+using ExitGames.Client.Photon;
 
+namespace Photon.PhotonChat.Code
+{
     /// <summary>
     /// Callback interface for Chat client side. Contains callback methods to notify your app about updates.
     /// Must be provided to new ChatClient in constructor

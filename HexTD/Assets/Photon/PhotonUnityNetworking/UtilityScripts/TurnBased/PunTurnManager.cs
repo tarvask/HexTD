@@ -8,17 +8,14 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
-
-using UnityEngine;
-
-using Photon.Realtime;
-
 using ExitGames.Client.Photon;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
+using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.TurnBased
 {
     /// <summary>
     /// Pun turnBased Game manager.
@@ -342,7 +339,7 @@ namespace Photon.Pun.UtilityScripts
         /// <param name="room">Room reference</param>
         /// <param name="turn">Turn index</param>
         /// <param name="setStartTime">If set to <c>true</c> set start time.</param>
-        public static void SetTurn(this Room room, int turn, bool setStartTime = false)
+        public static void SetTurn(this PhotonRealtime.Code.Room room, int turn, bool setStartTime = false)
         {
             if (room == null || room.CustomProperties == null)
             {
@@ -397,7 +394,7 @@ namespace Photon.Pun.UtilityScripts
         /// <param name="player">Player reference</param>
         public static int GetFinishedTurn(this Player player)
         {
-            Room room = PhotonNetwork.CurrentRoom;
+            PhotonRealtime.Code.Room room = PhotonNetwork.CurrentRoom;
             if (room == null || room.CustomProperties == null || !room.CustomProperties.ContainsKey(TurnPropKey))
             {
                 return 0;
@@ -414,7 +411,7 @@ namespace Photon.Pun.UtilityScripts
         /// <param name="turn">Turn Index</param>
         public static void SetFinishedTurn(this Player player, int turn)
         {
-            Room room = PhotonNetwork.CurrentRoom;
+            PhotonRealtime.Code.Room room = PhotonNetwork.CurrentRoom;
             if (room == null || room.CustomProperties == null)
             {
                 return;

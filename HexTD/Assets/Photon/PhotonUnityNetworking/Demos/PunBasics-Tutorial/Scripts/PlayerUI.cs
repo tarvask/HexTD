@@ -11,7 +11,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.Pun.Demo.PunBasics
+namespace Photon.PhotonUnityNetworking.Demos.PunBasics_Tutorial.Scripts
 {
 	#pragma warning disable 649
 

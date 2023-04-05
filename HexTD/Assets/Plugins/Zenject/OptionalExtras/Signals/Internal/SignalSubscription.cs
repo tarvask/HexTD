@@ -1,8 +1,11 @@
 using System;
 using System.Linq;
-using ModestTree;
+using Plugins.Zenject.Source.Factories.Pooling;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.OptionalExtras.Signals.Internal
 {
     public class SignalSubscription : IDisposable, IPoolable<Action<object>, SignalDeclaration>
     {

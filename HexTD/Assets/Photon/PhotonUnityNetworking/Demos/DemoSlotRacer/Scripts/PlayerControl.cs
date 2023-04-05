@@ -8,14 +8,14 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Collections;
+using Photon.PhotonUnityNetworking.Code;
+using Photon.PhotonUnityNetworking.Code.Interfaces;
+using Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts.BezierCurve;
+using Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer;
 using UnityEngine;
 
-using System.Collections;
-
-using Photon.Pun.Demo.SlotRacer.Utils;
-using Photon.Pun.UtilityScripts;
-
-namespace Photon.Pun.Demo.SlotRacer
+namespace Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts
 {
     /// <summary>
     /// Player control. 

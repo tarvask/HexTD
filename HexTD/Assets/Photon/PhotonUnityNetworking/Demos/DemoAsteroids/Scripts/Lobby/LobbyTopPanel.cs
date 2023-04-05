@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using Photon.PhotonUnityNetworking.Code;
+using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.Pun.Demo.Asteroids
+namespace Photon.PhotonUnityNetworking.Demos.DemoAsteroids.Scripts.Lobby
 {
     public class LobbyTopPanel : MonoBehaviour
     {

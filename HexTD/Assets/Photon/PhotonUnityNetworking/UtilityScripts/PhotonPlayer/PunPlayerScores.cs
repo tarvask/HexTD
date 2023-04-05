@@ -8,16 +8,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Collections;
-using System.Collections.Generic;
-
+using Photon.PhotonRealtime.Code;
 using UnityEngine;
-
-using Photon.Pun;
-using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer
 {
     /// <summary>
     /// Scoring system for PhotonPlayer

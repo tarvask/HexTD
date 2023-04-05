@@ -1,6 +1,8 @@
+using Zenject;
+
 #if !(UNITY_WSA && ENABLE_DOTNET)
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Binding.Binders.Conventions
 {
     [NoReflectionBaking]
     public class ConventionSelectTypesBinder

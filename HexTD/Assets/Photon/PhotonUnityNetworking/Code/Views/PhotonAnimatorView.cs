@@ -9,12 +9,12 @@
 // ----------------------------------------------------------------------------
 
 
-namespace Photon.Pun
+using System.Collections.Generic;
+using Photon.PhotonUnityNetworking.Code.Interfaces;
+using UnityEngine;
+
+namespace Photon.PhotonUnityNetworking.Code.Views
 {
-    using System.Collections.Generic;
-    using UnityEngine;
-
-
     /// <summary>
     /// This class helps you to synchronize Mecanim animations
     /// Simply add the component to your GameObject and make sure that

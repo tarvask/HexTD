@@ -1,11 +1,16 @@
 using System;
-using ModestTree;
-using UnityEditor;
+using Plugins.Zenject.Source.Install;
+using Plugins.Zenject.Source.Install.Contexts;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Plugins.Zenject.Source.Runtime;
+using Plugins.Zenject.Source.Runtime.Kernels;
 using UnityEngine;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Editor.EditorWindow
 {
-    public abstract class ZenjectEditorWindow : EditorWindow
+    public abstract class ZenjectEditorWindow : UnityEditor.EditorWindow
     {
         [Inject]
         [NonSerialized]

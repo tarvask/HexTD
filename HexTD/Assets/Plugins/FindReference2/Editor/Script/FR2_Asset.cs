@@ -1,27 +1,25 @@
-﻿using System.Globalization;
-//#define FR2_DEBUG_BRACE_LEVEL
+﻿//#define FR2_DEBUG_BRACE_LEVEL
 //#define FR2_DEBUG_SYMBOL
 //#define FR2_DEBUG
-
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using UnityEditor;
-using UnityEngine;
 
 
 #if FR2_ADDRESSABLE
 using UnityEditor.AddressableAssets;
 using UnityEngine.AddressableAssets;
 #endif
-
-
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using Plugins.FindReference2.Editor.Script.UI;
+using UnityEditor;
+using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
-namespace vietlabs.fr2
+namespace Plugins.FindReference2.Editor.Script
 {
 	public enum FR2_AssetType
 	{

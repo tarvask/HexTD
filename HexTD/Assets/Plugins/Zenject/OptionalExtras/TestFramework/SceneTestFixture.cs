@@ -1,17 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using ModestTree;
 using NUnit.Framework;
+using Plugins.Zenject.Source.Install.Contexts;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Plugins.Zenject.Source.Runtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Zenject.Internal;
-using Assert = ModestTree.Assert;
+using Assert = Plugins.Zenject.Source.Internal.Assert;
 
 // Ignore warning about using SceneManager.UnloadScene instead of SceneManager.UnloadSceneAsync
 #pragma warning disable 618
 
-namespace Zenject
+namespace Plugins.Zenject.OptionalExtras.TestFramework
 {
     public abstract class SceneTestFixture
     {

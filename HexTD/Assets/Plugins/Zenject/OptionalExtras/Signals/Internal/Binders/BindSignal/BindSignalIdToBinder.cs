@@ -1,7 +1,7 @@
-using System;
-using ModestTree;
+using Plugins.Zenject.OptionalExtras.Signals.Internal.Binders.DeclareSignal;
+using Plugins.Zenject.Source.Main;
 
-namespace Zenject
+namespace Plugins.Zenject.OptionalExtras.Signals.Internal.Binders.BindSignal
 {
     public class BindSignalIdToBinder<TSignal> : BindSignalToBinder<TSignal>
     {

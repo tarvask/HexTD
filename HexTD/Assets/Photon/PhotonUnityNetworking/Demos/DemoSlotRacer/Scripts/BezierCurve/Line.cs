@@ -11,7 +11,7 @@
 
 using UnityEngine;
 
-namespace Photon.Pun.Demo.SlotRacer.Utils
+namespace Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts.BezierCurve
 {
 	public class Line : MonoBehaviour {
 		public Vector3 p0, p1;

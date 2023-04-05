@@ -8,6 +8,14 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.Networking;
+
 #pragma warning disable 618 // Deprecation warnings
 
 
@@ -18,20 +26,8 @@
 
 #if UNITY_EDITOR
 
-namespace Photon.Realtime
+namespace Photon.PhotonRealtime.Code.Unity.Editor
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-
-    using UnityEditor;
-    using UnityEngine;
-
-    using System.IO;
-    using System.Text;
-    using UnityEngine.Networking;
-
-
     [InitializeOnLoad]
     public static class PhotonEditorUtils
     {

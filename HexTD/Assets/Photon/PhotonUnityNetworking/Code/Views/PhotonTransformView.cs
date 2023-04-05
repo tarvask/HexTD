@@ -9,10 +9,11 @@
 // ----------------------------------------------------------------------------
 
 
-namespace Photon.Pun
-{
-    using UnityEngine;
+using Photon.PhotonUnityNetworking.Code.Interfaces;
+using UnityEngine;
 
+namespace Photon.PhotonUnityNetworking.Code.Views
+{
     [AddComponentMenu("Photon Networking/Photon Transform View")]
     [HelpURL("https://doc.photonengine.com/en-us/pun/v2/gameplay/synchronization-and-state")]
     public class PhotonTransformView : MonoBehaviourPun, IPunObservable

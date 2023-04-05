@@ -9,6 +9,15 @@
 // ----------------------------------------------------------------------------
 
 
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using ExitGames.Client.Photon;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code.Interfaces;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+
 #pragma warning disable 1587
 /// \defgroup publicApi Public API
 /// \brief Groups the most important classes that you need to understand early on.
@@ -21,18 +30,8 @@
 #pragma warning restore 1587
 
 
-namespace Photon.Pun
+namespace Photon.PhotonUnityNetworking.Code
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Reflection;
-    using ExitGames.Client.Photon;
-    using UnityEngine;
-    using UnityEngine.SceneManagement;
-    using Photon.Realtime;
-    using SupportClassPun = ExitGames.Client.Photon.SupportClass;
-
-
     /// <summary>Replacement for RPC attribute with different name. Used to flag methods as remote-callable.</summary>
     public class PunRPC : Attribute
     {
@@ -100,7 +99,7 @@ namespace Photon.Pun
     /// Visual Studio and MonoDevelop should provide the list of methods when you begin typing "override".
     /// <b>Your implementation does not have to call "base.method()".</b>
     ///
-    /// This class implements all callback interfaces and extends <see cref="Photon.Pun.MonoBehaviourPun"/>.
+    /// This class implements all callback interfaces and extends <see cref="MonoBehaviourPun"/>.
     /// </remarks>
     /// \ingroup callbacks
     // the documentation for the interface methods becomes inherited when Doxygen builds it.

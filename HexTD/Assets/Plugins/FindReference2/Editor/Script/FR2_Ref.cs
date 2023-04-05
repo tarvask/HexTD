@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using Plugins.FindReference2.Editor.Script.UI;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace vietlabs.fr2
+namespace Plugins.FindReference2.Editor.Script
 {
 	public class FR2_SceneRef : FR2_Ref
 	{

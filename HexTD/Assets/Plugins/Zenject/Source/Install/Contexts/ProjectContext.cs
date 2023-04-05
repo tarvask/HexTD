@@ -3,14 +3,16 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using ModestTree;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Plugins.Zenject.Source.Runtime;
+using Plugins.Zenject.Source.Runtime.Kernels;
+using Plugins.Zenject.Source.Util;
 using UnityEngine;
-using Zenject.Internal;
-
 #if UNITY_EDITOR
 #endif
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Install.Contexts
 {
     public class ProjectContext : Context
     {

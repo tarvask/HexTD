@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
-using ModestTree;
+using Plugins.Zenject.Source.Factories.Pooling;
+using Plugins.Zenject.Source.Factories.Pooling.Static;
+using Plugins.Zenject.Source.Factories.Pooling.Util;
+using Plugins.Zenject.Source.Internal;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Util
 {
     [NoReflectionBaking]
     public class DisposeBlock : IDisposable

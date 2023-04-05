@@ -1,12 +1,15 @@
 using System;
 
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-public class ListAsStringAttribute : Attribute
+namespace Plugins.OdinExtensions.Editor.ListAsString
 {
-    public string StringAction;
-
-    public ListAsStringAttribute(string action = null)
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
+    public class ListAsStringAttribute : Attribute
     {
-        StringAction = action;
+        public string StringAction;
+
+        public ListAsStringAttribute(string action = null)
+        {
+            StringAction = action;
+        }
     }
 }

@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace vietlabs.fr2
+namespace Plugins.FindReference2.Editor.Script.UI
 {
 	public class FR2_SearchView
 	{

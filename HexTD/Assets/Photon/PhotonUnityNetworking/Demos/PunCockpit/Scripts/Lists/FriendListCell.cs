@@ -5,12 +5,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.PhotonRealtime.Code;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Photon.Realtime;
-
-namespace Photon.Pun.Demo.Cockpit
+namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Lists
 {
     /// <summary>
     /// Friend list cell

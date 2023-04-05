@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Plugins.Zenject.Source.Install;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Util
 {
     public class ExecutionOrderInstaller : Installer<List<Type>, ExecutionOrderInstaller>
     {

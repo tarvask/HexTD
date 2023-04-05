@@ -6,10 +6,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.PhotonUnityNetworking.UtilityScripts.Debugging;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.UI
 {
 	/// <summary>
     /// Set focus to a given photonView when pointed is over
@@ -19,14 +20,14 @@ namespace Photon.Pun.UtilityScripts
 
 	    void OnDestroy()
 	    {
-	        PointedAtGameObjectInfo.Instance.RemoveFocus(this.GetComponent<PhotonView>());
+	        PointedAtGameObjectInfo.Instance.RemoveFocus(this.GetComponent<Code.PhotonView>());
 	    }
 		
 		#region IPointerExitHandler implementation
 
 		void IPointerExitHandler.OnPointerExit (PointerEventData eventData)
 		{
-			PointedAtGameObjectInfo.Instance.RemoveFocus (this.GetComponent<PhotonView>());
+			PointedAtGameObjectInfo.Instance.RemoveFocus (this.GetComponent<Code.PhotonView>());
 
 		}
 
@@ -36,7 +37,7 @@ namespace Photon.Pun.UtilityScripts
 
 		void IPointerEnterHandler.OnPointerEnter (PointerEventData eventData)
 		{
-			PointedAtGameObjectInfo.Instance.SetFocus (this.GetComponent<PhotonView>());
+			PointedAtGameObjectInfo.Instance.SetFocus (this.GetComponent<Code.PhotonView>());
 		}
 
 		#endregion

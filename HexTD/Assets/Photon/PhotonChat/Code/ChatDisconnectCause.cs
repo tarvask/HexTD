@@ -4,7 +4,7 @@
 // <copyright company="Exit Games GmbH">Photon Chat Api - Copyright (C) 2014 Exit Games GmbH</copyright>
 // ----------------------------------------------------------------------------------------------------------------------
 
-namespace Photon.Chat
+namespace Photon.PhotonChat.Code
 {
     /// <summary>Enumeration of causes for Disconnects (used in <see cref="ChatClient.DisconnectedCause"/>).</summary>
     /// <remarks>Read the individual descriptions to find out what to do about this type of disconnect.</remarks>

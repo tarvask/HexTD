@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ModestTree;
+using Plugins.Zenject.Source.Internal;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace Zenject.ReflectionBaking
+namespace Plugins.Zenject.OptionalExtras.ReflectionBaking.Unity
 {
     public class AssemblyPathRegistry
     {

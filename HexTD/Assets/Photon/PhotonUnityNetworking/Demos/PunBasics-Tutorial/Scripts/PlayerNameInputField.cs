@@ -8,10 +8,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Photon.Pun.Demo.PunBasics
+namespace Photon.PhotonUnityNetworking.Demos.PunBasics_Tutorial.Scripts
 {
 	/// <summary>
 	/// Player name input field. Let the user input his name, will appear above the player in the game.

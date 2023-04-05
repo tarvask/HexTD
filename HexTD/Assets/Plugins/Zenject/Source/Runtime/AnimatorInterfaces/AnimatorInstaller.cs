@@ -1,6 +1,7 @@
+using Plugins.Zenject.Source.Install;
 using UnityEngine;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Runtime.AnimatorInterfaces
 {
     public class AnimatorInstaller : Installer<Animator, AnimatorInstaller>
     {

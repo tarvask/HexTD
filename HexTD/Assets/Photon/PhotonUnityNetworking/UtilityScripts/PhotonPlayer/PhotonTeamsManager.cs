@@ -14,12 +14,12 @@
 
 using System;
 using System.Collections.Generic;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
-
-using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer
 {
     [Serializable]
     public class PhotonTeam

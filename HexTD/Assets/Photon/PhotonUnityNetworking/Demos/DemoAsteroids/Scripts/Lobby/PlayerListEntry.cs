@@ -8,14 +8,14 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using ExitGames.Client.Photon;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
+using Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer;
 using UnityEngine;
 using UnityEngine.UI;
 
-using ExitGames.Client.Photon;
-using Photon.Realtime;
-using Photon.Pun.UtilityScripts;
-
-namespace Photon.Pun.Demo.Asteroids
+namespace Photon.PhotonUnityNetworking.Demos.DemoAsteroids.Scripts.Lobby
 {
     public class PlayerListEntry : MonoBehaviour
     {

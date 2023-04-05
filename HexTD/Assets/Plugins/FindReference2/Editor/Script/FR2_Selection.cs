@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Plugins.FindReference2.Editor.Script.UI;
 using UnityEditor;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
 
-namespace vietlabs.fr2
+namespace Plugins.FindReference2.Editor.Script
 {
 	public class FR2_Selection : IRefDraw
 	{	

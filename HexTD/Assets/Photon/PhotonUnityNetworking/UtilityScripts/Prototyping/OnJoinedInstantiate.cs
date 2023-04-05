@@ -9,16 +9,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Generic;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-using Photon.Realtime;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.Prototyping
 {
 
     /// <summary>
@@ -121,7 +118,7 @@ namespace Photon.Pun.UtilityScripts
             if (unvalidated == null)
                 return null;
 
-            if (!unvalidated.GetComponent<PhotonView>())
+            if (!unvalidated.GetComponent<Code.PhotonView>())
                 return null;
 
 #if UNITY_2018_3_OR_NEWER

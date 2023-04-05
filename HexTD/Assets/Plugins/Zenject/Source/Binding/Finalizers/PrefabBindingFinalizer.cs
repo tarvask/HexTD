@@ -2,10 +2,15 @@
 
 using System;
 using System.Collections.Generic;
-using ModestTree;
-using UnityEngine;
+using Plugins.Zenject.Source.Binding.BindInfo;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Plugins.Zenject.Source.Providers;
+using Plugins.Zenject.Source.Providers.PrefabCreators;
+using Plugins.Zenject.Source.Providers.PrefabProviders;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Binding.Finalizers
 {
     [NoReflectionBaking]
     public class PrefabBindingFinalizer : ProviderBindingFinalizer
@@ -15,7 +20,7 @@ namespace Zenject
         readonly Func<Type, IPrefabInstantiator, IProvider> _providerFactory;
 
         public PrefabBindingFinalizer(
-            BindInfo bindInfo,
+            BindInfo.BindInfo bindInfo,
             GameObjectCreationParameters gameObjectBindInfo,
             UnityEngine.Object prefab, Func<Type, IPrefabInstantiator, IProvider> providerFactory)
             : base(bindInfo)

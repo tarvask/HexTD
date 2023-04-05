@@ -8,17 +8,17 @@
 // <author>developer@exitgames.com</author>
 // ----------------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Photon.PhotonUnityNetworking.Code.Editor.ReordableList;
 using UnityEditor;
 using UnityEngine;
 
-namespace Photon.Pun
+namespace Photon.PhotonUnityNetworking.Code.Editor
 {
     [CustomEditor(typeof(PunSceneSettings))]
-    internal class PunSceneSettingsInspector : Editor
+    internal class PunSceneSettingsInspector : UnityEditor.Editor
     {
         private PunSceneSettings m_Target;
         private bool isOpen;

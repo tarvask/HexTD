@@ -11,11 +11,11 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.Culling.Editor
 {
     [CanEditMultipleObjects]
     [CustomEditor(typeof(CullArea))]
-    public class CullAreaEditor : Editor
+    public class CullAreaEditor : UnityEditor.Editor
     {
         private bool alignEditorCamera, showHelpEntries;
 

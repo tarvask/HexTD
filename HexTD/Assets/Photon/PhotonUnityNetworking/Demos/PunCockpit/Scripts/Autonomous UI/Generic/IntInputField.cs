@@ -6,10 +6,10 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
-namespace Photon.Pun.Demo.Cockpit
+namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Autonomous_UI.Generic
 {
     /// <summary>
     /// Int UI InputField.

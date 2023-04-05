@@ -8,15 +8,12 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.SceneManagement;
-
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
-using Photon.Pun.Demo.Cockpit;
-
-namespace Photon.Pun.Demo.Hub
+namespace Photon.PhotonUnityNetworking.Demos.DemoHub.Scripts
 {
 	public class DemoHubManager : MonoBehaviour {
 
@@ -45,7 +42,7 @@ namespace Photon.Pun.Demo.Hub
 		// Use this for initialization
 		void Awake () {
 
-			PunCockpit.Embedded = false;
+			PunCockpit.PunCockpit.Embedded = false;
 
 			OpenSceneButton.SetActive(false);
 			

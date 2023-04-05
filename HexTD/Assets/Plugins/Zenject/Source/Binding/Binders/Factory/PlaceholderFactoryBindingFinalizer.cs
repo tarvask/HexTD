@@ -1,7 +1,14 @@
 using System.Linq;
-using ModestTree;
+using Plugins.Zenject.Source.Binding.BindInfo;
+using Plugins.Zenject.Source.Binding.Finalizers;
+using Plugins.Zenject.Source.Factories;
+using Plugins.Zenject.Source.Injection;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Plugins.Zenject.Source.Providers;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Binding.Binders.Factory
 {
     [NoReflectionBaking]
     public class PlaceholderFactoryBindingFinalizer<TContract> : ProviderBindingFinalizer
@@ -9,7 +16,7 @@ namespace Zenject
         readonly FactoryBindInfo _factoryBindInfo;
 
         public PlaceholderFactoryBindingFinalizer(
-            BindInfo bindInfo, FactoryBindInfo factoryBindInfo)
+            BindInfo.BindInfo bindInfo, FactoryBindInfo factoryBindInfo)
             : base(bindInfo)
         {
             // Note that it doesn't derive from PlaceholderFactory<TContract>

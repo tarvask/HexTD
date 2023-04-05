@@ -8,11 +8,10 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts.BezierCurve;
 using UnityEngine;
 
-using Photon.Pun.Demo.SlotRacer.Utils;
-
-namespace Photon.Pun.Demo.SlotRacer
+namespace Photon.PhotonUnityNetworking.Demos.DemoSlotRacer.Scripts
 {
 	/// <summary>
 	/// Define Slot lanes and grid positions placeholders.

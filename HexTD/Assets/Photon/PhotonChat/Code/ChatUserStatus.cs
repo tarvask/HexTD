@@ -4,7 +4,7 @@
 // <copyright company="Exit Games GmbH">Photon Chat Api - Copyright (C) 2014 Exit Games GmbH</copyright>
 // ----------------------------------------------------------------------------------------------------------------------
 
-namespace Photon.Chat
+namespace Photon.PhotonChat.Code
 {
     /// <summary>Contains commonly used status values for SetOnlineStatus. You can define your own.</summary>
     /// <remarks>

@@ -15,12 +15,12 @@
 //using UnityEditor;
 //#endif
 
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
 using UnityEngine;
-
 //using Photon.Pun;
-using Photon.Realtime;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.Prototyping
 {
     /// <summary>Simple component to call ConnectUsingSettings and to get into a PUN room easily.</summary>
     /// <remarks>A custom inspector provides a button to connect in PlayMode, should AutoConnect be false.</remarks>

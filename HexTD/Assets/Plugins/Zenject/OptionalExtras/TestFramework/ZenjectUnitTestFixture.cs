@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
+using Plugins.Zenject.Source.Install.Contexts;
+using Plugins.Zenject.Source.Main;
 
-namespace Zenject
+namespace Plugins.Zenject.OptionalExtras.TestFramework
 {
     // Inherit from this and mark you class with [TestFixture] attribute to do some unit tests
     // For anything more complicated than this, such as tests involving interaction between

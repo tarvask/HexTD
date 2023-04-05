@@ -4,9 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ModestTree;
+using Plugins.Zenject.Source.Internal;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Binding.Binders.Conventions
 {
     [NoReflectionBaking]
     public class ConventionFilterTypesBinder : ConventionAssemblySelectionBinder

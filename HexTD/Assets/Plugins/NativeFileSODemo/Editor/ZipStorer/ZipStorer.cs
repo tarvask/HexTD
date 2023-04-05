@@ -27,16 +27,19 @@
 // Modifications for compatibility with .aar packages by Keiwan Donyagard
 // keiwando.com/contact
 
+using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Text;
-// DEBUG:
 using UnityEngine;
+// DEBUG:
 
 #if NET45
 using System.Threading.Tasks;
 #endif
 
-namespace System.IO.Compression
+namespace Plugins.NativeFileSODemo.Editor.ZipStorer
 {
 #if NETSTANDARD
     /// <summary>
@@ -225,7 +228,7 @@ namespace System.IO.Compression
 			if (!_leaveOpen)
 				zip.Close();
 
-            throw new System.IO.InvalidDataException();
+            throw new System.System.IO.InvalidDataException();
         }
         /// <summary>
         /// Add full contents of a file into the Zip storage

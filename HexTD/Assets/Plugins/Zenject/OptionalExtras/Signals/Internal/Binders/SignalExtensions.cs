@@ -1,5 +1,10 @@
 using System;
-namespace Zenject
+using Plugins.Zenject.OptionalExtras.Signals.Internal.Binders.BindSignal;
+using Plugins.Zenject.OptionalExtras.Signals.Internal.Binders.DeclareSignal;
+using Plugins.Zenject.OptionalExtras.Signals.Main;
+using Plugins.Zenject.Source.Main;
+
+namespace Plugins.Zenject.OptionalExtras.Signals.Internal.Binders
 {
     public static class SignalExtensions
     {

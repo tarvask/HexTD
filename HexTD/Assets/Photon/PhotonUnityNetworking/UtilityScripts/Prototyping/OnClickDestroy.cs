@@ -7,12 +7,13 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 
-namespace Photon.Pun.UtilityScripts
-{
-    using System.Collections;
-    using UnityEngine;
-    using UnityEngine.EventSystems;
+using System.Collections;
+using Photon.PhotonUnityNetworking.Code;
+using UnityEngine;
+using UnityEngine.EventSystems;
 
+namespace Photon.PhotonUnityNetworking.UtilityScripts.Prototyping
+{
     /// <summary>
     /// Destroys the networked GameObject either by PhotonNetwork.Destroy or by sending an RPC which calls Object.Destroy().
     /// </summary>

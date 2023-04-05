@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ModestTree;
-using ModestTree.Util;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Util;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Runtime
 {
     // Responsibilities:
     // - Run Initialize() on all Iinitializable's, in the order specified by InitPriority

@@ -8,19 +8,14 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.IO;
+using Photon.PhotonUnityNetworking.Code;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEditor;
 
-using Photon.Pun;
-using Photon.Realtime;
-using ExitGames.Client.Photon;
-using UnityEngine.SceneManagement;
-
-namespace Photon.Pun.Demo.Hub
+namespace Photon.PhotonUnityNetworking.Demos.DemoHub.Editor
 {
     [InitializeOnLoad]
     public class PunStartup : MonoBehaviour

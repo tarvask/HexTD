@@ -9,16 +9,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
+using Photon.PhotonUnityNetworking.Demos.PunCockpit.Forms;
+using Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Autonomous_UI.Generic;
+using Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Controllers;
+using Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts.Lists;
+using Photon.PhotonUnityNetworking.Demos.Shared_Assets.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
-
-using Photon.Pun.Demo.Cockpit.Forms;
-using Photon.Pun.Demo.Shared;
-using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Photon.Pun.Demo.Cockpit
+namespace Photon.PhotonUnityNetworking.Demos.PunCockpit
 {
     /// <summary>
     /// UI based work in progress to test out api and act as foundation when dealing with room, friends and player list

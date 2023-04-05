@@ -8,18 +8,15 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code;
 using UnityEditor;
+using UnityEngine;
 
-using Photon.Pun;
-using Photon.Realtime;
-
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer.Editor
 {
 	[CustomEditor(typeof(PlayerNumbering))]
-	public class PlayerNumberingInspector : Editor {
+	public class PlayerNumberingInspector : UnityEditor.Editor {
 
 	 	int localPlayerIndex;
 

@@ -6,10 +6,10 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
-namespace Photon.Pun.Demo.Cockpit.Forms
+namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Forms
 {
     /// <summary>
     /// User Id UI form.

@@ -4,11 +4,11 @@
 // <author>developer@exitgames.com</author>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Photon.PhotonUnityNetworking.Code;
+using Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer;
 using UnityEngine;
-using Photon.Pun.UtilityScripts;
 
-
-namespace Photon.Pun.Demo.Cockpit
+namespace Photon.PhotonUnityNetworking.Demos.PunCockpit.Scripts
 {
 
     public class ScoreHelper : MonoBehaviour

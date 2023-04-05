@@ -1,6 +1,8 @@
 using System;
+using Plugins.Zenject.Source.Install;
+using Plugins.Zenject.Source.Main;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Util
 {
     public class ActionInstaller : Installer<ActionInstaller>
     {

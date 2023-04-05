@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
-using ModestTree;
+using Plugins.Zenject.Source.Injection;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Main;
+using Plugins.Zenject.Source.Validation;
+using Zenject;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Providers
 {
     [NoReflectionBaking]
     public class GetterProvider<TObj, TResult> : IProvider

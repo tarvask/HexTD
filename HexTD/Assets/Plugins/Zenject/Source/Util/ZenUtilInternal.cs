@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ModestTree;
-using ModestTree.Util;
-#if !NOT_UNITY3D
-using UnityEngine.SceneManagement;
+using Plugins.Zenject.Source.Install;
+using Plugins.Zenject.Source.Install.Contexts;
+using Plugins.Zenject.Source.Internal;
 using UnityEngine;
-#endif
+using UnityEngine.SceneManagement;
 
-namespace Zenject.Internal
+namespace Plugins.Zenject.Source.Util
 {
     public static class ZenUtilInternal
     {

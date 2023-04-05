@@ -4,10 +4,9 @@
 //  License, v. 2.0. If a copy of the MPL was not distributed with this
 //  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-using System;
 using System.IO;
 
-namespace Keiwando.NFSO {
+namespace Plugins.NativeFileSODemo.Scripts {
 
 	/// <summary>
 	/// Manages data about a locally existing file to be saved/exported.
@@ -43,7 +42,7 @@ namespace Keiwando.NFSO {
 		public string MimeType { get; private set; }
 
 		/// <summary>
-		/// The <see cref="T:Keiwando.NFSO.SupportedFileType"/> associated with this file.
+		/// The <see cref="T:Plugins.NativeFileSODemo.Scripts.SupportedFileType"/> associated with this file.
 		/// </summary>
 		/// <value>The type of the file.</value>
 		public SupportedFileType FileType { get; private set; }

@@ -1,6 +1,8 @@
-using ModestTree;
+using Plugins.Zenject.Source.Injection;
+using Plugins.Zenject.Source.Internal;
+using Plugins.Zenject.Source.Providers;
 
-namespace Zenject
+namespace Plugins.Zenject.Source.Factories
 {
     public class FactoryProviderWrapper<TContract> : IFactory<TContract>
     {

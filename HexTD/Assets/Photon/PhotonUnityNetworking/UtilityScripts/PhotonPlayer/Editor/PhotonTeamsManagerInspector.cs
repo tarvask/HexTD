@@ -9,15 +9,16 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using System;
-using UnityEngine;
 using System.Collections.Generic;
-using Photon.Realtime;
+using Photon.PhotonRealtime.Code;
+using Photon.PhotonUnityNetworking.Code.Editor;
 using UnityEditor;
+using UnityEngine;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.PhotonPlayer.Editor
 {
     [CustomEditor(typeof(PhotonTeamsManager))]
-    public class PhotonTeamsManagerEditor : Editor
+    public class PhotonTeamsManagerEditor : UnityEditor.Editor
     {
         private Dictionary<byte, bool> foldouts = new Dictionary<byte, bool>();
         private PhotonTeamsManager photonTeams;

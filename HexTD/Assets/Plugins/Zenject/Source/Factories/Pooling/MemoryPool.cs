@@ -1,4 +1,6 @@
-namespace Zenject
+using Plugins.Zenject.Source.Util;
+
+namespace Plugins.Zenject.Source.Factories.Pooling
 {
     // Zero parameters
     public class MemoryPool<TValue> : MemoryPoolBase<TValue>, IMemoryPool<TValue>, IFactory<TValue>

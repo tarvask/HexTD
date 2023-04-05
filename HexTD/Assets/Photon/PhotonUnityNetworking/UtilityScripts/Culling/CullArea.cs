@@ -11,11 +11,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Photon.Pun.UtilityScripts
+namespace Photon.PhotonUnityNetworking.UtilityScripts.Culling
 {
-    using System;
-
-
     /// <summary>
     ///     Represents the cull area used for network culling.
     /// </summary>

@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 
-namespace vietlabs.fr2
+namespace Plugins.FindReference2.Editor.Script.UI
 {
     public interface IDrawer
     {
