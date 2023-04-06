@@ -19,17 +19,20 @@ namespace HexSystem
 
 		public Vector3 ToPlane(Hex3d hex)
 		{
-			float x = (float)((Orientation.F0 * hex.Q + Orientation.F1 * hex.R) * Size.x);
-			float y = (float)(hex.H * Size.y);
-			float z = (float)((Orientation.F2 * hex.Q + Orientation.F3 * hex.R) * Size.z);
-			return new Vector3(x + Origin.x, y + Origin.y, z + Origin.z);
+			return ToPlane(hex.Q, hex.R, hex.H);
 		}
 
 		public Vector3 ToPlane(Hex2d hex)
 		{
-			float x = (float)((Orientation.F0 * hex.Q + Orientation.F1 * hex.R) * Size.x);
-			float z = (float)((Orientation.F2 * hex.Q + Orientation.F3 * hex.R) * Size.z);
-			return new Vector3(x + Origin.x, 0f, z + Origin.z);
+			return ToPlane(hex.Q, hex.R);
+		}
+
+		public Vector3 ToPlane(int q, int r, int h = 0)
+		{
+			float x = (float)((Orientation.F0 * q + Orientation.F1 * r) * Size.x);
+			float y = (float)(h * Size.y);
+			float z = (float)((Orientation.F2 * q + Orientation.F3 * r) * Size.z);
+			return new Vector3(x + Origin.x, y + Origin.y, z + Origin.z);
 		}
 
 		public FractionalHex ToHex(Vector3 positionInPlane)

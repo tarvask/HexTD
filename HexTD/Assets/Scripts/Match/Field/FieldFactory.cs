@@ -1,3 +1,5 @@
+using HexSystem;
+using MapEditor;
 using Match.Field.Castle;
 using Match.Field.Mob;
 using Match.Field.Shooting;
@@ -13,7 +15,7 @@ namespace Match.Field
         public struct Context
         {
             public Transform FieldRoot { get; }
-            public Vector2 FieldBottomLeftCornerPosition { get; }
+            public HexagonalFieldController HexagonalFieldController { get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
             
@@ -21,14 +23,15 @@ namespace Match.Field
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
 
-            public Context(Transform fieldRoot, Vector2 fieldBottomLeftCornerPosition,
+            public Context(Transform fieldRoot,
+                HexagonalFieldController hexagonalFieldController,
                 int castleHealth, int towerRemovingDuration,
                 ReactiveCommand<int> attackCastleByMobReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<MobController> removeMobReactiveCommand)
             {
                 FieldRoot = fieldRoot;
-                FieldBottomLeftCornerPosition = fieldBottomLeftCornerPosition;
+                HexagonalFieldController = hexagonalFieldController;
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
@@ -41,7 +44,7 @@ namespace Match.Field
         private readonly Context _context;
 
         private Transform _groundRoot;
-        private Transform _cellsRoot;
+        private Transform _hexsRoot;
         private Transform _buildingsRoot;
         private Transform _crystalsRoot;
         private Transform _mobsRoot;
@@ -71,11 +74,11 @@ namespace Match.Field
             _groundRoot.localScale = Vector3.one;
             
             // create cells root
-            _cellsRoot = AddComponent(new GameObject("Cells")).transform;
-            _cellsRoot.SetParent(_context.FieldRoot);
-            _cellsRoot.SetAsLastSibling();
-            _cellsRoot.localPosition = Vector3.zero;
-            _cellsRoot.localScale = Vector3.one;
+            _hexsRoot = AddComponent(new GameObject("Cells")).transform;
+            _hexsRoot.SetParent(_context.FieldRoot);
+            _hexsRoot.SetAsLastSibling();
+            _hexsRoot.localPosition = Vector3.zero;
+            _hexsRoot.localScale = Vector3.one;
             
             // create buildings root
             _buildingsRoot = AddComponent(new GameObject("Buildings")).transform;
@@ -107,32 +110,33 @@ namespace Match.Field
         }
 
         public TowerController CreateTower(TowerConfig towerConfig,
-            int cellX, int cellY, bool isCellNearRoad)
+            Hex2d position)
         {
             _lastBuildingId++;
             
-            return CreateTowerWithId(towerConfig, cellX, cellY, _lastBuildingId, isCellNearRoad);
+            return CreateTowerWithId(towerConfig, position, _lastBuildingId);
         }
         
         public TowerController CreateTowerWithId(TowerConfig towerConfig,
-            int cellX, int cellY, int towerId, bool isCellNearRoad)
+            Hex2d position, int towerId)
         {
             if (_lastBuildingId < towerId)
                 _lastBuildingId = towerId;
             
-            TowerView towerView = CreateTowerView(towerConfig.Parameters.RegularParameters.Data.TowerName, towerId, towerConfig.View, new Vector3(cellX, cellY));
+            TowerView towerView = CreateTowerView(towerConfig.Parameters.RegularParameters.Data.TowerName, 
+                towerId, towerConfig.View, position);
             TowerController.Context towerControllerContext = new TowerController.Context(towerId,
-                towerConfig.Parameters, towerView, towerConfig.Icon, _context.TowerRemovingDuration, isCellNearRoad);
+                position, towerConfig.Parameters, towerView, towerConfig.Icon, _context.TowerRemovingDuration);
             TowerController towerController = new TowerController(towerControllerContext);
 
             return towerController;
         }
         
         private TowerView CreateTowerView(string towerName, int towerId, TowerView towerPrefab,
-            Vector3 position)
+            Hex2d position)
         {
             TowerView towerView = Object.Instantiate(towerPrefab, _buildingsRoot);
-            towerView.transform.localPosition = position;
+            towerView.transform.localPosition = _context.HexagonalFieldController.GetWorldPosition(position);
             towerView.name = $"{towerId}_{towerName}";
 
             return towerView;
@@ -148,54 +152,49 @@ namespace Match.Field
         }
 
         public MobController CreateMob(MobConfig mobConfig,
-            Vector3 spawnPosition, Vector3[] waypoints)
+            Vector3 spawnPosition)
         {
             _lastMobId++;
             _lastTargetId++;
 
-            return CreateMobWithId(mobConfig, _lastMobId, _lastTargetId, spawnPosition, waypoints);
+            return CreateMobWithId(mobConfig, _lastMobId, _lastTargetId, spawnPosition);
         }
 
         public MobController CreateMobWithId(MobConfig mobConfig, int mobId, int targetId,
-            Vector3 spawnPosition, Vector3[] waypoints)
+            Vector3 hexSpawnPosition)
         {
             if (_lastMobId < mobId)
                 _lastMobId = mobId;
 
             if (_lastTargetId < targetId)
                 _lastTargetId = targetId;
-            
+
             MobView mobView = CreateMobView($"{mobConfig.Parameters.PowerType}",
-                mobId, mobConfig.View, spawnPosition);
+                mobId, mobConfig.View, hexSpawnPosition);
             MobController.Context towerControllerContext = new MobController.Context(mobId, targetId,
-                mobConfig.Parameters, mobView, waypoints, _context.RemoveMobReactiveCommand);
+                mobConfig.Parameters, mobView, _context.RemoveMobReactiveCommand);
             MobController mobController = new MobController(towerControllerContext);
 
             return mobController;
         }
         
         private MobView CreateMobView(string mobName, int mobId, MobView mobPrefab,
-            Vector3 position)
+            Vector3 spawnPosition)
         {
             MobView mobView = Object.Instantiate(mobPrefab, _mobsRoot);
-            mobView.transform.localPosition = position;
+            mobView.transform.localPosition = spawnPosition;
             mobView.name = $"{mobId}_{mobName}";
 
             return mobView;
         }
 
-        public GameObject CreateGroundElement(GameObject groundPrefab, int cellX, int cellY)
+        public HexObject CreateCell(HexObject hexPrefab, Hex2d hex2d, int height)
         {
-            GameObject groundInstance = Object.Instantiate(groundPrefab, _groundRoot);
-            groundInstance.transform.localPosition = new Vector3(cellX, cellY);
-            return groundInstance;
-        }
-
-        public GameObject CreateCell(GameObject cellPrefab, int cellX, int cellY)
-        {
-            GameObject cellInstance = Object.Instantiate(cellPrefab, _cellsRoot);
-            cellInstance.transform.localPosition = new Vector3(cellX, cellY);
-            return cellInstance;
+            Vector3 spawnPosition = _context.HexagonalFieldController.GetWorldPosition(hex2d);
+            HexObject hexInstance = Object.Instantiate(hexPrefab, _hexsRoot);
+            hexInstance.SetHex(hex2d);
+            hexInstance.transform.localPosition = spawnPosition;
+            return hexInstance;
         }
         
         public ProjectileController CreateProjectile(ProjectileView projectilePrefab, Vector3 spawnPosition,

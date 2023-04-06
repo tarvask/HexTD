@@ -11,7 +11,6 @@ namespace Match
         [SerializeField] private FieldView ourFieldView;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Canvas canvas;
-        [SerializeField] private InputAreaInWorld inputAreaInWorld;
         [SerializeField] private CanvasHeightOrWidthFitter canvasFitter;
         [SerializeField] private MatchCanvasBuilder canvasBuilder;
 
@@ -23,7 +22,6 @@ namespace Match
         public FieldView OurFieldView => ourFieldView;
         public Camera MainCamera => mainCamera;
         public Canvas Canvas => canvas;
-        public InputAreaInWorld InputAreaInWorld => inputAreaInWorld;
         public CanvasHeightOrWidthFitter CanvasFitter => canvasFitter;
         public MatchCanvasBuilder CanvasBuilder => canvasBuilder;
 

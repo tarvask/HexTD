@@ -15,7 +15,6 @@ namespace Match
     {
         public struct Context
         {
-            public int FieldWidth { get; }
             public MatchUiViewsCollection UiViews { get; }
             public Camera MainCamera { get; }
             public Canvas Canvas { get; }
@@ -24,7 +23,6 @@ namespace Match
             public PlayerHandParams PlayerHandParams { get; }
             public WaveParams[] Waves { get; }
             public RectTransform OurFieldCanvasMarkerRect { get; }
-            public int ReinforcementSize { get; }
             
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
             public ReactiveCommand<HealthInfo> EnemyCastleHealthChangedReactiveCommand { get; }
@@ -39,12 +37,11 @@ namespace Match
             public ReactiveCommand<int> OurCrystalsCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand QuitMatchReactiveCommand { get; }
 
-            public Context(int fieldWidth, MatchUiViewsCollection uiViews, Camera mainCamera, Canvas canvas,
+            public Context(MatchUiViewsCollection uiViews, Camera mainCamera, Canvas canvas,
                 TowerConfigRetriever towerConfigRetriever, MobConfigRetriever mobConfigRetriever,
                 PlayerHandParams playerHandParams,
                 WaveParams[] waves,
                 RectTransform ourFieldCanvasMarkerRect,
-                int reinforcementSize,
                 
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,
@@ -59,7 +56,6 @@ namespace Match
                 ReactiveCommand<int> ourCrystalsCoinsCountChangedReactiveCommand,
                 ReactiveCommand quitMatchReactiveCommand)
             {
-                FieldWidth = fieldWidth;
                 UiViews = uiViews;
                 MainCamera = mainCamera;
                 Canvas = canvas;
@@ -68,7 +64,6 @@ namespace Match
                 PlayerHandParams = playerHandParams;
                 Waves = waves;
                 OurFieldCanvasMarkerRect = ourFieldCanvasMarkerRect;
-                ReinforcementSize = reinforcementSize;
 
                 IsConnectedReactiveProperty = isConnectedReactiveProperty;
                 EnemyCastleHealthChangedReactiveCommand = enemyCastleHealthChangedReactiveCommand;

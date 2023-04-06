@@ -1,4 +1,3 @@
-using Match.Field;
 using Match.Wave;
 using UnityEngine;
 
@@ -8,7 +7,6 @@ namespace Match
     public class MatchConfig : ScriptableObject
     {
         [SerializeField] private WaveParams[] waves;
-        [SerializeField] private FieldCellType[] cells;
         [SerializeField] private int silverCoinsCount;
 
         public WaveParams[] Waves
@@ -16,13 +14,6 @@ namespace Match
             get { return waves; }
 #if UNITY_EDITOR
             set { waves = value; }
-#endif
-        }
-        public FieldCellType[] Cells
-        {
-            get { return cells; }
-#if UNITY_EDITOR
-            set { cells = value; }
 #endif
         }
 

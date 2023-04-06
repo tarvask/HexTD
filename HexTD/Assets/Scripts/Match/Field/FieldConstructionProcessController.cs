@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HexSystem;
 using Match.Field.Tower;
 using Tools;
 using Tools.Interfaces;
@@ -32,11 +33,11 @@ namespace Match.Field
         {
             _context = context;
             
-            _constructingTowers = new Dictionary<int, TowerController>(_context.FieldModel.PlayableCells.Count);
-            _towersToRelease = new List<int>(_context.FieldModel.PlayableCells.Count);
+            _constructingTowers = new Dictionary<int, TowerController>(_context.FieldModel.HexGridSize);
+            _towersToRelease = new List<int>(_context.FieldModel.HexGridSize);
             
-            _removingTowers = new Dictionary<int, TowerController>(_context.FieldModel.PlayableCells.Count);
-            _towersToDispose = new List<int>(_context.FieldModel.PlayableCells.Count);
+            _removingTowers = new Dictionary<int, TowerController>(_context.FieldModel.HexGridSize);
+            _towersToDispose = new List<int>(_context.FieldModel.HexGridSize);
         }
         
         public void OuterLogicUpdate(float frameLength)
@@ -72,21 +73,20 @@ namespace Match.Field
             _towersToDispose.Clear();
         }
         
-        public void SetTowerRemoving(Vector2Int position)
+        public void SetTowerRemoving(Hex2d position)
         {
-            int positionHash = position.GetHashCode(_context.FieldModel.FieldWidth);
-            TowerController removingTower = _context.FieldModel.TowersByPositions[positionHash];
-            _removingTowers.Add(positionHash, removingTower);
+            int hexHashCode = position.GetHashCode();
+            TowerController removingTower = _context.FieldModel.TowersByPositions[hexHashCode];
+            _removingTowers.Add(hexHashCode, removingTower);
             removingTower.SetRemoving();
         }
 
-        public TowerController SetTowerBuilding(TowerConfig towerConfig, Vector2Int position)
+        public TowerController SetTowerBuilding(TowerConfig towerConfig, Hex2d position)
         {
-            int positionHash = position.GetHashCode(_context.FieldModel.FieldWidth);
-            TowerController towerInstance = _context.Factory.CreateTower(towerConfig, position.x, position.y,
-                _context.FieldModel.IsCellNearRoad(position));
+            int positionHash = position.GetHashCode();
+            TowerController towerInstance = _context.Factory.CreateTower(towerConfig, position);
             towerInstance.SetLevel(1);
-            _context.FieldModel.AddTower(towerInstance, position);
+            _context.FieldModel.AddTower(towerInstance, (Hex2d)position);
             _constructingTowers.Add(positionHash, towerInstance);
 
             return towerInstance;
@@ -94,7 +94,7 @@ namespace Match.Field
 
         public void SetTowerUpgrading(TowerController tower)
         {
-            int positionHash = new Vector2Int(tower.CellPositionX, tower.CellPositionY).GetHashCode(_context.FieldModel.FieldWidth);
+            int positionHash = tower.HexPosition.GetHashCode();
             _context.FieldModel.UpgradeTower(tower);
             _constructingTowers.Add(positionHash, tower);
         }

@@ -48,7 +48,6 @@ namespace Match.Commands
             Hashtable startWaveSpawnProperties = new Hashtable
             {
                 {PhotonEventsConstants.StartWaveSpawn.DurationParam, builtWaveParams.Duration},
-                {PhotonEventsConstants.StartWaveSpawn.ArtifactsParam, builtWaveParams.AreArtifactsAvailable},
                 {PhotonEventsConstants.StartWaveSpawn.PauseBeforeWaveParam, builtWaveParams.PauseBeforeWave},
                 {PhotonEventsConstants.StartWaveSpawn.Player1WaveMobsIds, builtWaveParams.Player1MobsIdsNetwork},
                 {PhotonEventsConstants.StartWaveSpawn.Player1WaveMobsDelays, builtWaveParams.Player1MobsDelaysNetwork},

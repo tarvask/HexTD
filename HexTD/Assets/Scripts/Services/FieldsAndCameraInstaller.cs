@@ -10,53 +10,51 @@ namespace Services
             Transform ourFieldTransform, Transform enemyFieldTransform,
             SpriteRenderer enemyFieldBackground, SpriteRenderer ourFieldBackground,
             RectTransform ourFieldCanvasMarkerRect, RectTransform enemyFieldCanvasMarkerRect,
-            RectTransform middlePanelRect,
-            int fieldWidthInCells, int fieldHeightInCells)
+            RectTransform middlePanelRect)
         {
-            Rect screenRect = ((RectTransform) canvas.transform).rect;
-            Vector2 screenCenter = new Vector2(screenRect.width * 0.5f, screenRect.height * 0.5f);
-            float cameraPositionZ = -mainCamera.transform.localPosition.z;
-            
-            // convert 2 points of rectangle to world
-            // our field left bottom
-            Vector3 ourFieldLeftBottomCornerCanvasPosition =
-                (screenCenter + ourFieldCanvasMarkerRect.anchoredPosition + ourFieldCanvasMarkerRect.rect.min);
-            // enemy field right top
-            Vector3 enemyFieldRightTopCornerCanvasPosition =
-                (screenCenter + enemyFieldCanvasMarkerRect.anchoredPosition + enemyFieldCanvasMarkerRect.rect.max);
-
-            SetEnemyFieldPosition(canvas, ourFieldTransform, enemyFieldTransform,
-                ourFieldCanvasMarkerRect, enemyFieldCanvasMarkerRect, fieldWidthInCells, fieldHeightInCells);
-            
-            // set camera strictly to fields' superposition
-            Vector3 fieldsSuperWorldPosition =
-                (ourFieldTransform.localPosition - FieldPivotShift // real field rendering corner
-                    + enemyFieldTransform.localPosition + new Vector3(fieldWidthInCells, fieldHeightInCells) - FieldPivotShift) * 0.5f; // real field rendering corner
-            fieldsSuperWorldPosition = new Vector3(fieldsSuperWorldPosition.x, fieldsSuperWorldPosition.y, -cameraPositionZ);
-            mainCamera.transform.localPosition = fieldsSuperWorldPosition;
-            
-            // set enemy background to fields' superposition by its bottom edge
-            float enemyBackgroundPositionY = fieldsSuperWorldPosition.y + enemyFieldBackground.bounds.extents.y - enemyFieldTransform.localPosition.y;
-            enemyFieldBackground.transform.localPosition = new Vector3(enemyFieldBackground.transform.localPosition.x, enemyBackgroundPositionY);
-            
-            // set our background to fields' superposition by its top edge
-            float ourBackgroundPositionY = fieldsSuperWorldPosition.y - ourFieldBackground.bounds.extents.y - ourFieldTransform.localPosition.y;
-            ourFieldBackground.transform.localPosition = new Vector3(ourFieldBackground.transform.localPosition.x, ourBackgroundPositionY);
-            
-            SetCameraZoom(canvas, mainCamera,
-                ourFieldLeftBottomCornerCanvasPosition, enemyFieldRightTopCornerCanvasPosition, fieldWidthInCells);
-
-            SetCameraPosition(canvas, mainCamera, middlePanelRect, ref fieldsSuperWorldPosition);
-            
-            // clean up
-            ourFieldCanvasMarkerRect.gameObject.SetActive(false);
-            enemyFieldCanvasMarkerRect.gameObject.SetActive(false);
+            //Rect screenRect = ((RectTransform) canvas.transform).rect;
+            //Vector2 screenCenter = new Vector2(screenRect.width * 0.5f, screenRect.height * 0.5f);
+            //float cameraPositionZ = -mainCamera.transform.localPosition.z;
+            //
+            //// convert 2 points of rectangle to world
+            //// our field left bottom
+            //Vector3 ourFieldLeftBottomCornerCanvasPosition =
+            //    (screenCenter + ourFieldCanvasMarkerRect.anchoredPosition + ourFieldCanvasMarkerRect.rect.min);
+            //// enemy field right top
+            //Vector3 enemyFieldRightTopCornerCanvasPosition =
+            //    (screenCenter + enemyFieldCanvasMarkerRect.anchoredPosition + enemyFieldCanvasMarkerRect.rect.max);
+//
+            //SetEnemyFieldPosition(canvas, ourFieldTransform, enemyFieldTransform,
+            //    ourFieldCanvasMarkerRect, enemyFieldCanvasMarkerRect);
+            //
+            //// set camera strictly to fields' superposition
+            //Vector3 fieldsSuperWorldPosition =
+            //    (ourFieldTransform.localPosition - FieldPivotShift // real field rendering corner
+            //        + enemyFieldTransform.localPosition + new Vector3(fieldWidthInCells, fieldHeightInCells) - FieldPivotShift) * 0.5f; // real field rendering corner
+            //fieldsSuperWorldPosition = new Vector3(fieldsSuperWorldPosition.x, fieldsSuperWorldPosition.y, -cameraPositionZ);
+            //mainCamera.transform.localPosition = fieldsSuperWorldPosition;
+            //
+            //// set enemy background to fields' superposition by its bottom edge
+            //float enemyBackgroundPositionY = fieldsSuperWorldPosition.y + enemyFieldBackground.bounds.extents.y - enemyFieldTransform.localPosition.y;
+            //enemyFieldBackground.transform.localPosition = new Vector3(enemyFieldBackground.transform.localPosition.x, enemyBackgroundPositionY);
+            //
+            //// set our background to fields' superposition by its top edge
+            //float ourBackgroundPositionY = fieldsSuperWorldPosition.y - ourFieldBackground.bounds.extents.y - ourFieldTransform.localPosition.y;
+            //ourFieldBackground.transform.localPosition = new Vector3(ourFieldBackground.transform.localPosition.x, ourBackgroundPositionY);
+            //
+            //SetCameraZoom(canvas, mainCamera,
+            //    ourFieldLeftBottomCornerCanvasPosition, enemyFieldRightTopCornerCanvasPosition);
+//
+            //SetCameraPosition(canvas, mainCamera, middlePanelRect, ref fieldsSuperWorldPosition);
+            //
+            //// clean up
+            //ourFieldCanvasMarkerRect.gameObject.SetActive(false);
+            //enemyFieldCanvasMarkerRect.gameObject.SetActive(false);
         }
 
         private static void SetEnemyFieldPosition(Canvas canvas,
             Transform ourFieldTransform, Transform enemyFieldTransform,
-            RectTransform ourFieldCanvasMarkerRect, RectTransform enemyFieldCanvasMarkerRect,
-            int fieldWidthInCells, int fieldHeightInCells)
+            RectTransform ourFieldCanvasMarkerRect, RectTransform enemyFieldCanvasMarkerRect)
         {
             Rect screenRect = ((RectTransform) canvas.transform).rect;
             
@@ -84,8 +82,8 @@ namespace Services
                                                     ourFieldLeftBottomCornerCanvasPosition.y);
 
             // set enemy field position
-            float enemyFieldY = ourFieldTransform.localPosition.y + fieldWidthInCells / fieldWidthToFieldsWithGapRatio - fieldHeightInCells;
-            enemyFieldTransform.localPosition = new Vector3(ourFieldTransform.localPosition.x, enemyFieldY, 0);
+            //float enemyFieldY = ourFieldTransform.localPosition.y + fieldWidthInCells / fieldWidthToFieldsWithGapRatio - fieldHeightInCells;
+            //enemyFieldTransform.localPosition = new Vector3(ourFieldTransform.localPosition.x, enemyFieldY, 0);
         }
 
         private static void SetCameraZoom(Canvas canvas, Camera mainCamera,

@@ -1,4 +1,6 @@
 using System;
+using Configs.Constants;
+using MapEditor;
 using Tools;
 using UnityEngine;
 
@@ -23,32 +25,15 @@ namespace Match.Field
             _context = context;
         }
 
-        public GameObject GetGroundCell()
+        public HexObject GetCellByType(string hexTypeName)
         {
-            return _context.FieldConfig.GroundPrefab;
-        }
-
-        public GameObject GetCellByType(FieldCellType cellType)
-        {
-            switch (cellType)
+            switch (hexTypeName)
             {
-                case FieldCellType.Free:
-                    return _context.FieldConfig.FreeCellPrefab;
+                case HexTypeNameConstants.SimpleType:
+                    return _context.FieldConfig.HexagonPrefabConfig.SimpleHexObject;
                     
-                case FieldCellType.Road:
-                    return _context.FieldConfig.RoadCellPrefab;
-                
-                case FieldCellType.Unavailable:
-                    return _context.FieldConfig.UnavailableCellPrefab;
-                    
-                case FieldCellType.Blocker:
-                    return _context.FieldConfig.BlockerCellPrefab;
-                    
-                case FieldCellType.Tower:
-                    return _context.FieldConfig.TowerCellPrefab;
-                    
-                case FieldCellType.Castle:
-                    return _context.FieldConfig.CastleCellPrefab;
+                case HexTypeNameConstants.BridgeType:
+                    return _context.FieldConfig.HexagonPrefabConfig.BridgeHexObject;
             }
             
             throw new ArgumentException("Unknown or undefined cell type");

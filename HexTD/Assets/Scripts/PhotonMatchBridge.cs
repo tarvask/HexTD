@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ExitGames.Client.Photon;
+using MapEditor;
 using Match;
 using Match.Commands;
 using Match.EventBus;
+using Match.Field;
+using Match.Field.Hexagonal;
 using Match.Field.Tower;
 using Photon.Pun;
 using Photon.Realtime;
@@ -138,8 +141,18 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         PlayerHandParams playerHand = LoadPlayerHand();
 
         int levelIndexToPlay = Mathf.Clamp(PlayerPrefs.GetInt("Level", 0), 0, levelsConfig.Levels.Length - 1);
-            
-        MatchParameters matchParameters = new MatchParameters(levelsConfig.Levels[levelIndexToPlay], playerHand);
+
+        MapLoader loader = new MapLoader();
+        LevelMapModel mapModel = loader.Load();
+
+        FieldHex[] hexes = new FieldHex[mapModel.HexModels.Count];
+        for (int i = 0; i < hexes.Length; i++)
+            hexes[i] = new FieldHex(mapModel.HexModels[i], FieldHexType.Free);
+        
+        MatchParameters matchParameters = new MatchParameters(hexes, 
+            mapModel.PathDatas.ToArray(),
+            levelsConfig.Levels[levelIndexToPlay], playerHand);
+        
         _matchEngine = FindObjectOfType<TestMatchEngine>();
         _matchEngine.Init(matchParameters, _eventBus,
             _networkMatchStatus.CurrentProcessGameRoleReactiveProperty,

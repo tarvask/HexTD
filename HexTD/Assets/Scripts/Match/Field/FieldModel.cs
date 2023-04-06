@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
+using HexSystem;
 using Match.Field.Castle;
+using Match.Field.Hexagonal;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.Tower;
 using Match.Wave;
 using Tools;
 using UniRx;
-using UnityEngine;
 
 namespace Match.Field
 {
@@ -15,38 +16,25 @@ namespace Match.Field
     {
         public struct Context
         {
-            public int FieldWidth { get; }
-            public int FieldHeight { get; }
-            public FieldCellType[,] Cells { get; }
+            public HexagonalFieldController HexagonalFieldController { get; }
+            public TowersManager TowersManager { get; }
             public FieldFactory Factory { get; }
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
-            public ReactiveCommand<TowerController> TowerBuiltReactiveCommand { get; }
-            public ReactiveCommand<TowerController> TowerPreUpgradedReactiveCommand { get; }
-            public ReactiveCommand<TowerController> TowerUpgradedReactiveCommand { get; }
-            public ReactiveCommand<TowerController> TowerRemovedReactiveCommand { get; }
             public ReactiveCommand<MobController> MobSpawnedReactiveCommand { get; }
             public ReactiveProperty<bool> HasMobsOnFieldReactiveProperty { get; }
 
-            public Context(int fieldWidth, int fieldHeight, FieldCellType[,] cells,
+            public Context(HexagonalFieldController hexagonalFieldController,
+                TowersManager towersManager,
                 FieldFactory factory,
                 ReactiveCommand<MobController> removeMobReactiveCommand,
-                ReactiveCommand<TowerController> towerBuiltReactiveCommand,
-                ReactiveCommand<TowerController> towerPreUpgradedReactiveCommand,
-                ReactiveCommand<TowerController> towerUpgradedReactiveCommand,
-                ReactiveCommand<TowerController> towerRemovedReactiveCommand,
                 ReactiveCommand<MobController> mobSpawnedReactiveCommand,
                 ReactiveProperty<bool> hasMobsOnFieldReactiveProperty)
             {
-                FieldWidth = fieldWidth;
-                FieldHeight = fieldHeight;
-                Cells = cells;
+                HexagonalFieldController = hexagonalFieldController;
+                TowersManager = towersManager;
                 Factory = factory;
-
+                
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
-                TowerBuiltReactiveCommand = towerBuiltReactiveCommand;
-                TowerPreUpgradedReactiveCommand = towerPreUpgradedReactiveCommand;
-                TowerUpgradedReactiveCommand = towerUpgradedReactiveCommand;
-                TowerRemovedReactiveCommand = towerRemovedReactiveCommand;
                 MobSpawnedReactiveCommand = mobSpawnedReactiveCommand;
                 HasMobsOnFieldReactiveProperty = hasMobsOnFieldReactiveProperty;
             }
@@ -55,28 +43,21 @@ namespace Match.Field
         private readonly Context _context;
 
         // main state data
-        private readonly FieldCellType[,] _cells;
-        private readonly Dictionary<int, TowerController> _towers;
-        private readonly Dictionary<int, TowerController> _towersByPositions;
         private readonly CastleController _castle;
         private readonly Dictionary<int, MobController> _mobs;
         private readonly Dictionary<int, ProjectileController> _projectiles;
         private readonly Dictionary<int, int> _artifactsOnTowers;
         
         // supporting data
-        // road
-        private readonly List<Vector2Int> _roadCells;
-        // free, blockers, towers cells
-        private readonly List<Vector2Int> _playableCells;
         // objects that can be shot
         private Dictionary<int, IShootable> _shootables;
 
-        public int FieldWidth => _context.FieldWidth;
-        public FieldCellType[,] Cells => _cells;
+        public int HexGridSize => _context.HexagonalFieldController.HexGridSize;
+        
         // towers by ids
-        public Dictionary<int, TowerController> Towers => _towers;
+        public Dictionary<int, TowerController> Towers => _context.TowersManager.Towers;
         // towers by positions, it's convenient to use in building/upgrading/selling
-        public Dictionary<int, TowerController> TowersByPositions => _towersByPositions;
+        public Dictionary<int, TowerController> TowersByPositions => _context.TowersManager.TowersByPositions;
 
         // castle
         public CastleController Castle => _castle;
@@ -84,22 +65,12 @@ namespace Match.Field
         public Dictionary<int, MobController> Mobs => _mobs;
         // projectiles by ids
         public Dictionary<int, ProjectileController> Projectiles => _projectiles;
-        public List<Vector2Int> PlayableCells => _playableCells;
         public Dictionary<int, IShootable> Shootables => _shootables;
 
         public FieldModel(Context context)
         {
             _context = context;
 
-            _cells = new FieldCellType[_context.FieldHeight, _context.FieldWidth];
-            Array.Copy(_context.Cells, _cells, _context.FieldHeight * _context.FieldWidth);
-            ClearBlockers();
-
-            _roadCells = ExtractRoadCells();
-            _playableCells = ExtractPlayableCells();
-            
-            _towers = new Dictionary<int, TowerController>(_playableCells.Count);
-            _towersByPositions = new Dictionary<int, TowerController>(_playableCells.Count);
             _castle = AddDisposable(_context.Factory.CreateCastle());
             
             _mobs = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
@@ -109,106 +80,42 @@ namespace Match.Field
             _context.RemoveMobReactiveCommand.Subscribe(RemoveMob);
         }
 
-        // extractors
-        private List<Vector2Int> ExtractRoadCells()
-        {
-            List<Vector2Int> roadCells = new List<Vector2Int>(_context.FieldWidth * _context.FieldHeight);
-
-            for (int yCell = 0; yCell < _context.FieldHeight; yCell++)
-                for (int xCell = 0; xCell < _context.FieldWidth; xCell++)
-                    if (IsCellRoad(xCell, yCell))
-                        roadCells.Add(new Vector2Int(xCell, yCell));
-
-            return roadCells;
-        }
-        
-        private List<Vector2Int> ExtractPlayableCells()
-        {
-            List<Vector2Int> playableCells = new List<Vector2Int>(_context.FieldWidth * _context.FieldHeight);
-
-            for (int yCell = 0; yCell < _context.FieldHeight; yCell++)
-                for (int xCell = 0; xCell < _context.FieldWidth; xCell++)
-                    if (IsCellPlayable(xCell, yCell))
-                        playableCells.Add(new Vector2Int(xCell, yCell));
-            
-            return playableCells;
-        }
-
-        // checkers
-        private bool IsCellRoad(int xCell, int yCell)
-        {
-            return _cells[yCell, xCell] == FieldCellType.Road;
-        }
-        
-        private bool IsCellPlayable(int xCell, int yCell)
-        {
-            return _cells[yCell, xCell] == FieldCellType.Free
-                    || _cells[yCell, xCell] == FieldCellType.Blocker
-                    || _cells[yCell, xCell] == FieldCellType.Tower;
-        }
-
-        public bool IsCellNearRoad(Vector2Int cellPosition)
-        {
-            int leftRegionBorder = Mathf.Max(0, cellPosition.x - 1);
-            int rightRegionBorder = Mathf.Min(_context.FieldWidth - 1, cellPosition.x + 1);
-            int bottomRegionBorder = Mathf.Max(0, cellPosition.y - 1);
-            int topRegionBorder = Mathf.Min(_context.FieldHeight - 1, cellPosition.y + 1);
-
-            for (int yCellNumber = bottomRegionBorder; yCellNumber <= topRegionBorder; yCellNumber++)
-            {
-                for (int xCellNumber = leftRegionBorder; xCellNumber <= rightRegionBorder; xCellNumber++)
-                {
-                    if (_cells[yCellNumber, xCellNumber] == FieldCellType.Road)
-                        return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool IsCellBlockerToDrop(int xCell, int yCell)
-        {
-            return _cells[yCell, xCell] == FieldCellType.Blocker ||
-                   _cells[yCell, xCell] == FieldCellType.PossibleBlocker;
-        }
-
-        private void ClearBlockers()
-        {
-            for (int yCell = 0; yCell < _context.FieldHeight; yCell++)
-                for (int xCell = 0; xCell < _context.FieldWidth; xCell++)
-                    if (IsCellBlockerToDrop(xCell, yCell))
-                        _cells[yCell, xCell] = FieldCellType.Free;
-        }
-
         public void RestoreCells()
         {
             // back to start state
-            Array.Copy(_context.Cells, _cells, _context.FieldHeight * _context.FieldWidth);
+            _context.HexagonalFieldController.Reset();
         }
 
-        public void AddTower(TowerController tower, Vector2Int position)
+        public FieldHex GetFieldHex(Hex2d position)
         {
-            _cells[position.y, position.x] = FieldCellType.Tower;
-            _towers.Add(tower.Id, tower);
-            _towersByPositions.Add(position.GetHashCode(_context.FieldWidth), tower);
+            return _context.HexagonalFieldController[position];
+        }
 
-            _context.TowerBuiltReactiveCommand.Execute(tower);
+        public bool IsHexWithType(Hex2d position, FieldHexType checkedType)
+        {
+            FieldHex fieldHex = _context.HexagonalFieldController[position];
+            return fieldHex.FieldHexType == checkedType;
+        }
+
+        public void AddTower(TowerController tower, Hex2d position)
+        {
+            if(!_context.HexagonalFieldController.TryAddTower(position))
+                return;
+            
+            _context.TowersManager.AddTower(tower, position);
         }
 
         public void UpgradeTower(TowerController tower)
         {
-            _context.TowerPreUpgradedReactiveCommand.Execute(tower);
-            tower.Upgrade();
-            _context.TowerUpgradedReactiveCommand.Execute(tower);
+            _context.TowersManager.UpgradeTower(tower);
         }
 
         public void RemoveTower(int positionHash, TowerController removingTower)
         {
-            _cells[positionHash / _context.FieldWidth, positionHash % _context.FieldWidth] = FieldCellType.Free;
-            _towers.Remove(removingTower.Id);
-            _towersByPositions.Remove(positionHash);
-
-            _context.TowerRemovedReactiveCommand.Execute(removingTower);
+            if(!_context.HexagonalFieldController.TryRemoveTower(positionHash))
+                return;
+            
+            
             removingTower.Dispose();
         }
 

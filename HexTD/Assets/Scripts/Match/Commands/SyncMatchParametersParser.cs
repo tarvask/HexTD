@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
+using HexSystem;
 using Match.Field;
+using Match.Field.Hexagonal;
 using Match.Field.Tower;
 using Match.Wave;
 
@@ -50,7 +52,6 @@ namespace Match.Commands
                 float duration = (float)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.DurationParam];
                 float spawnPauseMin = (float)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.SpawnPauseMinParam];
                 float spawnPauseMax = (float)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.SpawnPauseMaxParam];
-                bool artifacts = (bool)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.ArtifactsParam];
                 float pauseBeforeWave = (float)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.PauseBeforeWaveParam];
                 byte[] mobsIdsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.Wave.MobsIdsParam];
                 byte[] mobsCountsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.Wave.MobsCountsParam];
@@ -60,16 +61,18 @@ namespace Match.Commands
                     waveElementChances[elementIndex] =
                         new WaveElementChance(mobsIdsBytes[elementIndex], mobsCountsBytes[elementIndex]);
                 
-                waves[currentWaveNumber] = new WaveParams(size, duration, spawnPauseMin, spawnPauseMax, artifacts, pauseBeforeWave, waveElementChances);
+                waves[currentWaveNumber] = new WaveParams(size, duration, spawnPauseMin, spawnPauseMax, pauseBeforeWave, waveElementChances);
             }
 
             // cells
             byte[] cellsBytes = (byte[])parametersTable[PhotonEventsConstants.SyncMatch.MatchConfigFieldParam];
-            FieldCellType[] cells = new FieldCellType[MatchShortParameters.FieldHeight * MatchShortParameters.FieldWidth];
+            FieldHex[] cells = new FieldHex[cellsBytes.Length];
 
             for (int cellIndex = 0; cellIndex < cellsBytes.Length; cellIndex++)
             {
-                cells[cellIndex] = (FieldCellType)cellsBytes[cellIndex];
+                HexModel hexModel = new HexModel(new Hex2d(), 0);
+                FieldHex hex = new FieldHex(hexModel, (FieldHexType)cellsBytes[cellIndex]);
+                cells[cellIndex] = hex;
             }
             
             // silver coins

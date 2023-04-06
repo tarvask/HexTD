@@ -183,24 +183,24 @@ namespace Match.Field.State
         public readonly struct TowerState
         {
             private readonly int _id;
-            private readonly byte _xPosition;
-            private readonly byte _yPosition;
+            private readonly byte _qPosition;
+            private readonly byte _rPosition;
             private readonly TowerType _type;
             private readonly byte _level;
             private readonly int _constructionTime;
 
             public int Id => _id;
-            public byte PositionX => _xPosition;
-            public byte PositionY => _yPosition;
+            public byte PositionQ => _qPosition;
+            public byte PositionR => _rPosition;
             public TowerType Type => _type;
             public byte Level => _level;
             public int ConstructionTime => _constructionTime;
 
-            public TowerState(int id, byte xPosition, byte yPosition, TowerType type, byte level, int constructionTime)
+            public TowerState(int id, byte qPosition, byte rPosition, TowerType type, byte level, int constructionTime)
             {
                 _id = id;
-                _xPosition = xPosition;
-                _yPosition = yPosition;
+                _qPosition = qPosition;
+                _rPosition = rPosition;
                 _type = type;
                 _level = level;
                 _constructionTime = constructionTime;
@@ -209,8 +209,8 @@ namespace Match.Field.State
             public static TowerState TowerFromHashtable(Hashtable towerHashtable)
             {
                 int id = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerIdParam];
-                byte xPosition = (byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.PositionXParam];
-                byte yPosition = (byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.PositionYParam];
+                byte xPosition = (byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.PositionQParam];
+                byte yPosition = (byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.PositionRParam];
                 TowerType type = (TowerType)(byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTypeParam];
                 byte level = (byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerLevelParam];
                 int constructionTime = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerConstructionTimeParam];
@@ -223,8 +223,8 @@ namespace Match.Field.State
                 return new Hashtable
                 {
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerIdParam, towersState.Id},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionXParam, towersState.PositionX},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionYParam, towersState.PositionY},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionQParam, towersState.PositionQ},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionRParam, towersState.PositionR},
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTypeParam, (byte)towersState.Type},
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerLevelParam, towersState.Level},
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerConstructionTimeParam, towersState.ConstructionTime},

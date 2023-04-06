@@ -5,6 +5,8 @@ using UnityEngine;
 
 namespace Match.Field.Services
 {
+    //TODO: rewrite for hex pathfinder based on points from MapEditor
+    /*
     public static class RoadWayPointsFinder
     {
         public static Vector3[] GetWaypointsFromField(FieldCellType[,] cells)
@@ -243,4 +245,5 @@ namespace Match.Field.Services
             return new Vector3(point.x, point.y);
         }
     }
+    */
 }

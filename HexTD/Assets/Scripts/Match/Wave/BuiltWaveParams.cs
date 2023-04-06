@@ -7,13 +7,11 @@ namespace Match.Wave
         private readonly List<WaveElementDelay> _player1MobsAndDelays;
         private readonly List<WaveElementDelay> _player2MobsAndDelays;
         private readonly float _duration;
-        private readonly bool _areArtifactsAvailable;
         private readonly float _pauseBeforeWave;
 
         public List<WaveElementDelay> Player1MobsAndDelays => _player1MobsAndDelays;
         public List<WaveElementDelay> Player2MobsAndDelays => _player2MobsAndDelays;
         public float Duration => _duration;
-        public bool AreArtifactsAvailable => _areArtifactsAvailable;
         public float PauseBeforeWave => _pauseBeforeWave;
         
         // network stuff
@@ -80,13 +78,11 @@ namespace Match.Wave
         public BuiltWaveParams(
             List<WaveElementDelay> player1MobsAndDelaysParam, List<WaveElementDelay> player2MobsAndDelaysParam,
             float durationParam,
-            bool areArtifactsAvailableParam,
             float pauseBeforeWaveParam)
         {
             _player1MobsAndDelays = player1MobsAndDelaysParam;
             _player2MobsAndDelays = player2MobsAndDelaysParam;
             _duration = durationParam;
-            _areArtifactsAvailable = areArtifactsAvailableParam;
             _pauseBeforeWave = pauseBeforeWaveParam;
         }
     }

@@ -1,5 +1,8 @@
+using HexSystem;
 using Match.Field;
+using Match.Field.Hexagonal;
 using Match.Wave;
+using PathSystem;
 
 namespace Match
 {
@@ -9,16 +12,16 @@ namespace Match
         
         public WaveParams[] Waves => _waves;
 
-        public MatchParameters(MatchConfig config, PlayerHandParams handParams)
-            : base(config.Cells,
-                config.SilverCoinsCount, handParams)
+        public MatchParameters(FieldHex[] hexModels, PathData.SavePathData[] paths, MatchConfig config, PlayerHandParams handParams)
+            : base(hexModels, paths, config.SilverCoinsCount, handParams)
         {
             _waves = config.Waves;
         }
 
-        public MatchParameters(WaveParams[] waves, FieldCellType[] cells,
+        public MatchParameters(WaveParams[] waves, 
+            FieldHex[] hexTypes,
             int silverCoinsCount,
-            PlayerHandParams handParams) : base(cells, silverCoinsCount, handParams)
+            PlayerHandParams handParams) : base(hexTypes, null, silverCoinsCount, handParams)
         {
             _waves = waves;
         }

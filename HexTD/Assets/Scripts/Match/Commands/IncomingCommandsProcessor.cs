@@ -1,3 +1,4 @@
+using HexSystem;
 using Match.Field.Tower;
 using Match.State;
 using Match.Wave;
@@ -46,7 +47,7 @@ namespace Match.Commands
             _context.IncomingCommandsCommon.ApplySyncState.Fire(matchState, timestamp);
         }
 
-        public void BuildTower(ProcessRoles senderRole, Vector2Int buildPosition, TowerShortParams towerShortParams, int timestamp)
+        public void BuildTower(ProcessRoles senderRole, Hex2d buildPosition, TowerShortParams towerShortParams, int timestamp)
         {
             if (senderRole == _context.OurRoleReactiveProperty.Value)
                 _context.IncomingCommandsOur.ApplyBuildTower.Fire(buildPosition, towerShortParams);
@@ -54,7 +55,7 @@ namespace Match.Commands
                 _context.IncomingCommandsEnemy.ApplyBuildTower.Fire(buildPosition, towerShortParams);
         }
         
-        public void UpgradeTower(ProcessRoles senderRole, Vector2Int buildPosition, TowerShortParams towerShortParams, int timestamp)
+        public void UpgradeTower(ProcessRoles senderRole, Hex2d buildPosition, TowerShortParams towerShortParams, int timestamp)
         {
             if (senderRole == _context.OurRoleReactiveProperty.Value)
                 _context.IncomingCommandsOur.ApplyUpgradeTower.Fire(buildPosition, towerShortParams);
@@ -62,7 +63,7 @@ namespace Match.Commands
                 _context.IncomingCommandsEnemy.ApplyUpgradeTower.Fire(buildPosition, towerShortParams);
         }
 
-        public void SellTower(ProcessRoles senderRole, Vector2Int buildPosition, TowerShortParams towerShortParams, int timestamp)
+        public void SellTower(ProcessRoles senderRole, Hex2d buildPosition, TowerShortParams towerShortParams, int timestamp)
         {
             if (senderRole == _context.OurRoleReactiveProperty.Value)
                 _context.IncomingCommandsOur.ApplySellTower.Fire(buildPosition, towerShortParams);

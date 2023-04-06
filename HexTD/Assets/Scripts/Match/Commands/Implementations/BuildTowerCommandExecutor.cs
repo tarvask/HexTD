@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using ExitGames.Client.Photon;
+using HexSystem;
 using Match.Field.Tower;
 using UnityEngine;
 
@@ -24,11 +25,11 @@ namespace Match.Commands.Implementations
             protected struct Parameters
             {
                 public ProcessRoles SenderRole { get; }
-                public Vector2Int TowerPosition { get; }
+                public Hex2d TowerPosition { get; }
                 public TowerShortParams TowerConfig { get; }
                 public int TimeStamp { get; }
 
-                public Parameters(ProcessRoles senderRole, Vector2Int towerPosition,
+                public Parameters(ProcessRoles senderRole, Hex2d towerPosition,
                     TowerShortParams towerConfig, int timeStamp)
                 {
                     SenderRole = senderRole;
@@ -42,9 +43,9 @@ namespace Match.Commands.Implementations
 
             protected Parameters ExtractParameters(Hashtable commandParametersTable)
             {
-                Vector2Int towerPosition = new Vector2Int 
-                ((byte)commandParametersTable[PhotonEventsConstants.BuildTower.PositionXParam],
-                    (byte)commandParametersTable[PhotonEventsConstants.BuildTower.PositionYParam]);
+                Hex2d towerPosition = new Hex2d 
+                ((byte)commandParametersTable[PhotonEventsConstants.BuildTower.PositionQParam],
+                    (byte)commandParametersTable[PhotonEventsConstants.BuildTower.PositionRParam]);
                 TowerShortParams towerConfig = new TowerShortParams((TowerType)(byte)commandParametersTable[PhotonEventsConstants.BuildTower.TowerTypeParam],
                     (int)commandParametersTable[PhotonEventsConstants.BuildTower.TowerLevelParam]);
                 bool isFree = (bool)commandParametersTable[PhotonEventsConstants.BuildTower.IsFreeParam];

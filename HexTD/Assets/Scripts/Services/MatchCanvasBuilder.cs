@@ -30,10 +30,10 @@ namespace Services
         public RectTransform EnemyField => topField;
         public RectTransform MiddlePanel => middlePanel;
 
-        public void Process(int fieldWidthInCells, int fieldHeightInCells)
+        public void Process()
         {
-            if (fieldWidthInCells == 0 || fieldHeightInCells == 0)
-                return;
+            int fieldWidthInCells = 10;
+            int fieldHeightInCells = 10;
 
             // find right field size
             Rect screenRect = ((RectTransform) canvas.transform).rect;

@@ -22,17 +22,6 @@ namespace HexSystem
             Data = new Dictionary<string, string>(parameters);
         }
 
-        public HexModel(Hex2d position, int height, params (string, string)[] parameters)
-        {
-            Position = position;
-            Height = height;
-            Data = new Dictionary<string, string>();
-            foreach (var parameter in parameters)
-            {
-                Data.Add(parameter.Item1, parameter.Item2);
-            }
-        }
-
         public HexModel(Hex2d position, int height, List<(string, string)> parameters)
         {
             Position = position;
