@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using HexSystem;
 using Match.Field.Buff;
 using Match.Field.Mob;
 using Match.Field.Shooting;
@@ -19,21 +20,21 @@ namespace Match.Field.Tower
         public struct Context
         {
             public int Id { get; }
+            public Hex2d Position { get; }
             public TowerParameters Parameters { get; }
             public TowerView View { get; }
             public Sprite Icon { get; }
             public int TowerRemovingDuration { get; }
-            public bool IsCellNearRoad { get; }
 
-            public Context(int id, TowerParameters parameters, TowerView view, Sprite icon,
-                int towerRemovingDuration, bool isCellNearRoad)
+            public Context(int id, Hex2d position, TowerParameters parameters, 
+                TowerView view, Sprite icon, int towerRemovingDuration)
             {
                 Id = id;
                 Parameters = parameters;
                 View = view;
                 Icon = icon;
+                Position = position;
                 TowerRemovingDuration = towerRemovingDuration;
-                IsCellNearRoad = isCellNearRoad;
             }
         }
 
@@ -56,6 +57,7 @@ namespace Match.Field.Tower
         private Vector3 Position => _context.View.transform.localPosition;
 
         public int Id => _context.Id;
+        public Hex2d HexPosition => _context.Position;
         public bool IsReadyToShoot => _stableModel.ShootingTimer >= CurrentReloadTime;
         public bool HasTarget => _stableModel.TargetId > 0;
         public int TargetId => _stableModel.TargetId;
@@ -72,8 +74,6 @@ namespace Match.Field.Tower
         public List<AbstractBuffParameters> MobsBuffs => _activeAbilities;
         public List<AbstractBuffParameters> BuffsForNeighbouringTowers => _towersInAreaAbilities;
         public Dictionary<int, AbstractBuffModel> Buffs => _buffsManager.Buffs;
-        public int CellPositionX => Mathf.RoundToInt(Position.x);
-        public int CellPositionY => Mathf.RoundToInt(Position.y);
         public ProjectileView ProjectilePrefab => CurrentLevel.ProjectilePrefab;
         public Sprite Icon => _context.Icon;
 
@@ -307,7 +307,8 @@ namespace Match.Field.Tower
 
         public PlayerState.TowerState GetTowerState()
         {
-            return new PlayerState.TowerState(_context.Id, (byte)CellPositionX, (byte)CellPositionY,
+            return new PlayerState.TowerState(_context.Id, 
+                (byte)_context.Position.Q, (byte)_context.Position.R,
                 _context.Parameters.RegularParameters.Data.TowerType,
                 (byte)_stableModel.Level,
                 // save remaining time

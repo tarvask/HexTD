@@ -1,4 +1,5 @@
 using ExitGames.Client.Photon;
+using HexSystem;
 using Match.EventBus;
 using Match.Field.Tower;
 using Tools;
@@ -37,13 +38,13 @@ namespace Match.Commands
             _context.OutgoingCommands.RequestSellTower.Subscribe(RequestSellTower);
         }
 
-        private void RequestBuildTower(Vector2Int buildPosition, TowerShortParams towerShortParams)
+        private void RequestBuildTower(Hex2d buildPosition, TowerShortParams towerShortParams)
         {
             Hashtable requestBuildTowerProperties = new Hashtable
             {
                 {PhotonEventsConstants.BuildTower.RoleParam, (byte)_context.OurRoleReactiveProperty.Value},
-                {PhotonEventsConstants.BuildTower.PositionXParam, (byte)buildPosition.x},
-                {PhotonEventsConstants.BuildTower.PositionYParam, (byte)buildPosition.y},
+                {PhotonEventsConstants.BuildTower.PositionQParam, (byte)buildPosition.Q},
+                {PhotonEventsConstants.BuildTower.PositionRParam, (byte)buildPosition.R},
                 {PhotonEventsConstants.BuildTower.TowerTypeParam, (byte)towerShortParams.TowerType},
                 {PhotonEventsConstants.BuildTower.TowerLevelParam, towerShortParams.Level},
                 {PhotonEventsConstants.BuildTower.TimeParam, _context.TestMatchEngine.CurrentEngineFrameReactiveProperty.Value}
@@ -51,13 +52,13 @@ namespace Match.Commands
             _context.EventBus.RaiseEvent(PhotonEventsConstants.BuildTower.RequestEventId, requestBuildTowerProperties);
         }
         
-        private void RequestUpgradeTower(Vector2Int upgradePosition, TowerShortParams towerShortParams)
+        private void RequestUpgradeTower(Hex2d upgradePosition, TowerShortParams towerShortParams)
         {
             Hashtable requestUpgradeTowerProperties = new Hashtable
             {
                 {PhotonEventsConstants.UpgradeTower.RoleParam, (byte)_context.OurRoleReactiveProperty.Value},
-                {PhotonEventsConstants.UpgradeTower.PositionXParam, (byte)upgradePosition.x},
-                {PhotonEventsConstants.UpgradeTower.PositionYParam, (byte)upgradePosition.y},
+                {PhotonEventsConstants.BuildTower.PositionQParam, (byte)upgradePosition.Q},
+                {PhotonEventsConstants.BuildTower.PositionRParam, (byte)upgradePosition.R},
                 {PhotonEventsConstants.UpgradeTower.TowerTypeParam, (byte)towerShortParams.TowerType},
                 {PhotonEventsConstants.UpgradeTower.TowerLevelParam, towerShortParams.Level},
                 {PhotonEventsConstants.UpgradeTower.TimeParam, _context.TestMatchEngine.CurrentEngineFrameReactiveProperty.Value}
@@ -65,13 +66,13 @@ namespace Match.Commands
             _context.EventBus.RaiseEvent(PhotonEventsConstants.UpgradeTower.RequestEventId, requestUpgradeTowerProperties);
         }
 
-        private void RequestSellTower(Vector2Int sellPosition, TowerShortParams towerShortParams)
+        private void RequestSellTower(Hex2d sellPosition, TowerShortParams towerShortParams)
         {
             Hashtable requestUpgradeTowerProperties = new Hashtable
             {
                 {PhotonEventsConstants.SellTower.RoleParam, (byte)_context.OurRoleReactiveProperty.Value},
-                {PhotonEventsConstants.SellTower.PositionXParam, (byte)sellPosition.x},
-                {PhotonEventsConstants.SellTower.PositionYParam, (byte)sellPosition.y},
+                {PhotonEventsConstants.BuildTower.PositionQParam, (byte)sellPosition.Q},
+                {PhotonEventsConstants.BuildTower.PositionRParam, (byte)sellPosition.R},
                 {PhotonEventsConstants.SellTower.TowerTypeParam, (byte)towerShortParams.TowerType},
                 {PhotonEventsConstants.SellTower.TowerLevelParam, towerShortParams.Level},
                 {PhotonEventsConstants.SellTower.TimeParam, _context.TestMatchEngine.CurrentEngineFrameReactiveProperty.Value}

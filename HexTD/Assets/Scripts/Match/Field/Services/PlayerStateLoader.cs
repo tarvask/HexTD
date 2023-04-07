@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using HexSystem;
 using Match.Field.Currency;
 using Match.Field.Mob;
 using Match.Field.Shooting;
@@ -18,20 +19,17 @@ namespace Match.Field.Services
             public TowerConfigRetriever TowerConfigRetriever { get; }
             public MobConfigRetriever MobConfigRetriever { get; }
             public CurrencyController CurrencyController { get; }
-            public Vector3[] WayPoints { get; }
 
             public Context(FieldModel fieldModel, FieldFactory fieldFactory,
                 TowerConfigRetriever towerConfigRetriever,
                 MobConfigRetriever mobConfigRetriever,
-                CurrencyController currencyController,
-                Vector3[] wayPoints)
+                CurrencyController currencyController)
             {
                 FieldModel = fieldModel;
                 FieldFactory = fieldFactory;
                 TowerConfigRetriever = towerConfigRetriever;
                 MobConfigRetriever = mobConfigRetriever;
                 CurrencyController = currencyController;
-                WayPoints = wayPoints;
             }
         }
 
@@ -65,13 +63,12 @@ namespace Match.Field.Services
                 ref readonly PlayerState.TowerState towerState = ref playerState.Towers.Towers[towerIndex];
                 
                 TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerState.Type);
-                Vector2Int towerPosition = new Vector2Int(towerState.PositionX, towerState.PositionY);
+                Hex2d towerHexPosition = new Hex2d(towerState.PositionQ, towerState.PositionR);
                 TowerController towerController = _context.FieldFactory.CreateTowerWithId(towerConfig,
-                    towerState.PositionX, towerState.PositionY, towerState.Id,
-                    _context.FieldModel.IsCellNearRoad(towerPosition));
+                    towerHexPosition, towerState.Id);
                 towerController.LoadState(towerState);
 
-                _context.FieldModel.AddTower(towerController, towerPosition);
+                _context.FieldModel.AddTower(towerController, towerHexPosition);
             }
 
             // mobs
@@ -80,10 +77,10 @@ namespace Match.Field.Services
                 ref readonly PlayerState.MobState mobState = ref playerState.Mobs.Mobs[mobIndex];
                 
                 MobConfig mobConfig = _context.MobConfigRetriever.GetMobById(mobState.TypeId);
-                Vector3 mobPosition = new Vector3(mobState.PositionX, mobState.PositionY);
+                Vector2 mobPosition = new Vector2(mobState.PositionX, mobState.PositionY);
                 MobController mobController = _context.FieldFactory.CreateMobWithId(mobConfig,
                     mobState.Id, mobState.TargetId,
-                    mobPosition, _context.WayPoints);
+                    mobPosition);
                 mobController.LoadState(mobState);
                 
                 _context.FieldModel.AddMob(mobController);

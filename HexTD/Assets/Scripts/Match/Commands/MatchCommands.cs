@@ -1,3 +1,4 @@
+using HexSystem;
 using Match.Field.Tower;
 using Tools;
 using UnityEngine;
@@ -8,29 +9,29 @@ namespace Match.Commands
     {
         public class OutgoingCommands : BaseDisposable
         {
-            public ObservableEvent<Vector2Int, TowerShortParams> RequestBuildTower { get; }
-            public ObservableEvent<Vector2Int, TowerShortParams> RequestUpgradeTower { get; }
-            public ObservableEvent<Vector2Int, TowerShortParams> RequestSellTower { get; }
+            public ObservableEvent<Hex2d, TowerShortParams> RequestBuildTower { get; }
+            public ObservableEvent<Hex2d, TowerShortParams> RequestUpgradeTower { get; }
+            public ObservableEvent<Hex2d, TowerShortParams> RequestSellTower { get; }
 
             public OutgoingCommands()
             {
-                RequestBuildTower = AddDisposable(new ObservableEvent<Vector2Int, TowerShortParams>());
-                RequestUpgradeTower = AddDisposable(new ObservableEvent<Vector2Int, TowerShortParams>());
-                RequestSellTower = AddDisposable(new ObservableEvent<Vector2Int, TowerShortParams>());
+                RequestBuildTower = AddDisposable(new ObservableEvent<Hex2d, TowerShortParams>());
+                RequestUpgradeTower = AddDisposable(new ObservableEvent<Hex2d, TowerShortParams>());
+                RequestSellTower = AddDisposable(new ObservableEvent<Hex2d, TowerShortParams>());
             }
         }
         
         public class IncomingCommands : BaseDisposable
         {
-            public ObservableEvent<Vector2Int, TowerShortParams> ApplyBuildTower { get; }
-            public ObservableEvent<Vector2Int, TowerShortParams> ApplyUpgradeTower { get; }
-            public ObservableEvent<Vector2Int, TowerShortParams> ApplySellTower { get; }
+            public ObservableEvent<Hex2d, TowerShortParams> ApplyBuildTower { get; }
+            public ObservableEvent<Hex2d, TowerShortParams> ApplyUpgradeTower { get; }
+            public ObservableEvent<Hex2d, TowerShortParams> ApplySellTower { get; }
 
             public IncomingCommands()
             {
-                ApplyBuildTower = AddDisposable(new ObservableEvent<Vector2Int, TowerShortParams>());
-                ApplyUpgradeTower = AddDisposable(new ObservableEvent<Vector2Int, TowerShortParams>());
-                ApplySellTower = AddDisposable(new ObservableEvent<Vector2Int, TowerShortParams>());
+                ApplyBuildTower = AddDisposable(new ObservableEvent<Hex2d, TowerShortParams>());
+                ApplyUpgradeTower = AddDisposable(new ObservableEvent<Hex2d, TowerShortParams>());
+                ApplySellTower = AddDisposable(new ObservableEvent<Hex2d, TowerShortParams>());
             }
         }
 

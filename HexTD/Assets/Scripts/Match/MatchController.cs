@@ -1,4 +1,5 @@
 using System;
+using HexSystem;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
@@ -7,7 +8,6 @@ using Match.Field.State;
 using Match.Field.Tower;
 using Match.State;
 using Match.Wave;
-using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -87,18 +87,11 @@ namespace Match
             _context = context;
             
             _context.MatchView.CanvasFitter.Process();
-            _context.MatchView.CanvasBuilder.Process(_context.FieldConfig.FieldWidthInCells, _context.FieldConfig.FieldHeightInCells);
-            FieldsAndCameraInstaller.InstallFieldsByMarkerRects(_context.MatchView.Canvas, _context.MatchView.MainCamera,
-                _context.MatchView.OurFieldView.transform, _context.MatchView.EnemyFieldView.transform,
-                _context.MatchView.EnemyFieldView.Background, _context.MatchView.OurFieldView.Background,
-                _context.MatchView.CanvasBuilder.OurField, _context.MatchView.CanvasBuilder.EnemyField,
-                _context.MatchView.CanvasBuilder.MiddlePanel,
-                _context.FieldConfig.FieldWidthInCells, _context.FieldConfig.FieldHeightInCells);
             
             _enemyStateSyncedReactiveCommand = AddDisposable(new ReactiveCommand<PlayerState>());
             _ourStateSyncedReactiveCommand = AddDisposable(new ReactiveCommand<PlayerState>());
             
-            ReactiveCommand<Vector2> clickReactiveCommand = AddDisposable(new ReactiveCommand<Vector2>());
+            ReactiveCommand<Hex2d> clickReactiveCommand = AddDisposable(new ReactiveCommand<Hex2d>());
             ReactiveCommand<float> matchStartedReactiveCommand = AddDisposable(new ReactiveCommand<float>());
             ReactiveCommand<float> waveStartedReactiveCommand = AddDisposable(new ReactiveCommand<float>());
             ReactiveCommand waveEndedReactiveCommand = AddDisposable(new ReactiveCommand());
@@ -136,13 +129,10 @@ namespace Match
             
             // windows
             WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
-                _context.FieldConfig.FieldWidthInCells,
                 _context.MatchView.MatchUiViews, _context.MatchView.MainCamera, _context.MatchView.Canvas,
                 _towerConfigRetriever, _mobConfigRetriever,
                 _context.MatchShortParameters.HandParams,
                 waves,
-                _context.MatchView.CanvasBuilder.OurField,
-                _context.FieldConfig.ReinforcementsSize,
                 
                 _context.IsConnectedReactiveProperty,
                 enemyCastleHealthChangedReactiveCommand,
@@ -160,7 +150,6 @@ namespace Match
 
             // fields
             FieldController.Context enemyFieldContext = new FieldController.Context(_context.MatchView.EnemyFieldView,
-                _context.MatchView.InputAreaInWorld.AreaRect.min,
                 _context.MatchShortParameters, _context.FieldConfig,
                 _configCellsRetriever, _towerConfigRetriever, _mobConfigRetriever,
                 false,
@@ -170,7 +159,8 @@ namespace Match
                 _windowsManager.TowerInfoWindowController,
                 _windowsManager.MobInfoWindowController,
                 
-                _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, clickReactiveCommand, _enemyStateSyncedReactiveCommand,
+                _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, 
+                clickReactiveCommand, _enemyStateSyncedReactiveCommand,
                 spawnEnemyMobReactiveCommand,
                 hasMobsOnEnemyField,
                 waveNumberChangedReactiveCommand,
@@ -183,7 +173,6 @@ namespace Match
                 enemyCrystalsCountChangedReactiveCommand);
 
             FieldController.Context ourFieldContext = new FieldController.Context(_context.MatchView.OurFieldView,
-                _context.MatchView.InputAreaInWorld.AreaRect.min,
                 _context.MatchShortParameters, _context.FieldConfig,
                 _configCellsRetriever, _towerConfigRetriever, _mobConfigRetriever,
                 true,
@@ -227,9 +216,6 @@ namespace Match
                 player2MatchCommands = _context.MatchCommandsOur;
             }
             
-            _player1FieldController.LateInit(new FieldController.LateInitContext(_player2FieldController.FieldModel));
-            _player2FieldController.LateInit(new FieldController.LateInitContext(_player1FieldController.FieldModel));
-
             // wave mob spawner
             WaveMobSpawnerCoordinator.Context waveMobSpawnerContext = new WaveMobSpawnerCoordinator.Context(_mobConfigRetriever,
                 _context.FieldConfig,
@@ -261,8 +247,12 @@ namespace Match
             _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
 
             // input
+            Layout layout = new Layout(_context.FieldConfig.HexSettingsConfig.HexSize,
+                Vector3.zero, _context.FieldConfig.HexSettingsConfig.IsFlat);
+            HexInteractService hexInteractService = new HexInteractService(layout, _context.MatchView.MainCamera);
+            
             InputController.Context inputControllerContext = new InputController.Context(
-                _context.MatchView.MainCamera, _context.MatchView.InputAreaInWorld, clickReactiveCommand,
+                hexInteractService, clickReactiveCommand,
                 _windowsManager.OpenWindowsCountReactiveProperty);
             _inputController = AddDisposable(new InputController(inputControllerContext));
             
@@ -280,7 +270,7 @@ namespace Match
             _context.MatchCommandsCommon.IncomingGeneral.ApplySyncState.Subscribe(SyncState);
 
             _context.RollbackStateReactiveCommand.Subscribe(RollbackState);
-        }
+        }        
 
         private void SendState()
         {

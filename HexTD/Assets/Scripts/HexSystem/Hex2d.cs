@@ -35,11 +35,7 @@ namespace HexSystem
 
 		public override int GetHashCode()
 		{
-			int num1 = Q;
-			int hashCode = num1.GetHashCode();
-			num1 = R;
-			int num2 = num1.GetHashCode() << 2;
-			return hashCode ^ num2;
+			return Q << 8 | R;
 		}
 
 		public static explicit operator Hex2d(Hex3d x) => new Hex2d(x.Q, x.R);

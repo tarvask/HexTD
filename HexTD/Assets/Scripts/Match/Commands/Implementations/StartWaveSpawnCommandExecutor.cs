@@ -40,7 +40,6 @@ namespace Match.Commands.Implementations
             protected Parameters ExtractParameters(Hashtable commandParametersTable)
             {
                 float waveDuration = (float)commandParametersTable[PhotonEventsConstants.StartWaveSpawn.DurationParam];
-                bool artifacts = (bool)commandParametersTable[PhotonEventsConstants.StartWaveSpawn.ArtifactsParam];
                 float pauseBeforeWave = (float) commandParametersTable[PhotonEventsConstants.StartWaveSpawn.PauseBeforeWaveParam];
 
                 // mobs and delays
@@ -68,7 +67,7 @@ namespace Match.Commands.Implementations
                 int timeStamp = (int)commandParametersTable[PhotonEventsConstants.StartWaveSpawn.TimeParam];
                 BuiltWaveParams spawnWaveParams = new BuiltWaveParams(
                     player1MobsAndDelays, player2MobsAndDelays,
-                    waveDuration, artifacts, pauseBeforeWave);
+                    waveDuration, pauseBeforeWave);
                 
                 return new Parameters(spawnWaveParams, randomSeed, timeStamp);
             }

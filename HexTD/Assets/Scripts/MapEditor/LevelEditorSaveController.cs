@@ -9,25 +9,13 @@ namespace MapEditor
 {
 	public class LevelEditorSaveController
 	{
-		private static readonly string FileName = "LevelMap.txt";
-
-		private static readonly SupportedFileType LevelMapFileType = new SupportedFileType {
-
-			Name = "Level map",
-			Extension = "txt",//"jpg|jpeg",
-			Owner = false,
-			MimeType = "Level map qwe"
-		};
-		
-		private static readonly SupportedFileType[] FileTypes = {
-			LevelMapFileType
-		};
+		private readonly MapLoader _mapLoader;
+		private readonly JsonSerializer _serializer;
 		
 		private readonly HexGridModel _hexGridModel;
 		private readonly EditorPathContainer _pathContainer;
 		private readonly PathEditorController _pathEditorController;
 
-		private JsonSerializer serializer;
 		
 		public LevelEditorSaveController(HexGridModel hexGridModel,
 			EditorPathContainer pathContainer,
@@ -36,9 +24,11 @@ namespace MapEditor
 			_hexGridModel = hexGridModel;
 			_pathContainer = pathContainer;
 			_pathEditorController = pathEditorController;
+
+			_serializer = new JsonSerializer();
+			_serializer.NullValueHandling = NullValueHandling.Ignore;
 			
-			serializer = new JsonSerializer();
-			serializer.NullValueHandling = NullValueHandling.Ignore;
+			_mapLoader = new MapLoader(_serializer);
 		}
 
 		public void Save()
@@ -52,37 +42,30 @@ namespace MapEditor
 			using (StreamWriter sw = new StreamWriter(GetTempFilePath()))
 			using (JsonWriter writer = new JsonTextWriter(sw))
 			{
-				serializer.Serialize(writer, levelMapModel);
+				_serializer.Serialize(writer, levelMapModel);
 			}
 			
-			var fileToSave = new FileToSave(GetTempFilePath(), FileName, LevelMapFileType);
+			var fileToSave = new FileToSave(GetTempFilePath(), MapLoader.DefaultFileName, MapLoader.LevelMapFileType);
 			
 			NativeFileSO.shared.SaveFile(fileToSave);
 			
 			DeleteTempFile();
 		}
 		
-		public void Load()
-		{
-			NativeFileSO.shared.OpenFile(FileTypes, delegate (bool wasFileOpened, OpenedFile file) {
-				if (wasFileOpened) {
-					ProcessLoadedFile(file);
-				}
-			});
-		}
-		
 		private static void DeleteTempFile() => 
 			File.Delete(GetTempFilePath());
 
 		private static string GetTempFilePath()=>
-			Path.Combine(Application.persistentDataPath, FileName);
+			Path.Combine(Application.persistentDataPath, MapLoader.DefaultFileName);
 		
-
-		private void ProcessLoadedFile(OpenedFile file)
+		public void Load()
 		{
-			var levelMapModel = serializer.Deserialize<LevelMapModel>(
-				new JsonTextReader(new StringReader(file.ToUTF8String())));
+			LevelMapModel levelMapModel = _mapLoader.Load();
+			ApplyLevelMapModel(levelMapModel);
+		}
 
+		private void ApplyLevelMapModel(LevelMapModel levelMapModel)
+		{
 			_hexGridModel.Clear();
 			foreach (HexModel hexModel in levelMapModel.HexModels)
 			{

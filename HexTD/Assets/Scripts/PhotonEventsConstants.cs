@@ -118,8 +118,8 @@ public static class PhotonEventsConstants
             public static class Towers
             {
                 public const string TowerIdParam = "id";
-                public const string PositionXParam = "xposition";
-                public const string PositionYParam = "yposition";
+                public const string PositionQParam = "qposition";
+                public const string PositionRParam = "rposition";
                 public const string TowerTypeParam = "type";
                 public const string TowerLevelParam = "level";
                 public const string TowerConstructionTimeParam = "buildTime";
@@ -187,8 +187,8 @@ public static class PhotonEventsConstants
         public const byte ApplyEventId = 11;
 
         public const string RoleParam = "role";
-        public const string PositionXParam = "xposition";
-        public const string PositionYParam = "yposition";
+        public const string PositionQParam = "qposition";
+        public const string PositionRParam = "rposition";
         public const string TowerTypeParam = "type";
         public const string TowerLevelParam = "level";
         public const string IsFreeParam = "free";
@@ -201,8 +201,8 @@ public static class PhotonEventsConstants
         public const byte ApplyEventId = 13;
             
         public const string RoleParam = "role";
-        public const string PositionXParam = "xposition";
-        public const string PositionYParam = "yposition";
+        public const string PositionQParam = "qposition";
+        public const string PositionRParam = "rposition";
         public const string TowerTypeParam = "type";
         public const string TowerLevelParam = "level";
         public const string TimeParam = "timestamp";
@@ -214,8 +214,8 @@ public static class PhotonEventsConstants
         public const byte ApplyEventId = 15;
             
         public const string RoleParam = "role";
-        public const string PositionXParam = "xposition";
-        public const string PositionYParam = "yposition";
+        public const string PositionQParam = "qposition";
+        public const string PositionRParam = "rposition";
         public const string TowerTypeParam = "type";
         public const string TowerLevelParam = "level";
         public const string TimeParam = "timestamp";

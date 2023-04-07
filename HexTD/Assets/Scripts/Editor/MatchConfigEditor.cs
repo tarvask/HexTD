@@ -26,7 +26,7 @@ namespace Editor
             DrawWaves();
             EditorGUILayout.Space();
             // cells
-            DrawCells();
+            //DrawCells();
             EditorGUILayout.Space();
             // silver coins
             _config.SilverCoinsCount = EditorGUILayout.IntField("Silver coins count", _config.SilverCoinsCount);
@@ -96,7 +96,6 @@ namespace Editor
             float duration = EditorGUILayout.FloatField("Wave duration in seconds", wave.Duration);
             float minSpawnPause = EditorGUILayout.FloatField("Min spawn pause", wave.MinSpawnPause);
             float maxSpawnPause = EditorGUILayout.FloatField("Max spawn pause", wave.MaxSpawnPause);
-            bool areArtifactsAvailable = EditorGUILayout.Toggle("Are artifacts available", wave.AreArtifactsAvailable);
             float pauseBeforeWave = EditorGUILayout.FloatField("Pause before wave", wave.PauseBeforeWave);
             EditorGUILayout.Space();
             
@@ -105,8 +104,8 @@ namespace Editor
             DrawWaveElements(ref waveElements);
             wave.CheckConsistency();
             
-            wave = new WaveParams(wave.Size, duration, minSpawnPause, maxSpawnPause,
-                areArtifactsAvailable, pauseBeforeWave, waveElements);
+            wave = new WaveParams(wave.Size, duration, minSpawnPause, maxSpawnPause, 
+                pauseBeforeWave, waveElements);
         }
 
         private void DrawWaveElements(ref WaveElementChance[] waveElements)
@@ -154,38 +153,38 @@ namespace Editor
             EditorGUILayout.EndVertical();
         }
 
-        private void DrawCells()
-        {
-            EditorGUILayout.LabelField("Cells");
-            EditorGUILayout.LabelField($"Field width is {MatchShortParameters.FieldWidth}," +
-                                       $" field height is {MatchShortParameters.FieldHeight}");
-
-            if (_config.Cells == null)
-            {
-                // create and fill with Unavailable
-                _config.Cells = new FieldCellType[MatchShortParameters.FieldHeight * MatchShortParameters.FieldWidth];
-                for (int cellIndex = 0; cellIndex < MatchShortParameters.FieldHeight * MatchShortParameters.FieldWidth; cellIndex++)
-                {
-                    _config.Cells[cellIndex] = FieldCellType.Unavailable;
-                }
-            }
-
-            // table content
-            // draw rows from last to first
-            for (int cellY = MatchShortParameters.FieldHeight - 1; cellY >= 0; cellY--)
-            {
-                EditorGUILayout.BeginHorizontal();
-                {
-                    // coeff values
-                    for (int cellX = 0; cellX < MatchShortParameters.FieldWidth; cellX++)
-                    {
-                        _config.Cells[cellY * MatchShortParameters.FieldWidth + cellX] =
-                            (FieldCellType) EditorGUILayout.EnumPopup("", _config.Cells[cellY * MatchShortParameters.FieldWidth + cellX],
-                                GUILayout.Width(TableCellWidth));
-                    }
-                }
-                EditorGUILayout.EndHorizontal();
-            }
-        }
+        //private void DrawCells()
+        //{
+        //    EditorGUILayout.LabelField("Cells");
+        //    EditorGUILayout.LabelField($"Field width is {MatchShortParameters.FieldWidth}," +
+        //                               $" field height is {MatchShortParameters.FieldHeight}");
+//
+        //    if (_config.Cells == null)
+        //    {
+        //        // create and fill with Unavailable
+        //        _config.Cells = new FieldHexType[MatchShortParameters.FieldHeight * MatchShortParameters.FieldWidth];
+        //        for (int cellIndex = 0; cellIndex < MatchShortParameters.FieldHeight * MatchShortParameters.FieldWidth; cellIndex++)
+        //        {
+        //            _config.Cells[cellIndex] = FieldHexType.Unavailable;
+        //        }
+        //    }
+//
+        //    // table content
+        //    // draw rows from last to first
+        //    for (int cellY = MatchShortParameters.FieldHeight - 1; cellY >= 0; cellY--)
+        //    {
+        //        EditorGUILayout.BeginHorizontal();
+        //        {
+        //            // coeff values
+        //            for (int cellX = 0; cellX < MatchShortParameters.FieldWidth; cellX++)
+        //            {
+        //                _config.Cells[cellY * MatchShortParameters.FieldWidth + cellX] =
+        //                    (FieldHexType) EditorGUILayout.EnumPopup("", _config.Cells[cellY * MatchShortParameters.FieldWidth + cellX],
+        //                        GUILayout.Width(TableCellWidth));
+        //            }
+        //        }
+        //        EditorGUILayout.EndHorizontal();
+        //    }
+        //}
     }
 }

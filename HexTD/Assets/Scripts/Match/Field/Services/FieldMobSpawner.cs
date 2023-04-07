@@ -11,17 +11,14 @@ namespace Match.Field.Services
         {
             public FieldModel FieldModel { get; }
             public FieldFactory FieldFactory { get; }
-            public Vector3[] WayPoints { get; }
             public ReactiveCommand<MobConfig> SpawnMobReactiveCommand { get; }
 
             public Context(FieldModel fieldModel,
                 FieldFactory fieldFactory,
-                Vector3[] wayPoints,
                 ReactiveCommand<MobConfig> spawnMobReactiveCommand)
             {
                 FieldModel = fieldModel;
                 FieldFactory = fieldFactory;
-                WayPoints = wayPoints;
                 SpawnMobReactiveCommand = spawnMobReactiveCommand;
             }
         }
@@ -37,7 +34,7 @@ namespace Match.Field.Services
         
         private void Spawn(MobConfig mobConfig)
         {
-            _context.FieldModel.AddMob(_context.FieldFactory.CreateMob(mobConfig, _context.WayPoints[0], _context.WayPoints));
+            _context.FieldModel.AddMob(_context.FieldFactory.CreateMob(mobConfig, Vector2.one * 10));
         }
     }
 }

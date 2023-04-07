@@ -9,7 +9,6 @@ namespace Match.Field.Mob
 {
     public class MobController : BaseDisposable, IShootable
     {
-        private const float MoveLerpCoeff = 0.7f;
         public struct Context
         {
             public int Id { get; }
@@ -17,17 +16,15 @@ namespace Match.Field.Mob
             public MobParameters Parameters { get; }
             public MobView View { get; }
 
-            public Vector3[] Waypoints { get; }
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
 
-            public Context(int id, int targetId, MobParameters parameters, MobView view, Vector3[] waypoints,
+            public Context(int id, int targetId, MobParameters parameters, MobView view,
                 ReactiveCommand<MobController> removeMobReactiveCommand)
             {
                 Id = id;
                 TargetId = targetId;
                 Parameters = parameters;
                 View = view;
-                Waypoints = waypoints;
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
             }
         }
@@ -80,7 +77,7 @@ namespace Match.Field.Mob
                 return;
             
             Vector3 currentPosition = Position;
-            Vector3 targetPosition = _context.Waypoints[_nextWaypoint];
+            Vector3 targetPosition = Vector3.zero;
             float distanceToTargetSqr = Vector3.SqrMagnitude(currentPosition - targetPosition);
             float distancePerFrame = _context.Parameters.Speed;//_buffsManager.ParameterResultValue(BuffedParameterType.MovementSpeed) * frameLength;
 
@@ -98,48 +95,49 @@ namespace Match.Field.Mob
                 }
             }
 
-            _hasReachedCastle = _nextWaypoint >= _context.Waypoints.Length;
+            _hasReachedCastle = false;
         }
 
         public void VisualMove(float frameLength)
         {
-            _context.View.transform.localPosition = Vector3.Lerp(_context.View.transform.localPosition, _currentPosition, MoveLerpCoeff);
+            _context.View.transform.localPosition = Vector3.Lerp(
+                _context.View.transform.localPosition, _currentPosition, FieldController.MoveLerpCoeff);
         }
 
         private bool CheckRangeAttackDistance(ref Vector3 currentPosition)
         {
-            if (_context.Parameters.HasRangeDamage)
-            {
-                float distanceToCastleSqr =
-                    Vector3.SqrMagnitude(currentPosition - _context.Waypoints[_context.Waypoints.Length - 1]);
-
-                if (distanceToCastleSqr < _context.Parameters.AttackRangeRadius * _context.Parameters.AttackRangeRadius)
-                {
-                    _nextWaypoint = (byte) _context.Waypoints.Length;
-                    return true;
-                }
-                
-                return false;
-            }
+            //if (_context.Parameters.HasRangeDamage)
+            //{
+            //    float distanceToCastleSqr =
+            //        Vector3.SqrMagnitude(currentPosition - _context.Waypoints[_context.Waypoints.Length - 1]);
+//
+            //    if (distanceToCastleSqr < _context.Parameters.AttackRangeRadius * _context.Parameters.AttackRangeRadius)
+            //    {
+            //        _nextWaypoint = (byte) _context.Waypoints.Length;
+            //        return true;
+            //    }
+            //    
+            //    return false;
+            //}
             
             return false;
         }
 
         private void ComputePathLengthAfterTeleport()
         {
-            byte waypointIndex = 1;
-
-            while (waypointIndex < _nextWaypoint)
-            {
-                _currentPathLength +=
-                    Mathf.Abs(_context.Waypoints[waypointIndex].x - _context.Waypoints[waypointIndex - 1].x)
-                    + Mathf.Abs(_context.Waypoints[waypointIndex].y - _context.Waypoints[waypointIndex - 1].y);
-                waypointIndex++;
-            }
-            
-            _currentPathLength +=
-                Mathf.Abs(Position.x - _context.Waypoints[waypointIndex - 1].x)
-                + Mathf.Abs(Position.y - _context.Waypoints[waypointIndex - 1].y);
+            //byte waypointIndex = 1;
+//
+            //while (waypointIndex < _nextWaypoint)
+            //{
+            //    _currentPathLength +=
+            //        Mathf.Abs(_context.Waypoints[waypointIndex].x - _context.Waypoints[waypointIndex - 1].x)
+            //        + Mathf.Abs(_context.Waypoints[waypointIndex].y - _context.Waypoints[waypointIndex - 1].y);
+            //    waypointIndex++;
+            //}
+            //
+            //_currentPathLength +=
+            //    Mathf.Abs(Position.x - _context.Waypoints[waypointIndex - 1].x)
+            //    + Mathf.Abs(Position.y - _context.Waypoints[waypointIndex - 1].y);
         }
 
         public void Hurt(int damage)

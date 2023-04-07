@@ -12,7 +12,6 @@ namespace Match.Wave
         [SerializeField] private float duration;
         [SerializeField] private float minSpawnPause;
         [SerializeField] private float maxSpawnPause;
-        [SerializeField] private bool areArtifactsAvailable;
         [SerializeField] private float pauseBeforeWave;
         
         [SerializeField] private WaveElementChance[] elements;
@@ -21,7 +20,6 @@ namespace Match.Wave
         public float Duration => duration;
         public float MinSpawnPause => minSpawnPause;
         public float MaxSpawnPause => maxSpawnPause;
-        public bool AreArtifactsAvailable => areArtifactsAvailable;
         public float PauseBeforeWave => pauseBeforeWave;
 
         public WaveElementChance[] Elements => elements;
@@ -47,19 +45,18 @@ namespace Match.Wave
         }
 
         public WaveParams(byte sizeParam, float durationParam,
-            float minSpawnPauseParam, float maxSpawnPauseParam,
-            bool areArtifactsAvailableParam, float pauseBeforeWaveParam,
+            float minSpawnPauseParam, float maxSpawnPauseParam, 
+            float pauseBeforeWaveParam,
             WaveElementChance[] elementsParam)
         {
             size = sizeParam;
             duration = durationParam;
             minSpawnPause = minSpawnPauseParam;
             maxSpawnPause = maxSpawnPauseParam;
-            areArtifactsAvailable = areArtifactsAvailableParam;
             pauseBeforeWave = pauseBeforeWaveParam;
             elements = elementsParam;
         }
-
+        
         public Hashtable ToNetwork()
         {
             Hashtable waveNetwork = new Hashtable();
@@ -67,7 +64,6 @@ namespace Match.Wave
             waveNetwork[PhotonEventsConstants.SyncMatch.Wave.DurationParam] = duration;
             waveNetwork[PhotonEventsConstants.SyncMatch.Wave.SpawnPauseMinParam] = minSpawnPause;
             waveNetwork[PhotonEventsConstants.SyncMatch.Wave.SpawnPauseMaxParam] = maxSpawnPause;
-            waveNetwork[PhotonEventsConstants.SyncMatch.Wave.ArtifactsParam] = areArtifactsAvailable;
             waveNetwork[PhotonEventsConstants.SyncMatch.Wave.PauseBeforeWaveParam] = pauseBeforeWave;
             byte[] mobsIdsBytes = new byte[elements.Length];
             byte[] mobsCountsBytes = new byte[elements.Length];

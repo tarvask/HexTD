@@ -5,21 +5,33 @@ namespace HexSystem
 {
     public class HexInteractService
     {
-        private readonly Camera _editorCamera;
+        private readonly Camera _mainCamera;
         private readonly Layout _layout;
         private readonly Plane _touchDetectionPlane;
 
         public HexInteractService(Layout layout,
-            Camera editorCamera)
+            Camera mainCamera)
         {
             _layout = layout;
-            _editorCamera = editorCamera;
+            _mainCamera = mainCamera;
             _touchDetectionPlane = new Plane(Vector3.up, Vector3.zero);
         }
 
         public bool TryGetHexUnderPointer(out Hex2d hitHex)
         {
-            var ray = _editorCamera.ScreenPointToRay(Input.mousePosition);
+            if (TryClickHexTile(out hitHex))
+                return true;
+            
+            if (TryClickHexPlane(out hitHex))
+                return true;
+
+            hitHex = new Hex2d();
+            return false;
+        }
+
+        public bool TryClickHexTile(out Hex2d hitHex)
+        {
+            var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
             if (Physics.Raycast(ray, out var hitInfo))
             {
@@ -30,6 +42,14 @@ namespace HexSystem
                     return true;
                 }
             }
+
+            hitHex = new Hex2d();
+            return false;
+        }
+
+        public bool TryClickHexPlane(out Hex2d hitHex)
+        {
+            var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
             
             if (_touchDetectionPlane.Raycast(ray, out var enter))
             {

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace Match.Field.Shooting
 {
-    public class ShootingController : BaseDisposable, IOuterLogicUpdatable
+    public class ShootingController : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable
     {
         public struct Context
         {
@@ -66,6 +66,14 @@ namespace Match.Field.Shooting
             UpdateDeadBodies();
         }
 
+        public void OuterViewUpdate(float frameLength)
+        {
+            foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.Projectiles)
+            {
+                projectilePair.Value.VisualMove(frameLength);
+            }
+        }
+
         private void UpdateShooters(float frameLength)
         {
             foreach (KeyValuePair<int, TowerController> towerPair in _context.FieldModel.Towers)
@@ -90,14 +98,18 @@ namespace Match.Field.Shooting
                 // if reached before movement
                 if (projectilePair.Value.HasReachedTarget)
                     continue;
+
+                Vector3 targetPosition;
                 
                 if (_context.FieldModel.Shootables.TryGetValue(projectilePair.Value.TargetId, out IShootable target))
-                    projectilePair.Value.Move(target.Position, frameLength);
+                    targetPosition = target.Position;
                 else
                 {
                     // fly to last target position
-                    projectilePair.Value.Move(projectilePair.Value.CurrentTargetPosition, frameLength);
+                    targetPosition = projectilePair.Value.CurrentTargetPosition;
                 }
+                
+                projectilePair.Value.LogicMove(targetPosition, frameLength);
 
                 if (projectilePair.Value.HasReachedTarget)
                     _hittingProjectiles.Add(projectilePair.Value);

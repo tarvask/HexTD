@@ -1,17 +1,15 @@
+using System;
 using System.Collections.Generic;
-using Match.Field;
-using Match.Field.Services;
+using Match.Field.Hexagonal;
+using PathSystem;
 using Tools;
-using UnityEngine;
 
 namespace Match
 {
     public class MatchShortParameters : BaseDisposable
     {
-        public const int FieldWidth = 9;
-        public const int FieldHeight = 6;
-        private readonly FieldCellType[,] _cells;
-        private readonly Vector3[] _wayPoints;
+        private readonly FieldHex[] _hexes;
+        private readonly PathData.SavePathData[] _paths;
         private readonly int _silverCoinsCount;
         
         private PlayerHandParams _handParams;
@@ -20,8 +18,8 @@ namespace Match
         private readonly byte[] _cellsNetwork;
         private readonly Dictionary<byte, int> _spellsWithCountsNetwork;
         
-        public FieldCellType[,] Cells => _cells;
-        public Vector3[] WayPoints => _wayPoints;
+        public FieldHex[] Hexes => _hexes;
+        public PathData.SavePathData[] Paths => _paths;
         public int SilverCoinsCount => _silverCoinsCount;
 
         public PlayerHandParams HandParams => _handParams;
@@ -29,34 +27,30 @@ namespace Match
         public byte[] BlockersNetwork => _blockersNetwork;
         public Dictionary<byte, int> SpellsWithCountsNetwork => _spellsWithCountsNetwork;
 
-        protected MatchShortParameters(FieldCellType[] cells,
+        protected MatchShortParameters(FieldHex[] hexes,
+            PathData.SavePathData[] paths,
             int silverCoinsCount,
             PlayerHandParams handParams)
         {
             // fill cells from linear array
-            _cells = new FieldCellType[FieldHeight, FieldWidth];
-
-            for (int cellIndex = 0; cellIndex < FieldHeight * FieldWidth; cellIndex++)
-            {
-                _cells[cellIndex / FieldWidth, cellIndex % FieldWidth] = cells[cellIndex];
-            }
+            _hexes = new FieldHex[hexes.Length];
+            Array.Copy(hexes, _hexes, hexes.Length);
             
-            // compute waypoints
-            _wayPoints = RoadWayPointsFinder.GetWaypointsFromField(_cells);
+            // fill paths from linear array
+            _paths = new PathData.SavePathData[paths.Length];
+            Array.Copy(paths, _paths, paths.Length);
+            
             // hand
             _handParams = handParams;
             // currency and magic
             _silverCoinsCount = silverCoinsCount;
 
             // fill cells in photon-compatible form
-            _cellsNetwork = new byte[FieldWidth * FieldHeight];
+            _cellsNetwork = new byte[hexes.Length];
 
-            for (int yCell = 0; yCell < FieldHeight; yCell++)
+            for (int hexIndex = 0; hexIndex < hexes.Length; hexIndex++)
             {
-                for (int xCell = 0; xCell < FieldWidth; xCell++)
-                {
-                    _cellsNetwork[yCell * FieldWidth + xCell] = (byte)_cells[yCell, xCell];
-                }
+                _cellsNetwork[hexIndex] = (byte)_hexes[hexIndex].FieldHexType;
             }
         }
 

@@ -16,11 +16,6 @@ namespace Match.Windows
         [SerializeField] private Text ourGoldCoinsCountText;
         [SerializeField] private Text ourGoldCoinsIncomeText;
         [SerializeField] private Text ourCrystalsCountText;
-        [SerializeField] private Image[] waveElements;
-        [SerializeField] private Image[] reinforcementsItems;
-
-        [Space]
-        [SerializeField] private Image blockerTargetCursor;
 
         [Space]
         [SerializeField] private MatchInfoRoundStartInfoPanelView roundStartInfoPanel;
@@ -37,10 +32,6 @@ namespace Match.Windows
         public Text OurGoldCoinsCountText => ourGoldCoinsCountText;
         public Text OurGoldCoinsIncomeText => ourGoldCoinsIncomeText;
         public Text OurCrystalsCountText => ourCrystalsCountText;
-        public Image[] WaveElements => waveElements;
-        public Image[] ReinforcementsItems => reinforcementsItems;
-
-        public Image BlockerTargetCursor => blockerTargetCursor;
 
         public MatchInfoRoundStartInfoPanelView RoundStartInfoPanel => roundStartInfoPanel;
 

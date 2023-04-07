@@ -1,3 +1,4 @@
+using HexSystem;
 using Match.Field;
 using Match.Field.Currency;
 using Match.Field.Shooting;
@@ -14,8 +15,6 @@ namespace Match.Commands
     {
         public struct Context
         {
-            public int FieldWidth { get; }
-            public int FieldHeight { get; }
             public FieldModel FieldModel { get; }
             public FieldClicksHandler ClicksHandler { get; }
             public TowerConfigRetriever TowerConfigRetriever { get; }
@@ -29,7 +28,7 @@ namespace Match.Commands
             public TowerManipulationWindowController TowerManipulationWindowController { get; }
             public TowerInfoWindowController TowerInfoWindowController { get; }
 
-            public Context(int fieldWidth, int fieldHeight,
+            public Context(
                 FieldModel fieldModel, FieldClicksHandler clicksHandler, TowerConfigRetriever towerConfigRetriever,
                 FieldConstructionProcessController constructionProcessController,
                 ShootingController shootingController,
@@ -41,8 +40,6 @@ namespace Match.Commands
                 TowerManipulationWindowController towerManipulationWindowController,
                 TowerInfoWindowController towerInfoWindowController)
             {
-                FieldWidth = fieldWidth;
-                FieldHeight = fieldHeight;
                 FieldModel = fieldModel;
                 ClicksHandler = clicksHandler;
                 TowerConfigRetriever = towerConfigRetriever;
@@ -73,30 +70,27 @@ namespace Match.Commands
         {
             if (_context.ClicksHandler.ClickedCellsCount > 0)
             {
-                Vector2Int clickedCell = _context.ClicksHandler.GetClickedCell();
-
-                if (!_context.ClicksHandler.IsClickValuable(clickedCell))
-                    return;
+                Hex2d clickedCell = _context.ClicksHandler.GetClickedCell();
 
                 DistributeClick(clickedCell);
             }
         }
 
-        private void DistributeClick(Vector2Int clickedCell)
+        private void DistributeClick(Hex2d clickedCell)
         {
-            switch (_context.FieldModel.Cells[clickedCell.y, clickedCell.x])
+            switch (_context.FieldModel.GetFieldHex(clickedCell).FieldHexType)
             {
-                case FieldCellType.Free:
+                case FieldHexType.Free:
                     ProcessPreBuild(clickedCell);
                     break;
                 
-                case FieldCellType.Tower:
+                case FieldHexType.Tower:
                     ProcessPreManipulation(clickedCell);
                     break;
             }
         }
 
-        private void ProcessPreBuild(Vector2Int clickedCell)
+        private void ProcessPreBuild(Hex2d clickedCell)
         {
             _context.TowerSelectionWindowController.ShowWindow(_context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
                 (towerToBuild) =>
@@ -108,11 +102,11 @@ namespace Match.Commands
             });
         }
 
-        private void ProcessBuild(Vector2Int position, TowerShortParams towerShortParams)
+        private void ProcessBuild(Hex2d position, TowerShortParams towerShortParams)
         {
             // check consistency
-            if (_context.FieldModel.Cells[position.y, position.x] != FieldCellType.Free)
-                return;
+            //if (_context.FieldModel.Cells[position.y, position.x] != FieldCellType.Free)
+            //    return;
             
             TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerShortParams.TowerType);
             
@@ -125,13 +119,13 @@ namespace Match.Commands
                 towerInstance.SetBlockerTarget(_context.ShootingController.BlockerTargetId);
         }
 
-        private void ProcessPreManipulation(Vector2Int clickedCell)
+        private void ProcessPreManipulation(Hex2d clickedHex)
         {
             // check consistency
-            if (_context.FieldModel.Cells[clickedCell.y, clickedCell.x] != FieldCellType.Tower)
+            if (!_context.FieldModel.IsHexWithType(clickedHex, FieldHexType.Tower))
                 return;
             
-            int towerKey = clickedCell.GetHashCode(_context.FieldWidth);
+            int towerKey = clickedHex.GetHashCode();
             TowerController towerInstance = _context.FieldModel.TowersByPositions[towerKey];
 
             if (!towerInstance.CanShoot)
@@ -145,7 +139,7 @@ namespace Match.Commands
                 () =>
                 {
                     if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.Parameters.Levels[towerShortParams.Level].LevelRegularParams.Data.Price)
-                        _context.MatchCommands.Outgoing.RequestUpgradeTower.Fire(clickedCell, towerShortParams);
+                        _context.MatchCommands.Outgoing.RequestUpgradeTower.Fire(clickedHex, towerShortParams);
                 },
                 () =>
                 {
@@ -158,18 +152,15 @@ namespace Match.Commands
                             _context.TowerManipulationWindowController.ShowWindow();
                         });
                 },
-                () => _context.MatchCommands.Outgoing.RequestSellTower.Fire(clickedCell, towerShortParams));
+                () => _context.MatchCommands.Outgoing.RequestSellTower.Fire(clickedHex, towerShortParams));
         }
 
-        private void ProcessUpgrade(Vector2Int position, TowerShortParams towerShortParams)
+        private void ProcessUpgrade(Hex2d position, TowerShortParams towerShortParams)
         {
-            // check consistency
-            int towerKey = position.GetHashCode(_context.FieldWidth);
-            
-            if (_context.FieldModel.Cells[position.y, position.x] != FieldCellType.Tower)
+            if (!_context.FieldModel.IsHexWithType(position, FieldHexType.Tower))
                 return;
             
-            TowerController towerInstance = _context.FieldModel.TowersByPositions[towerKey];
+            TowerController towerInstance = _context.FieldModel.TowersByPositions[position.GetHashCode()];
 
             if (!towerInstance.CanShoot)
                 return;
@@ -179,11 +170,11 @@ namespace Match.Commands
             _context.ConstructionProcessController.SetTowerUpgrading(towerInstance);
         }
 
-        private void ProcessSell(Vector2Int position, TowerShortParams towerShortParams)
+        private void ProcessSell(Hex2d position, TowerShortParams towerShortParams)
         {
-            int positionHashcode = position.GetHashCode(_context.FieldWidth);
+            int positionHashcode = position.GetHashCode();
             
-            if (_context.FieldModel.Cells[position.y, position.x] != FieldCellType.Tower
+            if (!_context.FieldModel.IsHexWithType(position, FieldHexType.Tower)
                 || !_context.FieldModel.TowersByPositions[positionHashcode].CanShoot)
                 return;
             

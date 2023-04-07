@@ -70,13 +70,7 @@ namespace HexSystem
 
 		public override int GetHashCode()
 		{
-			int num1 = Q;
-			int hashCode = num1.GetHashCode();
-			num1 = R;
-			int num2 = num1.GetHashCode() << 2;
-			num1 = H;
-			int num3 = num1.GetHashCode() << 4;
-			return hashCode ^ num2 ^ num3;
+			return Q << 8 | R;
 		}
 
 		public override string ToString() => $"Hex({Q},{R},{S},{H})";
