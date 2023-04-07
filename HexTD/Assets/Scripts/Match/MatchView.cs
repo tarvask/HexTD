@@ -1,5 +1,4 @@
 using Match.Field;
-using Services;
 using Tools;
 using UnityEngine;
 
@@ -12,7 +11,6 @@ namespace Match
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Canvas canvas;
         [SerializeField] private CanvasHeightOrWidthFitter canvasFitter;
-        [SerializeField] private MatchCanvasBuilder canvasBuilder;
 
         [SerializeField] private FieldConfig fieldConfig;
 
@@ -23,7 +21,6 @@ namespace Match
         public Camera MainCamera => mainCamera;
         public Canvas Canvas => canvas;
         public CanvasHeightOrWidthFitter CanvasFitter => canvasFitter;
-        public MatchCanvasBuilder CanvasBuilder => canvasBuilder;
 
         public FieldConfig FieldConfig => fieldConfig;
 

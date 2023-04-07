@@ -1434,11 +1434,11 @@ RectTransform:
   m_Father: {fileID: 2942219922451111742}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 340}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 1491.7311, y: 0}
+  m_SizeDelta: {x: 2063.4622, y: 340}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &3171064917230452955
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1951,13 +1951,6 @@ MonoBehaviour:
   ourGoldCoinsCountText: {fileID: 7743425670328497871}
   ourGoldCoinsIncomeText: {fileID: 4842066293816237098}
   ourCrystalsCountText: {fileID: 2723382991075286973}
-  waveElements:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  reinforcementsItems:
-  - {fileID: 0}
-  - {fileID: 0}
   roundStartInfoPanel: {fileID: 5187322097781739207}
   middlePanelRect: {fileID: 3414745296255956744}
 --- !u!1 &6840082662991231921

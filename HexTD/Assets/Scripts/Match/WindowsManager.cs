@@ -22,7 +22,6 @@ namespace Match
             public MobConfigRetriever MobConfigRetriever { get; }
             public PlayerHandParams PlayerHandParams { get; }
             public WaveParams[] Waves { get; }
-            public RectTransform OurFieldCanvasMarkerRect { get; }
             
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
             public ReactiveCommand<HealthInfo> EnemyCastleHealthChangedReactiveCommand { get; }
@@ -41,7 +40,6 @@ namespace Match
                 TowerConfigRetriever towerConfigRetriever, MobConfigRetriever mobConfigRetriever,
                 PlayerHandParams playerHandParams,
                 WaveParams[] waves,
-                RectTransform ourFieldCanvasMarkerRect,
                 
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,
@@ -63,7 +61,6 @@ namespace Match
                 MobConfigRetriever = mobConfigRetriever;
                 PlayerHandParams = playerHandParams;
                 Waves = waves;
-                OurFieldCanvasMarkerRect = ourFieldCanvasMarkerRect;
 
                 IsConnectedReactiveProperty = isConnectedReactiveProperty;
                 EnemyCastleHealthChangedReactiveCommand = enemyCastleHealthChangedReactiveCommand;

@@ -8,7 +8,6 @@ using Match.Field.State;
 using Match.Field.Tower;
 using Match.State;
 using Match.Wave;
-using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -88,12 +87,6 @@ namespace Match
             _context = context;
             
             _context.MatchView.CanvasFitter.Process();
-            _context.MatchView.CanvasBuilder.Process();
-            FieldsAndCameraInstaller.InstallFieldsByMarkerRects(_context.MatchView.Canvas, _context.MatchView.MainCamera,
-                _context.MatchView.OurFieldView.transform, _context.MatchView.EnemyFieldView.transform,
-                _context.MatchView.EnemyFieldView.Background, _context.MatchView.OurFieldView.Background,
-                _context.MatchView.CanvasBuilder.OurField, _context.MatchView.CanvasBuilder.EnemyField,
-                _context.MatchView.CanvasBuilder.MiddlePanel);
             
             _enemyStateSyncedReactiveCommand = AddDisposable(new ReactiveCommand<PlayerState>());
             _ourStateSyncedReactiveCommand = AddDisposable(new ReactiveCommand<PlayerState>());
@@ -140,7 +133,6 @@ namespace Match
                 _towerConfigRetriever, _mobConfigRetriever,
                 _context.MatchShortParameters.HandParams,
                 waves,
-                _context.MatchView.CanvasBuilder.OurField,
                 
                 _context.IsConnectedReactiveProperty,
                 enemyCastleHealthChangedReactiveCommand,

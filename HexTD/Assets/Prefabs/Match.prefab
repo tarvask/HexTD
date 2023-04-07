@@ -137,7 +137,6 @@ MonoBehaviour:
   mainCamera: {fileID: 963194227}
   canvas: {fileID: 1459773889187978631}
   canvasFitter: {fileID: 3216175953465636960}
-  canvasBuilder: {fileID: 330409241980653025}
   fieldConfig: {fileID: 11400000, guid: 810dac60ce049b143bbecd717c66467e, type: 2}
   matchUiViews:
     matchStartInfoView: {fileID: 2551352826137954188}
@@ -292,7 +291,6 @@ GameObject:
   - component: {fileID: 1810337787966851021}
   - component: {fileID: 7077641477787344905}
   - component: {fileID: 3216175953465636960}
-  - component: {fileID: 330409241980653025}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -312,8 +310,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 5151206020172154818}
   - {fileID: 2093286002046745685}
+  - {fileID: 5151206020172154818}
   - {fileID: 1803853322276734568}
   - {fileID: 5452302021654038841}
   - {fileID: 1817711021319112068}
@@ -404,27 +402,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d45dbd0c518d4589943a1bc3dfca7bc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &330409241980653025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3652877603849767989}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dee3e4db2d34c2291dd4db63221307b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 1459773889187978631}
-  topField: {fileID: 5151206020172154818}
-  bottomField: {fileID: 2093286002046745685}
-  middlePanel: {fileID: 2215721149817794142}
-  bottomPanel: {fileID: 6533143037853945632}
-  topBorderThickness: 10
-  bottomBorderThickness: 10
-  leftAndRightBorderThickness: 10
-  minBottomPanelHeight: 170
 --- !u!1 &5442713061687004585
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,9 +459,8 @@ GameObject:
   - component: {fileID: 5151206020172154818}
   - component: {fileID: 8441985147697045764}
   - component: {fileID: 491515818902173959}
-  - component: {fileID: 3561603265776901988}
   m_Layer: 5
-  m_Name: TopField
+  m_Name: EnemyField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -503,13 +479,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2423407524088295964}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 600}
-  m_SizeDelta: {x: 1350, y: 900}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 150, y: 150}
+  m_SizeDelta: {x: 1200, y: 780}
+  m_Pivot: {x: 0, y: 0}
 --- !u!222 &8441985147697045764
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -531,7 +507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -548,30 +524,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3561603265776901988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5584388755885921606}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0
-    m_Bottom: 0
-  m_ChildAlignment: 0
-  m_StartCorner: 0
-  m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 0, y: 0}
-  m_Constraint: 1
-  m_ConstraintCount: 9
 --- !u!1 &8203399971541866920
 GameObject:
   m_ObjectHideFlags: 0
@@ -668,7 +620,7 @@ GameObject:
   - component: {fileID: 2901266662619043923}
   - component: {fileID: 262474550067937923}
   m_Layer: 5
-  m_Name: BottomField
+  m_Name: OurField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -687,12 +639,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2423407524088295964}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -600}
-  m_SizeDelta: {x: 1350, y: 900}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2901266662619043923
 CanvasRenderer:
@@ -1057,16 +1009,6 @@ PrefabInstance:
 --- !u!224 &1803853322276734568 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2942219922451111742, guid: bf3c1647da3ba4fafb96c470a3d275c0, type: 3}
-  m_PrefabInstance: {fileID: 3592832795311872342}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &2215721149817794142 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3414745296255956744, guid: bf3c1647da3ba4fafb96c470a3d275c0, type: 3}
-  m_PrefabInstance: {fileID: 3592832795311872342}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &6533143037853945632 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7743425669981918838, guid: bf3c1647da3ba4fafb96c470a3d275c0, type: 3}
   m_PrefabInstance: {fileID: 3592832795311872342}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &8793217338940302192 stripped
