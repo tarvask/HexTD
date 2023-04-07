@@ -121,6 +121,8 @@ namespace Match.Field
         private readonly ShootingController _shootingController;
         private readonly CurrencyController _currencyController;
         private readonly PlayerStateLoader _stateLoader;
+        
+        public const float MoveLerpCoeff = 0.7f;
 
         public FieldModel FieldModel => _model;
         
@@ -239,6 +241,7 @@ namespace Match.Field
         public void OuterViewUpdate(float frameLength)
         {
             _mobsManager.OuterViewUpdate(frameLength);
+            _shootingController.OuterViewUpdate(frameLength);
         }
 
         private void CreateCells()

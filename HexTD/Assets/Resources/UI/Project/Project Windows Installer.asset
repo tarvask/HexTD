@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d38415f49224d3da5825fa1c16d5457, type: 3}
+  m_Name: Project Windows Installer
+  m_EditorClassIdentifier: 
+  loadingTypes: 1
+  addressableWindowViewContainer: {fileID: 11400000, guid: aed025cdd16a14bdcbb0638cc5d56b33,
+    type: 2}
+  shouldBindModels: 1
+  windowModelContainer: {fileID: 11400000, guid: 2c448d484fd0242ee84ed623e73edfaa,
+    type: 2}
+  rootCanvas: {fileID: 6038570257362333869, guid: 43951bb4e7dc3854baf71e77848cde1c,
+    type: 3}
+  sortingOrder: 4

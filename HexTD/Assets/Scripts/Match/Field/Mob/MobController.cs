@@ -9,7 +9,6 @@ namespace Match.Field.Mob
 {
     public class MobController : BaseDisposable, IShootable
     {
-        private const float MoveLerpCoeff = 0.7f;
         public struct Context
         {
             public int Id { get; }
@@ -101,7 +100,8 @@ namespace Match.Field.Mob
 
         public void VisualMove(float frameLength)
         {
-            _context.View.transform.localPosition = Vector3.Lerp(_context.View.transform.localPosition, _currentPosition, MoveLerpCoeff);
+            _context.View.transform.localPosition = Vector3.Lerp(
+                _context.View.transform.localPosition, _currentPosition, FieldController.MoveLerpCoeff);
         }
 
         private bool CheckRangeAttackDistance(ref Vector3 currentPosition)

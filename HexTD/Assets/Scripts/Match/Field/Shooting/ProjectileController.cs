@@ -56,7 +56,7 @@ namespace Match.Field.Shooting
             AddComponent(_context.View.gameObject);
         }
 
-        public void Move(Vector3 targetPosition, float frameLength)
+        public void LogicMove(Vector3 targetPosition, float frameLength)
         {
             _currentPosition = _context.View.transform.localPosition;
             _currentTargetPosition = targetPosition;
@@ -72,8 +72,12 @@ namespace Match.Field.Shooting
                 _currentPosition = targetPosition;
                 Stop();
             }
+        }
 
-            _context.View.transform.localPosition = _currentPosition;
+        public void VisualMove(float frameLength)
+        {
+            _context.View.transform.localPosition = Vector3.Lerp(
+                _context.View.transform.localPosition, _currentPosition, FieldController.MoveLerpCoeff);
         }
 
         public void Stop()
