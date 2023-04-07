@@ -5,19 +5,19 @@ namespace Tools.Disposing
 {
 	public class DelegateDisposable : IDisposable
 	{
-		private Action action;
+		private Action _action;
 
 		public DelegateDisposable([NotNull] Action action)
 		{
-			this.action = action ?? throw new ArgumentNullException(nameof(action));
+			_action = action ?? throw new ArgumentNullException(nameof(action));
 		}
 
 		public void Dispose()
 		{
-			if (action == null)
+			if (_action == null)
 				return;
-			action();
-			action = null;
+			_action();
+			_action = null;
 		}
 	}
 }

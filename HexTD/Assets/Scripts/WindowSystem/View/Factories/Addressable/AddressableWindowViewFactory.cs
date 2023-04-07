@@ -1,6 +1,6 @@
-using Addressables;
 using Cysharp.Threading.Tasks;
 using Tools;
+using Tools.Addressables;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Zenject;
@@ -9,26 +9,26 @@ namespace WindowSystem.View.Factories.Addressable
 {
 	public class AddressableWindowViewFactory : IWindowViewFactory
 	{
-		private readonly IInstantiator instantiator;
-		private readonly Canvas canvas;
-		private readonly AddressableWindowViewContainer viewContainer;
-		private readonly AssetReferenceContainer<string> viewAssetsReferenceCache;
+		private readonly IInstantiator _instantiator;
+		private readonly Canvas _canvas;
+		private readonly AddressableWindowViewContainer _viewContainer;
+		private readonly AssetReferenceContainer<string> _viewAssetsReferenceCache;
 
 		public AddressableWindowViewFactory(
 			IInstantiator instantiator,
 			Canvas canvas,
 			AddressableWindowViewContainer viewContainer)
 		{
-			this.instantiator = instantiator;
-			this.canvas = canvas;
-			this.viewContainer = viewContainer;
-			viewAssetsReferenceCache = new AssetReferenceContainer<string>(viewContainer.WindowAssets.Count);
+			_instantiator = instantiator;
+			_canvas = canvas;
+			_viewContainer = viewContainer;
+			_viewAssetsReferenceCache = new AssetReferenceContainer<string>(viewContainer.WindowAssets.Count);
 		}
 
 		public async UniTask<OperationResult<TWindowView>> CreateAsync<TWindowView>()
 			where TWindowView : WindowViewBase
 		{
-			var referenceInfo = viewContainer.GetReferenceInfo<TWindowView>();
+			var referenceInfo = _viewContainer.GetReferenceInfo<TWindowView>();
 
 			var assetHandle =
 				UnityEngine.AddressableAssets.Addressables.LoadAssetAsync<GameObject>(referenceInfo.AssetReference);
@@ -41,10 +41,10 @@ namespace WindowSystem.View.Factories.Addressable
 			await UniTask.WaitForEndOfFrame();
 
 			var uiElement =
-				instantiator.InstantiatePrefabForComponent<TWindowView>(assetHandle.Result, canvas.transform);
+				_instantiator.InstantiatePrefabForComponent<TWindowView>(assetHandle.Result, _canvas.transform);
 			uiElement.gameObject.SetActive(false);
 
-			viewAssetsReferenceCache.CacheInMemory(referenceInfo.AssetReference.AssetGUID, assetHandle);
+			_viewAssetsReferenceCache.CacheInMemory(referenceInfo.AssetReference.AssetGUID, assetHandle);
 
 			return OperationResult<TWindowView>.Success(uiElement);
 		}
@@ -53,11 +53,11 @@ namespace WindowSystem.View.Factories.Addressable
 		{
 			Object.Destroy(windowView.gameObject);
 
-			var referenceInfo = viewContainer.GetReferenceInfo(windowView.GetType());
+			var referenceInfo = _viewContainer.GetReferenceInfo(windowView.GetType());
 
 			if (!referenceInfo.CacheInMemory)
 			{
-				viewAssetsReferenceCache.RemoveFromMemory(referenceInfo.AssetReference.AssetGUID);
+				_viewAssetsReferenceCache.RemoveFromMemory(referenceInfo.AssetReference.AssetGUID);
 //                Log.Debug(LogTag.UI, $"Release {windowView.GetType().Name}", this);
 				Debug.Log($"Release {windowView.GetType().Name}");
 			}

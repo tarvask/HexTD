@@ -6,19 +6,19 @@ using UnityEngine;
 
 namespace IdleCivilization.Client.Loading.Editor
 {
-	[CustomEditor(typeof(GameLoadingInstaller))]
+	[CustomEditor(typeof(GameLoadingServiceInstaller))]
 	public class GameLoadingEditor : UnityEditor.Editor
 	{
-		private ReorderableList reorderableList;
-		private SerializedProperty property;
+		private ReorderableList _reorderableList;
+		private SerializedProperty _property;
 
 
 		private void OnEnable()
 		{
-			property = serializedObject.FindProperty("loadingSteps");
-			reorderableList = new ReorderableList(serializedObject, property, true, true, true, true);
-			reorderableList.drawHeaderCallback += OnDrawHeader;
-			reorderableList.drawElementCallback += OnDrawElement;
+			_property = serializedObject.FindProperty("loadingSteps");
+			_reorderableList = new ReorderableList(serializedObject, _property, true, true, true, true);
+			_reorderableList.drawHeaderCallback += OnDrawHeader;
+			_reorderableList.drawElementCallback += OnDrawElement;
 		}
 
 		private void OnDrawHeader(Rect rect)
@@ -28,7 +28,7 @@ namespace IdleCivilization.Client.Loading.Editor
 
 		private void OnDrawElement(Rect rect, int index, bool isActive, bool isFocused)
 		{
-			var element = reorderableList.serializedProperty.GetArrayElementAtIndex(index);
+			var element = _reorderableList.serializedProperty.GetArrayElementAtIndex(index);
 
 			EditorGUI.PropertyField(
 				new Rect(rect.x, rect.y, rect.width, EditorGUIUtility.singleLineHeight),
@@ -40,7 +40,7 @@ namespace IdleCivilization.Client.Loading.Editor
 		public override void OnInspectorGUI()
 		{
 			serializedObject.Update();
-			reorderableList.DoLayoutList();
+			_reorderableList.DoLayoutList();
 			serializedObject.ApplyModifiedProperties();
 		}
 	}

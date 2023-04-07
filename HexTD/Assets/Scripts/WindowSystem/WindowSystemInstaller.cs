@@ -55,6 +55,8 @@ namespace WindowSystem
 		{
 			var canvas = Container.InstantiatePrefabForComponent<Canvas>(rootCanvas);
 			canvas.sortingOrder = sortingOrder;
+//			Container.Bind<UICanvas>().AsSingle().WithArguments(canvas);
+			Container.Bind<Canvas>().FromInstance(canvas).AsSingle();
 
 			switch (loadingTypes)
 			{

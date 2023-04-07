@@ -1,5 +1,5 @@
-using Addressables;
 using Cysharp.Threading.Tasks;
+using Tools.Addressables;
 using UnityEngine;
 using Zenject;
 
@@ -8,15 +8,15 @@ namespace Loading.Steps
     [CreateAssetMenu(menuName = "Game/Loading/Game Addressable Step")]
     public class GameAddressableLoadingStep : GameLoadingStep
     {
-        private AddressableAssetPreloader assetPreloader;
+        private AddressableAssetPreloader _addressableAssetPreloader;
         public override int StepWeight => 1;
 
         [Inject]
-        private void Construct(AddressableAssetPreloader assetPreloader)
+        private void Construct(AddressableAssetPreloader addressableAssetPreloader)
         {
-            this.assetPreloader = assetPreloader;
+            _addressableAssetPreloader = addressableAssetPreloader;
         }
 
-        public override UniTask LoadStep() => assetPreloader.PreloadAssetsAsync();
+        public override UniTask LoadStep() => _addressableAssetPreloader.PreloadAssetsAsync();
     }
 }

@@ -9,10 +9,7 @@ using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
-
-using Photon.Chat;
 using Photon.Realtime;
-using AuthenticationValues = Photon.Chat.AuthenticationValues;
 #if PHOTON_UNITY_NETWORKING
 using Photon.Pun;
 #endif
@@ -120,29 +117,29 @@ namespace Photon.Chat.Demo
 
         public void Start()
         {
-            DontDestroyOnLoad(this.gameObject);
+            DontDestroyOnLoad(gameObject);
 
-            this.UserIdText.text = "";
-            this.StateText.text  = "";
-            this.StateText.gameObject.SetActive(true);
-            this.UserIdText.gameObject.SetActive(true);
-            this.Title.SetActive(true);
-            this.ChatPanel.gameObject.SetActive(false);
-            this.ConnectingLabel.SetActive(false);
+            UserIdText.text = "";
+            StateText.text  = "";
+            StateText.gameObject.SetActive(true);
+            UserIdText.gameObject.SetActive(true);
+            Title.SetActive(true);
+            ChatPanel.gameObject.SetActive(false);
+            ConnectingLabel.SetActive(false);
 
-            if (string.IsNullOrEmpty(this.UserName))
+            if (string.IsNullOrEmpty(UserName))
             {
-                this.UserName = "user" + Environment.TickCount%99; //made-up username
+                UserName = "user" + Environment.TickCount%99; //made-up username
             }
 
             #if PHOTON_UNITY_NETWORKING
-            this.chatAppSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
+            chatAppSettings = PhotonNetwork.PhotonServerSettings.AppSettings.GetChatSettings();
             #endif
 
-            bool appIdPresent = !string.IsNullOrEmpty(this.chatAppSettings.AppIdChat);
+            bool appIdPresent = !string.IsNullOrEmpty(chatAppSettings.AppIdChat);
 
-            this.missingAppIdErrorPanel.SetActive(!appIdPresent);
-            this.UserIdFormPanel.gameObject.SetActive(appIdPresent);
+            missingAppIdErrorPanel.SetActive(!appIdPresent);
+            UserIdFormPanel.gameObject.SetActive(appIdPresent);
 
             if (!appIdPresent)
             {
@@ -152,54 +149,54 @@ namespace Photon.Chat.Demo
 
         public void Connect()
         {
-            this.UserIdFormPanel.gameObject.SetActive(false);
+            UserIdFormPanel.gameObject.SetActive(false);
 
-            this.chatClient = new ChatClient(this);
+            chatClient = new ChatClient(this);
             #if !UNITY_WEBGL
-            this.chatClient.UseBackgroundWorkerForSending = true;
+            chatClient.UseBackgroundWorkerForSending = true;
             #endif
-            this.chatClient.AuthValues = new AuthenticationValues(this.UserName);
-            this.chatClient.ConnectUsingSettings(this.chatAppSettings);
+            chatClient.AuthValues = new AuthenticationValues(UserName);
+            chatClient.ConnectUsingSettings(chatAppSettings);
 
-            this.ChannelToggleToInstantiate.gameObject.SetActive(false);
-            Debug.Log("Connecting as: " + this.UserName);
+            ChannelToggleToInstantiate.gameObject.SetActive(false);
+            Debug.Log("Connecting as: " + UserName);
 
-            this.ConnectingLabel.SetActive(true);
+            ConnectingLabel.SetActive(true);
         }
 
         /// <summary>To avoid that the Editor becomes unresponsive, disconnect all Photon connections in OnDestroy.</summary>
         public void OnDestroy()
         {
-            if (this.chatClient != null)
+            if (chatClient != null)
             {
-                this.chatClient.Disconnect();
+                chatClient.Disconnect();
             }
         }
 
         /// <summary>To avoid that the Editor becomes unresponsive, disconnect all Photon connections in OnApplicationQuit.</summary>
         public void OnApplicationQuit()
         {
-            if (this.chatClient != null)
+            if (chatClient != null)
             {
-                this.chatClient.Disconnect();
+                chatClient.Disconnect();
             }
         }
 
         public void Update()
         {
-            if (this.chatClient != null)
+            if (chatClient != null)
             {
-                this.chatClient.Service(); // make sure to call this regularly! it limits effort internally, so calling often is ok!
+                chatClient.Service(); // make sure to call this regularly! it limits effort internally, so calling often is ok!
             }
 
             // check if we are missing context, which means we got kicked out to get back to the Photon Demo hub.
-            if ( this.StateText == null)
+            if ( StateText == null)
             {
-                Destroy(this.gameObject);
+                Destroy(gameObject);
                 return;
             }
 
-            this.StateText.gameObject.SetActive(this.ShowState); // this could be handled more elegantly, but for the demo it's ok.
+            StateText.gameObject.SetActive(ShowState); // this could be handled more elegantly, but for the demo it's ok.
         }
 
 
@@ -207,17 +204,17 @@ namespace Photon.Chat.Demo
         {
             if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
             {
-                this.SendChatMessage(this.InputFieldChat.text);
-                this.InputFieldChat.text = "";
+                SendChatMessage(InputFieldChat.text);
+                InputFieldChat.text = "";
             }
         }
 
         public void OnClickSend()
         {
-            if (this.InputFieldChat != null)
+            if (InputFieldChat != null)
             {
-                this.SendChatMessage(this.InputFieldChat.text);
-                this.InputFieldChat.text = "";
+                SendChatMessage(InputFieldChat.text);
+                InputFieldChat.text = "";
             }
         }
 
@@ -233,23 +230,23 @@ namespace Photon.Chat.Demo
             }
             if ("test".Equals(inputLine))
             {
-                if (this.TestLength != this.testBytes.Length)
+                if (TestLength != testBytes.Length)
                 {
-                    this.testBytes = new byte[this.TestLength];
+                    testBytes = new byte[TestLength];
                 }
 
-                this.chatClient.SendPrivateMessage(this.chatClient.AuthValues.UserId, this.testBytes, true);
+                chatClient.SendPrivateMessage(chatClient.AuthValues.UserId, testBytes, true);
             }
 
 
-            bool doingPrivateChat = this.chatClient.PrivateChannels.ContainsKey(this.selectedChannelName);
+            bool doingPrivateChat = chatClient.PrivateChannels.ContainsKey(selectedChannelName);
             string privateChatTarget = string.Empty;
             if (doingPrivateChat)
             {
                 // the channel name for a private conversation is (on the client!!) always composed of both user's IDs: "this:remote"
                 // so the remote ID is simple to figure out
 
-                string[] splitNames = this.selectedChannelName.Split(new char[] { ':' });
+                string[] splitNames = selectedChannelName.Split(new char[] { ':' });
                 privateChatTarget = splitNames[1];
             }
             //UnityEngine.Debug.Log("selectedChannelName: " + selectedChannelName + " doingPrivateChat: " + doingPrivateChat + " privateChatTarget: " + privateChatTarget);
@@ -260,7 +257,7 @@ namespace Photon.Chat.Demo
                 string[] tokens = inputLine.Split(new char[] {' '}, 2);
                 if (tokens[0].Equals("\\help"))
                 {
-                    this.PostHelpToCurrentChannel();
+                    PostHelpToCurrentChannel();
                 }
                 if (tokens[0].Equals("\\state"))
                 {
@@ -281,26 +278,26 @@ namespace Photon.Chat.Demo
                         messages.Add(subtokens[1]);
                     }
 
-                    this.chatClient.SetOnlineStatus(newState,messages.ToArray()); // this is how you set your own state and (any) message
+                    chatClient.SetOnlineStatus(newState,messages.ToArray()); // this is how you set your own state and (any) message
                 }
                 else if ((tokens[0].Equals("\\subscribe") || tokens[0].Equals("\\s")) && !string.IsNullOrEmpty(tokens[1]))
                 {
-                    this.chatClient.Subscribe(tokens[1].Split(new char[] {' ', ','}));
+                    chatClient.Subscribe(tokens[1].Split(new char[] {' ', ','}));
                 }
                 else if ((tokens[0].Equals("\\unsubscribe") || tokens[0].Equals("\\u")) && !string.IsNullOrEmpty(tokens[1]))
                 {
-                    this.chatClient.Unsubscribe(tokens[1].Split(new char[] {' ', ','}));
+                    chatClient.Unsubscribe(tokens[1].Split(new char[] {' ', ','}));
                 }
                 else if (tokens[0].Equals("\\clear"))
                 {
                     if (doingPrivateChat)
                     {
-                        this.chatClient.PrivateChannels.Remove(this.selectedChannelName);
+                        chatClient.PrivateChannels.Remove(selectedChannelName);
                     }
                     else
                     {
                         ChatChannel channel;
-                        if (this.chatClient.TryGetChannel(this.selectedChannelName, doingPrivateChat, out channel))
+                        if (chatClient.TryGetChannel(selectedChannelName, doingPrivateChat, out channel))
                         {
                             channel.ClearMessages();
                         }
@@ -313,20 +310,20 @@ namespace Photon.Chat.Demo
 
                     string targetUser = subtokens[0];
                     string message = subtokens[1];
-                    this.chatClient.SendPrivateMessage(targetUser, message);
+                    chatClient.SendPrivateMessage(targetUser, message);
                 }
                 else if ((tokens[0].Equals("\\join") || tokens[0].Equals("\\j")) && !string.IsNullOrEmpty(tokens[1]))
                 {
                     string[] subtokens = tokens[1].Split(new char[] { ' ', ',' }, 2);
 
                     // If we are already subscribed to the channel we directly switch to it, otherwise we subscribe to it first and then switch to it implicitly
-                    if (this.channelToggles.ContainsKey(subtokens[0]))
+                    if (channelToggles.ContainsKey(subtokens[0]))
                     {
-                        this.ShowChannel(subtokens[0]);
+                        ShowChannel(subtokens[0]);
                     }
                     else
                     {
-                        this.chatClient.Subscribe(new string[] { subtokens[0] });
+                        chatClient.Subscribe(new string[] { subtokens[0] });
                     }
                 }
                 #if CHAT_EXTENDED
@@ -348,18 +345,18 @@ namespace Photon.Chat.Demo
             {
                 if (doingPrivateChat)
                 {
-                    this.chatClient.SendPrivateMessage(privateChatTarget, inputLine);
+                    chatClient.SendPrivateMessage(privateChatTarget, inputLine);
                 }
                 else
                 {
-                    this.chatClient.PublishMessage(this.selectedChannelName, inputLine);
+                    chatClient.PublishMessage(selectedChannelName, inputLine);
                 }
             }
         }
 
         public void PostHelpToCurrentChannel()
         {
-            this.CurrentChannelText.text += HelpText;
+            CurrentChannelText.text += HelpText;
         }
 
         public void DebugReturn(ExitGames.Client.Photon.DebugLevel level, string message)
@@ -380,46 +377,46 @@ namespace Photon.Chat.Demo
 
         public void OnConnected()
         {
-            if (this.ChannelsToJoinOnConnect != null && this.ChannelsToJoinOnConnect.Length > 0)
+            if (ChannelsToJoinOnConnect != null && ChannelsToJoinOnConnect.Length > 0)
             {
-                this.chatClient.Subscribe(this.ChannelsToJoinOnConnect, this.HistoryLengthToFetch);
+                chatClient.Subscribe(ChannelsToJoinOnConnect, HistoryLengthToFetch);
             }
 
-            this.ConnectingLabel.SetActive(false);
+            ConnectingLabel.SetActive(false);
 
-            this.UserIdText.text = "Connected as "+ this.UserName;
+            UserIdText.text = "Connected as "+ UserName;
 
-            this.ChatPanel.gameObject.SetActive(true);
+            ChatPanel.gameObject.SetActive(true);
 
-            if (this.FriendsList!=null  && this.FriendsList.Length>0)
+            if (FriendsList!=null  && FriendsList.Length>0)
             {
-                this.chatClient.AddFriends(this.FriendsList); // Add some users to the server-list to get their status updates
+                chatClient.AddFriends(FriendsList); // Add some users to the server-list to get their status updates
 
                 // add to the UI as well
-                foreach(string _friend in this.FriendsList)
+                foreach(string _friend in FriendsList)
                 {
-                    if (this.FriendListUiItemtoInstantiate != null && _friend!= this.UserName)
+                    if (FriendListUiItemtoInstantiate != null && _friend!= UserName)
                     {
-                        this.InstantiateFriendButton(_friend);
+                        InstantiateFriendButton(_friend);
                     }
 
                 }
 
             }
 
-            if (this.FriendListUiItemtoInstantiate != null)
+            if (FriendListUiItemtoInstantiate != null)
             {
-                this.FriendListUiItemtoInstantiate.SetActive(false);
+                FriendListUiItemtoInstantiate.SetActive(false);
             }
 
 
-            this.chatClient.SetOnlineStatus(ChatUserStatus.Online); // You can set your online state (without a mesage).
+            chatClient.SetOnlineStatus(ChatUserStatus.Online); // You can set your online state (without a mesage).
         }
 
         public void OnDisconnected()
         {
             Debug.Log("OnDisconnected()");
-            this.ConnectingLabel.SetActive(false);
+            ConnectingLabel.SetActive(false);
         }
 
         public void OnChatStateChange(ChatState state)
@@ -427,7 +424,7 @@ namespace Photon.Chat.Demo
             // use OnConnected() and OnDisconnected()
             // this method might become more useful in the future, when more complex states are being used.
 
-            this.StateText.text = state.ToString();
+            StateText.text = state.ToString();
         }
 
         public void OnSubscribed(string[] channels, bool[] results)
@@ -435,11 +432,11 @@ namespace Photon.Chat.Demo
             // in this demo, we simply send a message into each channel. This is NOT a must have!
             foreach (string channel in channels)
             {
-                this.chatClient.PublishMessage(channel, "says 'hi'."); // you don't HAVE to send a msg on join but you could.
+                chatClient.PublishMessage(channel, "says 'hi'."); // you don't HAVE to send a msg on join but you could.
 
-                if (this.ChannelToggleToInstantiate != null)
+                if (ChannelToggleToInstantiate != null)
                 {
-                    this.InstantiateChannelButton(channel);
+                    InstantiateChannelButton(channel);
 
                 }
             }
@@ -467,7 +464,7 @@ namespace Photon.Chat.Demo
             */
 
             // Switch to the first newly created channel
-            this.ShowChannel(channels[0]);
+            ShowChannel(channels[0]);
         }
 
         /// <inheritdoc />
@@ -478,31 +475,31 @@ namespace Photon.Chat.Demo
 
         private void InstantiateChannelButton(string channelName)
         {
-            if (this.channelToggles.ContainsKey(channelName))
+            if (channelToggles.ContainsKey(channelName))
             {
                 Debug.Log("Skipping creation for an existing channel toggle.");
                 return;
             }
 
-            Toggle cbtn = (Toggle)Instantiate(this.ChannelToggleToInstantiate);
+            Toggle cbtn = (Toggle)Instantiate(ChannelToggleToInstantiate);
             cbtn.gameObject.SetActive(true);
             cbtn.GetComponentInChildren<ChannelSelector>().SetChannel(channelName);
-            cbtn.transform.SetParent(this.ChannelToggleToInstantiate.transform.parent, false);
+            cbtn.transform.SetParent(ChannelToggleToInstantiate.transform.parent, false);
 
-            this.channelToggles.Add(channelName, cbtn);
+            channelToggles.Add(channelName, cbtn);
         }
 
         private void InstantiateFriendButton(string friendId)
         {
-            GameObject fbtn = (GameObject)Instantiate(this.FriendListUiItemtoInstantiate);
+            GameObject fbtn = (GameObject)Instantiate(FriendListUiItemtoInstantiate);
             fbtn.gameObject.SetActive(true);
             FriendItem  _friendItem =	fbtn.GetComponent<FriendItem>();
 
             _friendItem.FriendId = friendId;
 
-            fbtn.transform.SetParent(this.FriendListUiItemtoInstantiate.transform.parent, false);
+            fbtn.transform.SetParent(FriendListUiItemtoInstantiate.transform.parent, false);
 
-            this.friendListItemLUT[friendId] = _friendItem;
+            friendListItemLUT[friendId] = _friendItem;
         }
 
 
@@ -510,22 +507,22 @@ namespace Photon.Chat.Demo
         {
             foreach (string channelName in channels)
             {
-                if (this.channelToggles.ContainsKey(channelName))
+                if (channelToggles.ContainsKey(channelName))
                 {
-                    Toggle t = this.channelToggles[channelName];
+                    Toggle t = channelToggles[channelName];
                     Destroy(t.gameObject);
 
-                    this.channelToggles.Remove(channelName);
+                    channelToggles.Remove(channelName);
 
                     Debug.Log("Unsubscribed from channel '" + channelName + "'.");
 
                     // Showing another channel if the active channel is the one we unsubscribed from before
-                    if (channelName == this.selectedChannelName && this.channelToggles.Count > 0)
+                    if (channelName == selectedChannelName && channelToggles.Count > 0)
                     {
-                        IEnumerator<KeyValuePair<string, Toggle>> firstEntry = this.channelToggles.GetEnumerator();
+                        IEnumerator<KeyValuePair<string, Toggle>> firstEntry = channelToggles.GetEnumerator();
                         firstEntry.MoveNext();
 
-                        this.ShowChannel(firstEntry.Current.Key);
+                        ShowChannel(firstEntry.Current.Key);
 
                         firstEntry.Current.Value.isOn = true;
                     }
@@ -539,10 +536,10 @@ namespace Photon.Chat.Demo
 
         public void OnGetMessages(string channelName, string[] senders, object[] messages)
         {
-            if (channelName.Equals(this.selectedChannelName))
+            if (channelName.Equals(selectedChannelName))
             {
                 // update text
-                this.ShowChannel(this.selectedChannelName);
+                ShowChannel(selectedChannelName);
             }
         }
 
@@ -550,16 +547,16 @@ namespace Photon.Chat.Demo
         {
             // as the ChatClient is buffering the messages for you, this GUI doesn't need to do anything here
             // you also get messages that you sent yourself. in that case, the channelName is determinded by the target of your msg
-            this.InstantiateChannelButton(channelName);
+            InstantiateChannelButton(channelName);
 
             byte[] msgBytes = message as byte[];
             if (msgBytes != null)
             {
                 Debug.Log("Message with byte[].Length: "+ msgBytes.Length);
             }
-            if (this.selectedChannelName.Equals(channelName))
+            if (selectedChannelName.Equals(channelName))
             {
-                this.ShowChannel(channelName);
+                ShowChannel(channelName);
             }
         }
 
@@ -576,9 +573,9 @@ namespace Photon.Chat.Demo
 
             Debug.LogWarning("status: " + string.Format("{0} is {1}. Msg:{2}", user, status, message));
 
-            if (this.friendListItemLUT.ContainsKey(user))
+            if (friendListItemLUT.ContainsKey(user))
             {
-                FriendItem _friendItem = this.friendListItemLUT[user];
+                FriendItem _friendItem = friendListItemLUT[user];
                 if ( _friendItem!=null) _friendItem.OnFriendStatusUpdate(status,gotMessage,message);
             }
         }
@@ -613,10 +610,10 @@ namespace Photon.Chat.Demo
         public void AddMessageToSelectedChannel(string msg)
         {
             ChatChannel channel = null;
-            bool found = this.chatClient.TryGetChannel(this.selectedChannelName, out channel);
+            bool found = chatClient.TryGetChannel(selectedChannelName, out channel);
             if (!found)
             {
-                Debug.Log("AddMessageToSelectedChannel failed to find channel: " + this.selectedChannelName);
+                Debug.Log("AddMessageToSelectedChannel failed to find channel: " + selectedChannelName);
                 return;
             }
 
@@ -636,18 +633,18 @@ namespace Photon.Chat.Demo
             }
 
             ChatChannel channel = null;
-            bool found = this.chatClient.TryGetChannel(channelName, out channel);
+            bool found = chatClient.TryGetChannel(channelName, out channel);
             if (!found)
             {
                 Debug.Log("ShowChannel failed to find channel: " + channelName);
                 return;
             }
 
-            this.selectedChannelName = channelName;
-            this.CurrentChannelText.text = channel.ToStringMessages();
-            Debug.Log("ShowChannel: " + this.selectedChannelName);
+            selectedChannelName = channelName;
+            CurrentChannelText.text = channel.ToStringMessages();
+            Debug.Log("ShowChannel: " + selectedChannelName);
 
-            foreach (KeyValuePair<string, Toggle> pair in this.channelToggles)
+            foreach (KeyValuePair<string, Toggle> pair in channelToggles)
             {
                 pair.Value.isOn = pair.Key == channelName ? true : false;
             }

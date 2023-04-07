@@ -12,8 +12,8 @@ namespace WindowSystem.Controller
 	public abstract class WindowControllerBase<TWindowView> : IWindowController, IDisposableOwner
 		where TWindowView : WindowViewBase
 	{
-		private readonly CompositeDisposable compositeDisposable = new CompositeDisposable();
-		private IInstantiator instantiator;
+		private readonly CompositeDisposable _compositeDisposable = new CompositeDisposable();
+		private IInstantiator _instantiator;
 
 		public UIElementState State => View.State;
 		public virtual bool CanOverlapScreen => false;
@@ -25,13 +25,13 @@ namespace WindowSystem.Controller
 			IInstantiator instantiator,
 			IWindowsManager windowsManager)
 		{
-			this.instantiator = instantiator;
+			_instantiator = instantiator;
 			WindowsManager = windowsManager;
 		}
 
 		public void Initialize() => DoInitialize();
-		public void AddOwnership(IDisposable disposable) => compositeDisposable.Add(disposable);
-		public void RemoveOwnership(IDisposable disposable) => compositeDisposable.Remove(disposable);
+		public void AddOwnership(IDisposable disposable) => _compositeDisposable.Add(disposable);
+		public void RemoveOwnership(IDisposable disposable) => _compositeDisposable.Remove(disposable);
 
 		protected virtual void DoInitialize()
 		{
@@ -58,7 +58,7 @@ namespace WindowSystem.Controller
 		protected TController CreateSubController<TController>(params object[] args)
 			where TController : class, IInitializable, IDisposable
 		{
-			var controller = instantiator.Instantiate<TController>(args);
+			var controller = _instantiator.Instantiate<TController>(args);
 			AddOwnership(controller);
 			return controller;
 		}
@@ -83,7 +83,7 @@ namespace WindowSystem.Controller
 
 		void IDisposable.Dispose()
 		{
-			compositeDisposable.Dispose();
+			_compositeDisposable.Dispose();
 			DoDispose();
 		}
 	}

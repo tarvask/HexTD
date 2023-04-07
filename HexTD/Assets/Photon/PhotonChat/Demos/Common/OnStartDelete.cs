@@ -18,7 +18,7 @@ namespace Photon.Chat.UtilityScripts
         // Use this for initialization
         private void Start()
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
     }
 }

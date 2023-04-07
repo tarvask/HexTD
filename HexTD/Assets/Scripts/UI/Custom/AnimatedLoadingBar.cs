@@ -5,7 +5,7 @@ namespace UI.Custom
 {
 	public class AnimatedLoadingBar : LoadingBar
 	{
-		[SerializeField] private float animationTime = 0.5f;
+		[SerializeField] private float animationTime = 0.2f;
 		[SerializeField] private AnimationCurve animationCurve;
 
 		public bool InProgress { get; private set; }
