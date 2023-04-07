@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using Match.Field;
 using Match.Field.Mob;
 using Match.Field.Tower;
 using Match.Windows.Tower;
+using Services;
 using Tools;
 using UniRx;
 using UnityEngine;
@@ -13,16 +15,16 @@ namespace Match.Windows.MainMenu
         public struct Context
         {
             public PlayerHandSelectionPanelView View { get; }
-            public TowersConfig TowersConfig { get; }
-            public TowerConfigRetriever TowerConfigRetriever { get; }
+            public FieldConfig FieldConfig { get; }
+            public ConfigsRetriever ConfigsRetriever { get; }
             public ReactiveProperty<byte> SelectedHandIndexReactiveProperty { get; }
 
-            public Context(PlayerHandSelectionPanelView view, TowersConfig towersConfig, TowerConfigRetriever towerConfigRetriever,
+            public Context(PlayerHandSelectionPanelView view, FieldConfig fieldConfig, ConfigsRetriever configsRetriever,
                 ReactiveProperty<byte> selectedHandIndexReactiveProperty)
             {
                 View = view;
-                TowersConfig = towersConfig;
-                TowerConfigRetriever = towerConfigRetriever;
+                FieldConfig = fieldConfig;
+                ConfigsRetriever = configsRetriever;
                 SelectedHandIndexReactiveProperty = selectedHandIndexReactiveProperty;
             }
         }
@@ -97,9 +99,9 @@ namespace Match.Windows.MainMenu
 
         private void CreateTowersInventory()
         {
-            _towersInventory = new List<PlayerHandSelectionPossibleItemController>(_context.TowersConfig.Towers.Count);
+            _towersInventory = new List<PlayerHandSelectionPossibleItemController>(_context.FieldConfig.TowersConfig.Towers.Count);
             
-            foreach (TowerConfig towerConfig in _context.TowersConfig.Towers)
+            foreach (TowerConfig towerConfig in _context.FieldConfig.TowersConfig.Towers)
             {
                 PlayerHandSelectionPossibleItemView towerItemView =
                     Object.Instantiate(_context.View.PossibleTowerItemPrefab, GetElementRootByRace(towerConfig.Parameters.RegularParameters.Data.RaceType));
@@ -159,7 +161,7 @@ namespace Match.Windows.MainMenu
         private void ChangeTowerInHand(TowerInHandChangeParameters towerInHandChangeParameters)
         {
             _hands[towerInHandChangeParameters.HandNumber][towerInHandChangeParameters.SlotNumber] =
-                _context.TowerConfigRetriever.GetTowerByType(towerInHandChangeParameters.TowerType);
+                _context.ConfigsRetriever.GetTowerByType(towerInHandChangeParameters.TowerType);
             RefreshTowersInHand();
         }
 

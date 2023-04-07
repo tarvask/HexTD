@@ -8,6 +8,7 @@ using Match.Field.State;
 using Match.Field.Tower;
 using Match.State;
 using Match.Wave;
+using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -66,9 +67,7 @@ namespace Match
         }
 
         private readonly Context _context;
-        private readonly FieldConfigCellsRetriever _configCellsRetriever;
-        private readonly TowerConfigRetriever _towerConfigRetriever;
-        private readonly MobConfigRetriever _mobConfigRetriever;
+        private readonly ConfigsRetriever _configsRetriever;
         private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
@@ -113,24 +112,15 @@ namespace Match
             ReactiveCommand<int> enemyCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<int> ourCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
 
-            // cells retriever
-            FieldConfigCellsRetriever.Context configCellsRetrieverContext = new FieldConfigCellsRetriever.Context(_context.MatchView.FieldConfig);
-            _configCellsRetriever = AddDisposable(new FieldConfigCellsRetriever(configCellsRetrieverContext));
-            
-            // towers retriever
-            TowerConfigRetriever.Context towerConfigRetriever = new TowerConfigRetriever.Context(_context.FieldConfig.TowersConfig);
-            _towerConfigRetriever = AddDisposable(new TowerConfigRetriever(towerConfigRetriever));
-
-            // mobs retriever
-            MobConfigRetriever.Context mobConfigRetrieverContext = new MobConfigRetriever.Context(_context.FieldConfig.MobsConfig);
-            _mobConfigRetriever = AddDisposable(new MobConfigRetriever(mobConfigRetrieverContext));
+            ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_context.FieldConfig);
+            _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
 
             WaveParams[] waves = ((MatchParameters) _context.MatchShortParameters).Waves;
             
             // windows
             WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
                 _context.MatchView.MatchUiViews, _context.MatchView.MainCamera, _context.MatchView.Canvas,
-                _towerConfigRetriever, _mobConfigRetriever,
+                _configsRetriever,
                 _context.MatchShortParameters.HandParams,
                 waves,
                 
@@ -151,7 +141,7 @@ namespace Match
             // fields
             FieldController.Context enemyFieldContext = new FieldController.Context(_context.MatchView.EnemyFieldView,
                 _context.MatchShortParameters, _context.FieldConfig,
-                _configCellsRetriever, _towerConfigRetriever, _mobConfigRetriever,
+                _configsRetriever,
                 false,
                 _windowsManager.MatchInfoPanelController,
                 _windowsManager.TowerSelectionWindowController,
@@ -174,7 +164,7 @@ namespace Match
 
             FieldController.Context ourFieldContext = new FieldController.Context(_context.MatchView.OurFieldView,
                 _context.MatchShortParameters, _context.FieldConfig,
-                _configCellsRetriever, _towerConfigRetriever, _mobConfigRetriever,
+                _configsRetriever,
                 true,
                 _windowsManager.MatchInfoPanelController,
                 _windowsManager.TowerSelectionWindowController,
@@ -217,7 +207,8 @@ namespace Match
             }
             
             // wave mob spawner
-            WaveMobSpawnerCoordinator.Context waveMobSpawnerContext = new WaveMobSpawnerCoordinator.Context(_mobConfigRetriever,
+            WaveMobSpawnerCoordinator.Context waveMobSpawnerContext = new WaveMobSpawnerCoordinator.Context(
+                _configsRetriever,
                 _context.FieldConfig,
                 _context.MatchCommandsCommon.IncomingGeneral,
                 player1MatchCommands.Incoming,

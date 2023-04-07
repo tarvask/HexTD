@@ -1,4 +1,5 @@
 using Match;
+using Match.Field;
 using Match.Field.Tower;
 using Match.Windows.MainMenu;
 using Tools;
@@ -13,7 +14,7 @@ public class MainMenuView : BaseMonoBehaviour
     [SerializeField] private ChooseLevelPanelView chooseLevelPanelView;
 
     [Space] [SerializeField] private MatchesConfig levelsConfig;
-    [SerializeField] private TowersConfig towersConfig;
+    [SerializeField] private FieldConfig fieldConfig;
 
     public MainMenuPanelView MainMenuPanelView => mainMenuPanelView;
         
@@ -22,5 +23,5 @@ public class MainMenuView : BaseMonoBehaviour
     public ChooseLevelPanelView ChooseLevelPanelView => chooseLevelPanelView;
 
     public MatchesConfig LevelsConfig => levelsConfig;
-    public TowersConfig TowersConfig => towersConfig;
+    public FieldConfig FieldConfig => fieldConfig;
 }

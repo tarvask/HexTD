@@ -4,6 +4,7 @@ using Match.Commands;
 using Match.Field;
 using Match.Field.Mob;
 using Match.Wave.State;
+using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -14,7 +15,7 @@ namespace Match.Wave.WaveMobSpawnerImplementations
     {
         public struct Context
         {
-            public MobConfigRetriever MobConfigRetriever { get; }
+            public ConfigsRetriever ConfigsRetriever { get; }
             public FieldConfig FieldConfig { get; }
             public MatchCommonCommands.IncomingGeneralCommands IncomingGeneralGeneralCommands { get; }
             public MatchCommands.IncomingCommands Player1IncomingCommands { get; }
@@ -34,7 +35,8 @@ namespace Match.Wave.WaveMobSpawnerImplementations
             public IReadOnlyReactiveProperty<bool> HasMobsOnEnemyField { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnOurField { get; }
 
-            public Context(MobConfigRetriever mobConfigRetriever,
+            public Context(
+                ConfigsRetriever configsRetriever,
                 FieldConfig fieldConfig,
                 MatchCommonCommands.IncomingGeneralCommands incomingGeneralCommands,
                 MatchCommands.IncomingCommands player1IncomingCommands,
@@ -54,7 +56,7 @@ namespace Match.Wave.WaveMobSpawnerImplementations
                 IReadOnlyReactiveProperty<bool> hasMobsOnEnemyField,
                 IReadOnlyReactiveProperty<bool> hasMobsOnOurField)
             {
-                MobConfigRetriever = mobConfigRetriever;
+                ConfigsRetriever = configsRetriever;
                 FieldConfig = fieldConfig;
                 IncomingGeneralGeneralCommands = incomingGeneralCommands;
                 Player1IncomingCommands = player1IncomingCommands;
@@ -296,7 +298,7 @@ namespace Match.Wave.WaveMobSpawnerImplementations
         private void Spawn(byte mobId, ReactiveCommand<MobConfig> spawnPlayerMobReactiveCommand, bool canSpawn)
         {
             if (canSpawn)
-                spawnPlayerMobReactiveCommand.Execute(_context.MobConfigRetriever.GetMobById(mobId));
+                spawnPlayerMobReactiveCommand.Execute(_context.ConfigsRetriever.GetMobById(mobId));
         }
 
         protected override void OnDispose()
