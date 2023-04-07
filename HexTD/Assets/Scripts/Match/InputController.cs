@@ -12,15 +12,12 @@ namespace Match
         {
             public HexInteractService HexInteractService { get; }
             public ReactiveCommand<Hex2d> ClickEvent { get; }
-            public IReadOnlyReactiveProperty<int> OpenWindowsCountReactiveProperty { get; }
 
             public Context(HexInteractService hexInteractService,
-                ReactiveCommand<Hex2d> clickEvent,
-                IReadOnlyReactiveProperty<int> openWindowsCountReactiveProperty)
+                ReactiveCommand<Hex2d> clickEvent)
             {
                 HexInteractService = hexInteractService;
                 ClickEvent = clickEvent;
-                OpenWindowsCountReactiveProperty = openWindowsCountReactiveProperty;
             }
         }
 
@@ -30,8 +27,6 @@ namespace Match
         public InputController(Context context)
         {
             _context = context;
-            
-            _context.OpenWindowsCountReactiveProperty.Subscribe(OpenWindowsCountChangedHandler);
         }
 
         public void OuterLogicUpdate(float frameLength)
@@ -47,11 +42,6 @@ namespace Match
         private void UnlockInput()
         {
             _isInteractable = true;
-        }
-        
-        private void OpenWindowsCountChangedHandler(int openWindowsCount)
-        {
-            _isInteractable = openWindowsCount == 0;
         }
 
         private void GetInput()

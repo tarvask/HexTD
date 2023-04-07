@@ -23,22 +23,12 @@ namespace Match.Commands
             public CurrencyController CurrencyController { get; }
             public MatchCommands MatchCommands { get; }
             
-            public MatchInfoPanelController MatchInfoPanelController { get; }
-            public TowerSelectionWindowController TowerSelectionWindowController { get; }
-            public TowerManipulationWindowController TowerManipulationWindowController { get; }
-            public TowerInfoWindowController TowerInfoWindowController { get; }
-
             public Context(
                 FieldModel fieldModel, FieldClicksHandler clicksHandler, TowerConfigRetriever towerConfigRetriever,
                 FieldConstructionProcessController constructionProcessController,
                 ShootingController shootingController,
                 CurrencyController currencyController,
-                MatchCommands matchCommands,
-                
-                MatchInfoPanelController matchInfoPanelController,
-                TowerSelectionWindowController towerSelectionWindowController,
-                TowerManipulationWindowController towerManipulationWindowController,
-                TowerInfoWindowController towerInfoWindowController)
+                MatchCommands matchCommands)
             {
                 FieldModel = fieldModel;
                 ClicksHandler = clicksHandler;
@@ -47,11 +37,6 @@ namespace Match.Commands
                 ShootingController = shootingController;
                 CurrencyController = currencyController;
                 MatchCommands = matchCommands;
-
-                MatchInfoPanelController = matchInfoPanelController;
-                TowerSelectionWindowController = towerSelectionWindowController;
-                TowerManipulationWindowController = towerManipulationWindowController;
-                TowerInfoWindowController = towerInfoWindowController;
             }
         }
 
@@ -92,14 +77,14 @@ namespace Match.Commands
 
         private void ProcessPreBuild(Hex2d clickedCell)
         {
-            _context.TowerSelectionWindowController.ShowWindow(_context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
-                (towerToBuild) =>
-            {
-                TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerToBuild.TowerType);
-                
-                if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.Parameters.Levels[0].LevelRegularParams.Data.Price)
-                    _context.MatchCommands.Outgoing.RequestBuildTower.Fire(clickedCell, towerToBuild);
-            });
+            //_context.TowerSelectionWindowController.ShowWindow(_context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
+            //    (towerToBuild) =>
+            //{
+            //    TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerToBuild.TowerType);
+            //    
+            //    if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.Parameters.Levels[0].LevelRegularParams.Data.Price)
+            //        _context.MatchCommands.Outgoing.RequestBuildTower.Fire(clickedCell, towerToBuild);
+            //});
         }
 
         private void ProcessBuild(Hex2d position, TowerShortParams towerShortParams)
@@ -134,25 +119,25 @@ namespace Match.Commands
             TowerShortParams towerShortParams = towerInstance.GetShortParams();
             TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerShortParams.TowerType);
             
-            _context.TowerManipulationWindowController.ShowWindow(towerConfig.Parameters, towerShortParams.Level,
-                _context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
-                () =>
-                {
-                    if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.Parameters.Levels[towerShortParams.Level].LevelRegularParams.Data.Price)
-                        _context.MatchCommands.Outgoing.RequestUpgradeTower.Fire(clickedHex, towerShortParams);
-                },
-                () =>
-                {
-                    towerInstance.ShowSelection();
-                    _context.TowerInfoWindowController.ShowWindow(towerConfig.Parameters, towerShortParams.Level,
-                        //towerInstance.Buffs,
-                        () =>
-                        {
-                            towerInstance.HideSelection();
-                            _context.TowerManipulationWindowController.ShowWindow();
-                        });
-                },
-                () => _context.MatchCommands.Outgoing.RequestSellTower.Fire(clickedHex, towerShortParams));
+            //_context.TowerManipulationWindowController.ShowWindow(towerConfig.Parameters, towerShortParams.Level,
+            //    _context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
+            //    () =>
+            //    {
+            //        if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.Parameters.Levels[towerShortParams.Level].LevelRegularParams.Data.Price)
+            //            _context.MatchCommands.Outgoing.RequestUpgradeTower.Fire(clickedHex, towerShortParams);
+            //    },
+            //    () =>
+            //    {
+            //        towerInstance.ShowSelection();
+            //        _context.TowerInfoWindowController.ShowWindow(towerConfig.Parameters, towerShortParams.Level,
+            //            //towerInstance.Buffs,
+            //            () =>
+            //            {
+            //                towerInstance.HideSelection();
+            //                _context.TowerManipulationWindowController.ShowWindow();
+            //            });
+            //    },
+            //    () => _context.MatchCommands.Outgoing.RequestSellTower.Fire(clickedHex, towerShortParams));
         }
 
         private void ProcessUpgrade(Hex2d position, TowerShortParams towerShortParams)

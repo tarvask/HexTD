@@ -1,6 +1,6 @@
 using HexSystem;
-using MapEditor;
 using Match.Field.Castle;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.Tower;
@@ -15,7 +15,7 @@ namespace Match.Field
         public struct Context
         {
             public Transform FieldRoot { get; }
-            public HexagonalFieldController HexagonalFieldController { get; }
+            public HexagonalFieldModel HexagonalFieldModel { get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
             
@@ -24,14 +24,14 @@ namespace Match.Field
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
 
             public Context(Transform fieldRoot,
-                HexagonalFieldController hexagonalFieldController,
+                HexagonalFieldModel hexagonalFieldModel,
                 int castleHealth, int towerRemovingDuration,
                 ReactiveCommand<int> attackCastleByMobReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<MobController> removeMobReactiveCommand)
             {
                 FieldRoot = fieldRoot;
-                HexagonalFieldController = hexagonalFieldController;
+                HexagonalFieldModel = hexagonalFieldModel;
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
@@ -136,7 +136,7 @@ namespace Match.Field
             Hex2d position)
         {
             TowerView towerView = Object.Instantiate(towerPrefab, _buildingsRoot);
-            towerView.transform.localPosition = _context.HexagonalFieldController.GetWorldPosition(position);
+            towerView.transform.localPosition = _context.HexagonalFieldModel.GetWorldPosition(position);
             towerView.name = $"{towerId}_{towerName}";
 
             return towerView;
@@ -186,15 +186,6 @@ namespace Match.Field
             mobView.name = $"{mobId}_{mobName}";
 
             return mobView;
-        }
-
-        public HexObject CreateCell(HexObject hexPrefab, Hex2d hex2d, int height)
-        {
-            Vector3 spawnPosition = _context.HexagonalFieldController.GetWorldPosition(hex2d);
-            HexObject hexInstance = Object.Instantiate(hexPrefab, _hexsRoot);
-            hexInstance.SetHex(hex2d);
-            hexInstance.transform.localPosition = spawnPosition;
-            return hexInstance;
         }
         
         public ProjectileController CreateProjectile(ProjectileView projectilePrefab, Vector3 spawnPosition,

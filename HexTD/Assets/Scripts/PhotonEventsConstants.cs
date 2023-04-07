@@ -8,11 +8,14 @@ public static class PhotonEventsConstants
 
         public const string MatchConfigWavesCount = "wavesCount";
         public const string MatchConfigWaveParam = "wave";
-            
-        public const string MatchConfigFieldParam = "matchConfigField";
-        public const string MatchConfigBlockersParam = "matchConfigBlockers";
+        
+        public const string MatchConfigFieldTypesParam = "matchConfigFieldTypes";
+        public const string MatchConfigHexFieldParam = "matchConfighHexField";
+
+        public const string MatchConfigPathsCount = "matchConfighPathCount";
+        public const string MatchConfigPathFieldParam = "matchConfighPathField";
+        
         public const string MatchStartSilverCoinsParam = "silver";
-        public const string MatchStartSpellsAndCounts = "spellsAndCounts";
         public const string MatchConfigRolesAndUsers = "rolesAndUsers";
         public const string MatchConfigHandTowersParam = "matchConfigHandTowers";
         public const string RandomSeed = "randomSeed";
@@ -27,6 +30,24 @@ public static class PhotonEventsConstants
             public const string PauseBeforeWaveParam = "planningPause";
             public const string MobsIdsParam = "mobsIds";
             public const string MobsCountsParam = "mobsCounts";
+        }
+
+        public static class HexStateParam
+        {
+            public const string Q = "Q";
+            public const string R = "R";
+            public const string H = "H";
+            public const string DataLength = "DataLength";
+            public const string DataKey = "DataKey";
+            public const string DataValue = "DataValue";
+        }
+
+        public static class PathData
+        {
+            public const string Name = "Name";
+            public const string PointLength = "PointLength";
+            public const string PointQ = "PointQ";
+            public const string PointR = "PointR";
         }
     }
 

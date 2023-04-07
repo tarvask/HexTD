@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using HexSystem;
 using Match.Field.Castle;
-using Match.Field.Hexagonal;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.Tower;
@@ -16,21 +15,21 @@ namespace Match.Field
     {
         public struct Context
         {
-            public HexagonalFieldController HexagonalFieldController { get; }
+            public FieldHexTypesController FieldHexTypesController { get; }
             public TowersManager TowersManager { get; }
             public FieldFactory Factory { get; }
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
             public ReactiveCommand<MobController> MobSpawnedReactiveCommand { get; }
             public ReactiveProperty<bool> HasMobsOnFieldReactiveProperty { get; }
 
-            public Context(HexagonalFieldController hexagonalFieldController,
+            public Context(FieldHexTypesController fieldHexTypesController,
                 TowersManager towersManager,
                 FieldFactory factory,
                 ReactiveCommand<MobController> removeMobReactiveCommand,
                 ReactiveCommand<MobController> mobSpawnedReactiveCommand,
                 ReactiveProperty<bool> hasMobsOnFieldReactiveProperty)
             {
-                HexagonalFieldController = hexagonalFieldController;
+                FieldHexTypesController = fieldHexTypesController;
                 TowersManager = towersManager;
                 Factory = factory;
                 
@@ -52,7 +51,7 @@ namespace Match.Field
         // objects that can be shot
         private Dictionary<int, IShootable> _shootables;
 
-        public int HexGridSize => _context.HexagonalFieldController.HexGridSize;
+        public int HexGridSize => _context.FieldHexTypesController.HexGridSize;
         
         // towers by ids
         public Dictionary<int, TowerController> Towers => _context.TowersManager.Towers;
@@ -80,26 +79,20 @@ namespace Match.Field
             _context.RemoveMobReactiveCommand.Subscribe(RemoveMob);
         }
 
-        public void RestoreCells()
+        public FieldHexType GetFieldHexType(Hex2d position)
         {
-            // back to start state
-            _context.HexagonalFieldController.Reset();
-        }
-
-        public FieldHex GetFieldHex(Hex2d position)
-        {
-            return _context.HexagonalFieldController[position];
+            return _context.FieldHexTypesController[position.GetHashCode()];
         }
 
         public bool IsHexWithType(Hex2d position, FieldHexType checkedType)
         {
-            FieldHex fieldHex = _context.HexagonalFieldController[position];
-            return fieldHex.FieldHexType == checkedType;
+            FieldHexType fieldHexType = _context.FieldHexTypesController[position.GetHashCode()];
+            return fieldHexType == checkedType;
         }
 
         public void AddTower(TowerController tower, Hex2d position)
         {
-            if(!_context.HexagonalFieldController.TryAddTower(position))
+            if(!_context.FieldHexTypesController.TryAddTower(position.GetHashCode()))
                 return;
             
             _context.TowersManager.AddTower(tower, position);
@@ -112,7 +105,7 @@ namespace Match.Field
 
         public void RemoveTower(int positionHash, TowerController removingTower)
         {
-            if(!_context.HexagonalFieldController.TryRemoveTower(positionHash))
+            if(!_context.FieldHexTypesController.TryRemoveTower(positionHash))
                 return;
             
             

@@ -1,4 +1,5 @@
 using System;
+using Configs;
 using Match.Commands;
 using Match.EventBus;
 using Tools;
@@ -31,7 +32,7 @@ namespace Match
         public IncomingCommandsProcessor IncomingCommandsProcessor => _incomingCommandsProcessor;
         public ReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; private set; }
 
-        public void Init(MatchShortParameters matchShortParameters, IEventBus eventBus,
+        public void Init(MatchInitDataParameters matchShortParameters, IEventBus eventBus,
             IReadOnlyReactiveProperty<ProcessRoles> currentProcessGameRoleReactiveProperty,
             IReadOnlyReactiveProperty<NetworkRoles> currentProcessNetworkRoleReactiveProperty,
             IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,

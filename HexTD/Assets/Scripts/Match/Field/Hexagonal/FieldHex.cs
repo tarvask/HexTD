@@ -1,4 +1,5 @@
-﻿using HexSystem;
+﻿using ExitGames.Client.Photon;
+using HexSystem;
 
 namespace Match.Field.Hexagonal
 {
@@ -15,7 +16,7 @@ namespace Match.Field.Hexagonal
         public string HexObjectTypeName => _hexModel.HexType;
         public FieldHexType FieldHexType => _fieldHexType;
 
-        public FieldHex(HexModel hexModel, FieldHexType fieldHexType)
+        public FieldHex(HexModel hexModel, FieldHexType fieldHexType = FieldHexType.Free)
         {
             _hexModel = hexModel;
             _fieldHexType = fieldHexType;
@@ -41,7 +42,7 @@ namespace Match.Field.Hexagonal
 
         public override int GetHashCode()
         {
-            return Q << 8 | R;
+            return _hexModel.GetHashCode();
         }
     }
 }

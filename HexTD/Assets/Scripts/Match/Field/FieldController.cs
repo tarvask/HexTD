@@ -23,18 +23,13 @@ namespace Match.Field
         public struct Context
         {
             public FieldView FieldView { get; }
-            public MatchShortParameters MatchShortParameters { get; }
+            public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
             public FieldConfigCellsRetriever ConfigCellsRetriever { get; }
             public TowerConfigRetriever TowerConfigRetriever { get; }
             public MobConfigRetriever MobConfigRetriever { get; }
             public bool NeedsInput { get; }
             public MatchCommands MatchCommands { get; }
-            public MatchInfoPanelController MatchInfoPanelController { get; }
-            public TowerSelectionWindowController TowerSelectionWindowController { get; }
-            public TowerManipulationWindowController TowerManipulationWindowController { get; }
-            public TowerInfoWindowController TowerInfoWindowController { get; }
-            public MobInfoWindowController MobInfoWindowController { get; }
             
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             public ReactiveCommand<Hex2d> ClickReactiveCommand { get; }
@@ -51,17 +46,12 @@ namespace Match.Field
             public ReactiveCommand<int> CrystalsCountChangedReactiveCommand { get; }
 
             public Context(FieldView fieldView,
-                MatchShortParameters matchShortParameters, FieldConfig fieldConfig,
+                MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 FieldConfigCellsRetriever configCellsRetriever,
                 TowerConfigRetriever towerConfigRetriever,
                 MobConfigRetriever mobConfigRetriever,
 
                 bool needsInput,
-                MatchInfoPanelController matchInfoPanelController,
-                TowerSelectionWindowController towerSelectionWindowController,
-                TowerManipulationWindowController towerManipulationWindowController,
-                TowerInfoWindowController towerInfoWindowController,
-                MobInfoWindowController mobInfoWindowController,
                 
                 MatchCommands matchCommands,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
@@ -79,7 +69,7 @@ namespace Match.Field
                 ReactiveCommand<int> crystalsCountChangedReactiveCommand)
             {
                 FieldView = fieldView;
-                MatchShortParameters = matchShortParameters;
+                MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
                 ConfigCellsRetriever = configCellsRetriever;
                 TowerConfigRetriever = towerConfigRetriever;
@@ -87,11 +77,6 @@ namespace Match.Field
 
                 NeedsInput = needsInput;
                 MatchCommands = matchCommands;
-                MatchInfoPanelController = matchInfoPanelController;
-                TowerSelectionWindowController = towerSelectionWindowController;
-                TowerManipulationWindowController = towerManipulationWindowController;
-                TowerInfoWindowController = towerInfoWindowController;
-                MobInfoWindowController = mobInfoWindowController;
                 
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
                 ClickReactiveCommand = clickReactiveCommand;
@@ -138,7 +123,7 @@ namespace Match.Field
             Layout layout = new Layout(_context.FieldConfig.HexSettingsConfig.HexSize,
                 Vector3.zero, _context.FieldConfig.HexSettingsConfig.IsFlat);
             HexagonalFieldController hexagonalFieldController = new HexagonalFieldController(layout,
-                _context.MatchShortParameters.Hexes);
+                _context.MatchInitDataParameters.Hexes);
             TowersManager towersManager = new TowersManager(hexagonalFieldController.HexGridSize);
             
             FieldFactory.Context factoryContext = new FieldFactory.Context(
@@ -184,7 +169,7 @@ namespace Match.Field
             _shootingController = AddDisposable(new ShootingController(shootingControllerContext));
             
             // currency
-            CurrencyController.Context currencyControllerContext = new CurrencyController.Context(_context.MatchShortParameters.SilverCoinsCount,
+            CurrencyController.Context currencyControllerContext = new CurrencyController.Context(_context.MatchInitDataParameters.SilverCoinsCount,
                 5, removeMobReactiveCommand, crystalCollectedReactiveCommand);
             _currencyController = AddDisposable(new CurrencyController(currencyControllerContext));
 
@@ -197,11 +182,7 @@ namespace Match.Field
             FieldClicksDistributor.Context clicksDistributorContext =
                 new FieldClicksDistributor.Context(_model, _clicksHandler, _context.TowerConfigRetriever,
                     _constructionProcessController,
-                    _shootingController, _currencyController, _context.MatchCommands,
-                    _context.MatchInfoPanelController,
-                    _context.TowerSelectionWindowController,
-                    _context.TowerManipulationWindowController,
-                    _context.TowerInfoWindowController);
+                    _shootingController, _currencyController, _context.MatchCommands);
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
             
             PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model, _factory,
@@ -246,7 +227,7 @@ namespace Match.Field
 
         private void CreateCells()
         {
-            foreach (var hexModel in _context.MatchShortParameters.Hexes)
+            foreach (var hexModel in _context.MatchInitDataParameters.Hexes)
             {
                 HexObject hexPrefab = _context.ConfigCellsRetriever.GetCellByType(hexModel.HexObjectTypeName);
                 _factory.CreateCell(hexPrefab, hexModel.Position, hexModel.H);

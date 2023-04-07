@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Configs.Constants;
+using ExitGames.Client.Photon;
 using Newtonsoft.Json;
 
 namespace HexSystem
@@ -10,6 +11,8 @@ namespace HexSystem
         [JsonProperty("Height")] public int Height;
         [JsonProperty("Data")] public Dictionary<string, string> Data;
 
+        [JsonIgnore] public int Q => Position.Q;
+        [JsonIgnore] public int R => Position.R;
         [JsonIgnore] public string HexType => Data[HexParamsNameConstants.HexTypeParam];
 
         [JsonConstructor]
@@ -52,5 +55,32 @@ namespace HexSystem
 
         public static explicit operator Hex3d(HexModel hexModel) =>
             new Hex3d(hexModel.Position.Q, hexModel.Position.R, hexModel.Height);
+
+        public Hashtable ToNetwork()
+        {
+            Hashtable hexNetwork = new Hashtable{
+                {PhotonEventsConstants.SyncMatch.HexStateParam.Q, Position.Q},
+                {PhotonEventsConstants.SyncMatch.HexStateParam.R, Position.R},
+                {PhotonEventsConstants.SyncMatch.HexStateParam.H, Height},
+                {PhotonEventsConstants.SyncMatch.HexStateParam.DataLength, (byte)Data.Count}
+            };
+
+            int i = 0;
+            foreach (var hexProperty in Data)
+            {
+                hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.HexStateParam.DataKey}{i}", 
+                    hexProperty.Key);
+                hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.HexStateParam.DataValue}{i}", 
+                    hexProperty.Value);
+                i++;
+            }
+
+            return hexNetwork;
+        }
+
+        public override int GetHashCode()
+        {
+            return Position.GetHashCode();
+        }
     }
 }
