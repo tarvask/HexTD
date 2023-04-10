@@ -1,5 +1,5 @@
+using Addressables;
 using Cysharp.Threading.Tasks;
-using Tools.Addressables;
 using UnityEngine;
 using Zenject;
 

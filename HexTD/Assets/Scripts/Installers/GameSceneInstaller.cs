@@ -1,5 +1,6 @@
 using System;
-using Locations.Loading;
+using Addressables;
+using MatchStarter;
 using Tools.Disposing;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,22 +11,31 @@ namespace Installers
     public class GameSceneInstaller : MonoInstaller
     {
         [SerializeField] private EventSystem eventSystem;
-        
+
         public override void InstallBindings()
         {
             Container.Bind(typeof(IDisposable), typeof(IDisposableContext))
                 .To<DisposableContext>().AsSingle();
+            
+            Container.Bind<AssetsDownloadingProvider>().AsSingle();
 
-            BindLocationLoader();
+            BindMatchStarterLoader();
             
             Container.Bind<EventSystem>().FromComponentInNewPrefab(eventSystem).AsSingle().NonLazy();
         }
 
-        private void BindLocationLoader()
+//        private void BindLocationLoader()
+//        {
+//            Container.Bind(typeof(ILocationLoader), typeof(LocationLoader))
+//                .To<LocationLoader>().AsSingle();
+//            Container.Decorate<ILocationLoader>().With<LocationLoadingWindowDecorator>();
+//        }
+
+        private void BindMatchStarterLoader()
         {
-            Container.Bind(typeof(ILocationLoader), typeof(LocationLoader))
-                .To<LocationLoader>().AsSingle();
-            Container.Decorate<ILocationLoader>().With<LocationLoadingWindowDecorator>();
+            Container.Bind(typeof(IMatchStarterLoader))
+                .To<MatchStarterLoader>().AsSingle();
+            Container.Decorate<IMatchStarterLoader>().With<MatchStarterLoadingWindowDecorator>();
         }
 
 //        private void BindFactoryProductInstance<TProduct, TFactory>() where TFactory : PlaceholderFactory<TProduct>

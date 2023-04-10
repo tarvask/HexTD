@@ -1,5 +1,3 @@
-using HexSystem;
-using Match.Field;
 using Match.Field.Hexagonal;
 using Match.Wave;
 using PathSystem;

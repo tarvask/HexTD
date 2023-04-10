@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
+using Addressables.Download;
 using Cysharp.Threading.Tasks;
-using Tools.Addressables.Download;
 using UnityEngine;
 using WindowSystem.Controller;
 

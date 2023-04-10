@@ -1,10 +1,8 @@
-using System;
-using Loading.Installers;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace IdleCivilization.Client.Loading.Editor
+namespace Loading.Installers.Editor
 {
 	[CustomEditor(typeof(GameLoadingServiceInstaller))]
 	public class GameLoadingEditor : UnityEditor.Editor

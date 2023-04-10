@@ -1,6 +1,6 @@
+using Addressables;
 using Cysharp.Threading.Tasks;
 using Tools;
-using Tools.Addressables;
 using UnityEngine;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Zenject;

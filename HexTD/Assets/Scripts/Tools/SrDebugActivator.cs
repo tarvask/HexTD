@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Zenject;
 
-namespace IdleCivilization.Client.Tools
+namespace Tools
 {
     public class SrDebugActivator : MonoBehaviour
     {

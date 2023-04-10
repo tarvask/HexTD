@@ -1,5 +1,5 @@
 using System;
-using Tools.Addressables;
+using Addressables;
 using UnityEngine.AddressableAssets;
 using Zenject;
 

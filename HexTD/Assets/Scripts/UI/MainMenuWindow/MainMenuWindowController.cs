@@ -2,20 +2,20 @@
 using Cysharp.Threading.Tasks;
 using WindowSystem.Controller;
 using Extensions;
-using Locations.Loading;
+using MatchStarter;
 using UniRx;
 
 namespace UI.MainMenuWindow
 {
 	public class MainMenuWindowController : LoadableWindowController<MainMenuWindowView>
 	{
-		private readonly ILocationLoader _locationLoader;
+		private readonly IMatchStarterLoader _matchStarterLoader;
 
 		public MainMenuWindowController(
-			ILocationLoader locationLoader
+			IMatchStarterLoader matchStarterLoader
 		)
 		{
-			_locationLoader = locationLoader;
+			_matchStarterLoader = matchStarterLoader;
 		}
 
 		protected override void DoInitialize()
@@ -40,7 +40,7 @@ namespace UI.MainMenuWindow
 		{
 			WindowsManager.CloseAsync(this).Forget();
 
-			await _locationLoader.LoadAsync("qwe");
+			await _matchStarterLoader.LoadAsync();
 		}
 	}
 }
