@@ -92,11 +92,7 @@ namespace Match.Field.Shooting
 
         public void ShowSplash()
         {
-            _context.View.ProjectileSprite.enabled = false;
-            // 18 is size of default Knob sprite in pixels, 100 is resolution of pixels per unit
-            float splashAdoptedScale = _context.SplashDamageRadius * 2 * 100 / 18;
-            _context.View.SplashTransform.localScale = new Vector3(splashAdoptedScale, splashAdoptedScale);
-            _context.View.SplashTransform.gameObject.SetActive(true);
+            _context.View.transform.localScale = Vector3.one * _context.SplashDamageRadius;
 
             Task.Run(async () =>
             {

@@ -85,7 +85,7 @@ namespace Match.Field
             int positionHash = position.GetHashCode();
             TowerController towerInstance = _context.Factory.CreateTower(towerConfig, position);
             towerInstance.SetLevel(1);
-            _context.FieldModel.AddTower(towerInstance, (Hex2d)position);
+            _context.FieldModel.AddTower(towerInstance, position);
             _constructingTowers.Add(positionHash, towerInstance);
 
             return towerInstance;

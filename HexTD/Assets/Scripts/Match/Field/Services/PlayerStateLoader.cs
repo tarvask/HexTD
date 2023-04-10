@@ -130,9 +130,6 @@ namespace Match.Field.Services
         
         public void ClearState()
         {
-            // cells
-            _context.FieldModel.RestoreCells();
-
             // towers
             foreach (KeyValuePair<int, TowerController> towerPair in _context.FieldModel.Towers)
                 towerPair.Value.Dispose();

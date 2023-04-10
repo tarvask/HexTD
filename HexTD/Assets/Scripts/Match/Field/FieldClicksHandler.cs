@@ -10,18 +10,10 @@ namespace Match.Field
     {
         public struct Context
         {
-            public Vector2 BottomLeftCornerPosition { get; }
-            public float TargetCellSizeInUnits { get; }
-            
             public ReactiveCommand<Hex2d> InputEvent { get; }
 
-            public Context(Vector2 bottomLeftCornerPosition,
-                            float targetCellSizeInUnits,
-                            ReactiveCommand<Hex2d> inputEvent)
+            public Context(ReactiveCommand<Hex2d> inputEvent)
             {
-                BottomLeftCornerPosition = bottomLeftCornerPosition;
-                TargetCellSizeInUnits = targetCellSizeInUnits;
-
                 InputEvent = inputEvent;
             }
         }
