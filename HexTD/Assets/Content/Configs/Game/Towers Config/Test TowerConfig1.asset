@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2bc3bd0b6974510a3f247d8e883f0d6, type: 3}
-  m_Name: TowerConfig
+  m_Name: Test TowerConfig1
   m_EditorClassIdentifier: 
   view: {fileID: 5716713876702498525, guid: dd383169b16c1144aa856f29ccaf86a4, type: 3}
   icon: {fileID: 21300000, guid: 0ac55f9f886d827408c102bdf33c5ff7, type: 3}
