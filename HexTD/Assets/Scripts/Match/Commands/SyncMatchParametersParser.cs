@@ -67,7 +67,7 @@ namespace Match.Commands
             byte[] cellsBytes = (byte[])parametersTable[PhotonEventsConstants.SyncMatch.MatchConfigFieldTypesParam];
             HexModel[] hexModels = new HexModel[cellsBytes.Length];
 
-            for (byte currentHexIndex = 0; currentHexIndex < wavesCount; currentHexIndex++)
+            for (byte currentHexIndex = 0; currentHexIndex < hexModels.Length; currentHexIndex++)
             {
                 if (!parametersTable.TryGetValue(
                         $"{PhotonEventsConstants.SyncMatch.MatchConfigHexFieldParam}{currentHexIndex}", out object hexHashtableObject))

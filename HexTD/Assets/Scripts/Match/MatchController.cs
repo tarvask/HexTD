@@ -126,26 +126,25 @@ namespace Match
             WaveParams[] waves =_context.MatchInitDataParameters.Waves;
             
             // windows
-            //WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
-            //    _context.MatchView.MatchUiViews, _context.MatchView.MainCamera, _context.MatchView.Canvas,
-            //    _towerConfigRetriever, _mobConfigRetriever,
-            //    _context.MatchShortParameters.HandParams,
-            //    waves,
-            //    _context.MatchView.CanvasBuilder.OurField,
-            //    
-            //    _context.IsConnectedReactiveProperty,
-            //    enemyCastleHealthChangedReactiveCommand,
-            //    ourCastleHealthChangedReactiveCommand,
-            //    matchStartedReactiveCommand,
-            //    waveStartedReactiveCommand,
-            //    betweenWavesPlanningStartedReactiveCommand,
-            //    artifactChoosingStartedReactiveCommand,
-            //    waveNumberChangedReactiveCommand,
-            //    ourGoldenCoinsCountChangedReactiveCommand,
-            //    ourGoldCoinsIncomeChangedReactiveCommand,
-            //    ourCrystalsCountChangedReactiveCommand,
-            //    _context.QuitMatchReactiveCommand);
-            //_windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
+           WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
+               _context.MatchView.MatchUiViews, _context.MatchView.MainCamera, _context.MatchView.Canvas,
+               _configsRetriever,
+               _context.MatchInitDataParameters.HandParams,
+               waves,
+               
+               _context.IsConnectedReactiveProperty,
+               enemyCastleHealthChangedReactiveCommand,
+               ourCastleHealthChangedReactiveCommand,
+               matchStartedReactiveCommand,
+               waveStartedReactiveCommand,
+               betweenWavesPlanningStartedReactiveCommand,
+               artifactChoosingStartedReactiveCommand,
+               waveNumberChangedReactiveCommand,
+               ourGoldenCoinsCountChangedReactiveCommand,
+               ourGoldCoinsIncomeChangedReactiveCommand,
+               ourCrystalsCountChangedReactiveCommand,
+               _context.QuitMatchReactiveCommand);
+           _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
             // fields
             _layout = new Layout(_context.FieldConfig.HexSettingsConfig.HexSize,
