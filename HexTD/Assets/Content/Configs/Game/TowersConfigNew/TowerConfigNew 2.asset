@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 398afa8f30d34e06aa6fe453f5b8873b, type: 3}
+  m_Name: TowerConfigNew 2
+  m_EditorClassIdentifier: 
+  name: qwe
+  view: {fileID: 5716713876702498525, guid: dd383169b16c1144aa856f29ccaf86a4, type: 3}
+  towerLevelConfigs:
+    keyData: 0100000002000000
+    valueData:
+    - buildPrice: 43
+      buildTime: 13
+    - buildPrice: 43
+      buildTime: 22
+  towerAttackConfig:
+    baseDamage: 33
+    cooldown: 4
+    targetFindingTacticType: 3
+    projectileView: {fileID: 0}
+    towerAttackEffectConfigs:
+    - rid: 4904700610925297672
+    - rid: 4904700610925297673
+  references:
+    version: 2
+    RefIds:
+    - rid: 4904700610925297672
+      type: {class: MovementSpeedTowerAttackEffectConfig, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
+      data:
+        percentagedValue: 15
+    - rid: 4904700610925297673
+      type: {class: SplashDamageTowerAttackEffectConfig, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
+      data:
+        percentOfBaseDamage: 6
+        radius: 7
