@@ -26,7 +26,7 @@ namespace Match.Field.Hexagons
             foreach (var fieldHex in fieldHexes)
             {
                 FieldHex cachedFieldHex = new FieldHex(fieldHex.HexModel, fieldHex.HexType);
-                _cachedLevelFieldHexes.Add(fieldHex.GetHashCode(), cachedFieldHex);
+                _cachedLevelFieldHexes.Add(fieldHex.HexModel.GetHashCode(), cachedFieldHex);
             }
             
             CurrentOurFieldHexes = new FieldHexTypesController(_cachedLevelFieldHexes);
@@ -40,6 +40,12 @@ namespace Match.Field.Hexagons
         {
             FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
             return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height);
+        }
+        
+        public Vector3 GetUpHexWorldPosition(Hex2d hexPosition)
+        {
+            FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
+            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height + 1);
         }
 
         public void Reset()

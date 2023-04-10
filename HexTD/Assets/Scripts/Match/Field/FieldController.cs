@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using HexSystem;
-using MapEditor;
 using Match.Commands;
 using Match.Field.Castle;
 using Match.Field.Currency;
@@ -122,7 +121,7 @@ namespace Match.Field
             ReactiveCommand<MobController> removeMobReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<MobController> mobSpawnedReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<int> crystalCollectedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
-
+            
             TowersManager towersManager = new TowersManager(_context.FieldHexTypesController.HexGridSize);
             
             FieldFactory.Context factoryContext = new FieldFactory.Context(
@@ -154,7 +153,6 @@ namespace Match.Field
             if (_context.NeedsInput)
             {
                 FieldClicksHandler.Context clicksHandlerContext = new FieldClicksHandler.Context(
-                    new Vector2(-0.5f, -0.5f), 1,
                     _context.ClickReactiveCommand);
                 _clicksHandler = AddDisposable(new FieldClicksHandler(clicksHandlerContext));
             }
@@ -184,14 +182,14 @@ namespace Match.Field
                     _constructionProcessController,
                     _shootingController, _currencyController, _context.MatchCommands);
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
-            
+
             PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model, _factory,
                 _context.ConfigsRetriever,
                 _currencyController);
             _stateLoader = AddDisposable(new PlayerStateLoader(stateLoaderContext));
 
             _context.StateSyncedReactiveCommand.Subscribe(LoadState);
-            
+
             // subscribe outer event to model change
             _model.Castle.CastleHealthReactiveProperty.Subscribe((newValue) =>
                 _context.CastleHealthChangedReactiveCommand.Execute(new HealthInfo(newValue, _model.Castle.CastleMaxHealthReactiveProperty.Value)));

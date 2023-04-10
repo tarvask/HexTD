@@ -136,7 +136,7 @@ namespace Match.Field
             Hex2d position)
         {
             TowerView towerView = Object.Instantiate(towerPrefab, _buildingsRoot);
-            towerView.transform.localPosition = _context.HexagonalFieldModel.GetWorldPosition(position);
+            towerView.transform.position = _context.HexagonalFieldModel.GetUpHexWorldPosition(position);
             towerView.name = $"{towerId}_{towerName}";
 
             return towerView;
@@ -182,7 +182,7 @@ namespace Match.Field
             Vector3 spawnPosition)
         {
             MobView mobView = Object.Instantiate(mobPrefab, _mobsRoot);
-            mobView.transform.localPosition = spawnPosition;
+            mobView.transform.position = spawnPosition;
             mobView.name = $"{mobId}_{mobName}";
 
             return mobView;
@@ -218,7 +218,7 @@ namespace Match.Field
         private ProjectileView CreateProjectileView(int projectileId, ProjectileView projectilePrefab, Vector3 spawnPosition)
         {
             ProjectileView projectileInstance = Object.Instantiate(projectilePrefab, _projectilesRoot);
-            projectileInstance.transform.localPosition = spawnPosition;
+            projectileInstance.transform.position = spawnPosition;
             projectileInstance.name = $"{projectileId}_bullet";
 
             return projectileInstance;

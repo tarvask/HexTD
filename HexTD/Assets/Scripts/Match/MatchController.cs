@@ -158,7 +158,7 @@ namespace Match
             
             //TODO: click handle separate with field controller
             FieldController.Context enemyFieldContext = new FieldController.Context(
-                _context.MatchView.FieldRoot,
+                _context.MatchView.EnemyFieldRoot,
                 _hexagonalFieldModel.CurrentEnemyFieldHexes,
                 _hexagonalFieldModel,
                 _context.MatchInitDataParameters, _context.FieldConfig,
@@ -179,7 +179,7 @@ namespace Match
                 enemyCrystalsCountChangedReactiveCommand);
 
             FieldController.Context ourFieldContext = new FieldController.Context(
-                _context.MatchView.FieldRoot,
+                _context.MatchView.OurFieldRoot,
                 _hexagonalFieldModel.CurrentOurFieldHexes,
                 _hexagonalFieldModel,
                 _context.MatchInitDataParameters, _context.FieldConfig,

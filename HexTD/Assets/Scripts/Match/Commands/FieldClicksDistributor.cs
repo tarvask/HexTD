@@ -67,7 +67,7 @@ namespace Match.Commands
             switch (_context.FieldModel.GetFieldHexType(clickedCell))
             {
                 case FieldHexType.Free:
-                    ProcessPreBuild(clickedCell);
+                    ProcessBuild(clickedCell, new TowerShortParams(TowerType._001, 1));
                     break;
                 
                 case FieldHexType.Tower:

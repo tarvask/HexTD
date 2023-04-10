@@ -15,7 +15,6 @@ namespace Match.Field.Tower
         [SerializeField] private TargetFindingTacticType targetFindingTacticType;
         [SerializeField] private bool preferUnbuffedTargets;
         [SerializeField] private bool resetTargetEveryShot;
-        //[SerializeField] private int fragmentsCount;
         
         public TowerType TowerType => towerType;
         public string TowerName => towerName;

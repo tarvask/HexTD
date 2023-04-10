@@ -27,6 +27,7 @@ namespace Match
         public InputController(Context context)
         {
             _context = context;
+            _isInteractable = true;
         }
 
         public void OuterLogicUpdate(float frameLength)
