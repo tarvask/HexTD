@@ -40,7 +40,7 @@ namespace Match.Windows.Tower
             _context.View.TowerDamageText.text = $"{towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.AttackPower}";
             _context.View.TowerAttackRateText.text =
                 $"{(1f / towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.ReloadTime):F2} / sec";
-            _context.View.TowerRangeText.text = $"{towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.AttackRadius}";
+            _context.View.TowerRangeText.text = $"{towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.AttackRadiusInHexCount}";
             _context.View.TowerTargetText.text = $"{towerParameters.RegularParameters.Data.TargetFindingTacticType}";
             
             // buffs

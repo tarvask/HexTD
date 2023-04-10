@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using HexSystem;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.Shooting.TargetFinding.Tactics;
+using Match.Field.Tower;
 using Tools;
-using UnityEngine;
 
 namespace Match.Field.Shooting.TargetFinding
 {
@@ -13,9 +15,9 @@ namespace Match.Field.Shooting.TargetFinding
         private readonly MobsQualifier _mobsQualifier;
         private readonly Dictionary<byte, ITargetFindingTactic> _tactics;
 
-        public TargetFinder()
+        public TargetFinder(HexMapReachableService hexMapReachableService)
         {
-            _mobsInRangeDefiner = AddDisposable(new MobsInRangeDefiner());
+            _mobsInRangeDefiner = AddDisposable(new MobsInRangeDefiner(hexMapReachableService));
             _mobsQualifier = AddDisposable(new MobsQualifier());
 
             ITargetFindingTactic firstInLineTactic = AddDisposable(new FirstInLineTactic());
@@ -30,15 +32,20 @@ namespace Match.Field.Shooting.TargetFinding
             };
         }
 
-        public int GetTargetWithTacticInRange(Dictionary<int, MobController> mobs, TargetFindingTacticType tacticType,
-            Vector3 towerPosition, float attackRadiusSqr, bool preferUnbuffed/*, List<AbstractBuffParameters> towerActiveBuffs*/)
+        public int GetTargetWithTacticInRange(IReadOnlyDictionary<int, MobController> mobsByPosition, 
+            ReachableAttackTargetFinderType reachableAttackTargetFinderType,
+            TargetFindingTacticType tacticType,
+            Hex2d towerPosition, int attackRadius, bool preferUnbuffed)
         {
-            if (_tactics.TryGetValue((byte) tacticType, out ITargetFindingTactic tactic))
-                return tactic.GetTargetWithTactic(
-                    _mobsQualifier.GetMobsWithoutBuffs(_mobsInRangeDefiner.GetTargetsInRange(mobs, towerPosition, attackRadiusSqr),
-                    preferUnbuffed));//, towerActiveBuffs));
+            if (!_tactics.TryGetValue((byte) tacticType, out ITargetFindingTactic tactic))
+                throw new ArgumentException("Unknown or undefined tactic type");
+
+            var mobsInRange = _mobsInRangeDefiner.GetTargetsInRange(
+                reachableAttackTargetFinderType,
+                mobsByPosition, towerPosition, attackRadius);
+            return tactic.GetTargetWithTactic(
+                _mobsQualifier.GetMobsWithoutBuffs(mobsInRange, preferUnbuffed));
             
-            throw new ArgumentException("Unknown or undefined tactic type");
         }
     }
 }

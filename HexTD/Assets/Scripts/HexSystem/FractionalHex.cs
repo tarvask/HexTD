@@ -26,6 +26,14 @@ namespace HexSystem
 			H = h;
 		}
 
+		public FractionalHex(Hex2d hex)
+		{
+			Q = hex.Q;
+			R = hex.R;
+			S = hex.S;
+			H = 0;
+		}
+
 		public FractionalHex(Hex3d hex)
 		{
 			Q = hex.Q;

@@ -23,7 +23,8 @@ namespace Match.Field
         {
             public Transform FieldRoot { get; }
             public FieldHexTypesController FieldHexTypesController { get; }
-            public HexagonalFieldModel HexagonalFieldModel { get; }
+            public IHexPositionConversationService HexPositionConversationService { get; }
+            public HexMapReachableService HexMapReachableService { get; }
             public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
@@ -47,7 +48,8 @@ namespace Match.Field
             public Context(
                 Transform fieldRoot,
                 FieldHexTypesController fieldHexTypesController,
-                HexagonalFieldModel hexagonalFieldModel,
+                IHexPositionConversationService hexPositionConversationService,
+                HexMapReachableService hexMapReachableService,
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
 
@@ -70,7 +72,8 @@ namespace Match.Field
             {
                 FieldRoot = fieldRoot;
                 FieldHexTypesController = fieldHexTypesController;
-                HexagonalFieldModel = hexagonalFieldModel;
+                HexPositionConversationService = hexPositionConversationService;
+                HexMapReachableService = hexMapReachableService;
                 
                 MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
@@ -126,16 +129,21 @@ namespace Match.Field
             
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
-                _context.HexagonalFieldModel,
+                _context.HexPositionConversationService,
                 _context.FieldConfig.CastleHealth, _context.FieldConfig.TowerRemovingDuration,
                 castleAttackedByMobReactiveCommand,
                 _context.CastleDestroyedReactiveCommand,
                 removeMobReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
+            MobsManager.Context mobMoverContext = new MobsManager.Context(_context.HexPositionConversationService, 
+                castleAttackedByMobReactiveCommand);
+            _mobsManager = AddDisposable(new MobsManager(mobMoverContext));
+            
             FieldModel.Context fieldModelContext = new FieldModel.Context(
                 _context.FieldHexTypesController,
                 towersManager,
+                _mobsManager,
                 _factory,
                 removeMobReactiveCommand,
                 mobSpawnedReactiveCommand,
@@ -145,9 +153,6 @@ namespace Match.Field
             FieldMobSpawner.Context mobSpawnerContext = new FieldMobSpawner.Context(_model, _factory, 
                 _context.SpawnMobReactiveCommand);
             _fieldMobSpawner = AddDisposable(new FieldMobSpawner(mobSpawnerContext));
-            
-            MobsManager.Context mobMoverContext = new MobsManager.Context(_model, castleAttackedByMobReactiveCommand);
-            _mobsManager = AddDisposable(new MobsManager(mobMoverContext));
 
             // we only need input for player field
             if (_context.NeedsInput)
@@ -163,7 +168,8 @@ namespace Match.Field
             _constructionProcessController = AddDisposable(new FieldConstructionProcessController(constructionProcessControllerContext));
             
             // shooting
-            ShootingController.Context shootingControllerContext = new ShootingController.Context(_model, _factory);
+            ShootingController.Context shootingControllerContext = new ShootingController.Context(_model, 
+                _context.HexMapReachableService,_factory);
             _shootingController = AddDisposable(new ShootingController(shootingControllerContext));
             
             // currency

@@ -38,6 +38,11 @@ namespace Match.Field.Tower
             attackRadiusPropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 3;
             DrawProperty(attackRadiusPropertyRect, TowerRegularParameters.FieldNames.EpicDegree, $"{data.EpicDegree}");
             
+            Rect reachableAttackTargetFinderTypePropertyRect = position;
+            reachableAttackTargetFinderTypePropertyRect.height = PropertyHeight; 
+            reachableAttackTargetFinderTypePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 4;
+            DrawProperty(reachableAttackTargetFinderTypePropertyRect, TowerRegularParameters.FieldNames.ReachableAttackTargetFinderType, $"{data.ReachableAttackTargetFinderType}");
+            
             Rect pricePropertyRect = position;
             pricePropertyRect.height = PropertyHeight; 
             pricePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 4;

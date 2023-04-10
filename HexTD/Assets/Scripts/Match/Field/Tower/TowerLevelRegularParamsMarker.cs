@@ -36,7 +36,7 @@ namespace Match.Field.Tower
             Rect attackRadiusPropertyRect = position;
             attackRadiusPropertyRect.height = PropertyHeight;
             attackRadiusPropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 3;
-            DrawProperty(attackRadiusPropertyRect, TowerLevelRegularParams.FieldNames.AttackRadius, $"{data.AttackRadius}");
+            DrawProperty(attackRadiusPropertyRect, TowerLevelRegularParams.FieldNames.AttackRadius, $"{data.AttackRadiusInHexCount}");
             
             Rect projectileSpeedPropertyRect = position;
             projectileSpeedPropertyRect.height = PropertyHeight;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Wave;
 using Tools;
@@ -11,29 +12,42 @@ namespace Match.Field.Services
     {
         public struct Context
         {
-            public FieldModel FieldModel { get; }
+            public IHexPositionConversationService HexPositionConversationService { get; }
             public ReactiveCommand<int> AttackCastleByMobReactiveCommand { get; }
 
-            public Context(FieldModel fieldModel,
+            public Context(IHexPositionConversationService hexPositionConversationService,
                 ReactiveCommand<int> attackCastleByMobReactiveCommand)
             {
-                FieldModel = fieldModel;
+                HexPositionConversationService = hexPositionConversationService;
                 AttackCastleByMobReactiveCommand = attackCastleByMobReactiveCommand;
             }
         }
 
         private readonly Context _context;
-        private readonly List<MobController> _dyingMobs;
+        private readonly MobsContainer _mobsContainer;
         private readonly Dictionary<int, MobController> _deadBodies;
         private readonly List<MobController> _carrionBodies;
+
+        public IReadOnlyDictionary<int, MobController> Mobs => _mobsContainer.Mobs;
+        public int MobCount => _mobsContainer.Mobs.Count;
 
         public MobsManager(Context context)
         {
             _context = context;
-            
-            _dyingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+
+            _mobsContainer = new MobsContainer(_context.HexPositionConversationService);
             _deadBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _carrionBodies = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+        }
+
+        public void AddMob(MobController mobController)
+        {
+            _mobsContainer.AddMob(mobController);
+        }
+
+        public void RemoveMob(MobController mobController)
+        {
+            _mobsContainer.RemoveMob(mobController);
         }
         
         public void OuterLogicUpdate(float frameLength)
@@ -50,21 +64,16 @@ namespace Match.Field.Services
 
         private void UpdateMobsHealth(float frameLength)
         {
-            foreach (KeyValuePair<int, MobController> mobPair in _context.FieldModel.Mobs)
+            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
                 mobPair.Value.UpdateHealth(frameLength);
 
                 if (mobPair.Value.Health <= 0)
                 {
-                    _dyingMobs.Add(mobPair.Value);
+                    _mobsContainer.RemoveMob(mobPair.Value);
+                    _deadBodies.Add(mobPair.Value.Id, mobPair.Value);
+                    mobPair.Value.Die();
                 }
-            }
-
-            // needed to clean up dying mobs from FieldModel.Mobs
-            foreach (MobController dyingMob in _dyingMobs)
-            {
-                _deadBodies.Add(dyingMob.Id, dyingMob);
-                dyingMob.Die();
             }
 
             foreach (KeyValuePair<int, MobController> mobPair in _deadBodies)
@@ -80,13 +89,12 @@ namespace Match.Field.Services
                 mob.Dispose();
             }
 
-            _dyingMobs.Clear();
             _carrionBodies.Clear();
         }
 
         private void UpdateMobsLogicMoving(float frameLength)
         {
-            foreach (KeyValuePair<int, MobController> mobPair in _context.FieldModel.Mobs)
+            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
                 mobPair.Value.LogicMove(frameLength);
             }
@@ -94,7 +102,7 @@ namespace Match.Field.Services
         
         private void UpdateMobsVisualMoving(float frameLength)
         {
-            foreach (KeyValuePair<int, MobController> mobPair in _context.FieldModel.Mobs)
+            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
                 mobPair.Value.VisualMove(frameLength);
             }
@@ -102,7 +110,7 @@ namespace Match.Field.Services
         
         private void UpdateMobsAttacking(float frameLength)
         {
-            foreach (KeyValuePair<int, MobController> mobPair in _context.FieldModel.Mobs)
+            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
                 if (!mobPair.Value.HasReachedCastle)
                     continue;
@@ -114,11 +122,17 @@ namespace Match.Field.Services
             }
         }
 
+        public void Clear()
+        {
+            _mobsContainer.Clear();
+            _deadBodies.Clear();
+            _carrionBodies.Clear();
+        }
+
         protected override void OnDispose()
         {
             base.OnDispose();
             
-            _dyingMobs.Clear();
             _deadBodies.Clear();
             _carrionBodies.Clear();
         }

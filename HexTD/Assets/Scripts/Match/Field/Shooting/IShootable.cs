@@ -1,3 +1,4 @@
+using HexSystem;
 using UnityEngine;
 
 namespace Match.Field.Shooting
@@ -6,6 +7,7 @@ namespace Match.Field.Shooting
     {
         int TargetId { get; }
         Vector3 Position { get; }
+        Hex2d HexPosition { get; }
         int Health { get; }
         bool IsCarrion { get; }
         void Hurt(int damage);

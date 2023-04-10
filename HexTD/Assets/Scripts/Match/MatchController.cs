@@ -78,6 +78,7 @@ namespace Match
         private readonly Layout _layout;
         private readonly HexFabric _hexFabric;
         private readonly HexagonalFieldModel _hexagonalFieldModel;
+        private readonly HexMapReachableService _hexMapReachableService;
         private readonly FieldController _player1FieldController;
         private readonly FieldController _player2FieldController;
         private readonly FieldFactory _fieldFactory;
@@ -154,12 +155,15 @@ namespace Match
             
             _hexagonalFieldModel = new HexagonalFieldModel(_layout,
                 _context.MatchInitDataParameters.Hexes);
+
+            _hexMapReachableService = new HexMapReachableService(_hexagonalFieldModel);
             
             //TODO: click handle separate with field controller
             FieldController.Context enemyFieldContext = new FieldController.Context(
                 _context.MatchView.EnemyFieldRoot,
                 _hexagonalFieldModel.CurrentEnemyFieldHexes,
                 _hexagonalFieldModel,
+                _hexMapReachableService,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 false,
@@ -181,6 +185,7 @@ namespace Match
                 _context.MatchView.OurFieldRoot,
                 _hexagonalFieldModel.CurrentOurFieldHexes,
                 _hexagonalFieldModel,
+                _hexMapReachableService,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 true,
@@ -329,7 +334,7 @@ namespace Match
             
             _inputController.OuterLogicUpdate(frameLength);
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
-            //_windowsManager.OuterLogicUpdate(frameLength);
+            _windowsManager.OuterLogicUpdate(frameLength);
             
             // the order is important due to calls to Random inside
             _player1FieldController.OuterLogicUpdate(frameLength);

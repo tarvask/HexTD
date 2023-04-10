@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using HexSystem;
+using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.State;
 using Tools;
@@ -33,6 +35,7 @@ namespace Match.Field.Mob
         private readonly MobReactiveModel _reactiveModel;
         //private readonly MobBuffsManager _buffsManager;
         private Vector3 _currentPosition;
+        private Hex2d _currentHexPosition;
         private float _currentPathLength;
         private byte _nextWaypoint;
         private float _attackingTimer;
@@ -45,6 +48,7 @@ namespace Match.Field.Mob
         public int Health => _reactiveModel.HealthReactiveProperty.Value;
         public float PathLength => _currentPathLength;
         public Vector3 Position => _currentPosition;
+        public Hex2d HexPosition => _currentHexPosition;
         public bool HasReachedCastle => _hasReachedCastle;
         public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.ReloadTime;
         public int RewardInSilver => _context.Parameters.RewardInSilver;
@@ -96,6 +100,11 @@ namespace Match.Field.Mob
             }
 
             _hasReachedCastle = false;
+        }
+
+        public void UpdateHexPosition(IHexPositionConversationService hexPositionConversationService)
+        {
+            _currentHexPosition = hexPositionConversationService.ToHexFromWorldPosition(_currentPosition);
         }
 
         public void VisualMove(float frameLength)
@@ -167,7 +176,6 @@ namespace Match.Field.Mob
         public void Die()
         {
             _context.RemoveMobReactiveCommand.Execute(this);
-            _context.View.MobOutfit.color = new Color(0,0,0);
             
             Task.Run(async () =>
             {
@@ -194,13 +202,13 @@ namespace Match.Field.Mob
 
         private void ShowDamage(int damage)
         {
-            _context.View.DamageTextItems[_currentDamageTextIndex].text = $"{-damage}";
-            _context.View.DamageTextItems[_currentDamageTextIndex].gameObject.SetActive(false);
-            _context.View.DamageTextItems[_currentDamageTextIndex].gameObject.SetActive(true);
-            _currentDamageTextIndex++;
-
-            if (_currentDamageTextIndex == _context.View.DamageTextItems.Length)
-                _currentDamageTextIndex = 0;
+            //_context.View.DamageTextItems[_currentDamageTextIndex].text = $"{-damage}";
+            //_context.View.DamageTextItems[_currentDamageTextIndex].gameObject.SetActive(false);
+            //_context.View.DamageTextItems[_currentDamageTextIndex].gameObject.SetActive(true);
+            //_currentDamageTextIndex++;
+            
+            //if (_currentDamageTextIndex == _context.View.DamageTextItems.Length)
+            //    _currentDamageTextIndex = 0;
         }
         
         public void LoadState(in PlayerState.MobState mobState)

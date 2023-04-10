@@ -52,7 +52,6 @@ namespace Match.Field.Tower
         
         private TowerLevelParams CurrentLevel => _context.Parameters.Levels[_stableModel.Level - 1];
         private TowerLevelParams NextLevel => _context.Parameters.Levels[_stableModel.Level];
-        private float AttackRadiusSqr => CurrentRadius * CurrentRadius;
         private float AttackRadiusAndBlockerColliderSqr => (CurrentRadius + BlockerColliderRadius) * (CurrentRadius + BlockerColliderRadius); 
         private Vector3 Position => _context.View.transform.localPosition;
 
@@ -68,7 +67,7 @@ namespace Match.Field.Tower
         public TowerType TowerType => _context.Parameters.RegularParameters.Data.TowerType;
         public RaceType RaceType => _context.Parameters.RegularParameters.Data.RaceType;
         public int CurrentDamage => Mathf.CeilToInt(CurrentLevel.LevelRegularParams.Data.AttackPower); // Mathf.CeilToInt(_buffsManager.ParameterResultValue(BuffedParameterType.AttackPower));
-        private float CurrentRadius => CurrentLevel.LevelRegularParams.Data.AttackRadius; //_buffsManager.ParameterResultValue(BuffedParameterType.AttackRadius);
+        private int CurrentRadius => CurrentLevel.LevelRegularParams.Data.AttackRadiusInHexCount; //_buffsManager.ParameterResultValue(BuffedParameterType.AttackRadius);
         private float CurrentReloadTime => CurrentLevel.LevelRegularParams.Data.ReloadTime; //_buffsManager.ParameterResultValue(BuffedParameterType.ReloadTime);
         public IReadOnlyReactiveProperty<int> KillsCount => _reactiveModel.KillsCountReactiveProperty;
         public List<AbstractBuffParameters> MobsBuffs => _activeAbilities;
@@ -95,15 +94,6 @@ namespace Match.Field.Tower
         public void OuterLogicUpdate(float frameLength)
         {
             //_buffsManager.OuterLogicUpdate(frameLength);
-        }
-
-        public bool IsTargetReachable(Vector3 targetPosition, bool isMobile)
-        {
-            if (isMobile)
-                return Vector3.SqrMagnitude(targetPosition - Position) < AttackRadiusSqr;
-            
-            // take blocker size into account, use cylinder collider
-            return Vector3.SqrMagnitude(targetPosition - Position) < AttackRadiusAndBlockerColliderSqr;
         }
 
         // TODO: fix abilities' behaviour
@@ -188,10 +178,12 @@ namespace Match.Field.Tower
             _stableModel.UpdateShootingTimer(frameLength);
         }
 
-        public bool FindTarget(TargetFinder targetFinder, Dictionary<int, MobController> mobs)
+        public bool FindTarget(TargetFinder targetFinder, IReadOnlyDictionary<int, MobController> mobs)
         {
             int targetId = targetFinder.GetTargetWithTacticInRange(mobs,
-                _context.Parameters.RegularParameters.Data.TargetFindingTacticType, Position, AttackRadiusSqr,
+                _context.Parameters.RegularParameters.Data.ReachableAttackTargetFinderType,
+                _context.Parameters.RegularParameters.Data.TargetFindingTacticType, 
+                HexPosition, CurrentRadius,
                 _context.Parameters.RegularParameters.Data.PreferUnbuffedTargets);//, _activeAbilities);
             _stableModel.SetTarget(targetId);
             return HasTarget;
@@ -209,16 +201,6 @@ namespace Match.Field.Tower
                 _stableModel.ResetTarget();
 
             return projectile;
-        }
-
-        public void SetBlockerTarget(int targetId)
-        {
-            _stableModel.SetBlockerTarget(targetId);
-        }
-        
-        public void UnsetBlockerTarget(int targetId)
-        {
-            _stableModel.UnsetBlockerTarget(targetId);
         }
 
         protected override void OnDispose()

@@ -3,6 +3,7 @@ using HexSystem;
 using Match.Field.Castle;
 using Match.Field.Hexagons;
 using Match.Field.Mob;
+using Match.Field.Services;
 using Match.Field.Shooting;
 using Match.Field.Tower;
 using Match.Wave;
@@ -17,6 +18,7 @@ namespace Match.Field
         {
             public FieldHexTypesController FieldHexTypesController { get; }
             public TowersManager TowersManager { get; }
+            public MobsManager MobsManager { get; }
             public FieldFactory Factory { get; }
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
             public ReactiveCommand<MobController> MobSpawnedReactiveCommand { get; }
@@ -24,6 +26,7 @@ namespace Match.Field
 
             public Context(FieldHexTypesController fieldHexTypesController,
                 TowersManager towersManager,
+                MobsManager mobsManager,
                 FieldFactory factory,
                 ReactiveCommand<MobController> removeMobReactiveCommand,
                 ReactiveCommand<MobController> mobSpawnedReactiveCommand,
@@ -31,6 +34,7 @@ namespace Match.Field
             {
                 FieldHexTypesController = fieldHexTypesController;
                 TowersManager = towersManager;
+                MobsManager = mobsManager;
                 Factory = factory;
                 
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
@@ -43,7 +47,6 @@ namespace Match.Field
 
         // main state data
         private readonly CastleController _castle;
-        private readonly Dictionary<int, MobController> _mobs;
         private readonly Dictionary<int, ProjectileController> _projectiles;
         private readonly Dictionary<int, int> _artifactsOnTowers;
         
@@ -61,7 +64,7 @@ namespace Match.Field
         // castle
         public CastleController Castle => _castle;
         // mobs by ids
-        public Dictionary<int, MobController> Mobs => _mobs;
+        public MobsManager MobsManager => _context.MobsManager;
         // projectiles by ids
         public Dictionary<int, ProjectileController> Projectiles => _projectiles;
         public Dictionary<int, IShootable> Shootables => _shootables;
@@ -72,7 +75,6 @@ namespace Match.Field
 
             _castle = AddDisposable(_context.Factory.CreateCastle());
             
-            _mobs = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _projectiles = new Dictionary<int, ProjectileController>(WaveMobSpawnerCoordinator.MaxMobsInWave * 8); // random stuff
             _shootables = new Dictionary<int, IShootable>(WaveMobSpawnerCoordinator.MaxMobsInWave); // + blockers count
             
@@ -114,7 +116,7 @@ namespace Match.Field
 
         public void AddMob(MobController mobController)
         {
-            _mobs.Add(mobController.Id, mobController);
+            _context.MobsManager.AddMob(mobController);
             _shootables.Add(mobController.TargetId, mobController);
             _context.MobSpawnedReactiveCommand.Execute(mobController);
 
@@ -124,10 +126,9 @@ namespace Match.Field
 
         private void RemoveMob(MobController mobController)
         {
-            _mobs.Remove(mobController.Id);
             _shootables.Remove(mobController.TargetId);
             
-            if (_mobs.Count == 0 && _context.HasMobsOnFieldReactiveProperty.Value)
+            if (_context.MobsManager.MobCount == 0 && _context.HasMobsOnFieldReactiveProperty.Value)
                 _context.HasMobsOnFieldReactiveProperty.Value = false;
         }
 

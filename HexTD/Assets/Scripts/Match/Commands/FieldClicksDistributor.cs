@@ -95,14 +95,8 @@ namespace Match.Commands
             //    return;
             
             TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            
             _context.CurrencyController.SpendSilver(towerConfig.Parameters.Levels[0].LevelRegularParams.Data.Price);
-            
-            TowerController towerInstance = _context.ConstructionProcessController.SetTowerBuilding(towerConfig, position);
-
-            // try to target new tower to blocker
-            if (_context.ShootingController.BlockerTargetId != -1)
-                towerInstance.SetBlockerTarget(_context.ShootingController.BlockerTargetId);
+            _context.ConstructionProcessController.SetTowerBuilding(towerConfig, position);
         }
 
         private void ProcessPreManipulation(Hex2d clickedHex)

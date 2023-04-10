@@ -57,7 +57,7 @@ namespace Match.Field.State
             
             _castleState = new CastleState(fieldModel.Castle);
             _towersState = new TowersState(fieldModel.Towers);
-            _mobsState = new MobsState(fieldModel.Mobs);
+            _mobsState = new MobsState(fieldModel.MobsManager.Mobs);
             _projectilesState = new ProjectilesState(fieldModel.Projectiles);
         }
 
@@ -243,7 +243,7 @@ namespace Match.Field.State
                 _mobs = mobs;
             }
             
-            public MobsState(Dictionary<int, MobController> mobsControllers)
+            public MobsState(IReadOnlyDictionary<int, MobController> mobsControllers)
             {
                 _mobs = new MobState[mobsControllers.Count];
                 int mobIndex = 0;

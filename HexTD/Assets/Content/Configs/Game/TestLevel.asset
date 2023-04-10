@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: TestLevel
   m_EditorClassIdentifier: 
   waves:
-  - size: 0
+  - size: 5
     duration: 100
     minSpawnPause: 1
     maxSpawnPause: 3
     pauseBeforeWave: 100
     elements:
     - mobId: 1
-      maxCount: 0
+      maxCount: 5
   silverCoinsCount: 10

@@ -15,7 +15,7 @@ namespace Match.Field
         public struct Context
         {
             public Transform FieldRoot { get; }
-            public HexagonalFieldModel HexagonalFieldModel { get; }
+            public IHexPositionConversationService HexPositionConversationService { get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
             
@@ -24,14 +24,14 @@ namespace Match.Field
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
 
             public Context(Transform fieldRoot,
-                HexagonalFieldModel hexagonalFieldModel,
+                IHexPositionConversationService hexPositionConversationService,
                 int castleHealth, int towerRemovingDuration,
                 ReactiveCommand<int> attackCastleByMobReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<MobController> removeMobReactiveCommand)
             {
                 FieldRoot = fieldRoot;
-                HexagonalFieldModel = hexagonalFieldModel;
+                HexPositionConversationService = hexPositionConversationService;
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
@@ -136,7 +136,7 @@ namespace Match.Field
             Hex2d position)
         {
             TowerView towerView = Object.Instantiate(towerPrefab, _buildingsRoot);
-            towerView.transform.position = _context.HexagonalFieldModel.GetUpHexWorldPosition(position);
+            towerView.transform.position = _context.HexPositionConversationService.GetUpHexWorldPosition(position);
             towerView.name = $"{towerId}_{towerName}";
 
             return towerView;
@@ -171,9 +171,9 @@ namespace Match.Field
 
             MobView mobView = CreateMobView($"{mobConfig.Parameters.PowerType}",
                 mobId, mobConfig.View, hexSpawnPosition);
-            MobController.Context towerControllerContext = new MobController.Context(mobId, targetId,
+            MobController.Context mobControllerContext = new MobController.Context(mobId, targetId,
                 mobConfig.Parameters, mobView, _context.RemoveMobReactiveCommand);
-            MobController mobController = new MobController(towerControllerContext);
+            MobController mobController = new MobController(mobControllerContext);
 
             return mobController;
         }

@@ -42,8 +42,6 @@ namespace Match.Field.Tower
         {
             _level = levelParams.LevelRegularParams.Data.Level;
             _constructionTimeLabel = timeLabel;
-            
-            CheckAndAddSplashAbility(levelParams.PassiveLevelAbilities.Abilities, false);
         }
 
         public void SetState(TowerState towerState)
@@ -61,21 +59,6 @@ namespace Match.Field.Tower
             _targetId = targetId;
             _isTargetBlocker = false;
         }
-        
-        public void SetBlockerTarget(int targetId)
-        {
-            _targetId = targetId;
-            _isTargetBlocker = true;
-        }
-        
-        public void UnsetBlockerTarget(int targetId)
-        {
-            if (_targetId == targetId)
-            {
-                _targetId = -1;
-                _isTargetBlocker = false;
-            }
-        }
 
         public void ResetShootingTimer()
         {
@@ -85,36 +68,6 @@ namespace Match.Field.Tower
         public void ResetTarget()
         {
             _targetId = -1;
-        }
-
-        public void CheckAndAddSplashAbility(AbstractAbilityMarker[] passiveAbilities, bool isArtifactEffect)
-        {
-            // AbstractAbilityMarker splashDamageAbility = Array.Find(passiveAbilities,
-            //     ability => ability is SplashDamageAbilityMarker);
-            //
-            // // can be decided by isArtifact condition, maybe choose the strongest
-            // if (splashDamageAbility != null)
-            // {
-            //     _hasSplashDamage = true;
-            //
-            //     SplashDamageBuffParameters splashDamageParameters = (SplashDamageBuffParameters)splashDamageAbility.AbilityToBuff();
-            //     _splashDamageRadius = splashDamageParameters.BuffValue;
-            //     _hasProgressiveSplashDamage = splashDamageParameters.HasProgressiveSplash;
-            //
-            //     if (!isArtifactEffect)
-            //         _hasSplashInitially = true;
-            // }
-        }
-        
-        public void CheckAndRemoveSplashAbility(AbstractAbilityMarker[] passiveAbilities, bool isArtifactEffect)
-        {
-            // AbstractAbilityMarker splashDamageAbility = Array.Find(passiveAbilities,
-            //     ability => ability is SplashDamageAbilityMarker);
-            //
-            // if (splashDamageAbility != null && _hasSplashDamage && isArtifactEffect)
-            // {
-            //     _hasSplashDamage = false;
-            // }
         }
     }
 }

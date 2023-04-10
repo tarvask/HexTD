@@ -1,28 +1,38 @@
 using System.Collections.Generic;
+using HexSystem;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
+using Match.Field.Tower;
 using Match.Wave;
 using Tools;
-using UnityEngine;
 
 namespace Match.Field.Shooting.TargetFinding
 {
     public class MobsInRangeDefiner : BaseDisposable
     {
+        private readonly HexMapReachableService _hexMapReachableService;
         private readonly Dictionary<int, MobController> _mobsInRange;
 
-        public MobsInRangeDefiner()
+        public MobsInRangeDefiner(HexMapReachableService hexMapReachableService)
         {
+            _hexMapReachableService = hexMapReachableService;
             _mobsInRange = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }
         
-        public Dictionary<int, MobController> GetTargetsInRange(Dictionary<int, MobController> mobs,
-            Vector3 towerPosition, float attackRadiusSqr)
+        public Dictionary<int, MobController> GetTargetsInRange(
+            ReachableAttackTargetFinderType reachableAttackTargetFinderType,
+            IReadOnlyDictionary<int, MobController> mobsByPosition,
+            Hex2d towerPosition, int attackRadius)
         {
-            _mobsInRange.Clear();
+            IReadOnlyCollection<Hex2d> hexes = _hexMapReachableService.GeInRangeMapByTargetFinderType(
+                towerPosition, attackRadius, reachableAttackTargetFinderType);
 
-            foreach (KeyValuePair<int, MobController> mobPair in mobs)
-                if ((mobPair.Value.Position - towerPosition).sqrMagnitude < attackRadiusSqr)
-                    _mobsInRange.Add(mobPair.Key, mobPair.Value);
+            _mobsInRange.Clear();
+            foreach (Hex2d hex in hexes)
+            {
+                if (mobsByPosition.TryGetValue(hex.GetHashCode(), out var mobController))
+                    _mobsInRange.Add(mobController.Id, mobController);
+            }
 
             return _mobsInRange;
         }

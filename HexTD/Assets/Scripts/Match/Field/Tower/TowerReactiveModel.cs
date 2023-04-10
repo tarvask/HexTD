@@ -27,7 +27,7 @@ namespace Match.Field.Tower
         public void SetLevel(TowerLevelParams levelParams)
         {
             _attackPowerReactiveProperty.Value = levelParams.LevelRegularParams.Data.AttackPower;
-            _attackRadiusReactiveProperty.Value = levelParams.LevelRegularParams.Data.AttackRadius;
+            _attackRadiusReactiveProperty.Value = levelParams.LevelRegularParams.Data.AttackRadiusInHexCount;
             _reloadTimeReactiveProperty.Value = levelParams.LevelRegularParams.Data.ReloadTime;
         }
 

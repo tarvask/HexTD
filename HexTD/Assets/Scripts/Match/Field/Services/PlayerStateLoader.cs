@@ -119,7 +119,7 @@ namespace Match.Field.Services
             PlayerState.TowersState towersState = new PlayerState.TowersState(_context.FieldModel.Towers);
             
             // mobs
-            PlayerState.MobsState mobsState = new PlayerState.MobsState(_context.FieldModel.Mobs);
+            PlayerState.MobsState mobsState = new PlayerState.MobsState(_context.FieldModel.MobsManager.Mobs);
             
             // projectiles
             PlayerState.ProjectilesState projectilesState = new PlayerState.ProjectilesState(_context.FieldModel.Projectiles);
@@ -138,10 +138,10 @@ namespace Match.Field.Services
             _context.FieldModel.TowersByPositions.Clear();
 
             // mobs
-            foreach (KeyValuePair<int, MobController> mobPair in _context.FieldModel.Mobs)
+            foreach (KeyValuePair<int, MobController> mobPair in _context.FieldModel.MobsManager.Mobs)
                 mobPair.Value.Dispose();
             
-            _context.FieldModel.Mobs.Clear();
+            _context.FieldModel.MobsManager.Clear();
             
             // projectiles
             foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.Projectiles)

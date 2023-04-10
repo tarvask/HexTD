@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using HexSystem;
+using Match.Field.Hexagons;
 using Match.Field.Shooting.SplashDamage;
 using Match.Field.Shooting.TargetFinding;
 using Match.Field.Tower;
@@ -14,11 +16,15 @@ namespace Match.Field.Shooting
         public struct Context
         {
             public FieldModel FieldModel { get; }
+            public HexMapReachableService HexMapReachableService { get; }
             public FieldFactory Factory { get; }
 
-            public Context(FieldModel fieldModel, FieldFactory factory)
+            public Context(FieldModel fieldModel, 
+                HexMapReachableService hexMapReachableService,
+                FieldFactory factory)
             {
                 FieldModel = fieldModel;
+                HexMapReachableService = hexMapReachableService;
                 Factory = factory;
             }
         }
@@ -36,14 +42,11 @@ namespace Match.Field.Shooting
         private List<TargetWithSqrDistancePair> _targetsWithSqrDistances;
         private int _blockerTargetId;
 
-        public bool HasBlockerTarget => _blockerTargetId > 0;
-        public int BlockerTargetId => _blockerTargetId;
-
         public ShootingController(Context context)
         {
             _context = context;
             
-            _targetFinder = AddDisposable(new TargetFinder());
+            _targetFinder = AddDisposable(new TargetFinder(_context.HexMapReachableService));
             
             _hittingProjectiles = new List<ProjectileController>(MaxHitsPerFrame);
             _endSplashingProjectiles = new List<ProjectileController>(MaxHitsPerFrame);
@@ -211,20 +214,7 @@ namespace Match.Field.Shooting
 
         private bool Aim(TowerController tower)
         {
-            if (!tower.HasTarget)
-                return tower.FindTarget(_targetFinder, _context.FieldModel.Mobs);
-
-            if (_context.FieldModel.Shootables.TryGetValue(tower.TargetId, out IShootable target))
-            {
-                if (!tower.IsTargetReachable(target.Position, target.CanMove))
-                    return tower.FindTarget(_targetFinder, _context.FieldModel.Mobs);
-            }
-            else
-            {
-                return tower.FindTarget(_targetFinder, _context.FieldModel.Mobs);
-            }
-
-            return true;
+            return tower.FindTarget(_targetFinder, _context.FieldModel.MobsManager.Mobs);
         }
 
         private void Shoot(TowerController tower)

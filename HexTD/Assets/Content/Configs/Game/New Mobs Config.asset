@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2050b3007a3a4472925fb33ab46129ac, type: 3}
   m_Name: New Mobs Config
   m_EditorClassIdentifier: 
-  waterMobs: []
+  waterMobs:
+  - {fileID: 11400000, guid: 23d61973ccd81704bbc499cbda29b0db, type: 2}
   fireMobs: []
   earthMobs: []
   natureMobs: []

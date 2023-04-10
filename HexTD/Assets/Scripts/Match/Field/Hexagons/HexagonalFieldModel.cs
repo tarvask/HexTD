@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Match.Field.Hexagons
 {
-    public class HexagonalFieldModel
+    public class HexagonalFieldModel : IHexPositionConversationService
     {
         private readonly Layout _layout;
         private readonly IDictionary<int, FieldHex> _cachedLevelFieldHexes;
@@ -14,6 +14,9 @@ namespace Match.Field.Hexagons
 
         public int HexGridSize => _cachedLevelFieldHexes.Count;
 
+        public HexModel this[int positionHash] => _cachedLevelFieldHexes[positionHash].HexModel;
+        public bool IsHexInMap(int positionHash) => _cachedLevelFieldHexes.ContainsKey(positionHash);        
+        
         public FieldHexType GetOurHexTypeByPosition(Hex2d position) => CurrentOurFieldHexes[position.GetHashCode()];
         public FieldHexType GetEnemyHexTypeByPosition(Hex2d position) => CurrentEnemyFieldHexes[position.GetHashCode()];
 
@@ -46,6 +49,11 @@ namespace Match.Field.Hexagons
         {
             FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
             return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height + 1);
+        }
+
+        public Hex2d ToHexFromWorldPosition(Vector3 position)
+        {
+            return (Hex2d)_layout.ToHex(position).RoundToHex();
         }
 
         public void Reset()
