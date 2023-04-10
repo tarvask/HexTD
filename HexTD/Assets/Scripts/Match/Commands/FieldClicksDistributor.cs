@@ -5,6 +5,7 @@ using Match.Field.Shooting;
 using Match.Field.Tower;
 using Match.Windows;
 using Match.Windows.Tower;
+using Services;
 using Tools;
 using Tools.Interfaces;
 
@@ -16,38 +17,35 @@ namespace Match.Commands
         {
             public FieldModel FieldModel { get; }
             public FieldClicksHandler ClicksHandler { get; }
-            public TowerConfigRetriever TowerConfigRetriever { get; }
+            public ConfigsRetriever ConfigsRetriever { get; }
             public FieldConstructionProcessController ConstructionProcessController { get; }
             public ShootingController ShootingController { get; }
             public CurrencyController CurrencyController { get; }
             public MatchCommands MatchCommands { get; }
             
-            public MatchInfoPanelController MatchInfoPanelController { get; }
             public TowerSelectionWindowController TowerSelectionWindowController { get; }
             public TowerManipulationWindowController TowerManipulationWindowController { get; }
             public TowerInfoWindowController TowerInfoWindowController { get; }
 
             public Context(
-                FieldModel fieldModel, FieldClicksHandler clicksHandler, TowerConfigRetriever towerConfigRetriever,
+                FieldModel fieldModel, FieldClicksHandler clicksHandler, ConfigsRetriever configsRetriever,
                 FieldConstructionProcessController constructionProcessController,
                 ShootingController shootingController,
                 CurrencyController currencyController,
                 MatchCommands matchCommands,
                 
-                MatchInfoPanelController matchInfoPanelController,
                 TowerSelectionWindowController towerSelectionWindowController,
                 TowerManipulationWindowController towerManipulationWindowController,
                 TowerInfoWindowController towerInfoWindowController)
             {
                 FieldModel = fieldModel;
                 ClicksHandler = clicksHandler;
-                TowerConfigRetriever = towerConfigRetriever;
+                ConfigsRetriever = configsRetriever;
                 ConstructionProcessController = constructionProcessController;
                 ShootingController = shootingController;
                 CurrencyController = currencyController;
                 MatchCommands = matchCommands;
 
-                MatchInfoPanelController = matchInfoPanelController;
                 TowerSelectionWindowController = towerSelectionWindowController;
                 TowerManipulationWindowController = towerManipulationWindowController;
                 TowerInfoWindowController = towerInfoWindowController;
@@ -94,7 +92,7 @@ namespace Match.Commands
             _context.TowerSelectionWindowController.ShowWindow(_context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
                 (towerToBuild) =>
             {
-                TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerToBuild.TowerType);
+                TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerToBuild.TowerType);
                 
                 if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.Parameters.Levels[0].LevelRegularParams.Data.Price)
                     _context.MatchCommands.Outgoing.RequestBuildTower.Fire(clickedCell, towerToBuild);
@@ -107,7 +105,7 @@ namespace Match.Commands
             //if (_context.FieldModel.Cells[position.y, position.x] != FieldCellType.Free)
             //    return;
             
-            TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerShortParams.TowerType);
+            TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
             
             _context.CurrencyController.SpendSilver(towerConfig.Parameters.Levels[0].LevelRegularParams.Data.Price);
             
@@ -131,7 +129,7 @@ namespace Match.Commands
                 return;
             
             TowerShortParams towerShortParams = towerInstance.GetShortParams();
-            TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerShortParams.TowerType);
+            TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
             
             _context.TowerManipulationWindowController.ShowWindow(towerConfig.Parameters, towerShortParams.Level,
                 _context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
@@ -164,7 +162,7 @@ namespace Match.Commands
             if (!towerInstance.CanShoot)
                 return;
 
-            TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerShortParams.TowerType);
+            TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
             _context.CurrencyController.SpendSilver(towerConfig.Parameters.Levels[towerShortParams.Level].LevelRegularParams.Data.Price);
             _context.ConstructionProcessController.SetTowerUpgrading(towerInstance);
         }
@@ -177,7 +175,7 @@ namespace Match.Commands
                 || !_context.FieldModel.TowersByPositions[positionHashcode].CanShoot)
                 return;
             
-            TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerShortParams.TowerType);
+            TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
             int sellPrice = TowerController.GetTowerSellPrice(towerConfig.Parameters, towerShortParams.Level);
             _context.CurrencyController.AddSilver(sellPrice);
             _context.ConstructionProcessController.SetTowerRemoving(position);

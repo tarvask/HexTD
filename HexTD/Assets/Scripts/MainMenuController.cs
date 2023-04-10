@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Match.Field.Tower;
 using Match.Windows.MainMenu;
 using Photon.Pun.UtilityScripts;
+using Services;
 using Tools;
 using UniRx;
 using UnityEngine;
@@ -27,7 +28,7 @@ public class MainMenuController : BaseDisposable
 
     private readonly ReactiveProperty<byte> _selectedHandIndexReactiveProperty;
     private List<List<TowerConfig>> _possibleHands;
-    private readonly TowerConfigRetriever _towerConfigRetriever;
+    private readonly ConfigsRetriever _configsRetriever;
     private readonly MainMenuPanelController _mainMenuPanelController;
     private readonly StartGamePanelController _startGamePanelController;
     private readonly PlayerHandSelectionPanelController _playerHandSelectionPanelController;
@@ -49,8 +50,8 @@ public class MainMenuController : BaseDisposable
                 _possibleHands[handIndex].Add( null);
         }
 
-        TowerConfigRetriever.Context towerConfigRetriever = new TowerConfigRetriever.Context(_context.View.TowersConfig);
-        _towerConfigRetriever = AddDisposable(new TowerConfigRetriever(towerConfigRetriever));
+        ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_context.View.FieldConfig);
+        _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
             
         LoadHands();
             
@@ -79,7 +80,7 @@ public class MainMenuController : BaseDisposable
         _startGamePanelController = AddDisposable(new StartGamePanelController(startGamePanelControllerContext));
             
         PlayerHandSelectionPanelController.Context playerHandSelectionPanelControllerContext = new PlayerHandSelectionPanelController.Context(
-            _context.View.PlayerHandSelectionPanelView, _context.View.TowersConfig, _towerConfigRetriever, _selectedHandIndexReactiveProperty);
+            _context.View.PlayerHandSelectionPanelView, _context.View.FieldConfig, _configsRetriever, _selectedHandIndexReactiveProperty);
         _playerHandSelectionPanelController = AddDisposable(new PlayerHandSelectionPanelController(playerHandSelectionPanelControllerContext));
         _startGamePanelController.Show(_possibleHands, PhotonRoomNameSaver.HasCachedGame);
             
@@ -115,13 +116,9 @@ public class MainMenuController : BaseDisposable
         {
             for (int itemIndex = 0; itemIndex < HandSize; itemIndex++)
             {
-                // TowerType towerType = (TowerType)PlayerPrefs.GetInt($"Hand{handIndex}Item{itemIndex}", (int)TowerType.Undefined);
-                // _possibleHands[handIndex].Add((towerType != TowerType.Undefined)
-                //     ? _towerConfigRetriever.GetTowerByType(towerType)
-                //     : null);
                 TowerType towerType = (TowerType)PlayerPrefs.GetInt($"Hand{handIndex}Item{itemIndex}", (int)TowerType.Undefined);
                 _possibleHands[handIndex][itemIndex] = (towerType != TowerType.Undefined)
-                    ? _towerConfigRetriever.GetTowerByType(towerType)
+                    ? _configsRetriever.GetTowerByType(towerType)
                     : null;
             }
         }

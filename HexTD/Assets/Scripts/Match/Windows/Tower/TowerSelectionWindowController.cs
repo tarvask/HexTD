@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Match.Field.Tower;
+using Services;
 using UniRx;
 using Object = UnityEngine.Object;
 
@@ -12,17 +13,17 @@ namespace Match.Windows.Tower
         {
             public TowerSelectionWindowView View { get; }
             public IReactiveProperty<int> OpenWindowsCountReactiveProperty { get; }
-            public TowerConfigRetriever TowerConfigRetriever { get; }
+            public ConfigsRetriever ConfigsRetriever { get; }
             public PlayerHandParams PlayerHandParams { get; }
             public ReactiveCommand<int> SilverCoinsCountChangedReactiveCommand { get; }
 
             public Context(TowerSelectionWindowView view, IReactiveProperty<int> openWindowsCountReactiveProperty,
-                TowerConfigRetriever towerConfigRetriever, PlayerHandParams playerHandParams,
+                ConfigsRetriever configsRetriever, PlayerHandParams playerHandParams,
                 ReactiveCommand<int> silverCoinsCountChangedReactiveCommand)
             {
                 View = view;
                 OpenWindowsCountReactiveProperty = openWindowsCountReactiveProperty;
-                TowerConfigRetriever = towerConfigRetriever;
+                ConfigsRetriever = configsRetriever;
                 PlayerHandParams = playerHandParams;
                 SilverCoinsCountChangedReactiveCommand = silverCoinsCountChangedReactiveCommand;
             }
@@ -60,23 +61,10 @@ namespace Match.Windows.Tower
                 return;
                 
             TowerItemView towerItem = Object.Instantiate(_context.View.TowerItemPrefab, _context.View.ContentRoot);
-            towerItem.Init(_context.TowerConfigRetriever.GetTowerByType(towerType),
+            towerItem.Init(_context.ConfigsRetriever.GetTowerByType(towerType),
                 () => OnTowerSelectedHandler(towerItem.TowerShortParams, false));
             
             _playerHandTowerItems.Add(towerItem);
-        }
-
-        private void AddArtifactTower(TowerType towerType)
-        {
-            if (towerType == TowerType.Undefined)
-                return;
-                
-            TowerItemView towerItem = Object.Instantiate(_context.View.TowerItemPrefab, _context.View.ContentRoot);
-            towerItem.Init(_context.TowerConfigRetriever.GetTowerByType(towerType),
-                0,
-                () => OnTowerSelectedHandler(towerItem.TowerShortParams, true));
-
-            _artifactTowerItems.Add(towerItem);
         }
 
         private void OnTowerSelectedHandler(TowerShortParams towerShortParams, bool isFree)

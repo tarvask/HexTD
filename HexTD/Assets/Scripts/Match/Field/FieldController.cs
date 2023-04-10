@@ -11,6 +11,7 @@ using Match.Field.State;
 using Match.Field.Tower;
 using Match.Windows;
 using Match.Windows.Tower;
+using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -25,9 +26,7 @@ namespace Match.Field
             public FieldView FieldView { get; }
             public MatchShortParameters MatchShortParameters { get; }
             public FieldConfig FieldConfig { get; }
-            public FieldConfigCellsRetriever ConfigCellsRetriever { get; }
-            public TowerConfigRetriever TowerConfigRetriever { get; }
-            public MobConfigRetriever MobConfigRetriever { get; }
+            public ConfigsRetriever ConfigsRetriever { get; }
             public bool NeedsInput { get; }
             public MatchCommands MatchCommands { get; }
             public MatchInfoPanelController MatchInfoPanelController { get; }
@@ -52,9 +51,7 @@ namespace Match.Field
 
             public Context(FieldView fieldView,
                 MatchShortParameters matchShortParameters, FieldConfig fieldConfig,
-                FieldConfigCellsRetriever configCellsRetriever,
-                TowerConfigRetriever towerConfigRetriever,
-                MobConfigRetriever mobConfigRetriever,
+                ConfigsRetriever configsRetriever,
 
                 bool needsInput,
                 MatchInfoPanelController matchInfoPanelController,
@@ -81,9 +78,7 @@ namespace Match.Field
                 FieldView = fieldView;
                 MatchShortParameters = matchShortParameters;
                 FieldConfig = fieldConfig;
-                ConfigCellsRetriever = configCellsRetriever;
-                TowerConfigRetriever = towerConfigRetriever;
-                MobConfigRetriever = mobConfigRetriever;
+                ConfigsRetriever = configsRetriever;
 
                 NeedsInput = needsInput;
                 MatchCommands = matchCommands;
@@ -195,17 +190,16 @@ namespace Match.Field
 
             // clicks distribution
             FieldClicksDistributor.Context clicksDistributorContext =
-                new FieldClicksDistributor.Context(_model, _clicksHandler, _context.TowerConfigRetriever,
+                new FieldClicksDistributor.Context(_model, _clicksHandler, _context.ConfigsRetriever,
                     _constructionProcessController,
                     _shootingController, _currencyController, _context.MatchCommands,
-                    _context.MatchInfoPanelController,
                     _context.TowerSelectionWindowController,
                     _context.TowerManipulationWindowController,
                     _context.TowerInfoWindowController);
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
             
             PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model, _factory,
-                _context.TowerConfigRetriever, _context.MobConfigRetriever,
+                _context.ConfigsRetriever,
                 _currencyController);
             _stateLoader = AddDisposable(new PlayerStateLoader(stateLoaderContext));
 
@@ -248,7 +242,7 @@ namespace Match.Field
         {
             foreach (var hexModel in _context.MatchShortParameters.Hexes)
             {
-                HexObject hexPrefab = _context.ConfigCellsRetriever.GetCellByType(hexModel.HexObjectTypeName);
+                HexObject hexPrefab = _context.ConfigsRetriever.GetCellByType(hexModel.HexObjectTypeName);
                 _factory.CreateCell(hexPrefab, hexModel.Position, hexModel.H);
             }
         }
