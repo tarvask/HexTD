@@ -4,13 +4,13 @@ using MapEditor;
 using Match.Commands;
 using Match.Field.Castle;
 using Match.Field.Currency;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.Services;
 using Match.Field.Shooting;
 using Match.Field.State;
 using Match.Field.Tower;
-using Match.Windows;
-using Match.Windows.Tower;
+using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -22,12 +22,12 @@ namespace Match.Field
     {
         public struct Context
         {
-            public FieldView FieldView { get; }
+            public Transform FieldRoot { get; }
+            public FieldHexTypesController FieldHexTypesController { get; }
+            public HexagonalFieldModel HexagonalFieldModel { get; }
             public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
-            public FieldConfigCellsRetriever ConfigCellsRetriever { get; }
-            public TowerConfigRetriever TowerConfigRetriever { get; }
-            public MobConfigRetriever MobConfigRetriever { get; }
+            public ConfigsRetriever ConfigsRetriever { get; }
             public bool NeedsInput { get; }
             public MatchCommands MatchCommands { get; }
             
@@ -45,11 +45,12 @@ namespace Match.Field
             public ReactiveCommand<int> GoldenCoinsIncomeChangedReactiveCommand { get; }
             public ReactiveCommand<int> CrystalsCountChangedReactiveCommand { get; }
 
-            public Context(FieldView fieldView,
+            public Context(
+                Transform fieldRoot,
+                FieldHexTypesController fieldHexTypesController,
+                HexagonalFieldModel hexagonalFieldModel,
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
-                FieldConfigCellsRetriever configCellsRetriever,
-                TowerConfigRetriever towerConfigRetriever,
-                MobConfigRetriever mobConfigRetriever,
+                ConfigsRetriever configsRetriever,
 
                 bool needsInput,
                 
@@ -68,12 +69,13 @@ namespace Match.Field
                 ReactiveCommand<int> goldenCoinsIncomeChangedReactiveCommand,
                 ReactiveCommand<int> crystalsCountChangedReactiveCommand)
             {
-                FieldView = fieldView;
+                FieldRoot = fieldRoot;
+                FieldHexTypesController = fieldHexTypesController;
+                HexagonalFieldModel = hexagonalFieldModel;
+                
                 MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
-                ConfigCellsRetriever = configCellsRetriever;
-                TowerConfigRetriever = towerConfigRetriever;
-                MobConfigRetriever = mobConfigRetriever;
+                ConfigsRetriever = configsRetriever;
 
                 NeedsInput = needsInput;
                 MatchCommands = matchCommands;
@@ -95,9 +97,10 @@ namespace Match.Field
         }
 
         private readonly Context _context;
-        private readonly FieldModel _model;
 
         private readonly FieldFactory _factory;
+        private readonly FieldModel _model;
+
         private readonly FieldMobSpawner _fieldMobSpawner;
         private readonly MobsManager _mobsManager;
         private readonly FieldClicksHandler _clicksHandler;
@@ -120,22 +123,19 @@ namespace Match.Field
             ReactiveCommand<MobController> mobSpawnedReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<int> crystalCollectedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
 
-            Layout layout = new Layout(_context.FieldConfig.HexSettingsConfig.HexSize,
-                Vector3.zero, _context.FieldConfig.HexSettingsConfig.IsFlat);
-            HexagonalFieldController hexagonalFieldController = new HexagonalFieldController(layout,
-                _context.MatchInitDataParameters.Hexes);
-            TowersManager towersManager = new TowersManager(hexagonalFieldController.HexGridSize);
+            TowersManager towersManager = new TowersManager(_context.FieldHexTypesController.HexGridSize);
             
             FieldFactory.Context factoryContext = new FieldFactory.Context(
-                _context.FieldView.transform, 
-                hexagonalFieldController,
+                _context.FieldRoot,
+                _context.HexagonalFieldModel,
                 _context.FieldConfig.CastleHealth, _context.FieldConfig.TowerRemovingDuration,
                 castleAttackedByMobReactiveCommand,
                 _context.CastleDestroyedReactiveCommand,
                 removeMobReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
-            FieldModel.Context fieldModelContext = new FieldModel.Context(hexagonalFieldController,
+            FieldModel.Context fieldModelContext = new FieldModel.Context(
+                _context.FieldHexTypesController,
                 towersManager,
                 _factory,
                 removeMobReactiveCommand,
@@ -180,17 +180,15 @@ namespace Match.Field
 
             // clicks distribution
             FieldClicksDistributor.Context clicksDistributorContext =
-                new FieldClicksDistributor.Context(_model, _clicksHandler, _context.TowerConfigRetriever,
+                new FieldClicksDistributor.Context(_model, _clicksHandler, _context.ConfigsRetriever,
                     _constructionProcessController,
                     _shootingController, _currencyController, _context.MatchCommands);
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
             
             PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model, _factory,
-                _context.TowerConfigRetriever, _context.MobConfigRetriever,
+                _context.ConfigsRetriever,
                 _currencyController);
             _stateLoader = AddDisposable(new PlayerStateLoader(stateLoaderContext));
-
-            CreateCells();
 
             _context.StateSyncedReactiveCommand.Subscribe(LoadState);
             
@@ -211,7 +209,7 @@ namespace Match.Field
                 _clicksDistributor.OuterLogicUpdate(frameLength);
             
             _constructionProcessController.OuterLogicUpdate(frameLength);
-            _mobsManager.OuterLogicUpdate(frameLength);
+            //_mobsManager.OuterLogicUpdate(frameLength);
 
             foreach (KeyValuePair<int,TowerController> towerPair in _model.Towers)
                 towerPair.Value.OuterLogicUpdate(frameLength);
@@ -223,15 +221,6 @@ namespace Match.Field
         {
             _mobsManager.OuterViewUpdate(frameLength);
             _shootingController.OuterViewUpdate(frameLength);
-        }
-
-        private void CreateCells()
-        {
-            foreach (var hexModel in _context.MatchInitDataParameters.Hexes)
-            {
-                HexObject hexPrefab = _context.ConfigCellsRetriever.GetCellByType(hexModel.HexObjectTypeName);
-                _factory.CreateCell(hexPrefab, hexModel.Position, hexModel.H);
-            }
         }
 
         private void LoadState(PlayerState playerState)

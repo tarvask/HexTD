@@ -1,8 +1,10 @@
 using System;
 using HexSystem;
+using MapEditor;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.State;
 using Match.Field.Tower;
@@ -69,15 +71,16 @@ namespace Match
         }
 
         private readonly Context _context;
-        private readonly FieldConfigCellsRetriever _configCellsRetriever;
-        private readonly TowerConfigRetriever _towerConfigRetriever;
-        private readonly MobConfigRetriever _mobConfigRetriever;
-        //private readonly WindowsManager _windowsManager;
-        
+        private readonly ConfigsRetriever _configsRetriever;
+        private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
+        private readonly Layout _layout;
+        private readonly HexFabric _hexFabric;
+        private readonly HexagonalFieldModel _hexagonalFieldModel;
         private readonly FieldController _player1FieldController;
         private readonly FieldController _player2FieldController;
+        private readonly FieldFactory _fieldFactory;
         private readonly WaveMobSpawnerCoordinator _waveMobSpawnerCoordinator;
         private readonly MatchRulesController _rulesController;
         private readonly InputController _inputController;
@@ -91,12 +94,6 @@ namespace Match
             _context = context;
             
             _context.MatchView.CanvasFitter.Process();
-            _context.MatchView.CanvasBuilder.Process();
-            FieldsAndCameraInstaller.InstallFieldsByMarkerRects(_context.MatchView.Canvas, _context.MatchView.MainCamera,
-                _context.MatchView.OurFieldView.transform, _context.MatchView.EnemyFieldView.transform,
-                _context.MatchView.EnemyFieldView.Background, _context.MatchView.OurFieldView.Background,
-                _context.MatchView.CanvasBuilder.OurField, _context.MatchView.CanvasBuilder.EnemyField,
-                _context.MatchView.CanvasBuilder.MiddlePanel);
             
             _enemyStateSyncedReactiveCommand = AddDisposable(new ReactiveCommand<PlayerState>());
             _ourStateSyncedReactiveCommand = AddDisposable(new ReactiveCommand<PlayerState>());
@@ -123,17 +120,8 @@ namespace Match
             ReactiveCommand<int> enemyCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<int> ourCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
 
-            // cells retriever
-            FieldConfigCellsRetriever.Context configCellsRetrieverContext = new FieldConfigCellsRetriever.Context(_context.MatchView.FieldConfig);
-            _configCellsRetriever = AddDisposable(new FieldConfigCellsRetriever(configCellsRetrieverContext));
-            
-            // towers retriever
-            TowerConfigRetriever.Context towerConfigRetriever = new TowerConfigRetriever.Context(_context.FieldConfig.TowersConfig);
-            _towerConfigRetriever = AddDisposable(new TowerConfigRetriever(towerConfigRetriever));
-
-            // mobs retriever
-            MobConfigRetriever.Context mobConfigRetrieverContext = new MobConfigRetriever.Context(_context.FieldConfig.MobsConfig);
-            _mobConfigRetriever = AddDisposable(new MobConfigRetriever(mobConfigRetrieverContext));
+            ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_context.FieldConfig);
+            _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
 
             WaveParams[] waves =_context.MatchInitDataParameters.Waves;
             
@@ -160,9 +148,21 @@ namespace Match
             //_windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
             // fields
-            FieldController.Context enemyFieldContext = new FieldController.Context(_context.MatchView.EnemyFieldView,
+            _layout = new Layout(_context.FieldConfig.HexSettingsConfig.HexSize,
+                Vector3.zero, _context.FieldConfig.HexSettingsConfig.IsFlat);
+
+            _hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig, _layout);
+            
+            _hexagonalFieldModel = new HexagonalFieldModel(_layout,
+                _context.MatchInitDataParameters.Hexes);
+            
+            //TODO: click handle separate with field controller
+            FieldController.Context enemyFieldContext = new FieldController.Context(
+                _context.MatchView.FieldRoot,
+                _hexagonalFieldModel.CurrentEnemyFieldHexes,
+                _hexagonalFieldModel,
                 _context.MatchInitDataParameters, _context.FieldConfig,
-                _configCellsRetriever, _towerConfigRetriever, _mobConfigRetriever,
+                _configsRetriever,
                 false,
                 
                 _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, 
@@ -178,9 +178,12 @@ namespace Match
                 enemyGoldCoinsIncomeChangedReactiveCommand,
                 enemyCrystalsCountChangedReactiveCommand);
 
-            FieldController.Context ourFieldContext = new FieldController.Context(_context.MatchView.OurFieldView,
+            FieldController.Context ourFieldContext = new FieldController.Context(
+                _context.MatchView.FieldRoot,
+                _hexagonalFieldModel.CurrentOurFieldHexes,
+                _hexagonalFieldModel,
                 _context.MatchInitDataParameters, _context.FieldConfig,
-                _configCellsRetriever, _towerConfigRetriever, _mobConfigRetriever,
+                _configsRetriever,
                 true,
                 
                 _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, clickReactiveCommand, _ourStateSyncedReactiveCommand,
@@ -218,7 +221,8 @@ namespace Match
             }
             
             // wave mob spawner
-            WaveMobSpawnerCoordinator.Context waveMobSpawnerContext = new WaveMobSpawnerCoordinator.Context(_mobConfigRetriever,
+            WaveMobSpawnerCoordinator.Context waveMobSpawnerContext = new WaveMobSpawnerCoordinator.Context(
+                _configsRetriever,
                 _context.FieldConfig,
                 _context.MatchCommandsCommon.IncomingGeneral,
                 player1MatchCommands.Incoming,
@@ -247,10 +251,10 @@ namespace Match
             //    ourCastleDestroyedReactiveCommand);
             //_rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
 
+            CreateCells();
+            
             // input
-            Layout layout = new Layout(_context.FieldConfig.HexSettingsConfig.HexSize,
-                Vector3.zero, _context.FieldConfig.HexSettingsConfig.IsFlat);
-            HexInteractService hexInteractService = new HexInteractService(layout, _context.MatchView.MainCamera);
+            HexInteractService hexInteractService = new HexInteractService(_layout, _context.MatchView.MainCamera);
             
             InputController.Context inputControllerContext = new InputController.Context(
                 hexInteractService, clickReactiveCommand);
@@ -280,6 +284,7 @@ namespace Match
         private void SyncState(MatchState matchState, int timeStamp)
         {
             _context.SyncFrameCounterReactiveCommand.Execute(timeStamp);
+            _hexagonalFieldModel.Reset();
 
             if (_context.OurGameRoleReactiveProperty.Value == ProcessRoles.Player1)
             {
@@ -308,6 +313,14 @@ namespace Match
         private void RollbackState(Unit unit)
         {
             SyncState(_stateSaver.GetLastSavedMatchState(), _context.CurrentEngineFrameReactiveProperty.Value);
+        }
+
+        private void CreateCells()
+        {
+            foreach (var fieldHex in _context.MatchInitDataParameters.Hexes)
+            {
+                _hexFabric.CreateHexObject(fieldHex.HexModel);
+            }
         }
 
         public void OuterLogicUpdate(float frameLength)

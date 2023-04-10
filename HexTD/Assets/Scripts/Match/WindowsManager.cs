@@ -4,6 +4,7 @@ using Match.Field.Tower;
 using Match.Wave;
 using Match.Windows;
 using Match.Windows.Tower;
+using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -18,11 +19,9 @@ namespace Match
             public MatchUiViewsCollection UiViews { get; }
             public Camera MainCamera { get; }
             public Canvas Canvas { get; }
-            public TowerConfigRetriever TowerConfigRetriever { get; }
-            public MobConfigRetriever MobConfigRetriever { get; }
+            public ConfigsRetriever ConfigsRetriever { get; }
             public PlayerHandParams PlayerHandParams { get; }
             public WaveParams[] Waves { get; }
-            public RectTransform OurFieldCanvasMarkerRect { get; }
             
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
             public ReactiveCommand<HealthInfo> EnemyCastleHealthChangedReactiveCommand { get; }
@@ -38,10 +37,9 @@ namespace Match
             public ReactiveCommand QuitMatchReactiveCommand { get; }
 
             public Context(MatchUiViewsCollection uiViews, Camera mainCamera, Canvas canvas,
-                TowerConfigRetriever towerConfigRetriever, MobConfigRetriever mobConfigRetriever,
+                ConfigsRetriever configsRetriever,
                 PlayerHandParams playerHandParams,
                 WaveParams[] waves,
-                RectTransform ourFieldCanvasMarkerRect,
                 
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,
@@ -59,11 +57,9 @@ namespace Match
                 UiViews = uiViews;
                 MainCamera = mainCamera;
                 Canvas = canvas;
-                TowerConfigRetriever = towerConfigRetriever;
-                MobConfigRetriever = mobConfigRetriever;
+                ConfigsRetriever = configsRetriever;
                 PlayerHandParams = playerHandParams;
                 Waves = waves;
-                OurFieldCanvasMarkerRect = ourFieldCanvasMarkerRect;
 
                 IsConnectedReactiveProperty = isConnectedReactiveProperty;
                 EnemyCastleHealthChangedReactiveCommand = enemyCastleHealthChangedReactiveCommand;
@@ -153,7 +149,7 @@ namespace Match
             // tower selection window
             TowerSelectionWindowController.Context towerSelectionWindowControllerContext = new TowerSelectionWindowController.Context(
                 _context.UiViews.TowerSelectionWindowView, OpenWindowsCountReactiveProperty,
-                _context.TowerConfigRetriever, _context.PlayerHandParams, _context.OurGoldenCoinsCountChangedReactiveCommand);
+                _context.ConfigsRetriever, _context.PlayerHandParams, _context.OurGoldenCoinsCountChangedReactiveCommand);
             _towerSelectionWindowController = AddDisposable(new TowerSelectionWindowController(towerSelectionWindowControllerContext));
             
             // tower manipulation window

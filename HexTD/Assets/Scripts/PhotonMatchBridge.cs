@@ -6,8 +6,6 @@ using MapEditor;
 using Match;
 using Match.Commands;
 using Match.EventBus;
-using Match.Field;
-using Match.Field.Hexagonal;
 using Match.Field.Tower;
 using Photon.Pun;
 using Photon.Realtime;
@@ -185,7 +183,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
                 hexModels[hexIndex].ToNetwork();
         
         var paths = mapModel.PathDatas.ToArray();
-        for (int pathIndex = 0; pathIndex < hexModels.Length; pathIndex++)
+        for (int pathIndex = 0; pathIndex < paths.Length; pathIndex++)
             roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigPathFieldParam}{pathIndex}"] =
                 paths[pathIndex].ToNetwork();
 

@@ -4,6 +4,7 @@ using Match.Field;
 using Match.Field.Mob;
 using Match.Wave.State;
 using Match.Wave.WaveMobSpawnerImplementations;
+using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -14,7 +15,7 @@ namespace Match.Wave
     {
         public struct Context
         {
-            public MobConfigRetriever MobConfigRetriever { get; }
+            public ConfigsRetriever ConfigsRetriever { get; }
             public FieldConfig FieldConfig { get; }
             public MatchCommonCommands.IncomingGeneralCommands IncomingGeneralGeneralCommands { get; }
             public MatchCommands.IncomingCommands Player1IncomingCommands { get; }
@@ -35,7 +36,8 @@ namespace Match.Wave
             public IReadOnlyReactiveProperty<bool> HasMobsOnEnemyField { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnOurField { get; }
 
-            public Context(MobConfigRetriever mobConfigRetriever,
+            public Context(
+                ConfigsRetriever configsRetriever,
                 FieldConfig fieldConfig,
                 MatchCommonCommands.IncomingGeneralCommands incomingGeneralCommands,
                 MatchCommands.IncomingCommands player1IncomingCommands,
@@ -56,7 +58,7 @@ namespace Match.Wave
                 IReadOnlyReactiveProperty<bool> hasMobsOnEnemyField,
                 IReadOnlyReactiveProperty<bool> hasMobsOnOurField)
             {
-                MobConfigRetriever = mobConfigRetriever;
+                ConfigsRetriever = configsRetriever;
                 FieldConfig = fieldConfig;
                 IncomingGeneralGeneralCommands = incomingGeneralCommands;
                 Player1IncomingCommands = player1IncomingCommands;
@@ -94,7 +96,7 @@ namespace Match.Wave
             _context = context;
 
             WaveMobSpawnerBase.Context waveMobSpawnerImplementationContext = new WaveMobSpawnerBase.Context(
-                _context.MobConfigRetriever, _context.FieldConfig,
+                _context.ConfigsRetriever, _context.FieldConfig,
                 _context.IncomingGeneralGeneralCommands,
                 _context.Player1IncomingCommands, _context.Player2IncomingCommands, _context.ServerCommands,
                 _context.Waves,

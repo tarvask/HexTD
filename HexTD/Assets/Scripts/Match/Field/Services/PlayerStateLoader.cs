@@ -5,6 +5,7 @@ using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.State;
 using Match.Field.Tower;
+using Services;
 using Tools;
 using UnityEngine;
 
@@ -16,19 +17,16 @@ namespace Match.Field.Services
         {
             public FieldModel FieldModel { get; }
             public FieldFactory FieldFactory { get; }
-            public TowerConfigRetriever TowerConfigRetriever { get; }
-            public MobConfigRetriever MobConfigRetriever { get; }
+            public ConfigsRetriever ConfigsRetriever { get; }
             public CurrencyController CurrencyController { get; }
 
             public Context(FieldModel fieldModel, FieldFactory fieldFactory,
-                TowerConfigRetriever towerConfigRetriever,
-                MobConfigRetriever mobConfigRetriever,
+                ConfigsRetriever towerConfigRetriever,
                 CurrencyController currencyController)
             {
                 FieldModel = fieldModel;
                 FieldFactory = fieldFactory;
-                TowerConfigRetriever = towerConfigRetriever;
-                MobConfigRetriever = mobConfigRetriever;
+                ConfigsRetriever = towerConfigRetriever;
                 CurrencyController = currencyController;
             }
         }
@@ -62,7 +60,7 @@ namespace Match.Field.Services
             {
                 ref readonly PlayerState.TowerState towerState = ref playerState.Towers.Towers[towerIndex];
                 
-                TowerConfig towerConfig = _context.TowerConfigRetriever.GetTowerByType(towerState.Type);
+                TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerState.Type);
                 Hex2d towerHexPosition = new Hex2d(towerState.PositionQ, towerState.PositionR);
                 TowerController towerController = _context.FieldFactory.CreateTowerWithId(towerConfig,
                     towerHexPosition, towerState.Id);
@@ -76,7 +74,7 @@ namespace Match.Field.Services
             {
                 ref readonly PlayerState.MobState mobState = ref playerState.Mobs.Mobs[mobIndex];
                 
-                MobConfig mobConfig = _context.MobConfigRetriever.GetMobById(mobState.TypeId);
+                MobConfig mobConfig = _context.ConfigsRetriever.GetMobById(mobState.TypeId);
                 Vector2 mobPosition = new Vector2(mobState.PositionX, mobState.PositionY);
                 MobController mobController = _context.FieldFactory.CreateMobWithId(mobConfig,
                     mobState.Id, mobState.TargetId,
@@ -132,9 +130,6 @@ namespace Match.Field.Services
         
         public void ClearState()
         {
-            // cells
-            _context.FieldModel.RestoreCells();
-
             // towers
             foreach (KeyValuePair<int, TowerController> towerPair in _context.FieldModel.Towers)
                 towerPair.Value.Dispose();
