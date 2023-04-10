@@ -35,7 +35,7 @@ namespace HexSystem
 
 		public override int GetHashCode()
 		{
-			return Q << 8 | R;
+			return Q << 16 | R;
 		}
 
 		public static explicit operator Hex2d(Hex3d x) => new Hex2d(x.Q, x.R);

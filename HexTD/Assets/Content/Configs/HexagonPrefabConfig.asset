@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c53a55cf27dc44bda11d556de83fa840, type: 3}
   m_Name: HexagonPrefabConfig
   m_EditorClassIdentifier: 
-  simpleHexagon: {fileID: 2514349549653685510, guid: 30ca895dcadd028448ede115ae93efb3, type: 3}
-  bridgeHexagon: {fileID: 4018188321887320154, guid: 1df55d7ca75b5af4ab565e31c731b659, type: 3}
+  simpleHexObject: {fileID: 8974007480894696537, guid: 30ca895dcadd028448ede115ae93efb3, type: 3}
+  bridgeHexObject: {fileID: 4018188321887320154, guid: 1df55d7ca75b5af4ab565e31c731b659, type: 3}

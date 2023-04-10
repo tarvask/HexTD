@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HexSystem;
 using Newtonsoft.Json;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace PathSystem
 {
@@ -18,6 +19,33 @@ namespace PathSystem
             {
                 Name = name;
                 Points = new LinkedList<Hex2d>(points);
+            }
+            
+            public SavePathData(string name,
+                List<Hex2d> points)
+            {
+                Name = name;
+                Points = new LinkedList<Hex2d>(points);
+            }
+            
+            public Hashtable ToNetwork()
+            {
+                Hashtable hexNetwork = new Hashtable{
+                    {PhotonEventsConstants.SyncMatch.PathData.Name, Name},
+                    {PhotonEventsConstants.SyncMatch.PathData.PointLength, (byte)Points.Count}
+                };
+
+                int i = 0;
+                foreach (var point in Points)
+                {
+                    hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.PathData.PointQ}{i}", 
+                        point.Q);
+                    hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.PathData.PointR}{i}", 
+                        point.R);
+                    i++;
+                }
+
+                return hexNetwork;
             }
         }
         

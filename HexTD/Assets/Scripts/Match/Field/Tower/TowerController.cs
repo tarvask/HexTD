@@ -48,7 +48,7 @@ namespace Match.Field.Tower
         // effects that are applied to mobs after shot (firing, icing, slowing)
         private readonly List<AbstractBuffParameters> _activeAbilities;
         private readonly List<AbstractBuffParameters> _towersInAreaAbilities;
-        private readonly TowerBuffsManager _buffsManager;
+        //private readonly TowerBuffsManager _buffsManager;
         
         private TowerLevelParams CurrentLevel => _context.Parameters.Levels[_stableModel.Level - 1];
         private TowerLevelParams NextLevel => _context.Parameters.Levels[_stableModel.Level];
@@ -67,13 +67,13 @@ namespace Match.Field.Tower
         public bool IsReadyToDispose => _stableModel.IsReadyToDispose;
         public TowerType TowerType => _context.Parameters.RegularParameters.Data.TowerType;
         public RaceType RaceType => _context.Parameters.RegularParameters.Data.RaceType;
-        public int CurrentDamage => Mathf.CeilToInt(_buffsManager.ParameterResultValue(BuffedParameterType.AttackPower));
-        private float CurrentRadius => _buffsManager.ParameterResultValue(BuffedParameterType.AttackRadius);
-        private float CurrentReloadTime => _buffsManager.ParameterResultValue(BuffedParameterType.ReloadTime);
+        public int CurrentDamage => Mathf.CeilToInt(CurrentLevel.LevelRegularParams.Data.AttackPower); // Mathf.CeilToInt(_buffsManager.ParameterResultValue(BuffedParameterType.AttackPower));
+        private float CurrentRadius => CurrentLevel.LevelRegularParams.Data.AttackRadius; //_buffsManager.ParameterResultValue(BuffedParameterType.AttackRadius);
+        private float CurrentReloadTime => CurrentLevel.LevelRegularParams.Data.ReloadTime; //_buffsManager.ParameterResultValue(BuffedParameterType.ReloadTime);
         public IReadOnlyReactiveProperty<int> KillsCount => _reactiveModel.KillsCountReactiveProperty;
         public List<AbstractBuffParameters> MobsBuffs => _activeAbilities;
         public List<AbstractBuffParameters> BuffsForNeighbouringTowers => _towersInAreaAbilities;
-        public Dictionary<int, AbstractBuffModel> Buffs => _buffsManager.Buffs;
+        //public Dictionary<int, AbstractBuffModel> Buffs => _buffsManager.Buffs;
         public ProjectileView ProjectilePrefab => CurrentLevel.ProjectilePrefab;
         public Sprite Icon => _context.Icon;
 
@@ -85,16 +85,16 @@ namespace Match.Field.Tower
             _reactiveModel = AddDisposable(new TowerReactiveModel());
             _activeAbilities = new List<AbstractBuffParameters>(AverageAbilitiesCount);
             _towersInAreaAbilities = new List<AbstractBuffParameters>(AverageAbilitiesCount);
-            _buffsManager = AddDisposable(new TowerBuffsManager(new TowerBuffsManager.Context(
-                _reactiveModel.AttackPowerReactiveProperty,
-                _reactiveModel.AttackRadiusReactiveProperty,
-                _reactiveModel.ReloadTimeReactiveProperty)));
+            //_buffsManager = AddDisposable(new TowerBuffsManager(new TowerBuffsManager.Context(
+            //    _reactiveModel.AttackPowerReactiveProperty,
+            //    _reactiveModel.AttackRadiusReactiveProperty,
+            //    _reactiveModel.ReloadTimeReactiveProperty)));
             _context.View.SetType(_context.Parameters.RegularParameters.Data.TowerName);
         }
 
         public void OuterLogicUpdate(float frameLength)
         {
-            _buffsManager.OuterLogicUpdate(frameLength);
+            //_buffsManager.OuterLogicUpdate(frameLength);
         }
 
         public bool IsTargetReachable(Vector3 targetPosition, bool isMobile)
@@ -137,7 +137,7 @@ namespace Match.Field.Tower
             }
             
             // update passive abilities
-            _buffsManager.ClearBuffs();
+            //_buffsManager.ClearBuffs();
             
             foreach (IAbility ability in CurrentLevel.PassiveLevelAbilities.Abilities)
             {
@@ -145,8 +145,8 @@ namespace Match.Field.Tower
                 {
                     AbstractBuffParameters abilityParameters = ability.AbilityToBuff();
                     
-                    if (abilityParameters.BuffedParameterType != BuffedParameterType.Undefined)
-                        _buffsManager.AddBuff(ability.AbilityToBuff());
+                    //if (abilityParameters.BuffedParameterType != BuffedParameterType.Undefined)
+                        //_buffsManager.AddBuff(ability.AbilityToBuff());
                 }
             }
         }
@@ -250,12 +250,12 @@ namespace Match.Field.Tower
 
         public void AddBuff(AbstractBuffParameters buffParameters)
         {
-            _buffsManager.AddBuff(buffParameters);
+            //_buffsManager.AddBuff(buffParameters);
         }
         
         public void RemoveBuff(BuffedParameterType buffedParameterType, byte buffSubtype)
         {
-            _buffsManager.RemoveBuff(buffedParameterType, buffSubtype);
+            //_buffsManager.RemoveBuff(buffedParameterType, buffSubtype);
         }
 
         // TODO: will be greatly extended, so a better approach is needed
@@ -280,24 +280,6 @@ namespace Match.Field.Tower
                 await Task.Delay(_context.TowerRemovingDuration * 1000);
                 _stableModel.SetState(TowerState.ToDispose);
             });
-        }
-
-        public void ShowSelection()
-        {
-            float[] zones = new float[_towersInAreaAbilities.Count];
-            
-            for (int zoneIndex = 0; zoneIndex < _towersInAreaAbilities.Count; zoneIndex++)
-            {
-                if (_towersInAreaAbilities[zoneIndex] is ITowersInAreaApplicable zoneBuff)
-                    zones[zoneIndex] = zoneBuff.EffectAreaRadius;
-            }
-            
-            _context.View.ShowZones(zones);
-        }
-
-        public void HideSelection()
-        {
-            _context.View.HideZones();
         }
 
         public void LoadState(in PlayerState.TowerState towerState)

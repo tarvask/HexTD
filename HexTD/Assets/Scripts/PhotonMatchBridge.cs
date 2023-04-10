@@ -6,8 +6,6 @@ using MapEditor;
 using Match;
 using Match.Commands;
 using Match.EventBus;
-using Match.Field;
-using Match.Field.Hexagonal;
 using Match.Field.Tower;
 using Photon.Pun;
 using Photon.Realtime;
@@ -145,13 +143,11 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         MapLoader loader = new MapLoader();
         LevelMapModel mapModel = loader.Load();
 
-        FieldHex[] hexes = new FieldHex[mapModel.HexModels.Count];
-        for (int i = 0; i < hexes.Length; i++)
-            hexes[i] = new FieldHex(mapModel.HexModels[i], FieldHexType.Free);
-        
-        MatchParameters matchParameters = new MatchParameters(hexes, 
+        MatchInitDataParameters matchParameters = new MatchInitDataParameters(mapModel.HexModels.ToArray(), 
             mapModel.PathDatas.ToArray(),
-            levelsConfig.Levels[levelIndexToPlay], playerHand);
+            levelsConfig.Levels[levelIndexToPlay].Waves, 
+            levelsConfig.Levels[levelIndexToPlay].SilverCoinsCount, 
+            playerHand);
         
         _matchEngine = FindObjectOfType<TestMatchEngine>();
         _matchEngine.Init(matchParameters, _eventBus,
@@ -170,10 +166,9 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         {
             {PhotonEventsConstants.SyncMatch.MatchConfigRolesAndUsers, _networkMatchStatus.RolesAndUserIdsNetwork},
             {PhotonEventsConstants.SyncMatch.MatchConfigWavesCount, (byte)matchParameters.Waves.Length},
-            {PhotonEventsConstants.SyncMatch.MatchConfigFieldParam, matchParameters.CellsNetwork},
-            {PhotonEventsConstants.SyncMatch.MatchConfigBlockersParam, matchParameters.BlockersNetwork},
+            {PhotonEventsConstants.SyncMatch.MatchConfigPathsCount, (byte)mapModel.PathDatas.Count},
+            {PhotonEventsConstants.SyncMatch.MatchConfigFieldTypesParam, matchParameters.GetHexesTypes()},
             {PhotonEventsConstants.SyncMatch.MatchStartSilverCoinsParam, matchParameters.SilverCoinsCount},
-            {PhotonEventsConstants.SyncMatch.MatchStartSpellsAndCounts, matchParameters.SpellsWithCountsNetwork},
             {PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam, matchParameters.HandParams.TowersNetwork},
             {PhotonEventsConstants.SyncMatch.RandomSeed, randomSeed}
         };
@@ -181,6 +176,16 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         for (int waveIndex = 0; waveIndex < matchParameters.Waves.Length; waveIndex++)
             roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigWaveParam}{waveIndex}"] =
                 matchParameters.Waves[waveIndex].ToNetwork();
+
+        var hexModels = mapModel.HexModels.ToArray();
+        for (int hexIndex = 0; hexIndex < hexModels.Length; hexIndex++)
+            roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigHexFieldParam}{hexIndex}"] =
+                hexModels[hexIndex].ToNetwork();
+        
+        var paths = mapModel.PathDatas.ToArray();
+        for (int pathIndex = 0; pathIndex < paths.Length; pathIndex++)
+            roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigPathFieldParam}{pathIndex}"] =
+                paths[pathIndex].ToNetwork();
 
         _eventBus.RaiseEvent(PhotonEventsConstants.SyncMatch.SyncMatchConfigOnStartEventId, roomProperties);
             
@@ -194,7 +199,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         CreateCommandExecutors();
     }
 
-    private void InitAsClient(MatchParameters matchShortParameters, Dictionary<ProcessRoles, int> rolesAndUsers,
+    private void InitAsClient(MatchInitDataParameters matchInitDataParameters, Dictionary<ProcessRoles, int> rolesAndUsers,
         int randomSeed)
     {
         CreateNetworkMatchStatus(rolesAndUsers);
@@ -205,11 +210,10 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             
         // temporary stuff
         PlayerHandParams playerHand = LoadPlayerHand();
-        matchShortParameters.ChangeHand(playerHand);
             
         Randomizer.InitState(randomSeed);
         _matchEngine = FindObjectOfType<TestMatchEngine>();
-        _matchEngine.Init(matchShortParameters, _eventBus,
+        _matchEngine.Init(matchInitDataParameters, _eventBus,
             _networkMatchStatus.CurrentProcessGameRoleReactiveProperty,
             _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
             _connectionMaintainer.IsConnectedReactiveProperty,

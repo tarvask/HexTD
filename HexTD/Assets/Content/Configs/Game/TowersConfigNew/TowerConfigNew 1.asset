@@ -22,8 +22,8 @@ MonoBehaviour:
     - buildPrice: 222
       buildTime: 22
   towerAttackConfig:
-    baseDamage: 0
-    cooldown: 0
+    baseDamage: 42
+    cooldown: 11
     targetFindingTacticType: 1
     projectileView: {fileID: 0}
     towerAttackEffectConfigs:

@@ -1,8 +1,10 @@
 using System;
 using HexSystem;
+using MapEditor;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.State;
 using Match.Field.Tower;
@@ -21,7 +23,7 @@ namespace Match
         public struct Context
         {
             public MatchView MatchView { get; }
-            public MatchShortParameters MatchShortParameters { get; }
+            public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
             public MatchCommands MatchCommandsEnemy { get; }
             public MatchCommands MatchCommandsOur { get; }
@@ -36,7 +38,9 @@ namespace Match
             public Action OnMatchEndAction { get; }
             public bool IsMultiPlayerGame { get; }
 
-            public Context(MatchView matchView, MatchShortParameters matchShortParameters, FieldConfig fieldConfig,
+            public Context(MatchView matchView, 
+                MatchInitDataParameters matchInitDataParameters, 
+                FieldConfig fieldConfig,
                 MatchCommands matchCommandsEnemy, MatchCommands matchCommandsOur, MatchCommonCommands matchCommandsCommon,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
                 ReactiveCommand quitMatchReactiveCommand,
@@ -49,7 +53,7 @@ namespace Match
                 bool isMultiPlayerGame)
             {
                 MatchView = matchView;
-                MatchShortParameters = matchShortParameters;
+                MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
                 MatchCommandsEnemy = matchCommandsEnemy;
                 MatchCommandsOur = matchCommandsOur;
@@ -71,8 +75,12 @@ namespace Match
         private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
+        private readonly Layout _layout;
+        private readonly HexFabric _hexFabric;
+        private readonly HexagonalFieldModel _hexagonalFieldModel;
         private readonly FieldController _player1FieldController;
         private readonly FieldController _player2FieldController;
+        private readonly FieldFactory _fieldFactory;
         private readonly WaveMobSpawnerCoordinator _waveMobSpawnerCoordinator;
         private readonly MatchRulesController _rulesController;
         private readonly InputController _inputController;
@@ -115,39 +123,46 @@ namespace Match
             ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_context.FieldConfig);
             _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
 
-            WaveParams[] waves = ((MatchParameters) _context.MatchShortParameters).Waves;
+            WaveParams[] waves =_context.MatchInitDataParameters.Waves;
             
             // windows
-            WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
-                _context.MatchView.MatchUiViews, _context.MatchView.MainCamera, _context.MatchView.Canvas,
-                _configsRetriever,
-                _context.MatchShortParameters.HandParams,
-                waves,
-                
-                _context.IsConnectedReactiveProperty,
-                enemyCastleHealthChangedReactiveCommand,
-                ourCastleHealthChangedReactiveCommand,
-                matchStartedReactiveCommand,
-                waveStartedReactiveCommand,
-                betweenWavesPlanningStartedReactiveCommand,
-                artifactChoosingStartedReactiveCommand,
-                waveNumberChangedReactiveCommand,
-                ourGoldenCoinsCountChangedReactiveCommand,
-                ourGoldCoinsIncomeChangedReactiveCommand,
-                ourCrystalsCountChangedReactiveCommand,
-                _context.QuitMatchReactiveCommand);
-            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
+           WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
+               _context.MatchView.MatchUiViews, _context.MatchView.MainCamera, _context.MatchView.Canvas,
+               _configsRetriever,
+               _context.MatchInitDataParameters.HandParams,
+               waves,
+               
+               _context.IsConnectedReactiveProperty,
+               enemyCastleHealthChangedReactiveCommand,
+               ourCastleHealthChangedReactiveCommand,
+               matchStartedReactiveCommand,
+               waveStartedReactiveCommand,
+               betweenWavesPlanningStartedReactiveCommand,
+               artifactChoosingStartedReactiveCommand,
+               waveNumberChangedReactiveCommand,
+               ourGoldenCoinsCountChangedReactiveCommand,
+               ourGoldCoinsIncomeChangedReactiveCommand,
+               ourCrystalsCountChangedReactiveCommand,
+               _context.QuitMatchReactiveCommand);
+           _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
             // fields
-            FieldController.Context enemyFieldContext = new FieldController.Context(_context.MatchView.EnemyFieldView,
-                _context.MatchShortParameters, _context.FieldConfig,
+            _layout = new Layout(_context.FieldConfig.HexSettingsConfig.HexSize,
+                Vector3.zero, _context.FieldConfig.HexSettingsConfig.IsFlat);
+
+            _hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig, _layout);
+            
+            _hexagonalFieldModel = new HexagonalFieldModel(_layout,
+                _context.MatchInitDataParameters.Hexes);
+            
+            //TODO: click handle separate with field controller
+            FieldController.Context enemyFieldContext = new FieldController.Context(
+                _context.MatchView.EnemyFieldRoot,
+                _hexagonalFieldModel.CurrentEnemyFieldHexes,
+                _hexagonalFieldModel,
+                _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 false,
-                _windowsManager.MatchInfoPanelController,
-                _windowsManager.TowerSelectionWindowController,
-                _windowsManager.TowerManipulationWindowController,
-                _windowsManager.TowerInfoWindowController,
-                _windowsManager.MobInfoWindowController,
                 
                 _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, 
                 clickReactiveCommand, _enemyStateSyncedReactiveCommand,
@@ -162,15 +177,13 @@ namespace Match
                 enemyGoldCoinsIncomeChangedReactiveCommand,
                 enemyCrystalsCountChangedReactiveCommand);
 
-            FieldController.Context ourFieldContext = new FieldController.Context(_context.MatchView.OurFieldView,
-                _context.MatchShortParameters, _context.FieldConfig,
+            FieldController.Context ourFieldContext = new FieldController.Context(
+                _context.MatchView.OurFieldRoot,
+                _hexagonalFieldModel.CurrentOurFieldHexes,
+                _hexagonalFieldModel,
+                _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 true,
-                _windowsManager.MatchInfoPanelController,
-                _windowsManager.TowerSelectionWindowController,
-                _windowsManager.TowerManipulationWindowController,
-                _windowsManager.TowerInfoWindowController,
-                _windowsManager.MobInfoWindowController,
                 
                 _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, clickReactiveCommand, _ourStateSyncedReactiveCommand,
                 spawnOurMobReactiveCommand,
@@ -231,20 +244,19 @@ namespace Match
             _waveMobSpawnerCoordinator = new WaveMobSpawnerCoordinator(waveMobSpawnerContext);
 
             // rules
-            MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
-                _windowsManager.WinLoseWindowController,
-                enemyCastleDestroyedReactiveCommand,
-                ourCastleDestroyedReactiveCommand);
-            _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
+            //MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
+            //    _windowsManager.WinLoseWindowController,
+            //    enemyCastleDestroyedReactiveCommand,
+            //    ourCastleDestroyedReactiveCommand);
+            //_rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
 
+            CreateCells();
+            
             // input
-            Layout layout = new Layout(_context.FieldConfig.HexSettingsConfig.HexSize,
-                Vector3.zero, _context.FieldConfig.HexSettingsConfig.IsFlat);
-            HexInteractService hexInteractService = new HexInteractService(layout, _context.MatchView.MainCamera);
+            HexInteractService hexInteractService = new HexInteractService(_layout, _context.MatchView.MainCamera);
             
             InputController.Context inputControllerContext = new InputController.Context(
-                hexInteractService, clickReactiveCommand,
-                _windowsManager.OpenWindowsCountReactiveProperty);
+                hexInteractService, clickReactiveCommand);
             _inputController = AddDisposable(new InputController(inputControllerContext));
             
             // state saver
@@ -271,6 +283,7 @@ namespace Match
         private void SyncState(MatchState matchState, int timeStamp)
         {
             _context.SyncFrameCounterReactiveCommand.Execute(timeStamp);
+            _hexagonalFieldModel.Reset();
 
             if (_context.OurGameRoleReactiveProperty.Value == ProcessRoles.Player1)
             {
@@ -301,14 +314,22 @@ namespace Match
             SyncState(_stateSaver.GetLastSavedMatchState(), _context.CurrentEngineFrameReactiveProperty.Value);
         }
 
+        private void CreateCells()
+        {
+            foreach (var fieldHex in _context.MatchInitDataParameters.Hexes)
+            {
+                _hexFabric.CreateHexObject(fieldHex.HexModel);
+            }
+        }
+
         public void OuterLogicUpdate(float frameLength)
         {
-            if (!_rulesController.IsMatchRunning)
-                return;
+            //if (!_rulesController.IsMatchRunning)
+            //    return;
             
             _inputController.OuterLogicUpdate(frameLength);
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
-            _windowsManager.OuterLogicUpdate(frameLength);
+            //_windowsManager.OuterLogicUpdate(frameLength);
             
             // the order is important due to calls to Random inside
             _player1FieldController.OuterLogicUpdate(frameLength);

@@ -1,35 +1,18 @@
 ﻿using System.Collections.Generic;
 using HexSystem;
 using Match.Field.Mob;
+using Tools;
 using UniRx;
 
 namespace Match.Field.Tower
 {
-    public class TowersManager
+    public class TowersManager : BaseDisposable
     {        
-        public struct Context
-        {
-            public ReactiveCommand<TowerController> TowerBuiltReactiveCommand { get; }
-            public ReactiveCommand<TowerController> TowerPreUpgradedReactiveCommand { get; }
-            public ReactiveCommand<TowerController> TowerUpgradedReactiveCommand { get; }
-            public ReactiveCommand<TowerController> TowerRemovedReactiveCommand { get; }
-            
-            public Context(
-                ReactiveCommand<TowerController> towerBuiltReactiveCommand,
-                ReactiveCommand<TowerController> towerPreUpgradedReactiveCommand,
-                ReactiveCommand<TowerController> towerUpgradedReactiveCommand,
-                ReactiveCommand<TowerController> towerRemovedReactiveCommand)
-            {
-                
-                TowerBuiltReactiveCommand = towerBuiltReactiveCommand;
-                TowerPreUpgradedReactiveCommand = towerPreUpgradedReactiveCommand;
-                TowerUpgradedReactiveCommand = towerUpgradedReactiveCommand;
-                TowerRemovedReactiveCommand = towerRemovedReactiveCommand;
-            }
-        }
+        public ReactiveCommand<TowerController> TowerBuiltReactiveCommand { get; }
+        public ReactiveCommand<TowerController> TowerPreUpgradedReactiveCommand { get; }
+        public ReactiveCommand<TowerController> TowerUpgradedReactiveCommand { get; }
+        public ReactiveCommand<TowerController> TowerRemovedReactiveCommand { get; }
 
-        private readonly Context _context;
-        
         private readonly Dictionary<int, TowerController> _towers;
         private readonly Dictionary<int, TowerController> _towersByPositions;
         
@@ -40,6 +23,11 @@ namespace Match.Field.Tower
 
         public TowersManager(int fieldHexGridSize)
         {
+            TowerBuiltReactiveCommand = AddDisposable(new ReactiveCommand<TowerController>());
+            TowerPreUpgradedReactiveCommand = AddDisposable(new ReactiveCommand<TowerController>());
+            TowerUpgradedReactiveCommand = AddDisposable(new ReactiveCommand<TowerController>());
+            TowerRemovedReactiveCommand = AddDisposable(new ReactiveCommand<TowerController>());
+            
             _towers = new Dictionary<int, TowerController>(fieldHexGridSize);
             _towersByPositions = new Dictionary<int, TowerController>(fieldHexGridSize);
         }
@@ -49,14 +37,14 @@ namespace Match.Field.Tower
             _towers.Add(tower.Id, tower);
             _towersByPositions.Add(position.GetHashCode(), tower);
 
-            _context.TowerBuiltReactiveCommand.Execute(tower);
+            TowerBuiltReactiveCommand.Execute(tower);
         }
 
         public void UpgradeTower(TowerController tower)
         {
-            _context.TowerPreUpgradedReactiveCommand.Execute(tower);
+            TowerPreUpgradedReactiveCommand.Execute(tower);
             tower.Upgrade();
-            _context.TowerUpgradedReactiveCommand.Execute(tower);
+            TowerUpgradedReactiveCommand.Execute(tower);
         }
         
         public void RemoveTower(int positionHash, TowerController removingTower)
@@ -64,7 +52,7 @@ namespace Match.Field.Tower
             _towers.Remove(removingTower.Id);
             _towersByPositions.Remove(positionHash);
 
-            _context.TowerRemovedReactiveCommand.Execute(removingTower);
+            TowerRemovedReactiveCommand.Execute(removingTower);
             removingTower.Dispose();
         }
     }

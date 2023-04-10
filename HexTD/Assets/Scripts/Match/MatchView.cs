@@ -6,8 +6,8 @@ namespace Match
 {
     public class MatchView : BaseMonoBehaviour
     {
-        [SerializeField] private FieldView enemyFieldView;
-        [SerializeField] private FieldView ourFieldView;
+        [SerializeField] private Transform ourFieldRoot;
+        [SerializeField] private Transform enemyFieldRoot;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private Canvas canvas;
         [SerializeField] private CanvasHeightOrWidthFitter canvasFitter;
@@ -16,8 +16,8 @@ namespace Match
 
         [SerializeField] private MatchUiViewsCollection matchUiViews;
 
-        public FieldView EnemyFieldView => enemyFieldView;
-        public FieldView OurFieldView => ourFieldView;
+        public Transform OurFieldRoot => ourFieldRoot;
+        public Transform EnemyFieldRoot => enemyFieldRoot;
         public Camera MainCamera => mainCamera;
         public Canvas Canvas => canvas;
         public CanvasHeightOrWidthFitter CanvasFitter => canvasFitter;

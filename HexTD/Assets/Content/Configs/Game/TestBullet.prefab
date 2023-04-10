@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5716713876702498526
+--- !u!1 &8308399585098690441
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,49 +8,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5716713876702498520}
-  - component: {fileID: 5716713876702498521}
-  - component: {fileID: 5716713876702498522}
-  - component: {fileID: 5716713876702498523}
-  - component: {fileID: 5716713876702498524}
-  - component: {fileID: 5716713876702498525}
+  - component: {fileID: 8480967738501166589}
+  - component: {fileID: 4996529803239530854}
+  - component: {fileID: 8787422356771399629}
+  - component: {fileID: 2229276143854341629}
+  - component: {fileID: 1455519004008089238}
   m_Layer: 0
-  m_Name: Tower
+  m_Name: TestBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5716713876702498520
+--- !u!4 &8480967738501166589
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5716713876702498526}
+  m_GameObject: {fileID: 8308399585098690441}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.3771515, y: -19.413782, z: -59.412025}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5716713876702498521
+--- !u!33 &4996529803239530854
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5716713876702498526}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &5716713876702498522
+  m_GameObject: {fileID: 8308399585098690441}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &8787422356771399629
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5716713876702498526}
+  m_GameObject: {fileID: 8308399585098690441}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -86,54 +85,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5716713876702498523
-BoxCollider:
+--- !u!135 &2229276143854341629
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5716713876702498526}
+  m_GameObject: {fileID: 8308399585098690441}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5716713876702498524
+--- !u!114 &1455519004008089238
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5716713876702498526}
+  m_GameObject: {fileID: 8308399585098690441}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 623018b4f01c4af5a491c73ee1a6b753, type: 3}
+  m_Script: {fileID: 11500000, guid: de4f3196a9674a1dba7073d4bd685f94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  data:
-    towerType: 1
-    towerName: 
-    raceType: 0
-    epicDegree: 0
-    targetFindingTacticType: 0
-    preferUnbuffedTargets: 0
-    resetTargetEveryShot: 0
---- !u!114 &5716713876702498525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5716713876702498526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 667e996a7a104f36ab60bdcbec8cfdc2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levels: []
-  typeText: {fileID: 0}
-  background: {fileID: 0}
-  constructingGo: {fileID: 0}
-  removingGo: {fileID: 0}
-  zones: []
