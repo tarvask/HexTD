@@ -39,7 +39,6 @@ namespace Match.Windows
             _context.View.MobIcon.sprite = mobIcon;
             
             _context.View.MobPriceText.text = $"{mobParameters.PriceInSilver}";
-            _context.View.MobIncomeText.text = $"{mobParameters.IncomeInSilver}";
             _context.View.MobHealthText.text = $"{mobParameters.HealthPoints}";;
             _context.View.MobAttackPowerText.text = $"{mobParameters.AttackPower}";
             _context.View.MobAttackRateText.text = $"{(1f / mobParameters.ReloadTime):F2} / sec";

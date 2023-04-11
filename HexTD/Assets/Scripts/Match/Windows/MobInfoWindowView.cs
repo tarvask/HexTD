@@ -13,7 +13,6 @@ namespace Match.Windows
         [SerializeField] private Image mobIcon;
         
         [SerializeField] private TextMeshProUGUI mobPriceText;
-        [SerializeField] private TextMeshProUGUI mobIncomeText;
         [SerializeField] private TextMeshProUGUI mobHealthText;
         [SerializeField] private TextMeshProUGUI mobAttackPowerText;
         [SerializeField] private TextMeshProUGUI mobAttackRateText;
@@ -29,7 +28,6 @@ namespace Match.Windows
         public Image MobIcon => mobIcon;
 
         public TextMeshProUGUI MobPriceText => mobPriceText;
-        public TextMeshProUGUI MobIncomeText => mobIncomeText;
         public TextMeshProUGUI MobHealthText => mobHealthText;
         public TextMeshProUGUI MobAttackPowerText => mobAttackPowerText;
         public TextMeshProUGUI MobAttackRateText => mobAttackRateText;

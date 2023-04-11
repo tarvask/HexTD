@@ -48,10 +48,8 @@ namespace Match.Field.Castle
             _castleHealthReactiveProperty.Value = Mathf.Clamp(_castleHealthReactiveProperty.Value - damage,
                 0, _castleMaxHealthReactiveProperty.Value);
 
-            if (_castleHealthReactiveProperty.Value > 0)
-                return;
-
-            Die();
+            if (_castleHealthReactiveProperty.Value <= 0)
+                Die();
         }
 
         private void Die()

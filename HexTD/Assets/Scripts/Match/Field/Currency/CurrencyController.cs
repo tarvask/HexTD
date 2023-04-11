@@ -43,7 +43,7 @@ namespace Match.Field.Currency
             _goldCoinsIncomeReactiveProperty = AddDisposable(new ReactiveProperty<int>(0));
             _crystalsCountReactiveProperty = AddDisposable(new ReactiveProperty<int>(_context.StartCrystals));
 
-            _context.RemoveMobReactiveCommand.Subscribe((mob) => AddSilver(mob.RewardInSilver));
+            _context.RemoveMobReactiveCommand.Subscribe(RewardForRemovedMob);
             _context.CrystalCollectedReactiveCommand.Subscribe(AddCrystals);
         }
 
@@ -82,6 +82,12 @@ namespace Match.Field.Currency
         public void AddCrystals(int rewardInCrystals)
         {
             _crystalsCountReactiveProperty.Value += rewardInCrystals;
+        }
+
+        private void RewardForRemovedMob(MobController mob)
+        {
+            if (!mob.IsEscaping)
+                AddSilver(mob.RewardInSilver);
         }
     }
 }
