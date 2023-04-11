@@ -15,7 +15,7 @@ namespace MatchStarter
 	{
 		public IObservable<Unit> LocationLoaded => _locationLoaded;
 		public bool IsLoading { get; private set; }
-		
+
 		private readonly AssetsDownloadingProvider _downloadingProvider;
 		private readonly MatchStarterSettings _matchStarterSettings;
 		private readonly IInstantiator _instantiator;
@@ -27,12 +27,12 @@ namespace MatchStarter
 		private GameObject _currentLocation;
 
 		public MatchStarterLoader(
-            AssetsDownloadingProvider downloadingProvider,
-            MatchStarterSettings matchStarterSettings,
+			AssetsDownloadingProvider downloadingProvider,
+			MatchStarterSettings matchStarterSettings,
 			IInstantiator instantiator)
 		{
-            this._downloadingProvider = downloadingProvider;
-            _matchStarterSettings = matchStarterSettings;
+			this._downloadingProvider = downloadingProvider;
+			_matchStarterSettings = matchStarterSettings;
 			_instantiator = instantiator;
 		}
 
@@ -42,15 +42,15 @@ namespace MatchStarter
 
 			DestroyAndRelease();
 
-            await _downloadingProvider.DownloadAssetWithLabelIfRequiredAsync(_matchStarterSettings.MatchStarterLabel);
+			await _downloadingProvider.DownloadAssetWithLabelIfRequiredAsync(_matchStarterSettings.MatchStarterLabel);
 			await InitLocationHandle();
 
 			_currentLocation = _instantiator.InstantiatePrefab(_locationHandle.Value.Result);
 
-			var location = _currentLocation.transform.GetComponent<MatchStarter>();
+			var matchStarter = _currentLocation.transform.GetComponent<MatchStarter>();
 
-			if (location)
-				await UniTask.WaitUntil(() => location.IsLoaded);
+			if (matchStarter)
+				await UniTask.WaitUntil(() => matchStarter.IsLoaded);
 
 			if (autoComplete)
 			{
@@ -58,7 +58,7 @@ namespace MatchStarter
 				IsLoading = false;
 			}
 
-			return location;
+			return matchStarter;
 		}
 
 //		public UniTask CompleteAsync()
@@ -91,10 +91,10 @@ namespace MatchStarter
 			}
 
 			_locationHandle = _matchStarterSettings.MatchStarterPrefabReference.LoadAssetAsync();
-			
+
 			await _locationHandle.Value;
 		}
-		
+
 		//Не тестировал
 		public void DestroyAndRelease()
 		{
@@ -103,7 +103,7 @@ namespace MatchStarter
 				Object.Destroy(_currentLocation);
 			}
 
-			if (_locationHandle.HasValue )//&& _locationHandle.Value.IsDone && _locationHandle.Value.IsValid())
+			if (_locationHandle.HasValue) //&& _locationHandle.Value.IsDone && _locationHandle.Value.IsValid())
 				UnityEngine.AddressableAssets.Addressables.Release(_locationHandle.Value);
 
 			_locationHandle = null;

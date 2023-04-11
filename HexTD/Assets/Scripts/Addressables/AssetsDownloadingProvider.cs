@@ -8,45 +8,52 @@ using WindowSystem;
 
 namespace Addressables
 {
-    public class AssetsDownloadingProvider
-    {
-        private const int ReconnectionDelayMs = 2000;
-        private readonly IWindowsManager windowsManager;
+	public class AssetsDownloadingProvider
+	{
+		private const int ReconnectionDelayMs = 2000;
+		private readonly IWindowsManager windowsManager;
 
-        public AssetsDownloadingProvider(IWindowsManager windowsManager)
-        {
-            this.windowsManager = windowsManager;
-        }
+		public AssetsDownloadingProvider(IWindowsManager windowsManager)
+		{
+			this.windowsManager = windowsManager;
+		}
 
-        public async UniTask DownloadAssetWithLabelIfRequiredAsync(AssetLabelReference label)
-        {
-            if (!await AddressableDownloader.IsRequiredDownloadAsync(label))
-                return;
+		public async UniTask DownloadAssetWithLabelIfRequiredAsync(AssetLabelReference label)
+		{
+			if (!await AddressableDownloader.IsRequiredDownloadAsync(label))
+				return;
 
-            var selfControlledProcess = !windowsManager.IsOpen<LoadingWindowController>();
-            var loadingController = await windowsManager.OpenSingleAsync<LoadingWindowController>();
-            loadingController.SetActiveDownloading(true);
+			var selfControlledProcess = !windowsManager.IsOpen<LoadingWindowController>();
+			var loadingController = await windowsManager.OpenSingleAsync<LoadingWindowController>();
+			loadingController.SetActiveDownloading(true);
 
-            do
-            {
-                if (await WebServerConnectionTracker.IsAddressableServerReachable())
-                {
-                    var result = await AddressableDownloader.DownloadAsync(label, loadingController);
+			do
+			{
+				if (await WebServerConnectionTracker.IsAddressableServerReachable())
+				{
+					var result = await AddressableDownloader.DownloadAsync(label, loadingController);
 
-                    if (result.IsComplete)
-                        break;
-                }
+					if (result.IsComplete)
+						break;
+				}
 
-                await windowsManager.OpenSingleAsync<NoConnectionWindowController>()
-                    .WaitUntilClosedAsync();
+				await windowsManager.OpenSingleAsync<NoConnectionWindowController>()
+					.WaitUntilClosedAsync();
 
-                await UniTask.Delay(ReconnectionDelayMs);
-            } while (true);
+				await UniTask.Delay(ReconnectionDelayMs);
+			} while (true);
 
-            if (selfControlledProcess)
-                await windowsManager.CloseAsync(loadingController);
-            else
-                loadingController.SetActiveDownloading(false);
-        }
-    }
+			if (selfControlledProcess)
+				await CompleteLoading(loadingController);
+			else
+				loadingController.SetActiveDownloading(false);
+		}
+
+		private async UniTask CompleteLoading(LoadingWindowController loadingController)
+		{
+			await loadingController.WaitWhileProgressbarAnimationFinished();
+
+			await loadingController.CloseWindowAsync();
+		}
+	}
 }

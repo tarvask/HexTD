@@ -187,6 +187,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6965751542809133233}
+  - component: {fileID: 8573365758776047087}
   - component: {fileID: 6965751542809133234}
   - component: {fileID: 6965751542809133232}
   - component: {fileID: 6965751542809133231}
@@ -215,6 +216,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8573365758776047087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6965751542809133235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptableObjectInstallers: []
+  _monoInstallers: []
+  _installerPrefabs: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
 --- !u!114 &6965751542809133234
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,7 +260,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a51fcf7ccc71491496cc2e19874031f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMultiPlayerGame: 0
   levelsConfig: {fileID: 11400000, guid: c392943212dede7428130646b83aa790, type: 2}
 --- !u!114 &6965751542809133231
 MonoBehaviour:
@@ -268,4 +285,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e8f1c4849db48cf9da55e37f6f81627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: qwe

@@ -40,9 +40,10 @@ public class PhotonMatchBridge : BaseMonoBehaviour
     private bool _isMultiPlayerGame;
     
     [Inject]
-    public void Constructor([Inject(Id = "isMultiplayer")] bool isMultiplayer)
+    public void Constructor(MatchSettingsProvider matchSettingsProvider)
     {
-        _isMultiPlayerGame = isMultiplayer;
+        _isMultiPlayerGame = matchSettingsProvider.Settings.IsMultiPlayer;
+        Debug.Log($"{nameof(_isMultiPlayerGame)}: {_isMultiPlayerGame}");
     }
     
     private async void Start()

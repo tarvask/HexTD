@@ -7,16 +7,20 @@ using WindowSystem.View;
 
 namespace UI.MainMenuWindow
 {
-	public class MainMenuWindowView: WindowViewBase
+	public class MainMenuWindowView : WindowViewBase
 	{
 		[SerializeField] private Image testImage;
-		[SerializeField] private Button battleRunButton;
+		[SerializeField] private Button singlePlayerBattleRunButton;
+		[SerializeField] private Button multiPlayerBattleRunButton;
 
-		public IObservable<Unit> BattleRunClick => battleRunButton
+		public IObservable<Unit> SinglePlayerBattleRunClick => singlePlayerBattleRunButton
 			.OnClickAsObservable()
 			.WhereAppeared(this);
-		
-		public void TestShowLoaded() => testImage.color = Color.green;
 
+		public IObservable<Unit> MultiPlayerBattleRunClick => multiPlayerBattleRunButton
+			.OnClickAsObservable()
+			.WhereAppeared(this);
+
+		public void TestShowLoaded() => testImage.color = Color.green;
 	}
 }

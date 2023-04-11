@@ -81,6 +81,9 @@ namespace WindowSystem.Controller
 			UniTask.WhenAll(View.DisappearAsync(animated), DoHideAsync(animated))
 				.ContinueWith(OnViewDidHidden);
 
+		public UniTask CloseWindowAsync(bool animated = true) =>
+			WindowsManager.CloseAsync(this, animated);
+
 		void IDisposable.Dispose()
 		{
 			_compositeDisposable.Dispose();

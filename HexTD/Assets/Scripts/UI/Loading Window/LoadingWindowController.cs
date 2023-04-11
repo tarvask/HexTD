@@ -62,5 +62,8 @@ namespace UI.Loading_Window
 		}
 
 //        protected override void DoDispose() => Addressables.Release(skeletonDataAssetHandle);
+
+		public UniTask WaitWhileProgressbarAnimationFinished() =>
+			UniTask.WaitWhile(() => InProgress);
 	}
 }

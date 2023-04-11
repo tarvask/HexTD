@@ -11,5 +11,6 @@ namespace WindowSystem.Controller
 		bool CanOverlapScreen { get; }
 		UniTask ShowWindowAsync(bool animated);
 		UniTask HideWindowAsync(bool animated);
+		UniTask CloseWindowAsync(bool animated = true);
 	}
 }
