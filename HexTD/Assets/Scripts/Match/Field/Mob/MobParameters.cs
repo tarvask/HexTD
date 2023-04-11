@@ -20,10 +20,6 @@ namespace Match.Field.Mob
         private int rewardInSilver;
         [SerializeField] [Description("Price of mob in reinforcement")]
         private int priceInSilver;
-        [SerializeField] [Description("Earnings per wave appearance")]
-        private int incomeInSilver;
-        [SerializeField] [Description("Chance in percents of dropping crystal for killed mob")]
-        private int crystalDropChance;
 
         public byte TypeId => typeId;
         public PowerType PowerType => powerType;
@@ -36,7 +32,5 @@ namespace Match.Field.Mob
 
         public int RewardInSilver => rewardInSilver;
         public int PriceInSilver => priceInSilver;
-        public int IncomeInSilver => incomeInSilver;
-        public int CrystalDropChance => crystalDropChance;
     }
 }

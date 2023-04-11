@@ -36,12 +36,17 @@ namespace Match.Field.Mob
         //private readonly MobBuffsManager _buffsManager;
         private Vector3 _currentPosition;
         private Hex2d _currentHexPosition;
+        
+        private byte _pathIndex;
         private float _currentPathLength;
         private byte _nextWaypoint;
+        
         private float _attackingTimer;
         private byte _currentDamageTextIndex;
         private bool _isCarrion;
         private bool _hasReachedCastle;
+        private bool _isEscaping;
+        private bool _isInSafety;
 
         public int Id => _context.Id;
         public int TargetId => _context.TargetId;
@@ -52,8 +57,10 @@ namespace Match.Field.Mob
         public bool HasReachedCastle => _hasReachedCastle;
         public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.ReloadTime;
         public int RewardInSilver => _context.Parameters.RewardInSilver;
-        public int CrystalDropChance => _context.Parameters.CrystalDropChance;
         public bool IsCarrion => _isCarrion;
+        public bool IsEscaping => _isEscaping;
+        public bool IsInSafety => _isInSafety;
+        
         public bool CanMove => true;
 
         public MobController(Context context)
@@ -81,7 +88,7 @@ namespace Match.Field.Mob
                 return;
             
             Vector3 currentPosition = Position;
-            Vector3 targetPosition = Vector3.zero;
+            Vector3 targetPosition = Vector3.positiveInfinity; // TODO: call waypoints' service
             float distanceToTargetSqr = Vector3.SqrMagnitude(currentPosition - targetPosition);
             float distancePerFrame = _context.Parameters.Speed;//_buffsManager.ParameterResultValue(BuffedParameterType.MovementSpeed) * frameLength;
 
@@ -99,7 +106,7 @@ namespace Match.Field.Mob
                 }
             }
 
-            _hasReachedCastle = false;
+            _hasReachedCastle = false; // TODO: call waypoints' service, do check
         }
 
         public void UpdateHexPosition(IHexPositionConversionService hexPositionConversionService)
@@ -181,6 +188,18 @@ namespace Match.Field.Mob
             {
                 await Task.Delay(500);
                 _isCarrion = true;
+            });
+        }
+        
+        public void Escape()
+        {
+            _isEscaping = true;
+            _context.RemoveMobReactiveCommand.Execute(this);
+            
+            Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                _isInSafety = true;
             });
         }
 

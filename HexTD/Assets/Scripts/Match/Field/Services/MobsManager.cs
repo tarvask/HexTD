@@ -28,6 +28,7 @@ namespace Match.Field.Services
         private readonly List<MobController> _dyingMobs;
         private readonly Dictionary<int, MobController> _deadBodies;
         private readonly List<MobController> _carrionBodies;
+        private readonly List<MobController> _escapingMobs;
 
         public IReadOnlyDictionary<int, MobController> Mobs => _mobsContainer.Mobs;
         public IReadOnlyDictionary<int, List<MobController>> MobsByPosition => _mobsContainer.MobsByPosition;
@@ -57,7 +58,8 @@ namespace Match.Field.Services
         {
             UpdateMobsHealth(frameLength);
             UpdateMobsLogicMoving(frameLength);
-            UpdateMobsAttacking(frameLength);
+            //UpdateMobsAttacking(frameLength);
+            UpdateMobsEscaping(frameLength);
         }
         
         public void OuterViewUpdate(float frameLength)
@@ -94,6 +96,7 @@ namespace Match.Field.Services
             foreach (MobController mob in _carrionBodies)
             {
                 _deadBodies.Remove(mob.Id);
+                _mobsContainer.RemoveMob(mob);
                 mob.Dispose();
             }
 
@@ -117,18 +120,44 @@ namespace Match.Field.Services
             }
         }
         
-        private void UpdateMobsAttacking(float frameLength)
+        // private void UpdateMobsAttacking(float frameLength)
+        // {
+        //     foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
+        //     {
+        //         if (!mobPair.Value.HasReachedCastle)
+        //             continue;
+        //         
+        //         mobPair.Value.UpdateTimer(frameLength);
+        //         
+        //         if (mobPair.Value.IsReadyToAttack)
+        //             _context.AttackCastleByMobReactiveCommand.Execute(mobPair.Value.Attack());
+        //     }
+        // }
+
+        private void UpdateMobsEscaping(float frameLength)
         {
             foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
-                if (!mobPair.Value.HasReachedCastle)
-                    continue;
-                
-                mobPair.Value.UpdateTimer(frameLength);
-                
-                if (mobPair.Value.IsReadyToAttack)
-                    _context.AttackCastleByMobReactiveCommand.Execute(mobPair.Value.Attack());
+                if (mobPair.Value.HasReachedCastle)
+                    _escapingMobs.Add(mobPair.Value);
             }
+
+            foreach (MobController mob in _escapingMobs)
+            {
+                if (!mob.IsEscaping)
+                {
+                    _context.AttackCastleByMobReactiveCommand.Execute(1); // 1 means that 1 mob escaped
+                    mob.Escape();
+                }
+
+                if (mob.IsEscaping && mob.IsInSafety)
+                {
+                    RemoveMob(mob);
+                    mob.Dispose();
+                }
+            }
+            
+            _escapingMobs.Clear();
         }
 
         public void Clear()
