@@ -6,17 +6,16 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Bootstrap.unity
-    guid: bcdd9bb5e67d086498369e7f0b31178f
-  - enabled: 1
-    path: Assets/Scenes/Loading.unity
-    guid: 588f2a4824907436eb1cde9634b1c998
-  - enabled: 1
     path: Assets/Scenes/Game.unity
     guid: a44afa5a68d4244338f121532d423ea1
-    path: Assets/Scenes/StandaloneMatch.unity
-    guid: 010432d5d8d06488fa3bb59605e05460
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 9a373177a14add344a0670e23bb38818
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/StandaloneMatch.unity
+    guid: 010432d5d8d06488fa3bb59605e05460
+  - enabled: 1
+    path: Assets/Scenes/MultiplayerMatch.unity
+    guid: caa26831181c14e67b2fbb5083721d15
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: c28c5a0c569ce9e40909e4fc75dac988, type: 2}

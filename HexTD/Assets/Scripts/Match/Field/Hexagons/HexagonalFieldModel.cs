@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Match.Field.Hexagons
 {
-    public class HexagonalFieldModel : IHexPositionConversationService
+    public class HexagonalFieldModel : IHexPositionConversionService
     {
         private readonly Layout _layout;
         private readonly IDictionary<int, FieldHex> _cachedLevelFieldHexes;

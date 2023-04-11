@@ -7,17 +7,17 @@ namespace Addressables
 {
 	public class AssetReferenceContainer<TKey> : IDisposable
 	{
-		private readonly Dictionary<TKey, AsyncOperationHandle<GameObject>> assetsHandlersMap;
+		private readonly Dictionary<TKey, AsyncOperationHandle<GameObject>> _assetsHandlersMap;
 
 		public AssetReferenceContainer(int capacity) =>
-			assetsHandlersMap = new Dictionary<TKey, AsyncOperationHandle<GameObject>>(capacity);
+			_assetsHandlersMap = new Dictionary<TKey, AsyncOperationHandle<GameObject>>(capacity);
 
 		public AssetReferenceContainer() : this(0)
 		{
 		}
 
 		private bool Contains(TKey key) =>
-			assetsHandlersMap.TryGetValue(key, out var handler) &&
+			_assetsHandlersMap.TryGetValue(key, out var handler) &&
 			handler.IsValid();
 
 		public void CacheInMemory(TKey key, AsyncOperationHandle<GameObject> assetHandler)
@@ -25,26 +25,26 @@ namespace Addressables
 			if (Contains(key))
 				return;
 
-			assetsHandlersMap[key] = assetHandler;
+			_assetsHandlersMap[key] = assetHandler;
 		}
 
-		public AsyncOperationHandle<GameObject> GetCached(TKey key) => assetsHandlersMap[key];
+		public AsyncOperationHandle<GameObject> GetCached(TKey key) => _assetsHandlersMap[key];
 
 		public void RemoveFromMemory(TKey key)
 		{
-			if (assetsHandlersMap.TryGetValue(key, out var operationHandle))
+			if (_assetsHandlersMap.TryGetValue(key, out var operationHandle))
 			{
-				assetsHandlersMap.Remove(key);
+				_assetsHandlersMap.Remove(key);
 				ReleaseOperationHandle(operationHandle);
 			}
 		}
 
 		public void Dispose()
 		{
-			foreach (var assetHandler in assetsHandlersMap.Values)
+			foreach (var assetHandler in _assetsHandlersMap.Values)
 				ReleaseOperationHandle(assetHandler);
 
-			assetsHandlersMap.Clear();
+			_assetsHandlersMap.Clear();
 		}
 
 		private static void ReleaseOperationHandle(AsyncOperationHandle<GameObject> assetHandler)

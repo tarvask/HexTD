@@ -15,7 +15,7 @@ namespace Match.Field
         public struct Context
         {
             public Transform FieldRoot { get; }
-            public IHexPositionConversationService HexPositionConversationService { get; }
+            public IHexPositionConversionService HexPositionConversionService { get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
             
@@ -24,14 +24,14 @@ namespace Match.Field
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
 
             public Context(Transform fieldRoot,
-                IHexPositionConversationService hexPositionConversationService,
+                IHexPositionConversionService hexPositionConversionService,
                 int castleHealth, int towerRemovingDuration,
                 ReactiveCommand<int> attackCastleByMobReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<MobController> removeMobReactiveCommand)
             {
                 FieldRoot = fieldRoot;
-                HexPositionConversationService = hexPositionConversationService;
+                HexPositionConversionService = hexPositionConversionService;
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
@@ -136,7 +136,7 @@ namespace Match.Field
             Hex2d position)
         {
             TowerView towerView = Object.Instantiate(towerPrefab, _buildingsRoot);
-            towerView.transform.position = _context.HexPositionConversationService.GetUpHexWorldPosition(position);
+            towerView.transform.position = _context.HexPositionConversionService.GetUpHexWorldPosition(position);
             towerView.name = $"{towerId}_{towerName}";
 
             return towerView;

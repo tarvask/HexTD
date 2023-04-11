@@ -6,19 +6,19 @@ using Zenject;
 
 namespace WindowSystem.View.Factories.Addressable
 {
-	[CreateAssetMenu(fileName = "Addressable Window View Container",
-		menuName = "Game/Window/Addressable View Container")]
+	[CreateAssetMenu(fileName = "AddressableWindowViewContainer",
+		menuName = "Game/Window/AddressableWindowViewContainer")]
 	public class AddressableWindowViewContainer : ScriptableObject, IInitializable
 	{
 		[SerializeField] private List<WindowViewAsset> windowAssets;
 
-		private Dictionary<Type, AssetReferenceInfo> windowReferences;
+		private Dictionary<Type, AssetReferenceInfo> _windowReferences;
 		public IReadOnlyList<WindowViewAsset> WindowAssets => windowAssets;
 
 
 		public void Initialize()
 		{
-			windowReferences = new Dictionary<Type, AssetReferenceInfo>();
+			_windowReferences = new Dictionary<Type, AssetReferenceInfo>();
 
 			foreach (var windowAsset in windowAssets)
 			{
@@ -26,7 +26,7 @@ namespace WindowSystem.View.Factories.Addressable
 				if (type == null)
 					throw new Exception($"Can't restore view with type {windowAsset.viewType}");
 
-				windowReferences[type] = new AssetReferenceInfo(windowAsset.assetReference, windowAsset.cacheInMemory);
+				_windowReferences[type] = new AssetReferenceInfo(windowAsset.assetReference, windowAsset.cacheInMemory);
 			}
 		}
 
@@ -35,8 +35,8 @@ namespace WindowSystem.View.Factories.Addressable
 
 		public AssetReferenceInfo GetReferenceInfo(Type type)
 		{
-			Assert.That(windowReferences.ContainsKey(type), $"!windowReferences.ContainsKey {type}");
-			return windowReferences[type];
+			Assert.That(_windowReferences.ContainsKey(type), $"!windowReferences.ContainsKey {type}");
+			return _windowReferences[type];
 		}
 	}
 }

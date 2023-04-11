@@ -21,16 +21,19 @@ namespace Match.Field.Shooting.TargetFinding
         
         public Dictionary<int, MobController> GetTargetsInRange(
             ReachableAttackTargetFinderType reachableAttackTargetFinderType,
-            IReadOnlyDictionary<int, MobController> mobsByPosition,
+            IReadOnlyDictionary<int, List<MobController>> mobsByPosition,
             Hex2d towerPosition, int attackRadius)
         {
             IReadOnlyCollection<Hex2d> hexes = _hexMapReachableService.GeInRangeMapByTargetFinderType(
                 towerPosition, attackRadius, reachableAttackTargetFinderType);
-
             _mobsInRange.Clear();
+            
             foreach (Hex2d hex in hexes)
             {
-                if (mobsByPosition.TryGetValue(hex.GetHashCode(), out var mobController))
+                if (!mobsByPosition.TryGetValue(hex.GetHashCode(), out var mobsInPosition))
+                    continue;
+                
+                foreach (var mobController in mobsInPosition)
                     _mobsInRange.Add(mobController.Id, mobController);
             }
 

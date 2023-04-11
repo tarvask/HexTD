@@ -25,6 +25,18 @@ MonoBehaviour:
     m_Address: Assets/Prefabs/UI/Common/Windows/NoConnectionWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: cca46b3ecb7dd6449b0e02ec76751e7c
+    m_Address: Assets/Prefabs/UI/MainMenuWindow/MainMenuWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 04841f9a6d7f91842baf3779c8268b04
+    m_Address: Assets/Scenes/MatchEngine.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - test
+    - match_loading
+    - match_loader
+    - match_starter
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3ec02984d4bb4544aa626424941dabb8, type: 2}
   m_SchemaSet:

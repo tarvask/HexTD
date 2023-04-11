@@ -12,13 +12,13 @@ namespace Match.Field.Services
     {
         public struct Context
         {
-            public IHexPositionConversationService HexPositionConversationService { get; }
+            public IHexPositionConversionService HexPositionConversionService { get; }
             public ReactiveCommand<int> AttackCastleByMobReactiveCommand { get; }
 
-            public Context(IHexPositionConversationService hexPositionConversationService,
+            public Context(IHexPositionConversionService hexPositionConversionService,
                 ReactiveCommand<int> attackCastleByMobReactiveCommand)
             {
-                HexPositionConversationService = hexPositionConversationService;
+                HexPositionConversionService = hexPositionConversionService;
                 AttackCastleByMobReactiveCommand = attackCastleByMobReactiveCommand;
             }
         }
@@ -29,13 +29,14 @@ namespace Match.Field.Services
         private readonly List<MobController> _carrionBodies;
 
         public IReadOnlyDictionary<int, MobController> Mobs => _mobsContainer.Mobs;
+        public IReadOnlyDictionary<int, List<MobController>> MobsByPosition => _mobsContainer.MobsByPosition;
         public int MobCount => _mobsContainer.Mobs.Count;
 
         public MobsManager(Context context)
         {
             _context = context;
 
-            _mobsContainer = new MobsContainer(_context.HexPositionConversationService);
+            _mobsContainer = new MobsContainer(_context.HexPositionConversionService);
             _deadBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _carrionBodies = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }

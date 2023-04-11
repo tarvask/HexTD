@@ -54,7 +54,7 @@ namespace Photon.Chat.Demo
             }
             #endif
 
-            this.Description.text = descriptionText;
+            Description.text = descriptionText;
         }
     }
 }

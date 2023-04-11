@@ -32,7 +32,7 @@ namespace Match.Field.Shooting.TargetFinding
             };
         }
 
-        public int GetTargetWithTacticInRange(IReadOnlyDictionary<int, MobController> mobsByPosition, 
+        public int GetTargetWithTacticInRange(IReadOnlyDictionary<int, List<MobController>> mobsByPosition, 
             ReachableAttackTargetFinderType reachableAttackTargetFinderType,
             TargetFindingTacticType tacticType,
             Hex2d towerPosition, int attackRadius, bool preferUnbuffed)

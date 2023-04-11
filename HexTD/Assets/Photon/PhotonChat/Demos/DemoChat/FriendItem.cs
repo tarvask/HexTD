@@ -21,8 +21,8 @@ namespace Photon.Chat.Demo
         [HideInInspector]
         public string FriendId
         {
-            set { this.NameLabel.text = value; }
-            get { return this.NameLabel.text; }
+            set { NameLabel.text = value; }
+            get { return NameLabel.text; }
         }
 
         public Text NameLabel;
@@ -31,7 +31,7 @@ namespace Photon.Chat.Demo
 
         public void Awake()
         {
-            this.Health.text = string.Empty;
+            Health.text = string.Empty;
         }
 
         public void OnFriendStatusUpdate(int status, bool gotMessage, object message)
@@ -63,7 +63,7 @@ namespace Photon.Chat.Demo
                     break;
             }
 
-            this.StatusLabel.text = _status;
+            StatusLabel.text = _status;
 
             if (gotMessage)
             {
@@ -77,7 +77,7 @@ namespace Photon.Chat.Demo
                     }
                 }
 
-                this.Health.text = _health;
+                Health.text = _health;
             }
         }
     }

@@ -102,9 +102,9 @@ namespace Match.Field.Mob
             _hasReachedCastle = false;
         }
 
-        public void UpdateHexPosition(IHexPositionConversationService hexPositionConversationService)
+        public void UpdateHexPosition(IHexPositionConversionService hexPositionConversionService)
         {
-            _currentHexPosition = hexPositionConversationService.ToHexFromWorldPosition(_currentPosition);
+            _currentHexPosition = hexPositionConversionService.ToHexFromWorldPosition(_currentPosition);
         }
 
         public void VisualMove(float frameLength)

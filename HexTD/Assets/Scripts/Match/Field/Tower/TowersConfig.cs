@@ -10,13 +10,13 @@ namespace Match.Field.Tower
         
         public List<TowerConfig> Towers => towers;
 
-#if UNITY_EDITOR
-        [ContextMenu("Pull up data from Views to Configs")]
-        public void PullUpDataFromView()
-        {
-            foreach (TowerConfig tower in towers)
-                tower.PullUpDataFromView();
-        }
-#endif
+//#if UNITY_EDITOR
+//        [ContextMenu("Pull up data from Views to Configs")]
+//        public void PullUpDataFromView()
+//        {
+//            foreach (TowerConfig tower in towers)
+//                tower.PullUpDataFromView();
+//        }
+//#endif
     }
 }

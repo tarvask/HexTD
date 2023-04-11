@@ -2,7 +2,6 @@ using System;
 using Configs.Constants;
 using MapEditor;
 using Tools;
-using UnityEngine;
 
 namespace Match.Field
 {

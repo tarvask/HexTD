@@ -1,81 +1,64 @@
-using System;
-using System.Linq;
+﻿using System;
 using Cysharp.Threading.Tasks;
-using SceneManagement.Flow;
 using UI.Loading_Window;
-using UnityEngine;
 using WindowSystem;
 using Zenject;
-using Object = UnityEngine.Object;
 
 namespace Loading
 {
 	public class GameBootstrap : IInitializable
 	{
-		private readonly SceneFlow[] sceneFlows;
-		private readonly GameObject splashScreen;
-		private readonly IGameLoadingService gameLoadingService;
-		private readonly IWindowsManager windowsManager;
+		private readonly IGameLoadingService _gameLoadingService;
+		private readonly IWindowsManager _windowsManager;
 
 		public GameBootstrap(
-			SceneFlow[] sceneFlows,
-			GameObject splashScreen,
 			IGameLoadingService gameLoadingService,
 			IWindowsManager windowsManager)
 		{
-			this.sceneFlows = sceneFlows;
-			this.splashScreen = splashScreen;
-			this.gameLoadingService = gameLoadingService;
-			this.windowsManager = windowsManager;
+			_gameLoadingService = gameLoadingService;
+			_windowsManager = windowsManager;
 		}
 
 		public void Initialize() => InternalInitialize().Forget();
 
 		private async UniTaskVoid InternalInitialize()
 		{
-			var loadingController = await windowsManager.OpenAsync<LoadingWindowController>();
+			var loadingController = await _windowsManager.OpenAsync<LoadingWindowController>();
 			loadingController.SetActiveLoading(true);
 			loadingController.SetProgress(0);
-			Object.Destroy(splashScreen);
-			var loading = new LoadingCalculator(sceneFlows.Sum(x => x.Weight), loadingController.SetProgress);
 
-			for (var i = 0; i < sceneFlows.Length; i++)
-			{
-				var flow = sceneFlows[i];
-				loading.ChangeLoadingWeight(flow.Weight);
-				await flow.RunSceneFlow();
-				await gameLoadingService.LoadGame(loading);
-				if (flow.TransitionScene)
-					await flow.StopSceneFlow();
-			}
+			var loading = new LoadingCalculator(3, loadingController.SetProgress);
 
-			await windowsManager.CloseAsync(loadingController);
+			loading.ChangeLoadingWeight(1);
+			await _gameLoadingService.LoadGame(loading);
+
+			await _windowsManager.CloseAsync(loadingController);
 		}
 
 		private class LoadingCalculator : IProgress<float>
 		{
-			private readonly Action<float> progress;
-			private readonly float sumWeights;
+			private readonly Action<float> _progress;
+			private readonly float _sumWeights;
 
-			private float passedNormalizedWeights;
-			private float normalizedSumWeight;
+			private float _passedNormalizedWeights;
+			private float _normalizedSumWeight;
 
 			public LoadingCalculator(float sumWeights, Action<float> progress)
 			{
-				this.progress = progress;
-				this.sumWeights = sumWeights;
+				_progress = progress;
+				_sumWeights = sumWeights;
 			}
 
 			public void ChangeLoadingWeight(float value)
 			{
-				passedNormalizedWeights += normalizedSumWeight;
-				normalizedSumWeight = value / sumWeights;
+				_passedNormalizedWeights += _normalizedSumWeight;
+				_normalizedSumWeight = value / _sumWeights;
 			}
 
 			void IProgress<float>.Report(float value)
 			{
-				var progress01 = passedNormalizedWeights + normalizedSumWeight * value;
-				progress.Invoke(progress01);
+//				var progress01 = passedNormalizedWeights + normalizedSumWeight * value;
+				_progress.Invoke(value);
 			}
 		}
 	}

@@ -178,7 +178,7 @@ namespace Match.Field.Tower
             _stableModel.UpdateShootingTimer(frameLength);
         }
 
-        public bool FindTarget(TargetFinder targetFinder, IReadOnlyDictionary<int, MobController> mobs)
+        public bool FindTarget(TargetFinder targetFinder, IReadOnlyDictionary<int, List<MobController>> mobs)
         {
             int targetId = targetFinder.GetTargetWithTacticInRange(mobs,
                 _context.Parameters.RegularParameters.Data.ReachableAttackTargetFinderType,

@@ -214,7 +214,7 @@ namespace Match.Field.Shooting
 
         private bool Aim(TowerController tower)
         {
-            return tower.FindTarget(_targetFinder, _context.FieldModel.MobsManager.Mobs);
+            return tower.FindTarget(_targetFinder, _context.FieldModel.MobsManager.MobsByPosition);
         }
 
         private void Shoot(TowerController tower)

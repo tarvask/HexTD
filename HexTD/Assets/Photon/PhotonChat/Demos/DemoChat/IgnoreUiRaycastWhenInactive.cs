@@ -14,7 +14,7 @@ namespace Photon.Chat.Demo
     {
         public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
         {
-            return this.gameObject.activeInHierarchy;
+            return gameObject.activeInHierarchy;
         }
     }
 }

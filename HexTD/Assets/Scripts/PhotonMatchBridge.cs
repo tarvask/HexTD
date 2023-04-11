@@ -13,10 +13,11 @@ using Services;
 using Services.PhotonRelated;
 using Tools;
 using UnityEngine;
+using Zenject;
 
 public class PhotonMatchBridge : BaseMonoBehaviour
 {
-    [SerializeField] private bool isMultiPlayerGame;
+//    [SerializeField] private bool isMultiPlayerGame;
     [SerializeField] private MatchesConfig levelsConfig;
 
     private const bool HasAuthorityServer = false;
@@ -33,8 +34,17 @@ public class PhotonMatchBridge : BaseMonoBehaviour
     private List<Player> _players;
     private bool _isDisposed;
 
-    private bool IsServer => !isMultiPlayerGame || PhotonNetwork.IsMasterClient;
-        
+    private bool IsServer => !_isMultiPlayerGame || PhotonNetwork.IsMasterClient;
+
+    
+    private bool _isMultiPlayerGame;
+    
+    [Inject]
+    public void Constructor([Inject(Id = "isMultiplayer")] bool isMultiplayer)
+    {
+        _isMultiPlayerGame = isMultiplayer;
+    }
+    
     private async void Start()
     {
         await InitMatch();
@@ -64,7 +74,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         await Task.Run(WaitForFullRoom);
         Debug.Log("Room is full");
             
-        if (isMultiPlayerGame)
+        if (_isMultiPlayerGame)
             SendPlayerHand();
             
         _players = new List<Player>(PhotonNetwork.PlayerList);
@@ -79,13 +89,13 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         else
             CreateEventBus();
             
-        if (isMultiPlayerGame && PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(PhotonEventsConstants.MatchStarted))
+        if (_isMultiPlayerGame && PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(PhotonEventsConstants.MatchStarted))
             ResumeGame();
     }
 
     private async Task WaitForFullRoom()
     {
-        if (isMultiPlayerGame)
+        if (_isMultiPlayerGame)
         {
             if (HasAuthorityServer)
             {
@@ -156,7 +166,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _connectionMaintainer.IsConnectedReactiveProperty,
             LeaveRoom,
             Dispose,
-            isMultiPlayerGame); //ProcessRoles.Player1
+            _isMultiPlayerGame); //ProcessRoles.Player1
 
         // re-init seed, because server had many calls to random while creating MatchConfig
         int randomSeed = startTimeSum;
@@ -190,7 +200,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         _eventBus.RaiseEvent(PhotonEventsConstants.SyncMatch.SyncMatchConfigOnStartEventId, roomProperties);
             
         // no server room in single player
-        if (isMultiPlayerGame)
+        if (_isMultiPlayerGame)
         {
             PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
             PhotonNetwork.CurrentRoom.EmptyRoomTtl = EmptyRoomTimeToLive;
@@ -219,7 +229,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _connectionMaintainer.IsConnectedReactiveProperty,
             LeaveRoom,
             Dispose,
-            isMultiPlayerGame);
+            _isMultiPlayerGame);
             
         // mark room 
         Hashtable roomProperties = new Hashtable
@@ -255,7 +265,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
 
     private void CreateEventBus()
     {
-        if (isMultiPlayerGame)
+        if (_isMultiPlayerGame)
         {
             PhotonEventBus.Context eventBusContext = new PhotonEventBus.Context(this);
             _eventBus = new PhotonEventBus(eventBusContext);
@@ -270,7 +280,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
 
     private void CreateNetworkMatchStatus(Dictionary<ProcessRoles, int> rolesAndUserIds = null)
     {
-        ProcessRolesDefiner.Context processRolesDefinerContext = new ProcessRolesDefiner.Context(isMultiPlayerGame, HasAuthorityServer);
+        ProcessRolesDefiner.Context processRolesDefinerContext = new ProcessRolesDefiner.Context(_isMultiPlayerGame, HasAuthorityServer);
         _processRolesDefiner = new ProcessRolesDefiner(processRolesDefinerContext);
             
         if (rolesAndUserIds == null)

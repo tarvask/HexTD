@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 398afa8f30d34e06aa6fe453f5b8873b, type: 3}
+  m_Name: TowerConfigNew 1
+  m_EditorClassIdentifier: 
+  name: asd
+  view: {fileID: 5716713876702498525, guid: dd383169b16c1144aa856f29ccaf86a4, type: 3}
+  towerLevelConfigs:
+    keyData: 0100000002000000
+    valueData:
+    - buildPrice: 111
+      buildTime: 11
+    - buildPrice: 222
+      buildTime: 22
+  towerAttackConfig:
+    baseDamage: 42
+    cooldown: 11
+    targetFindingTacticType: 1
+    projectileView: {fileID: 0}
+    towerAttackEffectConfigs:
+    - rid: 4904700610925297669
+    - rid: 4904700610925297670
+    - rid: 4904700610925297671
+  references:
+    version: 2
+    RefIds:
+    - rid: 4904700610925297669
+      type: {class: GradualDamageTowerAttackEffectConfig, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
+      data:
+        percentOfBaseDamage: 1
+        duration: 2
+    - rid: 4904700610925297670
+      type: {class: MovementSpeedTowerAttackEffectConfig, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
+      data:
+        percentagedValue: 3
+    - rid: 4904700610925297671
+      type: {class: SplashDamageTowerAttackEffectConfig, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
+      data:
+        percentOfBaseDamage: 4
+        radius: 5

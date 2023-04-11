@@ -7,19 +7,19 @@ namespace Addressables
 {
 	public class AddressableAssetPreloader
 	{
-		private readonly List<AssetReference> references = new List<AssetReference>();
+		private readonly List<AssetReference> _references = new List<AssetReference>();
 
 		public bool AssetsPreloaded { get; private set; } = false;
 
 		public void RegisterReference(AssetReference assetReference)
 		{
-			references.Add(assetReference);
+			_references.Add(assetReference);
 		}
 
 		public async UniTask PreloadAssetsAsync()
 		{
 			AssetsPreloaded = false;
-			foreach (var reference in references)
+			foreach (var reference in _references)
 			{
 				await reference.LoadAssetAsync<GameObject>();
 			}

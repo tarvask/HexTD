@@ -9,8 +9,8 @@ namespace WindowSystem
 {
 	public class WindowsManager : IWindowsManager
 	{
-		private readonly WindowControllerFactory windowControllerFactory;
-		private readonly EventSystem eventSystem;
+		private readonly WindowControllerFactory _windowControllerFactory;
+		private readonly EventSystem _eventSystem;
 
 		public ReactiveProperty<bool> IsScreenOverlapped { get; }
 
@@ -18,8 +18,8 @@ namespace WindowSystem
 			WindowControllerFactory windowControllerFactory,
 			EventSystem eventSystem)
 		{
-			this.windowControllerFactory = windowControllerFactory;
-			this.eventSystem = eventSystem;
+			_windowControllerFactory = windowControllerFactory;
+			_eventSystem = eventSystem;
 
 			IsScreenOverlapped = new ReactiveProperty<bool>(false);
 		}
@@ -74,8 +74,8 @@ namespace WindowSystem
 			where TWindowController : class, IWindowController, IWindowLoader
 		{
 			var stopwatch = Stopwatch.StartNew();
-			eventSystem.enabled = false;
-			var controller = windowControllerFactory.Create<TWindowController>(args);
+			_eventSystem.enabled = false;
+			var controller = _windowControllerFactory.Create<TWindowController>(args);
 			var loadingResult = await controller.LoadWindowAsync();
 			var controllerName = controller.GetType().Name;
 
@@ -89,24 +89,24 @@ namespace WindowSystem
 			WindowsStorage.AddOpenedController(controller);
 
 			await controller.ShowWindowAsync(animated);
-			eventSystem.enabled = true;
+			_eventSystem.enabled = true;
 			return controller;
 		}
 
 
 		private UniTask InternalCloseAsync(IWindowController windowController, bool animated = true)
 		{
-			if (eventSystem == null)
+			if (_eventSystem == null)
 			{
 				windowController.Dispose();
 				return UniTask.CompletedTask;
 			}
 
-			eventSystem.enabled = false;
+			_eventSystem.enabled = false;
 
 			return windowController.HideWindowAsync(animated).ContinueWith(() =>
 			{
-				eventSystem.enabled = true;
+				_eventSystem.enabled = true;
 				windowController.Dispose();
 			});
 		}

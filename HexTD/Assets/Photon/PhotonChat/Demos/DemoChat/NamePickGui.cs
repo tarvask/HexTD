@@ -22,13 +22,13 @@ namespace Photon.Chat.Demo
 
         public void Start()
         {
-            this.chatNewComponent = FindObjectOfType<ChatGui>();
+            chatNewComponent = FindObjectOfType<ChatGui>();
 
 
             string prefsName = PlayerPrefs.GetString(UserNamePlayerPref);
             if (!string.IsNullOrEmpty(prefsName))
             {
-                this.idInput.text = prefsName;
+                idInput.text = prefsName;
             }
         }
 
@@ -38,16 +38,16 @@ namespace Photon.Chat.Demo
         {
             if (Input.GetKey(KeyCode.Return) || Input.GetKey(KeyCode.KeypadEnter))
             {
-                this.StartChat();
+                StartChat();
             }
         }
 
         public void StartChat()
         {
             ChatGui chatNewComponent = FindObjectOfType<ChatGui>();
-            chatNewComponent.UserName = this.idInput.text.Trim();
+            chatNewComponent.UserName = idInput.text.Trim();
             chatNewComponent.Connect();
-            this.enabled = false;
+            enabled = false;
 
             PlayerPrefs.SetString(UserNamePlayerPref, chatNewComponent.UserName);
         }

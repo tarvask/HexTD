@@ -8,10 +8,9 @@ using UnityEditor.Build.Reporting;
 using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using WindowSystem.View.Factories.Addressable;
 using Object = UnityEngine.Object;
 
-namespace IdleCivilization.Client.UI
+namespace WindowSystem.View.Factories.Addressable.Editor
 {
 	[CustomEditor(typeof(AddressableWindowViewContainer))]
 	public class WindowViewContainerEditor : UnityEditor.Editor, IPreprocessBuildWithReport

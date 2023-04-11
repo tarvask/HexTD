@@ -23,7 +23,7 @@ namespace Match.Field
         {
             public Transform FieldRoot { get; }
             public FieldHexTypesController FieldHexTypesController { get; }
-            public IHexPositionConversationService HexPositionConversationService { get; }
+            public IHexPositionConversionService HexPositionConversionService { get; }
             public HexMapReachableService HexMapReachableService { get; }
             public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
@@ -48,7 +48,7 @@ namespace Match.Field
             public Context(
                 Transform fieldRoot,
                 FieldHexTypesController fieldHexTypesController,
-                IHexPositionConversationService hexPositionConversationService,
+                IHexPositionConversionService hexPositionConversionService,
                 HexMapReachableService hexMapReachableService,
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
@@ -72,7 +72,7 @@ namespace Match.Field
             {
                 FieldRoot = fieldRoot;
                 FieldHexTypesController = fieldHexTypesController;
-                HexPositionConversationService = hexPositionConversationService;
+                HexPositionConversionService = hexPositionConversionService;
                 HexMapReachableService = hexMapReachableService;
                 
                 MatchInitDataParameters = matchInitDataParameters;
@@ -129,14 +129,14 @@ namespace Match.Field
             
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
-                _context.HexPositionConversationService,
+                _context.HexPositionConversionService,
                 _context.FieldConfig.CastleHealth, _context.FieldConfig.TowerRemovingDuration,
                 castleAttackedByMobReactiveCommand,
                 _context.CastleDestroyedReactiveCommand,
                 removeMobReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
-            MobsManager.Context mobMoverContext = new MobsManager.Context(_context.HexPositionConversationService, 
+            MobsManager.Context mobMoverContext = new MobsManager.Context(_context.HexPositionConversionService, 
                 castleAttackedByMobReactiveCommand);
             _mobsManager = AddDisposable(new MobsManager(mobMoverContext));
             

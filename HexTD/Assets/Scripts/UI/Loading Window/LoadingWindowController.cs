@@ -8,13 +8,13 @@ namespace UI.Loading_Window
 {
 	public class LoadingWindowController : LoadableWindowController<LoadingWindowView>, IDownloadProgress
 	{
-		private readonly LoadingWindowModel model;
+		private readonly LoadingWindowModel _model;
 
 //        private AsyncOperationHandle<SkeletonDataAsset> skeletonDataAssetHandle;
 
 		public LoadingWindowController(LoadingWindowModel model)
 		{
-			this.model = model;
+			_model = model;
 		}
 
 		public bool InProgress => View.InProgress;
@@ -35,7 +35,7 @@ namespace UI.Loading_Window
 
 		public void Report(long downloadedBytes, long totalBytes)
 		{
-			var sizeText = model.GetDownloadSizeInfo(downloadedBytes, totalBytes);
+			var sizeText = _model.GetDownloadSizeInfo(downloadedBytes, totalBytes);
 			View.SetDownloadingSize(sizeText);
 
 			var converted = downloadedBytes / (double)totalBytes;
@@ -58,7 +58,7 @@ namespace UI.Loading_Window
 		{
 			View.ClearView();
 //            View.Configure(model.VersionInfo, skeletonDataAssetHandle.Result);
-			View.Configure(model.VersionInfo);
+			View.Configure(_model.VersionInfo);
 		}
 
 //        protected override void DoDispose() => Addressables.Release(skeletonDataAssetHandle);

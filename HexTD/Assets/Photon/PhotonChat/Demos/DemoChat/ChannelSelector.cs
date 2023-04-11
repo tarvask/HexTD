@@ -18,15 +18,15 @@ namespace Photon.Chat.Demo
 
         public void SetChannel(string channel)
         {
-            this.Channel = channel;
-            Text t = this.GetComponentInChildren<Text>();
-            t.text = this.Channel;
+            Channel = channel;
+            Text t = GetComponentInChildren<Text>();
+            t.text = Channel;
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             ChatGui handler = FindObjectOfType<ChatGui>();
-            handler.ShowChannel(this.Channel);
+            handler.ShowChannel(Channel);
         }
     }
 }

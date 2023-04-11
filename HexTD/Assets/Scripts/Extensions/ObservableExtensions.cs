@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using TMPro;
-using UI.UIElement;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -171,11 +170,6 @@ namespace Extensions
 				observer.OnNext(i.text);
 				return i.onValueChanged.AsObservable().Subscribe(observer);
 			});
-		}
-
-		public static IObservable<T> WhereAppeared<T>(this IObservable<T> source, UIElement element)
-		{
-			return source.Where(_ => element.State == UIElementState.Appeared);
 		}
 
 		public static IObservable<bool> WhereTrue(this IObservable<bool> source)
