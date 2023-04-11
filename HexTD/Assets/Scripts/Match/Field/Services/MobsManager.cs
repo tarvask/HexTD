@@ -25,6 +25,7 @@ namespace Match.Field.Services
 
         private readonly Context _context;
         private readonly MobsContainer _mobsContainer;
+        private readonly List<MobController> _dyingMobs;
         private readonly Dictionary<int, MobController> _deadBodies;
         private readonly List<MobController> _carrionBodies;
 
@@ -37,6 +38,7 @@ namespace Match.Field.Services
             _context = context;
 
             _mobsContainer = new MobsContainer(_context.HexPositionConversionService);
+            _dyingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _deadBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _carrionBodies = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }
@@ -71,10 +73,15 @@ namespace Match.Field.Services
 
                 if (mobPair.Value.Health <= 0)
                 {
-                    _mobsContainer.RemoveMob(mobPair.Value);
-                    _deadBodies.Add(mobPair.Value.Id, mobPair.Value);
-                    mobPair.Value.Die();
+                    _dyingMobs.Add(mobPair.Value);
                 }
+            }
+            
+            // needed to clean up dying mobs from FieldModel.Mobs
+            foreach (MobController dyingMob in _dyingMobs)
+            {
+                _deadBodies.Add(dyingMob.Id, dyingMob);
+                dyingMob.Die();
             }
 
             foreach (KeyValuePair<int, MobController> mobPair in _deadBodies)
@@ -90,6 +97,7 @@ namespace Match.Field.Services
                 mob.Dispose();
             }
 
+            _dyingMobs.Clear();
             _carrionBodies.Clear();
         }
 
