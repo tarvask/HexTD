@@ -84,7 +84,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             await Task.Delay(3000);
             CreateNetworkMatchStatus();
             CreateEventBus();
-            InitAsServer();
+            await InitAsServer();
         }
         else
             CreateEventBus();
@@ -139,7 +139,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         }
     }
 
-    private void InitAsServer()
+    private async Task InitAsServer()
     {
         DateTime now = DateTime.Now;
         int startTimeSum = now.Year + now.Month + now.Day + now.Hour + now.Minute;
@@ -151,7 +151,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         int levelIndexToPlay = Mathf.Clamp(PlayerPrefs.GetInt("Level", 0), 0, levelsConfig.Levels.Length - 1);
 
         MapLoader loader = new MapLoader();
-        LevelMapModel mapModel = loader.Load();
+        LevelMapModel mapModel = await loader.Load();
 
         MatchInitDataParameters matchParameters = new MatchInitDataParameters(mapModel.HexModels.ToArray(), 
             mapModel.PathDatas.ToArray(),

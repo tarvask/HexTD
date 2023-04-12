@@ -58,9 +58,9 @@ namespace MapEditor
 		private static string GetTempFilePath()=>
 			Path.Combine(Application.persistentDataPath, MapLoader.DefaultFileName);
 		
-		public void Load()
+		public async void Load()
 		{
-			LevelMapModel levelMapModel = _mapLoader.Load();
+			LevelMapModel levelMapModel = await _mapLoader.Load();
 			ApplyLevelMapModel(levelMapModel);
 		}
 

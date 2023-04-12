@@ -1,6 +1,9 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using Keiwando.NFSO;
 using Newtonsoft.Json;
+using Unity.VisualScripting;
 
 namespace MapEditor
 {
@@ -33,19 +36,27 @@ namespace MapEditor
             _serializer = serializer;
         }
         
-        public LevelMapModel Load()
+        public async UniTask<LevelMapModel> Load()
         {
             LevelMapModel levelMapModel = null;
+            
             NativeFileSO.shared.OpenFile(FileTypes, delegate (bool wasFileOpened, OpenedFile file) {
                 if (wasFileOpened)
                 {
                     levelMapModel = _serializer.Deserialize<LevelMapModel>(
                         new JsonTextReader(new StringReader(file.ToUTF8String())));
                 }
+                else
+                {
+                    if (levelMapModel == null)
+                        throw new FileLoadException("Saved map didn't load");
+                }
             });
 
-            if (levelMapModel == null)
-                throw new FileLoadException("Saved map didn't load");
+            while (levelMapModel == null)
+            {
+                await Task.Delay(100);
+            }
 
             return levelMapModel;
         }
