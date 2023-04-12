@@ -7,28 +7,19 @@ namespace HexSystem
 {
     public class HexFabric
     {
-        private readonly Transform _hexRoot;
         private readonly HexagonPrefabConfig _hexagonPrefabConfig;
-        private readonly Layout _layout;
 
-        public HexFabric(HexagonPrefabConfig hexagonPrefabConfig,
-            Layout layout)
+        public HexFabric(HexagonPrefabConfig hexagonPrefabConfig)
         {
             _hexagonPrefabConfig = hexagonPrefabConfig;
-            _layout = layout;
-
-            _hexRoot = new GameObject("HexRoot").transform;
-            _hexRoot.SetAsLastSibling();
-            _hexRoot.localPosition = Vector3.zero;
-            _hexRoot.localScale = Vector3.one;
         }
 
-        public HexObject CreateHexObject(HexModel hexModel)
+        public HexObject CreateHexObject(HexModel hexModel, Transform root, Vector3 position)
         {
             HexObject hexPrefab = GetHexObjectPrefabByName(hexModel.HexType);
-            HexObject hexInstance = Object.Instantiate(hexPrefab, _hexRoot);
+            HexObject hexInstance = Object.Instantiate(hexPrefab, root);
             hexInstance.SetHex(hexModel.Position);
-            hexInstance.transform.position = _layout.ToPlane((Hex3d)hexModel);
+            hexInstance.transform.position = position; //_layout.ToPlane((Hex3d)hexModel);
 
             if (hexModel.Data.TryGetValue(HexParamsNameConstants.HexRotationParam, out string rotation))
             {

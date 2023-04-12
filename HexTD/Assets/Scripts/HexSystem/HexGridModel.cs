@@ -6,13 +6,15 @@ namespace HexSystem
 {
 	public class HexGridModel
 	{
-		private readonly HexFabric _hexFabric;
+		private readonly EditorHexFabric _hexFabric;
+		private readonly Layout _layout;
 		private readonly List<HexModel> _hexModels;
 		private readonly IDictionary<HexModel, HexObject> _hexagons;
 
-		public HexGridModel(HexFabric hexFabric)
+		public HexGridModel(EditorHexFabric hexFabric, Layout layout)
 		{
 			_hexFabric = hexFabric;
+			_layout = layout;
 			_hexModels = new List<HexModel>();
 			_hexagons = new Dictionary<HexModel, HexObject>();
 		}
@@ -27,7 +29,8 @@ namespace HexSystem
 			var hexModel = new HexModel(hexPosition, 0, parameters);
 			_hexModels.Add(hexModel);
 
-			HexObject hexInstance = _hexFabric.CreateHexObject(hexModel);
+			Vector3 spawnPosition = _layout.ToPlane(hexPosition);
+			HexObject hexInstance = _hexFabric.CreateHexObject(hexModel, spawnPosition);
 			_hexagons.Add(hexModel, hexInstance);
 
 			return hexModel;
@@ -38,7 +41,8 @@ namespace HexSystem
 			var copiedHexModel = new HexModel(hexModel);
 			_hexModels.Add(copiedHexModel);
 
-			HexObject hexInstance = _hexFabric.CreateHexObject(copiedHexModel);
+			Vector3 spawnPosition = _layout.ToPlane(hexModel.Q, hexModel.R, hexModel.Height);
+			HexObject hexInstance = _hexFabric.CreateHexObject(copiedHexModel, spawnPosition);
 			_hexagons.Add(copiedHexModel, hexInstance);
 		}
 

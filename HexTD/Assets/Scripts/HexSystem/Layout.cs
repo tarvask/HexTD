@@ -5,7 +5,7 @@ namespace HexSystem
 	public struct Layout
 	{
 		public readonly Vector3 Size;
-		public readonly Vector3 Origin;
+		public readonly Vector3 Origin;	
 		public readonly bool IsOrientationFlat;
 		public readonly Orientation Orientation;
 

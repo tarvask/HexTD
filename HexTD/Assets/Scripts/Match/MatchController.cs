@@ -75,10 +75,7 @@ namespace Match
         private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
-        private readonly Layout _layout;
         private readonly HexFabric _hexFabric;
-        private readonly HexagonalFieldModel _hexagonalFieldModel;
-        private readonly HexMapReachableService _hexMapReachableService;
         private readonly FieldController _player1FieldController;
         private readonly FieldController _player2FieldController;
         private readonly FieldFactory _fieldFactory;
@@ -148,22 +145,12 @@ namespace Match
            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
             // fields
-            _layout = new Layout(_context.FieldConfig.HexSettingsConfig.HexSize,
-                Vector3.zero, _context.FieldConfig.HexSettingsConfig.IsFlat);
-
-            _hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig, _layout);
-            
-            _hexagonalFieldModel = new HexagonalFieldModel(_layout,
-                _context.MatchInitDataParameters.Hexes);
-
-            _hexMapReachableService = new HexMapReachableService(_hexagonalFieldModel);
+            _hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig);
             
             //TODO: click handle separate with field controller
             FieldController.Context enemyFieldContext = new FieldController.Context(
                 _context.MatchView.EnemyFieldRoot,
-                _hexagonalFieldModel.CurrentEnemyFieldHexes,
-                _hexagonalFieldModel,
-                _hexMapReachableService,
+                _hexFabric,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 false,
@@ -174,7 +161,6 @@ namespace Match
                 hasMobsOnEnemyField,
                 waveNumberChangedReactiveCommand,
                 waveEndedReactiveCommand,
-                artifactChoosingStartedReactiveCommand,
                 enemyCastleHealthChangedReactiveCommand,
                 enemyCastleDestroyedReactiveCommand,
                 enemyGoldenCoinsCountChangedReactiveCommand,
@@ -183,9 +169,7 @@ namespace Match
 
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
-                _hexagonalFieldModel.CurrentOurFieldHexes,
-                _hexagonalFieldModel,
-                _hexMapReachableService,
+                _hexFabric,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 true,
@@ -195,7 +179,6 @@ namespace Match
                 hasMobsOnOurField,
                 waveNumberChangedReactiveCommand,
                 waveEndedReactiveCommand,
-                artifactChoosingStartedReactiveCommand,
                 ourCastleHealthChangedReactiveCommand,
                 ourCastleDestroyedReactiveCommand,
                 ourGoldenCoinsCountChangedReactiveCommand,
@@ -255,10 +238,8 @@ namespace Match
             //    ourCastleDestroyedReactiveCommand);
             //_rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
 
-            CreateCells();
-            
             // input
-            HexInteractService hexInteractService = new HexInteractService(_layout, _context.MatchView.MainCamera);
+            HexInteractService hexInteractService = new HexInteractService(_context.MatchView.MainCamera);
             
             InputController.Context inputControllerContext = new InputController.Context(
                 hexInteractService, clickReactiveCommand);
@@ -288,7 +269,8 @@ namespace Match
         private void SyncState(MatchState matchState, int timeStamp)
         {
             _context.SyncFrameCounterReactiveCommand.Execute(timeStamp);
-            _hexagonalFieldModel.Reset();
+            _player1FieldController.Reset();
+            _player2FieldController.Reset();
 
             if (_context.OurGameRoleReactiveProperty.Value == ProcessRoles.Player1)
             {
@@ -317,14 +299,6 @@ namespace Match
         private void RollbackState(Unit unit)
         {
             SyncState(_stateSaver.GetLastSavedMatchState(), _context.CurrentEngineFrameReactiveProperty.Value);
-        }
-
-        private void CreateCells()
-        {
-            foreach (var fieldHex in _context.MatchInitDataParameters.Hexes)
-            {
-                _hexFabric.CreateHexObject(fieldHex.HexModel);
-            }
         }
 
         public void OuterLogicUpdate(float frameLength)

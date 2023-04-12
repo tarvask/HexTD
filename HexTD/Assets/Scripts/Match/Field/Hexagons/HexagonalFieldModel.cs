@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Configs;
 using HexSystem;
 using UnityEngine;
 
@@ -9,21 +10,18 @@ namespace Match.Field.Hexagons
         private readonly Layout _layout;
         private readonly IDictionary<int, FieldHex> _cachedLevelFieldHexes;
         
-       public FieldHexTypesController CurrentOurFieldHexes { get; }
-       public FieldHexTypesController CurrentEnemyFieldHexes { get; }
+       public FieldHexTypesController CurrentFieldHexTypes { get; }
 
         public int HexGridSize => _cachedLevelFieldHexes.Count;
 
         public HexModel this[int positionHash] => _cachedLevelFieldHexes[positionHash].HexModel;
         public bool IsHexInMap(int positionHash) => _cachedLevelFieldHexes.ContainsKey(positionHash);        
         
-        public FieldHexType GetOurHexTypeByPosition(Hex2d position) => CurrentOurFieldHexes[position.GetHashCode()];
-        public FieldHexType GetEnemyHexTypeByPosition(Hex2d position) => CurrentEnemyFieldHexes[position.GetHashCode()];
+        public FieldHexType GetHexTypeByPosition(Hex2d position) => CurrentFieldHexTypes[position.GetHashCode()];
 
-        public HexagonalFieldModel(Layout layout, FieldHex[] fieldHexes)
+        public HexagonalFieldModel(HexSettingsConfig hexSettingsConfig, Vector3 rootPosition, FieldHex[] fieldHexes)
         {
-            _layout = layout;
-            
+            _layout = new Layout(hexSettingsConfig.HexSize, rootPosition, hexSettingsConfig.IsFlat);
             _cachedLevelFieldHexes = new Dictionary<int, FieldHex>();
 
             foreach (var fieldHex in fieldHexes)
@@ -32,8 +30,7 @@ namespace Match.Field.Hexagons
                 _cachedLevelFieldHexes.Add(fieldHex.HexModel.GetHashCode(), cachedFieldHex);
             }
             
-            CurrentOurFieldHexes = new FieldHexTypesController(_cachedLevelFieldHexes);
-            CurrentEnemyFieldHexes = new FieldHexTypesController(_cachedLevelFieldHexes);
+            CurrentFieldHexTypes = new FieldHexTypesController(_cachedLevelFieldHexes);
         }
 
         public Vector3 GetPlanePosition(Hex2d hexPosition) => _layout.ToPlane(hexPosition);
@@ -60,7 +57,7 @@ namespace Match.Field.Hexagons
         {
             foreach (var fieldHexHashPair in _cachedLevelFieldHexes)
             {
-                CurrentOurFieldHexes.ForceSetHexType(fieldHexHashPair.Key, fieldHexHashPair.Value.HexType);
+                CurrentFieldHexTypes.ForceSetHexType(fieldHexHashPair.Key, fieldHexHashPair.Value.HexType);
             }
         }
     }

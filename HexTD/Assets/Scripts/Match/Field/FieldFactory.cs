@@ -15,6 +15,7 @@ namespace Match.Field
         public struct Context
         {
             public Transform FieldRoot { get; }
+            public HexFabric HexFabric { get; }
             public IHexPositionConversionService HexPositionConversionService { get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
@@ -24,6 +25,7 @@ namespace Match.Field
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
 
             public Context(Transform fieldRoot,
+                HexFabric hexFabric,
                 IHexPositionConversionService hexPositionConversionService,
                 int castleHealth, int towerRemovingDuration,
                 ReactiveCommand<int> attackCastleByMobReactiveCommand,
@@ -31,6 +33,7 @@ namespace Match.Field
                 ReactiveCommand<MobController> removeMobReactiveCommand)
             {
                 FieldRoot = fieldRoot;
+                HexFabric = hexFabric;
                 HexPositionConversionService = hexPositionConversionService;
 
                 CastleHealth = castleHealth;
@@ -222,6 +225,21 @@ namespace Match.Field
             projectileInstance.name = $"{projectileId}_bullet";
 
             return projectileInstance;
+        }
+
+        public void CreateCells(FieldHex[] hexes)
+        {
+            foreach (var fieldHex in hexes)
+            {
+                CreateHexTile(fieldHex.HexModel);
+            }
+        }
+
+        public void CreateHexTile(HexModel hexModel)
+        {
+            Vector3 spawnPosition = _context.HexPositionConversionService.GetWorldPosition(
+                (Hex3d)hexModel);
+            _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
         }
     }
 }
