@@ -6,6 +6,7 @@ using Tools;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 namespace Match
 {
@@ -31,6 +32,19 @@ namespace Match
 
         public IncomingCommandsProcessor IncomingCommandsProcessor => _incomingCommandsProcessor;
         public ReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; private set; }
+
+        private WindowSystem.IWindowsManager _newWindowsManager;
+        
+        [Inject]
+        public void Constructor(WindowSystem.IWindowsManager newWindowsManager)
+        {
+            _newWindowsManager = newWindowsManager;
+        }
+
+        private void Awake()
+        {
+            Application.targetFrameRate = 60;
+        }
 
         public void Init(MatchInitDataParameters matchShortParameters, IEventBus eventBus,
             IReadOnlyReactiveProperty<ProcessRoles> currentProcessGameRoleReactiveProperty,
@@ -62,7 +76,8 @@ namespace Match
                 CurrentEngineFrameReactiveProperty, quitMatchReactiveCommand, syncFrameCounterCommand,
                 currentProcessGameRoleReactiveProperty, currentProcessNetworkRoleReactiveProperty, isConnectedReactiveProperty,
                 _rollbackStateReactiveCommand,
-                onMatchEndAction, isMultiPlayerGame);
+                onMatchEndAction, isMultiPlayerGame,
+                _newWindowsManager);
             _matchController = new MatchController(matchControllerContext);
 
             OutgoingCommandsProcessor.Context outgoingCommandsProcessorContext = new OutgoingCommandsProcessor.Context(

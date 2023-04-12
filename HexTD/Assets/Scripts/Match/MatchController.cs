@@ -37,6 +37,7 @@ namespace Match
             public ReactiveCommand RollbackStateReactiveCommand { get; }
             public Action OnMatchEndAction { get; }
             public bool IsMultiPlayerGame { get; }
+            public WindowSystem.IWindowsManager NewWindowsManager { get; }
 
             public Context(MatchView matchView, 
                 MatchInitDataParameters matchInitDataParameters, 
@@ -50,7 +51,8 @@ namespace Match
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand rollbackStateReactiveCommand,
                 Action onMatchEndAction,
-                bool isMultiPlayerGame)
+                bool isMultiPlayerGame,
+                WindowSystem.IWindowsManager newWindowsManager)
             {
                 MatchView = matchView;
                 MatchInitDataParameters = matchInitDataParameters;
@@ -67,6 +69,7 @@ namespace Match
                 RollbackStateReactiveCommand = rollbackStateReactiveCommand;
                 OnMatchEndAction = onMatchEndAction;
                 IsMultiPlayerGame = isMultiPlayerGame;
+                NewWindowsManager = newWindowsManager;
             }
         }
 
@@ -141,7 +144,8 @@ namespace Match
                ourGoldenCoinsCountChangedReactiveCommand,
                ourGoldCoinsIncomeChangedReactiveCommand,
                ourCrystalsCountChangedReactiveCommand,
-               _context.QuitMatchReactiveCommand);
+               _context.QuitMatchReactiveCommand,
+               _context.NewWindowsManager);
            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
             // fields

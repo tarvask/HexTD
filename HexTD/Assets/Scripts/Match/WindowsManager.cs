@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using Match.Field.Castle;
 using Match.Field.Mob;
 using Match.Field.Tower;
@@ -7,6 +8,7 @@ using Match.Windows.Tower;
 using Services;
 using Tools;
 using Tools.Interfaces;
+using UI.MatchInfoWindow;
 using UniRx;
 using UnityEngine;
 
@@ -35,6 +37,7 @@ namespace Match
             public ReactiveCommand<int> OurGoldCoinsIncomeChangedReactiveCommand { get; }
             public ReactiveCommand<int> OurCrystalsCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand QuitMatchReactiveCommand { get; }
+            public WindowSystem.IWindowsManager NewWindowsManager { get; }
 
             public Context(MatchUiViewsCollection uiViews, Camera mainCamera, Canvas canvas,
                 ConfigsRetriever configsRetriever,
@@ -52,7 +55,8 @@ namespace Match
                 ReactiveCommand<int> ourGoldenCoinsCountChangedReactiveCommand,
                 ReactiveCommand<int> ourGoldCoinsIncomeChangedReactiveCommand,
                 ReactiveCommand<int> ourCrystalsCoinsCountChangedReactiveCommand,
-                ReactiveCommand quitMatchReactiveCommand)
+                ReactiveCommand quitMatchReactiveCommand,
+                WindowSystem.IWindowsManager newWindowsManager)
             {
                 UiViews = uiViews;
                 MainCamera = mainCamera;
@@ -73,6 +77,7 @@ namespace Match
                 OurGoldCoinsIncomeChangedReactiveCommand = ourGoldCoinsIncomeChangedReactiveCommand;
                 OurCrystalsCoinsCountChangedReactiveCommand = ourCrystalsCoinsCountChangedReactiveCommand;
                 QuitMatchReactiveCommand = quitMatchReactiveCommand;
+                NewWindowsManager = newWindowsManager;
             }
         }
 
@@ -80,6 +85,9 @@ namespace Match
 
         // hud
         private readonly MatchInfoPanelController _matchInfoPanelController;
+        private readonly UniTaskCompletionSource<MatchInfoWindowController> _matchInfoWindowController = 
+            new UniTaskCompletionSource<MatchInfoWindowController>();
+        
         // windows
         private readonly MatchStartInfoWindowController _matchStartInfoWindowController;
         private readonly WaveStartInfoWindowController _waveStartInfoWindowController;
@@ -173,7 +181,15 @@ namespace Match
                 _matchStartInfoWindowController.ShowWindow(showDuration));
             _context.WaveStartedReactiveCommand.Subscribe((showDuration) =>
                 _waveStartInfoWindowController.ShowWindow(showDuration));
+
+            InitAsync();
         }
+
+        private async void InitAsync()
+        {
+//            var matchInfoWindowController = await _context.NewWindowsManager.OpenAsync<MatchInfoWindowController>();
+//            _matchInfoWindowController.TrySetResult(matchInfoWindowController);
+        } 
 
         public void OuterLogicUpdate(float frameLength)
         {
