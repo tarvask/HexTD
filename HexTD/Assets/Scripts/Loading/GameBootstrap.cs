@@ -32,7 +32,8 @@ namespace Loading
 			loading.ChangeLoadingWeight(1);
 			await _gameLoadingService.LoadGame(loading);
 
-			await _windowsManager.CloseAsync(loadingController);
+			await loadingController.WaitWhileProgressbarAnimationFinished();
+			await loadingController.CloseWindowAsync();
 		}
 
 		private class LoadingCalculator : IProgress<float>

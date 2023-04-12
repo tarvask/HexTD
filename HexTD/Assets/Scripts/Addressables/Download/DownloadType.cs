@@ -1,8 +1,8 @@
 namespace Addressables.Download
 {
-    public enum DownloadType
-    {
-        Sequential = 0,
-        Parallel = 1
-    }
+	public enum DownloadType
+	{
+		Sequential = 0,
+		Parallel = 1
+	}
 }

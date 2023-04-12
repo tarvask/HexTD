@@ -2,26 +2,30 @@
 using Cysharp.Threading.Tasks;
 using WindowSystem.Controller;
 using Extensions;
-using MatchStarter;
+using Game;
 using UniRx;
 
 namespace UI.MainMenuWindow
 {
 	public class MainMenuWindowController : LoadableWindowController<MainMenuWindowView>
 	{
-		private readonly IMatchStarterLoader _matchStarterLoader;
+		private readonly GameController _gameController;
 
 		public MainMenuWindowController(
-			IMatchStarterLoader matchStarterLoader
+			GameController gameController
 		)
 		{
-			_matchStarterLoader = matchStarterLoader;
+			_gameController = gameController;
 		}
 
 		protected override void DoInitialize()
 		{
-			View.BattleRunClick
-				.Subscribe(BattleRun)
+			View.SinglePlayerBattleRunClick
+				.Subscribe(RunSinglePlayerBattle)
+				.AddTo(View);
+
+			View.MultiPlayerBattleRunClick
+				.Subscribe(RunMultiPlayerBattle)
 				.AddTo(View);
 		}
 
@@ -36,11 +40,18 @@ namespace UI.MainMenuWindow
 			View.TestShowLoaded();
 		}
 
-		private async void BattleRun()
+		private void RunSinglePlayerBattle()
 		{
 			WindowsManager.CloseAsync(this).Forget();
 
-			await _matchStarterLoader.LoadAsync();
+			_gameController.RunBattle(false);
+		}
+
+		private void RunMultiPlayerBattle()
+		{
+			WindowsManager.CloseAsync(this).Forget();
+
+			_gameController.RunBattle(true);
 		}
 	}
 }

@@ -6,67 +6,67 @@ using WindowSystem;
 
 namespace MatchStarter
 {
-    public class MatchStarterLoadingWindowDecorator : IMatchStarterLoader, IDisposable
-    {
-        private readonly IMatchStarterLoader _locationLoader;
-        private readonly IWindowsManager _windowsManager;
-        private readonly Subject<Unit> _locationLoaded = new Subject<Unit>();
-        private readonly CompositeDisposable _compositeDisposable = new CompositeDisposable();
+	public class MatchStarterLoadingWindowDecorator : IMatchStarterLoader, IDisposable
+	{
+		private readonly IMatchStarterLoader _locationLoader;
+		private readonly IWindowsManager _windowsManager;
+		private readonly Subject<Unit> _locationLoaded = new Subject<Unit>();
+		private readonly CompositeDisposable _compositeDisposable = new CompositeDisposable();
 
-        private bool _isLoading;
+		private bool _isLoading;
 
-        public MatchStarterLoadingWindowDecorator(
-            IMatchStarterLoader locationLoader,
-            IWindowsManager windowsManager)
-        {
-            _locationLoader = locationLoader;
-            _windowsManager = windowsManager;
+		public MatchStarterLoadingWindowDecorator(
+			IMatchStarterLoader locationLoader,
+			IWindowsManager windowsManager)
+		{
+			_locationLoader = locationLoader;
+			_windowsManager = windowsManager;
 
-            locationLoader.LocationLoaded
-                .Subscribe(value => _locationLoaded.OnNext(value))
-                .AddTo(_compositeDisposable);
-        }
+			locationLoader.LocationLoaded
+				.Subscribe(value => _locationLoaded.OnNext(value))
+				.AddTo(_compositeDisposable);
+		}
 
-        public bool IsLoading => _locationLoader.IsLoading || _isLoading;
-        
-        public IObservable<Unit> LocationLoaded => _locationLoaded;
+		public bool IsLoading => _locationLoader.IsLoading || _isLoading;
 
-        public async UniTask<MatchStarter> LoadAsync(bool autoComplete = true)
-        {
-            _isLoading = true;
-            var loadingController = await _windowsManager.OpenSingleAsync<LoadingWindowController>();
-            loadingController.SetActiveLoading(true);
-            loadingController.SetProgress(0.5f);
-            
-            var res=await _locationLoader.LoadAsync();
-            
-            loadingController.SetProgress(1f);
+		public IObservable<Unit> LocationLoaded => _locationLoaded;
 
-            if (autoComplete)
-                await CompleteLoading(loadingController);
+		public async UniTask<MatchStarter> LoadAsync(bool autoComplete = true)
+		{
+			_isLoading = true;
+			var loadingController = await _windowsManager.OpenSingleAsync<LoadingWindowController>();
+			loadingController.SetActiveLoading(true);
+			loadingController.SetProgress(0.5f);
 
-            return res;
-        }
+			var matchStarter = await _locationLoader.LoadAsync();
 
-        public void DestroyAndRelease()
-        {
-            _locationLoader.DestroyAndRelease();
-        }
+			loadingController.SetProgress(1f);
 
-        private async UniTask CompleteLoading(LoadingWindowController loadingController)
-        {
-            await UniTask.WaitWhile(() => loadingController.InProgress);
-            
-            _locationLoaded.OnNext(Unit.Default);
-            
-            await _windowsManager.CloseAsync(loadingController);
-            
-            _isLoading = false;
-        }
+			if (autoComplete)
+				await CompleteLoading(loadingController);
 
-        void IDisposable.Dispose()
-        {
-            _compositeDisposable.Dispose();
-        }
-    }
+			return matchStarter;
+		}
+
+		public void DestroyAndRelease()
+		{
+			_locationLoader.DestroyAndRelease();
+		}
+
+		private async UniTask CompleteLoading(LoadingWindowController loadingController)
+		{
+			await loadingController.WaitWhileProgressbarAnimationFinished();
+
+			_locationLoaded.OnNext(Unit.Default);
+
+			await loadingController.CloseWindowAsync();
+
+			_isLoading = false;
+		}
+
+		void IDisposable.Dispose()
+		{
+			_compositeDisposable.Dispose();
+		}
+	}
 }

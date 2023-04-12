@@ -4,19 +4,19 @@ using Zenject;
 
 namespace Addressables
 {
-    public class AddressableAutoPreloader : MonoBehaviour
-    {
-        private AddressableAssetPreloader preloader;
+	public class AddressableAutoPreloader : MonoBehaviour
+	{
+		private AddressableAssetPreloader preloader;
 
-        [Inject]
-        private void Construct(AddressableAssetPreloader preloader)
-        {
-            this.preloader = preloader;
-        }
+		[Inject]
+		private void Construct(AddressableAssetPreloader preloader)
+		{
+			this.preloader = preloader;
+		}
 
-        private void Start()
-        {
-            preloader.PreloadAssetsAsync().Forget();
-        }
-    }
+		private void Start()
+		{
+			preloader.PreloadAssetsAsync().Forget();
+		}
+	}
 }
