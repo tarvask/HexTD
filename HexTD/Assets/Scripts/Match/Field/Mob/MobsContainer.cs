@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using HexSystem;
 using Match.Field.Hexagons;
 
 namespace Match.Field.Mob
@@ -19,14 +20,30 @@ namespace Match.Field.Mob
             _mobsByPosition = new Dictionary<int, List<MobController>>();
         }
 
+        public void UpdateMobsLogicMoving(float frameLength)
+        {
+            foreach (KeyValuePair<int, MobController> mobPair in _mobs)
+            {
+                mobPair.Value.LogicMove(frameLength);
+            }
+        }
+
         public void AddMob(MobController mobController)
         {
             _mobs.Add(mobController.Id, mobController);
-            AddMobByPosition(mobController.HexPosition.GetHashCode(), mobController);
+            mobController.SubscribeOnHexPositionChange(HandleMobHexPositionUpdate);
+            AddMobByPosition(mobController);
         }
 
-        private void AddMobByPosition(int positionHash, MobController mobController)
+        private void HandleMobHexPositionUpdate(MobController mobController, Hex2d oldPosition)
         {
+            _mobsByPosition[oldPosition.GetHashCode()].Remove(mobController);
+            AddMobByPosition(mobController);
+        }
+
+        private void AddMobByPosition(MobController mobController)
+        {
+            int positionHash = mobController.HexPosition.GetHashCode();
             if (_mobsByPosition.ContainsKey(positionHash))
             {
                 _mobsByPosition[positionHash].Add(mobController);
@@ -43,17 +60,6 @@ namespace Match.Field.Mob
         {
             _mobs.Remove(mobController.Id);
             _mobsByPosition.Remove(mobController.HexPosition.GetHashCode());
-        }
-
-        private void UpdateMobsLogicMoving(float frameLength)
-        {
-            foreach (KeyValuePair<int, MobController> mobPair in _mobs)
-            {
-                _mobsByPosition[mobPair.Value.GetHashCode()].Remove(mobPair.Value);
-                mobPair.Value.LogicMove(frameLength);
-                mobPair.Value.UpdateHexPosition(_hexPositionConversionService);
-                AddMobByPosition(mobPair.Value.HexPosition.GetHashCode(), mobPair.Value);
-            }
         }
 
         public void Clear()

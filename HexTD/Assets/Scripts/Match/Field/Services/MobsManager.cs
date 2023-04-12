@@ -59,7 +59,7 @@ namespace Match.Field.Services
             UpdateMobsHealth(frameLength);
             UpdateMobsLogicMoving(frameLength);
             //UpdateMobsAttacking(frameLength);
-            UpdateMobsEscaping(frameLength);
+            //UpdateMobsEscaping(frameLength);
         }
         
         public void OuterViewUpdate(float frameLength)
@@ -83,6 +83,7 @@ namespace Match.Field.Services
             foreach (MobController dyingMob in _dyingMobs)
             {
                 _deadBodies.Add(dyingMob.Id, dyingMob);
+                _mobsContainer.RemoveMob(dyingMob);
                 dyingMob.Die();
             }
 
@@ -106,10 +107,7 @@ namespace Match.Field.Services
 
         private void UpdateMobsLogicMoving(float frameLength)
         {
-            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
-            {
-                mobPair.Value.LogicMove(frameLength);
-            }
+            _mobsContainer.UpdateMobsLogicMoving(frameLength);
         }
         
         private void UpdateMobsVisualMoving(float frameLength)

@@ -10,6 +10,7 @@ using Match.Field.State;
 using Match.Field.Tower;
 using Match.State;
 using Match.Wave;
+using PathSystem;
 using Services;
 using Tools;
 using Tools.Interfaces;
@@ -75,7 +76,6 @@ namespace Match
         private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
-        private readonly HexFabric _hexFabric;
         private readonly FieldController _player1FieldController;
         private readonly FieldController _player2FieldController;
         private readonly FieldFactory _fieldFactory;
@@ -144,13 +144,15 @@ namespace Match
                _context.QuitMatchReactiveCommand);
            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
-            // fields
-            _hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig);
-            
-            //TODO: click handle separate with field controller
-            FieldController.Context enemyFieldContext = new FieldController.Context(
+           // fields
+           var hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig);
+           var pathContainer = new PathContainer(_context.MatchInitDataParameters.Paths);
+
+           //TODO: click handle separate with field controller
+           FieldController.Context enemyFieldContext = new FieldController.Context(
                 _context.MatchView.EnemyFieldRoot,
-                _hexFabric,
+                hexFabric,
+                pathContainer,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 false,
@@ -169,7 +171,8 @@ namespace Match
 
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
-                _hexFabric,
+                hexFabric,
+                pathContainer,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 true,

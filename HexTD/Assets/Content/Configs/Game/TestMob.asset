@@ -18,12 +18,11 @@ MonoBehaviour:
     typeId: 1
     powerType: 1
     healthPoints: 10
-    speed: 1
+    speed: 0.1
     attackPower: 1
     reloadTime: 1
     hasRangeDamage: 0
     attackRangeRadius: 0
+    pathName: TestPath
     rewardInSilver: 0
     priceInSilver: 0
-    incomeInSilver: 0
-    crystalDropChance: 0

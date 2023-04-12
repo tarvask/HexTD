@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Configs;
 using HexSystem;
 using UnityEngine;
 
 namespace Match.Field.Hexagons
 {
-    public class HexagonalFieldModel : IHexPositionConversionService
+    public class HexagonalFieldModel : IHexPositionConversionService, IEnumerable<KeyValuePair<int, FieldHex>>
     {
         private readonly Layout _layout;
         private readonly IDictionary<int, FieldHex> _cachedLevelFieldHexes;
@@ -27,7 +28,8 @@ namespace Match.Field.Hexagons
             foreach (var fieldHex in fieldHexes)
             {
                 FieldHex cachedFieldHex = new FieldHex(fieldHex.HexModel, fieldHex.HexType);
-                _cachedLevelFieldHexes.Add(fieldHex.HexModel.GetHashCode(), cachedFieldHex);
+                int hashKey = fieldHex.HexModel.GetHashCode();
+                _cachedLevelFieldHexes.Add(hashKey, cachedFieldHex);
             }
             
             CurrentFieldHexTypes = new FieldHexTypesController(_cachedLevelFieldHexes);
@@ -53,12 +55,27 @@ namespace Match.Field.Hexagons
             return (Hex2d)_layout.ToHex(position).RoundToHex();
         }
 
+        public bool IsCloseToNewHex(float distanceToHex)
+        {
+            return distanceToHex < _layout.Size.y && distanceToHex < _layout.Size.x;
+        }
+
         public void Reset()
         {
             foreach (var fieldHexHashPair in _cachedLevelFieldHexes)
             {
                 CurrentFieldHexTypes.ForceSetHexType(fieldHexHashPair.Key, fieldHexHashPair.Value.HexType);
             }
+        }
+
+        public IEnumerator<KeyValuePair<int, FieldHex>> GetEnumerator()
+        {
+            return _cachedLevelFieldHexes.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

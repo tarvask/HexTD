@@ -96,6 +96,11 @@ namespace PathSystem
                 Reset();
         }
 
+        public void SetName(string name)
+        {
+            Name = name;
+        }
+
         public IDisposable SubscribeOnPointsChange(Action<IEnumerable<Hex2d>> onPointsChange)
         {
             return _onPointsChangeReactiveCommand.Subscribe(onPointsChange);

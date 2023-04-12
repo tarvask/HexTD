@@ -56,7 +56,8 @@ namespace HexSystem
 
 		public override int GetHashCode()
 		{
-			return Q << 16 | R;
+			byte sign = Q > 0 ? (byte)1 : (byte)2;
+			return (sign << 24) + (Q << 16) + R;
 		}
 
 		public static explicit operator Hex2d(Hex3d x) => new Hex2d(x.Q, x.R);

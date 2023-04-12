@@ -12,7 +12,7 @@ namespace UI.PathEditorPanel
         private readonly PathEditorController _pathEditorController;
         private readonly UiElementListPool<PointEditorPanelView> _pointEditorPanelViews;
 
-        private readonly string _name;
+        private string _name;
         private readonly Action<string> _onPathRemove;
 
         public PathEditInfoView PathEditInfoView => _pathEditInfoView;
@@ -35,7 +35,7 @@ namespace UI.PathEditorPanel
             
             _pathEditInfoView.NameFieldText.onValueChanged.RemoveAllListeners();
             _pathEditInfoView.NameFieldText.onValueChanged
-                .AddListener(_pathEditorController.SetEditingName);
+                .AddListener(ChangePathDataName);
             _pathEditInfoView.NameFieldText.text = _name;
             
             _pathEditInfoView.SelectPathButton.onClick.RemoveAllListeners();
@@ -56,6 +56,12 @@ namespace UI.PathEditorPanel
         private void SetCurrentEditing()
         {
             _pathEditorController.SetEditingName(_name);
+        }
+
+        private void ChangePathDataName(string newPathName)
+        {
+            _pathEditorController.ChangeName(_name, newPathName);
+            _name = newPathName;
         }
 
         private void UpdatePointsList(IEnumerable<Hex2d> points)

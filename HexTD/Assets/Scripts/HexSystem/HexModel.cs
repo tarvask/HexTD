@@ -7,7 +7,7 @@ namespace HexSystem
 {
     public class HexModel
     {
-        [JsonProperty("Position")] public Hex2d Position;
+        [JsonProperty("Position")] public readonly Hex2d Position;
         [JsonProperty("Height")] public int Height;
         [JsonProperty("Data")] public Dictionary<string, string> Data;
 
