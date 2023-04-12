@@ -22,9 +22,7 @@ namespace Match.Field
         public struct Context
         {
             public Transform FieldRoot { get; }
-            public FieldHexTypesController FieldHexTypesController { get; }
-            public IHexPositionConversionService HexPositionConversionService { get; }
-            public HexMapReachableService HexMapReachableService { get; }
+            public HexFabric HexFabric { get; }
             public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
@@ -38,7 +36,6 @@ namespace Match.Field
             public ReactiveProperty<bool> HasMobsOnField { get; }
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
             public ReactiveCommand WaveEndedReactiveCommand { get; }
-            public ReactiveCommand<float> ArtifactChoosingStartedReactiveCommand { get; }
             public ReactiveCommand<HealthInfo> CastleHealthChangedReactiveCommand { get; }
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
             public ReactiveCommand<int> GoldenCoinsCountChangedReactiveCommand { get; }
@@ -47,9 +44,7 @@ namespace Match.Field
 
             public Context(
                 Transform fieldRoot,
-                FieldHexTypesController fieldHexTypesController,
-                IHexPositionConversionService hexPositionConversionService,
-                HexMapReachableService hexMapReachableService,
+                HexFabric hexFabric,
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
 
@@ -63,7 +58,6 @@ namespace Match.Field
                 ReactiveProperty<bool> hasMobsOnField,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
                 ReactiveCommand waveEndedReactiveCommand,
-                ReactiveCommand<float> artifactChoosingStartedReactiveCommand,
                 ReactiveCommand<HealthInfo> castleHealthChangedReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<int> goldenCoinsCountChangedReactiveCommand,
@@ -71,9 +65,7 @@ namespace Match.Field
                 ReactiveCommand<int> crystalsCountChangedReactiveCommand)
             {
                 FieldRoot = fieldRoot;
-                FieldHexTypesController = fieldHexTypesController;
-                HexPositionConversionService = hexPositionConversionService;
-                HexMapReachableService = hexMapReachableService;
+                HexFabric = hexFabric;
                 
                 MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
@@ -89,7 +81,6 @@ namespace Match.Field
                 HasMobsOnField = hasMobsOnField;
                 WaveNumberChangedReactiveCommand = waveNumberChangedReactiveCommand;
                 WaveEndedReactiveCommand = waveEndedReactiveCommand;
-                ArtifactChoosingStartedReactiveCommand = artifactChoosingStartedReactiveCommand;
                 CastleHealthChangedReactiveCommand = castleHealthChangedReactiveCommand;
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
                 GoldenCoinsCountChangedReactiveCommand = goldenCoinsCountChangedReactiveCommand;
@@ -102,6 +93,8 @@ namespace Match.Field
 
         private readonly FieldFactory _factory;
         private readonly FieldModel _model;
+        private readonly HexagonalFieldModel _hexagonalFieldModel;
+        private readonly HexMapReachableService _hexMapReachableService;
 
         private readonly FieldMobSpawner _fieldMobSpawner;
         private readonly MobsManager _mobsManager;
@@ -124,24 +117,30 @@ namespace Match.Field
             ReactiveCommand<MobController> removeMobReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<MobController> mobSpawnedReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<int> crystalCollectedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
+
+            _hexagonalFieldModel = new HexagonalFieldModel(_context.FieldConfig.HexSettingsConfig,
+                _context.FieldRoot.position, _context.MatchInitDataParameters.Hexes);
+            _hexMapReachableService = new HexMapReachableService(_hexagonalFieldModel);
             
-            TowersManager towersManager = new TowersManager(_context.FieldHexTypesController.HexGridSize);
+            TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
             
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
-                _context.HexPositionConversionService,
-                _context.FieldConfig.CastleHealth, _context.FieldConfig.TowerRemovingDuration,
+                _context.HexFabric,
+                _hexagonalFieldModel,
+                _context.FieldConfig.CastleHealth, 
+                _context.FieldConfig.TowerRemovingDuration,
                 castleAttackedByMobReactiveCommand,
                 _context.CastleDestroyedReactiveCommand,
                 removeMobReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
-            MobsManager.Context mobMoverContext = new MobsManager.Context(_context.HexPositionConversionService, 
+            MobsManager.Context mobMoverContext = new MobsManager.Context(_hexagonalFieldModel, 
                 castleAttackedByMobReactiveCommand);
             _mobsManager = AddDisposable(new MobsManager(mobMoverContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
-                _context.FieldHexTypesController,
+                _hexagonalFieldModel.CurrentFieldHexTypes,
                 towersManager,
                 _mobsManager,
                 _factory,
@@ -169,7 +168,7 @@ namespace Match.Field
             
             // shooting
             ShootingController.Context shootingControllerContext = new ShootingController.Context(_model, 
-                _context.HexMapReachableService,_factory);
+                _hexMapReachableService, _factory);
             _shootingController = AddDisposable(new ShootingController(shootingControllerContext));
             
             // currency
@@ -205,6 +204,8 @@ namespace Match.Field
                 _context.GoldenCoinsIncomeChangedReactiveCommand.Execute(newValue));
             _currencyController.CrystalsCountReactiveProperty.Subscribe((newValue) =>
                 _context.CrystalsCountChangedReactiveCommand.Execute(newValue));
+            
+            _factory.CreateCells(_context.MatchInitDataParameters.Hexes);
         }
         
         public void OuterLogicUpdate(float frameLength)
@@ -236,6 +237,11 @@ namespace Match.Field
         public PlayerState GetPlayerState()
         {
             return _stateLoader.SaveState();
+        }
+
+        public void Reset()
+        {
+            _hexagonalFieldModel.Reset();
         }
     }
 }

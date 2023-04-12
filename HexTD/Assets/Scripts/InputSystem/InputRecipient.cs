@@ -8,23 +8,23 @@ namespace InputSystem
     {
         private readonly EditorCameraMovementService _editorCameraMovementService;
         private readonly EditorPointerInputHandler _editorPointerInputHandler;
-        private readonly HexInteractService _hexInteractService;
+        private readonly EditorHexInteractService _editorHexInteractService;
         private readonly LevelEditorSaveController _levelEditorSaveController;
 
         public InputRecipient(EditorCameraMovementService editorCameraMovementService,
             EditorPointerInputHandler editorPointerInputHandler,
-            HexInteractService hexInteractService,
+            EditorHexInteractService editorHexInteractService,
             LevelEditorSaveController levelEditorSaveController)
         {
             _editorCameraMovementService = editorCameraMovementService;
             _editorPointerInputHandler = editorPointerInputHandler;
-            _hexInteractService = hexInteractService;
+            _editorHexInteractService = editorHexInteractService;
             _levelEditorSaveController = levelEditorSaveController;
         }
 
         public void ApplyInput(float frameLength)
         {
-            bool isHit = _hexInteractService.TryGetHexUnderPointer(out var hitPoint);
+            bool isHit = _editorHexInteractService.TryGetHexUnderPointer(out var hitPoint);
             
             _editorCameraMovementService.ProcessPossibleCameraMovementInput(frameLength);
             _editorPointerInputHandler.KeyboardInputHandle(hitPoint);
