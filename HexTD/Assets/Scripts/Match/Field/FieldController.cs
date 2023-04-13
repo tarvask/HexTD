@@ -24,7 +24,6 @@ namespace Match.Field
         {
             public Transform FieldRoot { get; }
             public HexFabric HexFabric { get; }
-            public PathContainer PathContainer { get; }
             public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
@@ -47,7 +46,6 @@ namespace Match.Field
             public Context(
                 Transform fieldRoot,
                 HexFabric hexFabric,
-                PathContainer pathContainer,
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
 
@@ -69,7 +67,6 @@ namespace Match.Field
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
-                PathContainer = pathContainer;
                 
                 MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
@@ -99,7 +96,9 @@ namespace Match.Field
         private readonly FieldModel _model;
         private readonly HexagonalFieldModel _hexagonalFieldModel;
         private readonly HexMapReachableService _hexMapReachableService;
-
+        private readonly HexPathFindingService _pathFindingService;
+        private readonly PathContainer _pathContainer;
+        
         private readonly FieldMobSpawner _fieldMobSpawner;
         private readonly MobsManager _mobsManager;
         private readonly FieldClicksHandler _clicksHandler;
@@ -126,12 +125,15 @@ namespace Match.Field
                 _context.FieldRoot.position, _context.MatchInitDataParameters.Hexes);
             _hexMapReachableService = new HexMapReachableService(_hexagonalFieldModel);
             
-            TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
+            _pathFindingService = new HexPathFindingService(_hexagonalFieldModel);
+            _pathContainer = new PathContainer(_pathFindingService, _context.MatchInitDataParameters.Paths);
             
+            TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
+
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
                 _context.HexFabric,
-                _context.PathContainer,
+                _pathContainer,
                 _hexagonalFieldModel,
                 _context.FieldConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,

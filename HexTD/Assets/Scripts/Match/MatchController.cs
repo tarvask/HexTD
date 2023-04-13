@@ -146,13 +146,11 @@ namespace Match
 
            // fields
            var hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig);
-           var pathContainer = new PathContainer(_context.MatchInitDataParameters.Paths);
 
            //TODO: click handle separate with field controller
            FieldController.Context enemyFieldContext = new FieldController.Context(
                 _context.MatchView.EnemyFieldRoot,
                 hexFabric,
-                pathContainer,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 false,
@@ -172,7 +170,6 @@ namespace Match
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
                 hexFabric,
-                pathContainer,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 true,

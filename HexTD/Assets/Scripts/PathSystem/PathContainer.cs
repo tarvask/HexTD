@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Match.Field.Hexagons;
 
 namespace PathSystem
 {
@@ -8,11 +9,11 @@ namespace PathSystem
         {
         }
         
-        public PathContainer(PathData.SavePathData[] savePaths)
+        public PathContainer(HexPathFindingService hexPathFindingService, PathData.SavePathData[] savePaths)
         {
             foreach (var pathData in savePaths)
             {
-                var path = new PathData(pathData.Name, pathData.Points);
+                var path = new PathData(hexPathFindingService, pathData.Name, pathData.Points);
                 Paths.Add(pathData.Name, path);
             }
         }
