@@ -42,6 +42,7 @@ namespace Match.Field.Services
             _dyingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _deadBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _carrionBodies = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            _escapingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }
 
         public void AddMob(MobController mobController)
@@ -59,7 +60,7 @@ namespace Match.Field.Services
             UpdateMobsHealth(frameLength);
             UpdateMobsLogicMoving(frameLength);
             //UpdateMobsAttacking(frameLength);
-            //UpdateMobsEscaping(frameLength);
+            UpdateMobsEscaping(frameLength);
         }
         
         public void OuterViewUpdate(float frameLength)

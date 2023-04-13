@@ -31,9 +31,33 @@ MonoBehaviour:
       m_EditorAssetChanged: 0
   - view: {fileID: 3435722356234738565, guid: cca46b3ecb7dd6449b0e02ec76751e7c, type: 3}
     viewType: UI.MainMenuWindow.MainMenuWindowView
-    cacheInMemory: 1
+    cacheInMemory: 0
     assetReference:
       m_AssetGUID: cca46b3ecb7dd6449b0e02ec76751e7c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: 2278656306954119539, guid: a2187dfb2231ecc419d8b1fc049aa79d, type: 3}
+    viewType: UI.MatchInfoWindow.MatchInfoWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: a2187dfb2231ecc419d8b1fc049aa79d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: -5057779422424376216, guid: 6fd79d64bc1c55945b48ded9fd37b567, type: 3}
+    viewType: UI.MatchInfoRoundStartInfo.MatchRoundStartInfoWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 6fd79d64bc1c55945b48ded9fd37b567
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: -8269177190953268091, guid: 4271ee78b16f931488ee676ce102de24, type: 3}
+    viewType: UI.OverlayWindow.EnemyFieldViewWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 4271ee78b16f931488ee676ce102de24
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0

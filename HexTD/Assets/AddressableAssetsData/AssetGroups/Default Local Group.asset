@@ -37,6 +37,18 @@ MonoBehaviour:
     - match_loading
     - match_loader
     - match_starter
+  - m_GUID: 4271ee78b16f931488ee676ce102de24
+    m_Address: Assets/Prefabs/UI/Windows/EnemyFieldViewWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: a2187dfb2231ecc419d8b1fc049aa79d
+    m_Address: Assets/Prefabs/UI/Windows/MatchInfoWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 6fd79d64bc1c55945b48ded9fd37b567
+    m_Address: Assets/Prefabs/UI/Windows/MatchRoundStartInfoWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3ec02984d4bb4544aa626424941dabb8, type: 2}
   m_SchemaSet:

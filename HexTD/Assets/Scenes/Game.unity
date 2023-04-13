@@ -314,7 +314,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dca02afaedd4b118bf07beb8c8a886c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMultiplayer: 0
 --- !u!4 &734268838
 Transform:
   m_ObjectHideFlags: 0
@@ -449,9 +448,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   loadingSteps:
   - {fileID: 11400000, guid: bb012c2a718384604bba618fffb50d27, type: 2}
-  - {fileID: 11400000, guid: 6e9c8005543383c4095c2afca0f90019, type: 2}
   - {fileID: 11400000, guid: 2f6b91c608e0a7544904e8fb0531ec58, type: 2}
-  - {fileID: 11400000, guid: 6e9c8005543383c4095c2afca0f90019, type: 2}
 --- !u!4 &2049168502
 Transform:
   m_ObjectHideFlags: 0

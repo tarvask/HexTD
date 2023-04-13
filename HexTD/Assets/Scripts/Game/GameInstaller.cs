@@ -1,4 +1,6 @@
 ﻿using Match;
+using Match.Installers;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
@@ -17,6 +19,11 @@ namespace Game
 				.Bind(typeof(GameController))
 				.To<GameController>()
 				.AsSingle();
+			
+			//todo #985621
+			Container.Bind(typeof(IMessageBroker), typeof(IMessagePublisher), typeof(IMessageReceiver))
+				.FromInstance(MessageBroker.Default);
+//			Container.Bind<IMessageReceiver>().FromSubContainerResolve().ByInstaller<MatchInstaller>();
 		}
 	}
 }

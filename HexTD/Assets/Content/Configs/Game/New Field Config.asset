@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 180d3828ff9324840932e97f70a9424f, type: 3}
   m_Name: New Field Config
   m_EditorClassIdentifier: 
-  castleHealth: 100
+  castleHealth: 10
   maxOverlappingWaves: 2
   towerRemovingDuration: 1
   matchInfoShowDuration: 1
