@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace PathSystem
 {
@@ -10,7 +8,12 @@ namespace PathSystem
         protected readonly Dictionary<string, T> Paths;
 
         public T this[string name] => Paths[name];
-        
+
+        protected PathsContainer()
+        {
+            Paths = new Dictionary<string, T>();
+        }
+
         public PathsContainer(List<T> paths)
         {
             Paths = new Dictionary<string, T>();
@@ -25,17 +28,6 @@ namespace PathSystem
             return Paths.TryGetValue(name, out pathData);
         }
 
-        public List<PathData.SavePathData> GetPaths()
-        {
-            var savePathDatas = new List<PathData.SavePathData>();
-            foreach (var path in Paths.Values)
-            {
-                savePathDatas.Add(path.GetSavePathData());
-            }
-            
-            return savePathDatas;
-        }
-
         public IEnumerator<T> GetEnumerator()
         {
             return Paths.Values.GetEnumerator();
@@ -44,52 +36,6 @@ namespace PathSystem
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
-        }
-    }
-
-    public class PathContainer : PathsContainer<PathData>
-    {
-        public PathContainer(List<PathData> paths) : base(paths)
-        {
-        }
-    }
-
-    public class EditorPathContainer : PathsContainer<PathEditorData>
-    {
-        public EditorPathContainer(List<PathEditorData> paths) : base(paths)
-        {
-        }
-
-        public bool TryAddPath(string name)
-        {
-            var path = new PathEditorData(name);
-            return Paths.TryAdd(name, path);
-        }
-
-        public void AddPath(PathData.SavePathData pathData)
-        {
-            var pathEditor = new PathEditorData(pathData);
-            Paths.Add(pathData.Name, pathEditor);
-        }
-
-        public void Clear()
-        {
-            Paths.Clear();
-        }
-
-        public bool TryRemove(string name)
-        {
-            bool result = Paths.Remove(name, out var pathEditorData);
-            pathEditorData.Dispose();
-            return result;
-        }
-
-        public string GetLastName()
-        {
-            if(Paths.Keys.Count < 1)
-                return String.Empty;
-            
-            return Paths.Keys.Last();
         }
     }
 }

@@ -51,8 +51,8 @@ MonoBehaviour:
     level: 1
     attackPower: 1
     reloadTime: 1
-    attackRadius: 1
-    projectileSpeed: 1
+    attackRadiusInHexCount: 2
+    projectileSpeed: 10
     price: 1
     buildingTime: 1
 --- !u!114 &1568221066824527524
@@ -72,6 +72,7 @@ MonoBehaviour:
     towerName: TestTower
     raceType: 2
     epicDegree: 1
+    reachableAttackTargetFinderType: 0
     targetFindingTacticType: 1
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0

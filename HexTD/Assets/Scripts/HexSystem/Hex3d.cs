@@ -70,7 +70,8 @@ namespace HexSystem
 
 		public override int GetHashCode()
 		{
-			return Q << 16 | R;
+			byte sign = Q > 0 ? (byte)1 : (byte)2;
+			return (sign << 24) + (Q << 16) + R;
 		}
 
 		public override string ToString() => $"Hex({Q},{R},{S},{H})";

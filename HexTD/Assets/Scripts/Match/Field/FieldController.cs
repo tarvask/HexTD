@@ -9,6 +9,7 @@ using Match.Field.Services;
 using Match.Field.Shooting;
 using Match.Field.State;
 using Match.Field.Tower;
+using PathSystem;
 using Services;
 using Tools;
 using Tools.Interfaces;
@@ -23,6 +24,7 @@ namespace Match.Field
         {
             public Transform FieldRoot { get; }
             public HexFabric HexFabric { get; }
+            public PathContainer PathContainer { get; }
             public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
@@ -45,6 +47,7 @@ namespace Match.Field
             public Context(
                 Transform fieldRoot,
                 HexFabric hexFabric,
+                PathContainer pathContainer,
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
 
@@ -66,6 +69,7 @@ namespace Match.Field
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
+                PathContainer = pathContainer;
                 
                 MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
@@ -127,6 +131,7 @@ namespace Match.Field
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
                 _context.HexFabric,
+                _context.PathContainer,
                 _hexagonalFieldModel,
                 _context.FieldConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,
@@ -205,7 +210,7 @@ namespace Match.Field
             _currencyController.CrystalsCountReactiveProperty.Subscribe((newValue) =>
                 _context.CrystalsCountChangedReactiveCommand.Execute(newValue));
             
-            _factory.CreateCells(_context.MatchInitDataParameters.Hexes);
+            _factory.CreateCells();
         }
         
         public void OuterLogicUpdate(float frameLength)
@@ -214,7 +219,7 @@ namespace Match.Field
                 _clicksDistributor.OuterLogicUpdate(frameLength);
             
             _constructionProcessController.OuterLogicUpdate(frameLength);
-            //_mobsManager.OuterLogicUpdate(frameLength);
+            _mobsManager.OuterLogicUpdate(frameLength);
 
             foreach (KeyValuePair<int,TowerController> towerPair in _model.Towers)
                 towerPair.Value.OuterLogicUpdate(frameLength);

@@ -36,7 +36,7 @@ namespace MapEditor
 			LevelMapModel levelMapModel = new LevelMapModel()
 			{
 				HexModels = _hexGridModel.GetAllHexes(),
-				PathDatas = _pathContainer.GetPaths()
+				PathDatas = _pathContainer.GetPathsForSave()
 			};
 			
 			using (StreamWriter sw = new StreamWriter(GetTempFilePath()))

@@ -10,5 +10,6 @@ namespace Match.Field.Hexagons
         Vector3 GetWorldPosition(Hex2d hexPosition);
         Vector3 GetUpHexWorldPosition(Hex2d hexPosition);
         Hex2d ToHexFromWorldPosition(Vector3 position);
+        bool IsCloseToNewHex(float distanceToHex);
     }
 }

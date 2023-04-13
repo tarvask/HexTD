@@ -40,9 +40,15 @@ namespace MapEditor
             }
         }
 
-        public void SetEditingName(string editingPathName)
+        public void SetEditingName(string newEditingPathName)
         {
-            _editingPathName.Value = editingPathName;
+            _editingPathName.Value = newEditingPathName;
+        }
+
+        public void ChangeName(string oldName, string newEditingPathName)
+        {
+            _pathsContainer.ChangeName(oldName, newEditingPathName);
+            _editingPathName.Value = newEditingPathName;
         }
 
         public void SetCurrentInsertNode(Hex2d point)
@@ -64,6 +70,7 @@ namespace MapEditor
             _pathsContainer.AddPath(savePathData);
             _onPathAdd.Execute(savePathData.Name);
             SetEditingName(savePathData.Name);
+            _editingPathName.Value = _pathsContainer.GetFirstName();
         }
 
         public void RemovePath(string name)

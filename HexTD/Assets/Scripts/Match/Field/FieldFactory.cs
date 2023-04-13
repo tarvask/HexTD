@@ -1,12 +1,15 @@
+using System;
 using HexSystem;
 using Match.Field.Castle;
 using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.Tower;
+using PathSystem;
 using Tools;
 using UniRx;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Match.Field
 {
@@ -16,7 +19,8 @@ namespace Match.Field
         {
             public Transform FieldRoot { get; }
             public HexFabric HexFabric { get; }
-            public IHexPositionConversionService HexPositionConversionService { get; }
+            public PathContainer PathContainer { get; }
+            public HexagonalFieldModel HexagonalFieldModel { get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
             
@@ -26,7 +30,8 @@ namespace Match.Field
 
             public Context(Transform fieldRoot,
                 HexFabric hexFabric,
-                IHexPositionConversionService hexPositionConversionService,
+                PathContainer pathContainer,
+                HexagonalFieldModel hexagonalFieldModel,
                 int castleHealth, int towerRemovingDuration,
                 ReactiveCommand<int> attackCastleByMobReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
@@ -34,7 +39,8 @@ namespace Match.Field
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
-                HexPositionConversionService = hexPositionConversionService;
+                PathContainer = pathContainer;
+                HexagonalFieldModel = hexagonalFieldModel;
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
@@ -139,7 +145,7 @@ namespace Match.Field
             Hex2d position)
         {
             TowerView towerView = Object.Instantiate(towerPrefab, _buildingsRoot);
-            towerView.transform.position = _context.HexPositionConversionService.GetUpHexWorldPosition(position);
+            towerView.transform.position = _context.HexagonalFieldModel.GetUpHexWorldPosition(position);
             towerView.name = $"{towerId}_{towerName}";
 
             return towerView;
@@ -172,10 +178,16 @@ namespace Match.Field
             if (_lastTargetId < targetId)
                 _lastTargetId = targetId;
 
+            if (!_context.PathContainer.TryGetPathData(mobConfig.Parameters.PathName, out PathData pathData))
+                throw new ArgumentException($"Unknown path name in mob's Parameters - in [{mobConfig.name}] prefab");
+
             MobView mobView = CreateMobView($"{mobConfig.Parameters.PowerType}",
                 mobId, mobConfig.View, hexSpawnPosition);
             MobController.Context mobControllerContext = new MobController.Context(mobId, targetId,
-                mobConfig.Parameters, mobView, _context.RemoveMobReactiveCommand);
+                mobConfig.Parameters,
+                pathData.GetPathEnumerator(), 
+                _context.HexagonalFieldModel,
+                mobView, _context.RemoveMobReactiveCommand);
             MobController mobController = new MobController(mobControllerContext);
 
             return mobController;
@@ -227,17 +239,17 @@ namespace Match.Field
             return projectileInstance;
         }
 
-        public void CreateCells(FieldHex[] hexes)
+        public void CreateCells()
         {
-            foreach (var fieldHex in hexes)
+            foreach (var fieldHex in _context.HexagonalFieldModel)
             {
-                CreateHexTile(fieldHex.HexModel);
+                CreateHexTile(fieldHex.Value.HexModel);
             }
         }
 
         public void CreateHexTile(HexModel hexModel)
         {
-            Vector3 spawnPosition = _context.HexPositionConversionService.GetWorldPosition(
+            Vector3 spawnPosition = _context.HexagonalFieldModel.GetWorldPosition(
                 (Hex3d)hexModel);
             _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
         }

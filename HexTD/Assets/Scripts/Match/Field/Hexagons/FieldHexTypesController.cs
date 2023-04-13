@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using HexSystem;
 
 namespace Match.Field.Hexagons
 {
-    public class FieldHexTypesController
+    public class FieldHexTypesController : IEnumerable<KeyValuePair<int, FieldHexType>>
     {
         private readonly IDictionary<int, FieldHexType> _currentFieldHexTypes;
 
@@ -54,6 +55,16 @@ namespace Match.Field.Hexagons
             }
 
             return types;
+        }
+
+        public IEnumerator<KeyValuePair<int, FieldHexType>> GetEnumerator()
+        {
+            return _currentFieldHexTypes.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
