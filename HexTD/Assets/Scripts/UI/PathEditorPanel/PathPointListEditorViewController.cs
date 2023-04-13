@@ -13,25 +13,20 @@ namespace UI.PathEditorPanel
         private readonly UiElementListPool<PointEditorPanelView> _pointEditorPanelViews;
 
         private string _name;
-        private readonly Action<string> _onPathRemove;
 
         public PathEditInfoView PathEditInfoView => _pathEditInfoView;
+        public string DisplayName => _name;
 
         public PathPointListEditorViewController(PathEditInfoView pathEditInfoView,
             PathEditorController pathEditorController,
-            string name,
-            Action<string> onPathRemove)
+            string name)
         {
             _pathEditInfoView = pathEditInfoView;
             _pointEditorPanelViews = AddDisposable(new UiElementListPool<PointEditorPanelView>(
                 pathEditInfoView.PointEditorPanelPrefab,
                 pathEditInfoView.PointsParent));
             _pathEditorController = pathEditorController;
-            _onPathRemove = onPathRemove;
             _name = name;
-
-            _pathEditInfoView.DeletePathButton.onClick.RemoveAllListeners();
-            _pathEditInfoView.DeletePathButton.onClick.AddListener(OnDeletePath);
             
             _pathEditInfoView.NameFieldText.onValueChanged.RemoveAllListeners();
             _pathEditInfoView.NameFieldText.onValueChanged
@@ -80,11 +75,6 @@ namespace UI.PathEditorPanel
             
             element.SelectPointButton.onClick.RemoveAllListeners();
             element.SelectPointButton.onClick.AddListener(() => _pathEditorController.SetCurrentInsertNode(point));
-        }
-
-        private void OnDeletePath()
-        {
-            _onPathRemove.Invoke(_name);
         }
     }
 }

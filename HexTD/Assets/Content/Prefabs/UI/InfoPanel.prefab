@@ -424,7 +424,7 @@ MonoBehaviour:
     - Green Check click (near the Path Name) - selects this path for
     editing
 
-    - Red Cross click (near the Path Name) - removed this path
+    - Red Cross click (near the Path Name) - removes this path
 
     -
     Path Name click - turns on editing of Path Name
