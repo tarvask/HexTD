@@ -61,12 +61,12 @@ namespace UI.PathEditorPanel
             
             var pathPointListEditorView = _pathsEditorViewPool.GetElement();
             var pathPointListEditorViewController = new PathPointListEditorViewController(
-                pathPointListEditorView, _pathEditorController, name, OnPathRemove);
+                pathPointListEditorView, _pathEditorController, name);
             _pathPointListEditorViewControllers.Add(name, pathPointListEditorViewController);
             
             pathPointListEditorView.DeletePathButton.onClick.RemoveAllListeners();
             pathPointListEditorView.DeletePathButton.onClick.AddListener(() => 
-                OnPathRemove(name));
+                OnPathRemove(name, pathPointListEditorViewController.DisplayName));
         }
         
         private void PathRemove(string pathEditorDataName)
@@ -79,10 +79,10 @@ namespace UI.PathEditorPanel
             _pathsEditorViewPool.RemoveElement(pathPointListEditorViewController.PathEditInfoView);
         }
 
-        private void OnPathRemove(string pathEditorDataName)
+        private void OnPathRemove(string pathEditorDataKey, string pathEditorDataDisplayName)
         {
-            PathRemove(pathEditorDataName);
-            _pathEditorController.RemovePath(pathEditorDataName);
+            PathRemove(pathEditorDataKey);
+            _pathEditorController.RemovePath(pathEditorDataDisplayName);
         }
     }
 }

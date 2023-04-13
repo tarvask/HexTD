@@ -41,7 +41,10 @@ namespace PathSystem
         public bool TryRemove(string name)
         {
             bool result = Paths.Remove(name, out var pathEditorData);
-            pathEditorData.Dispose();
+            
+            if (result)
+                pathEditorData.Dispose();
+            
             return result;
         }
 
