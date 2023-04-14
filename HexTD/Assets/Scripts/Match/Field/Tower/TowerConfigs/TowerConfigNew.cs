@@ -1,5 +1,4 @@
 ﻿using System;
-using Sirenix.OdinInspector;
 using Tools;
 using UnityEngine;
 
@@ -8,13 +7,15 @@ namespace Match.Field.Tower.TowerConfigs
 	[CreateAssetMenu(fileName = "TowerConfigNew", menuName = "Configs/Match/TowerConfigNew")]
 	public class TowerConfigNew : ScriptableObject
 	{
-		[SerializeField] private string name;
+		[SerializeField] private Sprite icon;
 		[SerializeField] private TowerView view;
+		[SerializeField] private TowerRegularParameters regularParameters;
 		[SerializeField] private TowerLevelConfigsDictionary towerLevelConfigs;
 		[SerializeField] private TowerAttackConfig towerAttackConfig;
 
-		public string Name => name;
+		public Sprite Icon => icon;
 		public TowerView View => view;
+		public TowerRegularParameters RegularParameters => regularParameters;
 		public TowerLevelConfigsDictionary TowerLevelConfigs => towerLevelConfigs;
 		public TowerAttackConfig TowerAttackConfig => towerAttackConfig;
 	}

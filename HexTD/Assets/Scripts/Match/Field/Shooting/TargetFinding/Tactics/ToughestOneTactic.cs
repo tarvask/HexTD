@@ -10,18 +10,18 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
 
         public int GetTargetWithTactic(Dictionary<int, MobController> mobs)
         {
-            int highestHealth = 0;
+            float highestHealth = 0;
             int mobWithHighestHealthId = -1;
             float pathOfMobWithHighestHealth = 0;
 
             foreach (KeyValuePair<int, MobController> mobPair in mobs)
             {
-                int healthDelta = mobPair.Value.Health - highestHealth;
+                float healthDelta = mobPair.Value.Health.Value - highestHealth;
 
                 if (healthDelta > 0
                     || healthDelta == 0 && mobPair.Value.PathLength > pathOfMobWithHighestHealth)
                 {
-                    highestHealth = mobPair.Value.Health;
+                    highestHealth = mobPair.Value.Health.Value;
                     pathOfMobWithHighestHealth = mobPair.Value.PathLength;
                     mobWithHighestHealthId = mobPair.Value.TargetId;
                 }

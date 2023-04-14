@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Match.Field.State;
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 using UnityEngine;
 
@@ -10,6 +11,7 @@ namespace Match.Field.Shooting
         public struct Context
         {
             public int Id { get; }
+            public BaseTowerAttackEffect BaseTowerAttackEffect { get; }
             public ProjectileView View { get; }
             public float Speed { get; }
             public int SpawnTowerId { get; }
@@ -18,10 +20,12 @@ namespace Match.Field.Shooting
             public float SplashDamageRadius { get; }
             public bool HasProgressiveSplash { get; }
 
-            public Context(int id, ProjectileView view, float speed, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
-                int spawnTowerId, int targetId)
+            public Context(int id, BaseTowerAttackEffect baseTowerAttackEffect,
+                ProjectileView view, float speed, bool hasSplashDamage, float splashDamageRadius, 
+                bool hasProgressiveSplash, int spawnTowerId, int targetId)
             {
                 Id = id;
+                BaseTowerAttackEffect = baseTowerAttackEffect;
                 View = view;
                 Speed = speed;
                 HasSplashDamage = hasSplashDamage;
@@ -38,6 +42,7 @@ namespace Match.Field.Shooting
         private bool _hasReachedTarget;
         private bool _hasPlayedSplash;
 
+        public BaseTowerAttackEffect BaseTowerAttackEffect => _context.BaseTowerAttackEffect;
         public int Id => _context.Id;
         public int SpawnTowerId => _context.SpawnTowerId;
         public int TargetId => _context.TargetId;

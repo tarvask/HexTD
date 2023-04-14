@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 using UniRx;
 
@@ -36,7 +37,7 @@ namespace Match.Windows.MainMenu
         }
 
         private readonly Context _context;
-        private List<List<TowerConfig>> _hands;
+        private List<List<TowerConfigNew>> _hands;
 
         public StartGamePanelController(Context context)
         {
@@ -56,7 +57,7 @@ namespace Match.Windows.MainMenu
             _context.LevelNameSelectedReactiveCommand.Subscribe(UpdateLevelName);
         }
 
-        public void Show(List<List<TowerConfig>> hands, bool showResumeGameButton)
+        public void Show(List<List<TowerConfigNew>> hands, bool showResumeGameButton)
         {
             _hands = hands;
             SelectHand(_context.SelectedHandIndexReactiveProperty.Value, true);
@@ -74,7 +75,7 @@ namespace Match.Windows.MainMenu
             for (int towerIndex = 0; towerIndex < _hands[_context.SelectedHandIndexReactiveProperty.Value].Count; towerIndex++)
             {
                 if (_hands[_context.SelectedHandIndexReactiveProperty.Value][towerIndex] != null)
-                    _context.View.HandTowerItems[towerIndex].SetData(_hands[_context.SelectedHandIndexReactiveProperty.Value][towerIndex].Parameters.RegularParameters.Data);
+                    _context.View.HandTowerItems[towerIndex].SetData(_hands[_context.SelectedHandIndexReactiveProperty.Value][towerIndex].RegularParameters);
                 else
                     _context.View.HandTowerItems[towerIndex].SetData(null);
             }

@@ -1,3 +1,4 @@
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 
 namespace Match.Field.Tower
@@ -38,9 +39,9 @@ namespace Match.Field.Tower
             _level = 1;
         }
 
-        public void SetLevel(TowerLevelParams levelParams, float timeLabel)
+        public void SetLevel(int level, float timeLabel)
         {
-            _level = levelParams.LevelRegularParams.Data.Level;
+            _level = level;
             _constructionTimeLabel = timeLabel;
         }
 

@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   data:
     level: 1
-    attackPower: 1
+    attackPower: 0
     reloadTime: 1
     attackRadiusInHexCount: 2
     projectileSpeed: 10

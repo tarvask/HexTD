@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BuffLogic;
 using HexSystem;
 using Match.Field.Hexagons;
 using Match.Field.Shooting.SplashDamage;
@@ -18,14 +19,17 @@ namespace Match.Field.Shooting
             public FieldModel FieldModel { get; }
             public HexMapReachableService HexMapReachableService { get; }
             public FieldFactory Factory { get; }
+            public BuffManager BuffManager { get; }
 
             public Context(FieldModel fieldModel, 
                 HexMapReachableService hexMapReachableService,
-                FieldFactory factory)
+                FieldFactory factory,
+                BuffManager buffManager)
             {
                 FieldModel = fieldModel;
                 HexMapReachableService = hexMapReachableService;
                 Factory = factory;
+                BuffManager = buffManager;
             }
         }
 
@@ -178,7 +182,7 @@ namespace Match.Field.Shooting
         {
             foreach (KeyValuePair<int, IShootable> shootablePair in _hitShootables)
             {
-                if (shootablePair.Value.Health <= 0)
+                if (shootablePair.Value.Health.Value <= 0)
                 {
                     _deadBodies.Add(shootablePair.Key, shootablePair.Value);
                     shootablePair.Value.Die();
@@ -227,7 +231,10 @@ namespace Match.Field.Shooting
             int damage = ComputeDamage(projectile.SpawnTowerId, hitShootable.TargetId,
                 projectile.HasSplashDamage, projectile.SplashDamageRadius, projectile.HasProgressiveSplash,
                 sqrDistance);
+            
             hitShootable.Hurt(damage);
+            
+            projectile.BaseTowerAttackEffect.ApplyAttack(hitShootable, _context.BuffManager);
             // List<AbstractBuffParameters> buffs = ComputeBuffs(projectile.SpawnTowerId, hitShootable.TargetId);
             // hitShootable.ApplyBuffs(buffs);
             

@@ -286,7 +286,7 @@ namespace Match.Field.State
             private readonly float _xPosition;
             private readonly float _yPosition;
             private readonly byte _nextWaypoint;
-            private readonly int _currentHealth;
+            private readonly float _currentHealth;
 
             public int Id => _id;
             public int TargetId => _targetId;
@@ -294,10 +294,10 @@ namespace Match.Field.State
             public float PositionX => _xPosition;
             public float PositionY => _yPosition;
             public byte NextWaypoint => _nextWaypoint;
-            public int CurrentHealth => _currentHealth;
+            public float CurrentHealth => _currentHealth;
 
             public MobState(int id, int targetId, byte typeId, float xPosition, float yPosition, byte nextWaypoint,
-                int currentHealth)
+                float currentHealth)
             {
                 _id = id;
                 _targetId = targetId;
@@ -316,7 +316,7 @@ namespace Match.Field.State
                 float xPosition = (float)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.PositionXParam];
                 float yPosition = (float)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.PositionYParam];
                 byte nextWaypoint = (byte)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.NextWaypointParam];
-                int currentHealth = (int)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.CurrentHealthParam];
+                float currentHealth = (float)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.CurrentHealthParam];
                 
                 return new MobState(id, targetId, typeId, xPosition, yPosition, nextWaypoint, currentHealth);
             }

@@ -7,6 +7,7 @@ using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.Shooting.TargetFinding;
 using Match.Field.State;
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -21,16 +22,16 @@ namespace Match.Field.Tower
         {
             public int Id { get; }
             public Hex2d Position { get; }
-            public TowerParameters Parameters { get; }
+            public TowerConfigNew TowerConfig { get; }
             public TowerView View { get; }
             public Sprite Icon { get; }
             public int TowerRemovingDuration { get; }
 
-            public Context(int id, Hex2d position, TowerParameters parameters, 
+            public Context(int id, Hex2d position, TowerConfigNew towerConfig, 
                 TowerView view, Sprite icon, int towerRemovingDuration)
             {
                 Id = id;
-                Parameters = parameters;
+                TowerConfig = towerConfig;
                 View = view;
                 Icon = icon;
                 Position = position;
@@ -50,8 +51,8 @@ namespace Match.Field.Tower
         private readonly List<AbstractBuffParameters> _towersInAreaAbilities;
         //private readonly TowerBuffsManager _buffsManager;
         
-        private TowerLevelParams CurrentLevel => _context.Parameters.Levels[_stableModel.Level - 1];
-        private TowerLevelParams NextLevel => _context.Parameters.Levels[_stableModel.Level];
+        private TowerLevelConfig CurrentLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level - 1];
+        private TowerLevelConfig NextLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level];
         private float AttackRadiusAndBlockerColliderSqr => (CurrentRadius + BlockerColliderRadius) * (CurrentRadius + BlockerColliderRadius); 
         private Vector3 Position => _context.View.transform.localPosition;
 
@@ -64,16 +65,15 @@ namespace Match.Field.Tower
         public bool IsAlive => _stableModel.IsAlive;
         public bool IsReadyToRelease => _stableModel.IsReadyToRelease;
         public bool IsReadyToDispose => _stableModel.IsReadyToDispose;
-        public TowerType TowerType => _context.Parameters.RegularParameters.Data.TowerType;
-        public RaceType RaceType => _context.Parameters.RegularParameters.Data.RaceType;
-        public int CurrentDamage => Mathf.CeilToInt(CurrentLevel.LevelRegularParams.Data.AttackPower); // Mathf.CeilToInt(_buffsManager.ParameterResultValue(BuffedParameterType.AttackPower));
-        private int CurrentRadius => CurrentLevel.LevelRegularParams.Data.AttackRadiusInHexCount; //_buffsManager.ParameterResultValue(BuffedParameterType.AttackRadius);
-        private float CurrentReloadTime => CurrentLevel.LevelRegularParams.Data.ReloadTime; //_buffsManager.ParameterResultValue(BuffedParameterType.ReloadTime);
+        public TowerType TowerType => _context.TowerConfig.RegularParameters.TowerType;
+        public int CurrentDamage => Mathf.CeilToInt(_context.TowerConfig.TowerAttackConfig.BaseDamage); // Mathf.CeilToInt(_buffsManager.ParameterResultValue(BuffedParameterType.AttackPower));
+        private int CurrentRadius => _context.TowerConfig.TowerAttackConfig.AttackRadiusInHex; //_buffsManager.ParameterResultValue(BuffedParameterType.AttackRadius);
+        private float CurrentReloadTime => _context.TowerConfig.TowerAttackConfig.Cooldown; //_buffsManager.ParameterResultValue(BuffedParameterType.ReloadTime);
         public IReadOnlyReactiveProperty<int> KillsCount => _reactiveModel.KillsCountReactiveProperty;
         public List<AbstractBuffParameters> MobsBuffs => _activeAbilities;
         public List<AbstractBuffParameters> BuffsForNeighbouringTowers => _towersInAreaAbilities;
         //public Dictionary<int, AbstractBuffModel> Buffs => _buffsManager.Buffs;
-        public ProjectileView ProjectilePrefab => CurrentLevel.ProjectilePrefab;
+        public ProjectileView ProjectilePrefab => _context.TowerConfig.TowerAttackConfig.TowerAttackEffectConfigs[0].ProjectileView;
         public Sprite Icon => _context.Icon;
 
         public TowerController(Context context)
@@ -88,7 +88,7 @@ namespace Match.Field.Tower
             //    _reactiveModel.AttackPowerReactiveProperty,
             //    _reactiveModel.AttackRadiusReactiveProperty,
             //    _reactiveModel.ReloadTimeReactiveProperty)));
-            _context.View.SetType(_context.Parameters.RegularParameters.Data.TowerName);
+            _context.View.SetType(_context.TowerConfig.RegularParameters.TowerName);
         }
 
         public void OuterLogicUpdate(float frameLength)
@@ -101,44 +101,44 @@ namespace Match.Field.Tower
         {
             // no construction for duration = 0
             if (constructionDuration < 0)
-                SetConstructing(_context.Parameters.Levels[newLevel - 1].LevelRegularParams.Data.BuildingTime);
+                SetConstructing(CurrentLevel.BuildTime);
             else if (constructionDuration > 0)
                 SetConstructing(constructionDuration * 0.001f);
             
-            _stableModel.SetLevel(_context.Parameters.Levels[newLevel - 1], Time.time);
-            _reactiveModel.SetLevel(CurrentLevel);
+            _stableModel.SetLevel(newLevel, Time.time);
+            _reactiveModel.SetLevel(_context.TowerConfig, newLevel);
 
             // update active abilities
-            _activeAbilities.Clear();
+            //_activeAbilities.Clear();
             
-            foreach (IAbility ability in CurrentLevel.ActiveLevelAbilities.Abilities)
-            {
-                if (!ability.IsConditional || CheckAbilityConditions(ability))
-                    _activeAbilities.Add(ability.AbilityToBuff());
-            }
+            //foreach (IAbility ability in CurrentLevel.ActiveLevelAbilities.Abilities)
+            //{
+            //    if (!ability.IsConditional || CheckAbilityConditions(ability))
+            //        _activeAbilities.Add(ability.AbilityToBuff());
+            //}
+            //
+            //// update towers in area abilities
+            //_towersInAreaAbilities.Clear();
             
-            // update towers in area abilities
-            _towersInAreaAbilities.Clear();
-
-            foreach (IAbility ability in CurrentLevel.TowersInAreaAbilities.Abilities)
-            {
-                if (ability.IsTowersInAreaApplied)
-                    _towersInAreaAbilities.Add(ability.AbilityToBuff());
-            }
+            //foreach (IAbility ability in CurrentLevel.TowersInAreaAbilities.Abilities)
+            //{
+            //    if (ability.IsTowersInAreaApplied)
+            //        _towersInAreaAbilities.Add(ability.AbilityToBuff());
+            //}
+            //
+            //// update passive abilities
+            ////_buffsManager.ClearBuffs();
             
-            // update passive abilities
-            //_buffsManager.ClearBuffs();
-            
-            foreach (IAbility ability in CurrentLevel.PassiveLevelAbilities.Abilities)
-            {
-                if (!ability.IsConditional || CheckAbilityConditions(ability))
-                {
-                    AbstractBuffParameters abilityParameters = ability.AbilityToBuff();
-                    
-                    //if (abilityParameters.BuffedParameterType != BuffedParameterType.Undefined)
-                        //_buffsManager.AddBuff(ability.AbilityToBuff());
-                }
-            }
+            //foreach (IAbility ability in CurrentLevel.PassiveLevelAbilities.Abilities)
+            //{
+            //    if (!ability.IsConditional || CheckAbilityConditions(ability))
+            //    {
+            //        AbstractBuffParameters abilityParameters = ability.AbilityToBuff();
+            //        
+            //        //if (abilityParameters.BuffedParameterType != BuffedParameterType.Undefined)
+            //            //_buffsManager.AddBuff(ability.AbilityToBuff());
+            //    }
+            //}
         }
 
         private void SetConstructing(float constructionTime)
@@ -156,9 +156,9 @@ namespace Match.Field.Tower
         
         public void Upgrade()
         {
-            if (_stableModel.Level < _context.Parameters.Levels.Length)
+            if (_stableModel.Level < _context.TowerConfig.TowerLevelConfigs.Count)
             {
-                SetLevel(NextLevel.LevelRegularParams.Data.Level);
+                SetLevel(_stableModel.Level+1);
             }
         }
 
@@ -170,7 +170,7 @@ namespace Match.Field.Tower
 
         public TowerShortParams GetShortParams()
         {
-            return new TowerShortParams(_context.Parameters.RegularParameters.Data.TowerType, _stableModel.Level);
+            return new TowerShortParams(_context.TowerConfig.RegularParameters.TowerType, _stableModel.Level);
         }
 
         public void UpdateTimer(float frameLength)
@@ -181,23 +181,24 @@ namespace Match.Field.Tower
         public bool FindTarget(TargetFinder targetFinder, IReadOnlyDictionary<int, List<MobController>> mobs)
         {
             int targetId = targetFinder.GetTargetWithTacticInRange(mobs,
-                _context.Parameters.RegularParameters.Data.ReachableAttackTargetFinderType,
-                _context.Parameters.RegularParameters.Data.TargetFindingTacticType, 
+                _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType,
+                _context.TowerConfig.RegularParameters.TargetFindingTacticType, 
                 HexPosition, CurrentRadius,
-                _context.Parameters.RegularParameters.Data.PreferUnbuffedTargets);//, _activeAbilities);
+                _context.TowerConfig.RegularParameters.PreferUnbuffedTargets);//, _activeAbilities);
             _stableModel.SetTarget(targetId);
             return HasTarget;
         }
 
         public ProjectileController Shoot(FieldFactory factory)
         {
-            ProjectileController projectile = factory.CreateProjectile(CurrentLevel.ProjectilePrefab, Position,
-                CurrentLevel.LevelRegularParams.Data.ProjectileSpeed,
+            ProjectileController projectile = factory.CreateProjectile(
+                _context.TowerConfig.TowerAttackConfig.TowerAttackEffectConfigs[0],
+                Position,
                 _stableModel.HasSplashDamage, _stableModel.SplashDamageRadius, _stableModel.HasProgressiveSplashDamage,
                 _context.Id, _stableModel.TargetId);
             _stableModel.ResetShootingTimer();
 
-            if (_context.Parameters.RegularParameters.Data.ResetTargetEveryShot && !_stableModel.IsTargetBlocker)
+            if (_context.TowerConfig.RegularParameters.ResetTargetEveryShot && !_stableModel.IsTargetBlocker)
                 _stableModel.ResetTarget();
 
             return projectile;
@@ -218,13 +219,13 @@ namespace Match.Field.Tower
             _reactiveModel.IncreaseKills();
         }
         
-        public static int GetTowerSellPrice(TowerParameters towerParameters, int towerLevel)
+        public static int GetTowerSellPrice(TowerLevelConfigsDictionary towerLevels, int towerLevel)
         {
             int sellPrice = 0;
             
             for (int levelIndex = 0; levelIndex < towerLevel; levelIndex++)
             {
-                sellPrice += towerParameters.Levels[levelIndex].LevelRegularParams.Data.Price;
+                sellPrice += towerLevels[levelIndex].BuildPrice;
             }
 
             return Mathf.CeilToInt(sellPrice * 0.5f);
@@ -273,10 +274,10 @@ namespace Match.Field.Tower
         {
             return new PlayerState.TowerState(_context.Id, 
                 (byte)_context.Position.Q, (byte)_context.Position.R,
-                _context.Parameters.RegularParameters.Data.TowerType,
+                _context.TowerConfig.RegularParameters.TowerType,
                 (byte)_stableModel.Level,
                 // save remaining time
-                _stableModel.IsConstructing ? (int)((CurrentLevel.LevelRegularParams.Data.BuildingTime - (Time.time - _stableModel.ConstructionTimeLabel)) * 1000) : 0);
+                _stableModel.IsConstructing ? (int)((CurrentLevel.BuildTime - (Time.time - _stableModel.ConstructionTimeLabel)) * 1000) : 0);
         }
     }
 }

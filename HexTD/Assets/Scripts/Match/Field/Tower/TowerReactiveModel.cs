@@ -1,3 +1,4 @@
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 using UniRx;
 
@@ -24,11 +25,12 @@ namespace Match.Field.Tower
             _killsCountReactiveProperty = AddDisposable(new ReactiveProperty<int>(0));
         }
 
-        public void SetLevel(TowerLevelParams levelParams)
+        public void SetLevel(TowerConfigNew towerConfig, int level)
         {
-            _attackPowerReactiveProperty.Value = levelParams.LevelRegularParams.Data.AttackPower;
-            _attackRadiusReactiveProperty.Value = levelParams.LevelRegularParams.Data.AttackRadiusInHexCount;
-            _reloadTimeReactiveProperty.Value = levelParams.LevelRegularParams.Data.ReloadTime;
+            //TODO: sinc value with level
+            _attackPowerReactiveProperty.Value = towerConfig.TowerAttackConfig.BaseDamage;
+            _attackRadiusReactiveProperty.Value = towerConfig.TowerAttackConfig.AttackRadiusInHex;
+            _reloadTimeReactiveProperty.Value = towerConfig.TowerAttackConfig.Cooldown;
         }
 
         public void IncreaseKills()

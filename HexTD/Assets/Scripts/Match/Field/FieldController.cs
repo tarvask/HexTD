@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BuffLogic;
 using HexSystem;
 using Match.Commands;
 using Match.Field.Castle;
@@ -27,7 +28,9 @@ namespace Match.Field
             public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
+            public BuffManager BuffManager { get; }
             public bool NeedsInput { get; }
+            
             public MatchCommands MatchCommands { get; }
             
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
@@ -48,10 +51,12 @@ namespace Match.Field
                 HexFabric hexFabric,
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
+                BuffManager buffManager,
 
                 bool needsInput,
                 
                 MatchCommands matchCommands,
+                
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
                 ReactiveCommand<Hex2d> clickReactiveCommand,
                 ReactiveCommand<PlayerState> stateSyncedReactiveCommand,
@@ -71,6 +76,7 @@ namespace Match.Field
                 MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
                 ConfigsRetriever = configsRetriever;
+                BuffManager = buffManager;
 
                 NeedsInput = needsInput;
                 MatchCommands = matchCommands;
@@ -175,7 +181,7 @@ namespace Match.Field
             
             // shooting
             ShootingController.Context shootingControllerContext = new ShootingController.Context(_model, 
-                _hexMapReachableService, _factory);
+                _hexMapReachableService, _factory, _context.BuffManager);
             _shootingController = AddDisposable(new ShootingController(shootingControllerContext));
             
             // currency

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using HexSystem;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 using Tools.Interfaces;
 
@@ -80,7 +81,7 @@ namespace Match.Field
             removingTower.SetRemoving();
         }
 
-        public TowerController SetTowerBuilding(TowerConfig towerConfig, Hex2d position)
+        public TowerController SetTowerBuilding(TowerConfigNew towerConfig, Hex2d position)
         {
             int positionHash = position.GetHashCode();
             TowerController towerInstance = _context.Factory.CreateTower(towerConfig, position);

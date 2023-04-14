@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using BuffLogic;
 using HexSystem;
 using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.State;
 using PathSystem;
 using Tools;
+using Tools.PriorityTools;
 using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -61,10 +64,13 @@ namespace Match.Field.Mob
 
         public int Id => _context.Id;
         public int TargetId => _context.TargetId;
-        public int Health => _reactiveModel.HealthReactiveProperty.Value;
+        public IReadonlyBuffableValue<float> Health => _reactiveModel.Health;
+        public IReadonlyBuffableValue<float> Speed => _reactiveModel.Speed;
         public float PathLength => _currentPathLength;
         public Vector3 Position => _currentPosition;
         public Hex2d HexPosition => _currentHexPosition;
+
+
         public bool HasReachedCastle => _hasReachedCastle;
         public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.ReloadTime;
         public int RewardInSilver => _context.Parameters.RewardInSilver;
@@ -73,6 +79,8 @@ namespace Match.Field.Mob
         public bool IsInSafety => _isInSafety;
         
         public bool CanMove => true;
+
+        public IReadonlyMobReactiveModel MobReactiveModel => _reactiveModel;
 
         public MobController(Context context)
         {
@@ -97,7 +105,6 @@ namespace Match.Field.Mob
 
         public void UpdateHealth(float frameLength)
         {
-            //_buffsManager.OuterUpdate(frameLength);
             //_reactiveModel.HealthReactiveProperty.Value += (int)_buffsManager.ParameterResultValue(BuffedParameterType.Health);
         }
 
@@ -191,9 +198,9 @@ namespace Match.Field.Mob
             //    + Mathf.Abs(Position.y - _context.Waypoints[waypointIndex - 1].y);
         }
 
-        public void Hurt(int damage)
+        public void Hurt(float damage)
         {
-            _reactiveModel.HealthReactiveProperty.Value -= damage;
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value - damage);
             ShowDamage(damage);
         }
 
@@ -254,7 +261,7 @@ namespace Match.Field.Mob
             return _context.Parameters.AttackPower;
         }
 
-        private void ShowDamage(int damage)
+        private void ShowDamage(float damage)
         {
             //_context.View.DamageTextItems[_currentDamageTextIndex].text = $"{-damage}";
             //_context.View.DamageTextItems[_currentDamageTextIndex].gameObject.SetActive(false);
@@ -269,13 +276,26 @@ namespace Match.Field.Mob
         {
             _context.PathEnumerator.MoveTo(mobState.NextWaypoint);
             ComputePathLengthAfterTeleport();
-            _reactiveModel.HealthReactiveProperty.Value = mobState.CurrentHealth;
+            _reactiveModel.SetHealth(mobState.CurrentHealth);
         }
         
         public PlayerState.MobState GetMobState()
         {
             return new PlayerState.MobState(_context.Id, _context.TargetId, _context.Parameters.TypeId,
-                Position.x, Position.y, _context.PathEnumerator.CurrentPointIndex, _reactiveModel.HealthReactiveProperty.Value);
+                Position.x, Position.y, _context.PathEnumerator.CurrentPointIndex, _reactiveModel.Health.Value);
+        }
+
+        public void UpdateAddBuff(PrioritizeLinkedList<IBuff<IShootable>> buffs, IBuff<IShootable> addedBuff)
+        {
+            addedBuff.ApplyBuff(this);
+        }
+
+        public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<IShootable>> buffs, IEnumerable<IBuff<IShootable>> removedBuffs)
+        {
+            foreach (var removedBuff in removedBuffs)
+            {
+                removedBuff.ApplyBuff(this);
+            }
         }
 
         protected override void OnDispose()

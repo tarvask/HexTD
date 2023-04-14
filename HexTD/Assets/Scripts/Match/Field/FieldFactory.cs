@@ -5,6 +5,7 @@ using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using PathSystem;
 using Tools;
 using UniRx;
@@ -118,7 +119,7 @@ namespace Match.Field
             _projectilesRoot.localScale = Vector3.one;
         }
 
-        public TowerController CreateTower(TowerConfig towerConfig,
+        public TowerController CreateTower(TowerConfigNew towerConfig,
             Hex2d position)
         {
             _lastBuildingId++;
@@ -126,16 +127,16 @@ namespace Match.Field
             return CreateTowerWithId(towerConfig, position, _lastBuildingId);
         }
         
-        public TowerController CreateTowerWithId(TowerConfig towerConfig,
+        public TowerController CreateTowerWithId(TowerConfigNew towerConfig,
             Hex2d position, int towerId)
         {
             if (_lastBuildingId < towerId)
                 _lastBuildingId = towerId;
             
-            TowerView towerView = CreateTowerView(towerConfig.Parameters.RegularParameters.Data.TowerName, 
+            TowerView towerView = CreateTowerView(towerConfig.RegularParameters.TowerName, 
                 towerId, towerConfig.View, position);
             TowerController.Context towerControllerContext = new TowerController.Context(towerId,
-                position, towerConfig.Parameters, towerView, towerConfig.Icon, _context.TowerRemovingDuration);
+                position, towerConfig, towerView, towerConfig.Icon, _context.TowerRemovingDuration);
             TowerController towerController = new TowerController(towerControllerContext);
 
             return towerController;
@@ -203,28 +204,29 @@ namespace Match.Field
             return mobView;
         }
         
-        public ProjectileController CreateProjectile(ProjectileView projectilePrefab, Vector3 spawnPosition,
-            float projectileSpeed, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
+        public ProjectileController CreateProjectile(BaseTowerAttackEffect baseTowerAttackEffect,
+            Vector3 spawnPosition, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
             int towerId, int targetId)
         {
             _lastProjectileId++;
 
-            return CreateProjectileWithId(projectilePrefab, _lastProjectileId, spawnPosition,
-                projectileSpeed, hasSplashDamage, splashDamageRadius, hasProgressiveSplash,
+            return CreateProjectileWithId(baseTowerAttackEffect, 
+                _lastProjectileId, spawnPosition, hasSplashDamage, 
+                splashDamageRadius, hasProgressiveSplash,
                 towerId, targetId);
         }
 
-        public ProjectileController CreateProjectileWithId(ProjectileView projectilePrefab, int projectileId, Vector3 spawnPosition,
-            float projectileSpeed, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
-            int towerId, int targetId)
+        public ProjectileController CreateProjectileWithId(BaseTowerAttackEffect baseTowerAttackEffect,
+            int projectileId, Vector3 spawnPosition, bool hasSplashDamage, 
+            float splashDamageRadius, bool hasProgressiveSplash, int towerId, int targetId)
         {
             if (_lastProjectileId < projectileId)
                 _lastProjectileId = projectileId;
             
-            ProjectileView projectileInstance = CreateProjectileView(projectileId, projectilePrefab, spawnPosition);
+            ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttackEffect.ProjectileView, spawnPosition);
             ProjectileController.Context projectileControllerContext = new ProjectileController.Context(projectileId,
-                projectileInstance, projectileSpeed, hasSplashDamage, splashDamageRadius, hasProgressiveSplash,
-                towerId, targetId);
+                baseTowerAttackEffect, projectileInstance, baseTowerAttackEffect.ProjectileSpeed, 
+                hasSplashDamage, splashDamageRadius, hasProgressiveSplash, towerId, targetId);
             ProjectileController projectileController = new ProjectileController(projectileControllerContext);
 
             return projectileController;

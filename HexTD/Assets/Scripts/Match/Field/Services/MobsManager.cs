@@ -74,7 +74,7 @@ namespace Match.Field.Services
             {
                 mobPair.Value.UpdateHealth(frameLength);
 
-                if (mobPair.Value.Health <= 0)
+                if (mobPair.Value.Health.Value <= 0)
                 {
                     _dyingMobs.Add(mobPair.Value);
                 }

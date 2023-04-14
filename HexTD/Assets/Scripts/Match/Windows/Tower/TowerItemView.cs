@@ -1,5 +1,6 @@
 using System;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using TMPro;
 using Tools;
 using UnityEngine;
@@ -23,9 +24,9 @@ namespace Match.Windows.Tower
 
         private Action _onBuyButtonClickAction;
 
-        public void Init(TowerConfig config, Action onBuyButtonClickAction)
+        public void Init(TowerConfigNew config, Action onBuyButtonClickAction)
         {
-            Init(config, config.Parameters.Levels[0].LevelRegularParams.Data.Price, onBuyButtonClickAction);
+            //Init(config, config.Levels[0].LevelRegularParams.Data.Price, onBuyButtonClickAction);
         }
 
         public void Init(TowerConfig config, int price, Action onBuyButtonClickAction)

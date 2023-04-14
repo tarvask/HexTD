@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Match.Field.Shooting.TargetFinding;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -11,14 +10,12 @@ namespace Match.Field.Tower.TowerConfigs
 	{
 		[SerializeField] private float baseDamage;
 		[SerializeField] private float cooldown;
-		[SerializeField] private TargetFindingTacticType targetFindingTacticType;
-		[SerializeField] private GameObject projectileView;
-		[SerializeReference] [InlineEditor] private List<ITowerAttackEffectConfig> towerAttackEffectConfigs;
+		[SerializeField] private int attackRadiusInHex;
+		[SerializeReference] [InlineEditor] private List<BaseTowerAttackEffect> towerAttackEffectConfigs;
 
 		public float BaseDamage => baseDamage;
 		public float Cooldown => cooldown;
-		public TargetFindingTacticType TargetFindingTacticType => targetFindingTacticType;
-		public GameObject ProjectileView => projectileView;
-		public List<ITowerAttackEffectConfig> TowerAttackEffectConfigs => towerAttackEffectConfigs;
+		public int AttackRadiusInHex => attackRadiusInHex;
+		public List<BaseTowerAttackEffect> TowerAttackEffectConfigs => towerAttackEffectConfigs;
 	}
 }

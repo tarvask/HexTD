@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 
 namespace Match.Field.Tower
@@ -8,31 +9,31 @@ namespace Match.Field.Tower
     {
         public struct Context
         {
-            public TowersConfig TowersConfig { get; }
+            public TowerConfigsNew TowersConfig { get; }
 
-            public Context(TowersConfig towersConfig)
+            public Context(TowerConfigsNew towersConfig)
             {
                 TowersConfig = towersConfig;
             }
         }
 
         private readonly Context _context;
-        private readonly Dictionary<int, TowerConfig> _towersByIds;
+        private readonly Dictionary<int, TowerConfigNew> _towersByIds;
         
         public TowerConfigRetriever(Context context)
         {
             _context = context;
-            _towersByIds = new Dictionary<int, TowerConfig>(_context.TowersConfig.Towers.Count);
+            _towersByIds = new Dictionary<int, TowerConfigNew>(_context.TowersConfig.Towers.Count);
 
-            foreach (TowerConfig towerConfig in _context.TowersConfig.Towers)
+            foreach (TowerConfigNew towerConfig in _context.TowersConfig.Towers)
             {
-                _towersByIds.Add((int)towerConfig.Parameters.RegularParameters.Data.TowerType, towerConfig);
+                _towersByIds.Add((int)towerConfig.RegularParameters.TowerType, towerConfig);
             }
         }
         
-        public TowerConfig GetTowerByType(TowerType towerType)
+        public TowerConfigNew GetTowerByType(TowerType towerType)
         {
-            if (_towersByIds.TryGetValue((int) towerType, out TowerConfig towerConfig))
+            if (_towersByIds.TryGetValue((int) towerType, out TowerConfigNew towerConfig))
                 return towerConfig;
             
             throw new ArgumentException("Unknown or undefined tower type");
