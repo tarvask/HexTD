@@ -47,7 +47,6 @@ namespace Match.Commands.Implementations
                     (byte)commandParametersTable[PhotonEventsConstants.BuildTower.PositionRParam]);
                 TowerShortParams towerConfig = new TowerShortParams((TowerType)(byte)commandParametersTable[PhotonEventsConstants.BuildTower.TowerTypeParam],
                     (int)commandParametersTable[PhotonEventsConstants.BuildTower.TowerLevelParam]);
-                bool isFree = (bool)commandParametersTable[PhotonEventsConstants.BuildTower.IsFreeParam];
                 int timeStamp = (int)commandParametersTable[PhotonEventsConstants.BuildTower.TimeParam];
                 ProcessRoles senderRole = (ProcessRoles)(byte)commandParametersTable[PhotonEventsConstants.BuildTower.RoleParam];//_networkMatchStatus.UserIdsAndRoles[senderId];
                 

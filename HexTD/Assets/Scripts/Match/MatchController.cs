@@ -1,21 +1,16 @@
 using System;
 using HexSystem;
-using MapEditor;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
-using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.State;
-using Match.Field.Tower;
 using Match.State;
 using Match.Wave;
-using PathSystem;
 using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
-using UnityEngine;
 
 namespace Match
 {
@@ -157,6 +152,7 @@ namespace Match
                 hexFabric,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
+                _windowsManager,
                 false,
                 
                 _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, 
@@ -176,6 +172,7 @@ namespace Match
                 hexFabric,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
+                _windowsManager,
                 true,
                 
                 _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, clickReactiveCommand, _ourStateSyncedReactiveCommand,

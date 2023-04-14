@@ -59,10 +59,6 @@ namespace Match.Windows
         private int _currentTimerInt;
         private bool _waveSpawningInProcess;
 
-        public int MatchInfoPanelTopShift =>
-            Mathf.RoundToInt(((RectTransform)_context.View.transform.parent).rect.height * 0.5f 
-                             - (_context.View.MiddlePanelRect.anchoredPosition.y + _context.View.MiddlePanelRect.rect.height * 0.5f));
-
         public MatchInfoPanelController(Context context)
         {
             _context = context;

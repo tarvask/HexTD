@@ -140,10 +140,7 @@ namespace Match
                 _context.OurGoldCoinsIncomeChangedReactiveCommand,
                 _context.OurCrystalsCoinsCountChangedReactiveCommand);
             _matchInfoPanelController = AddDisposable(new MatchInfoPanelController(matchInfoPanelControllerContext));
-            
-            // extract middle panel shift
-            int middlePanelTopShift = _matchInfoPanelController.MatchInfoPanelTopShift;
-            
+
             // win/lose window
             WinLoseWindowController.Context winLoseWindowControllerContext = new WinLoseWindowController.Context(
                 _context.UiViews.WinLoseWindowView, OpenWindowsCountReactiveProperty, _context.QuitMatchReactiveCommand);

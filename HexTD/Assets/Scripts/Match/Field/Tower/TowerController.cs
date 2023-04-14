@@ -264,6 +264,16 @@ namespace Match.Field.Tower
             });
         }
 
+        public void ShowSelection()
+        {
+            
+        }
+
+        public void HideSelection()
+        {
+            
+        }
+
         public void LoadState(in PlayerState.TowerState towerState)
         {
             SetLevel(towerState.Level, towerState.ConstructionTime);
