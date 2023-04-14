@@ -1,31 +1,20 @@
 using System;
 using BuffLogic;
 using HexSystem;
-using Tools;
-using UniRx;
+using Match.Field.Shooting;
 
 namespace Match.Field.Mob
 {
-    public class MobReactiveModel : BaseDisposable, IReadonlyMobReactiveModel
+    public class MobReactiveModel : BaseReactiveModel
     {
         private readonly BaseBuffableValue<float> _speed;
-        private readonly BaseBuffableValue<float> _health;
         private Action<MobController, Hex2d> _onHexPositionChange;
 
-        // used only as a reference value
         public IReadonlyBuffableValue<float> Speed => _speed;
-        // can be changed by buffs with relative value
-        public IReadonlyBuffableValue<float> Health => _health;
 
-        public MobReactiveModel(float speed, float health)
+        public MobReactiveModel(float speed, float health) : base(health)
         {
             _speed = AddDisposable(new BaseBuffableValue<float>(speed));
-            _health = AddDisposable(new BaseBuffableValue<float>(health));
-        }
-
-        public void SetHealth(float newHealth)
-        {
-            _health.Value = newHealth;
         }
 
         public void SubscribeOnHexPositionChange(Action<MobController, Hex2d> actionOnChange)
@@ -36,6 +25,21 @@ namespace Match.Field.Mob
         public void OnHexPositionChange(MobController mobController, Hex2d newPosition)
         {
             _onHexPositionChange?.Invoke(mobController, newPosition);
+        }
+
+        public override bool TryGetBuffableValue(EntityBuffableValueType buffableValueType, out IBuffableValue buffableValue)
+        {
+            if (base.TryGetBuffableValue(buffableValueType, out buffableValue))
+                return true;
+
+            switch (buffableValueType)
+            {
+                case EntityBuffableValueType.Speed:
+                    buffableValue = _speed;
+                    return true;
+            }
+
+            return false;
         }
     }
 }

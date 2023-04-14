@@ -1,4 +1,3 @@
-using Match.Field.Tower.TowerConfigs;
 using Tools;
 
 namespace Match.Field.Tower
@@ -9,7 +8,6 @@ namespace Match.Field.Tower
         private int _level;
         private float _constructionTimeLabel;
         private int _targetId;
-        private bool _isTargetBlocker;
         private TowerState _towerState;
         
         // splash
@@ -21,7 +19,6 @@ namespace Match.Field.Tower
         public int Level => _level;
         public float ConstructionTimeLabel => _constructionTimeLabel;
         public int TargetId => _targetId;
-        public bool IsTargetBlocker => _isTargetBlocker;
         public bool CanShoot => _towerState == TowerState.Active;
         public bool IsAlive => _towerState != TowerState.Removing && _towerState != TowerState.ToDispose; 
         public bool IsConstructing => _towerState == TowerState.Constructing;
@@ -51,7 +48,6 @@ namespace Match.Field.Tower
         public void SetTarget(int targetId)
         {
             _targetId = targetId;
-            _isTargetBlocker = false;
         }
 
         public void ResetTarget()

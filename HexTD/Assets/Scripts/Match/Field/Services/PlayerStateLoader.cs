@@ -95,10 +95,14 @@ namespace Match.Field.Services
 
                 TowerType towerType = _context.FieldModel.Towers[projectileState.TowerId].TowerType;
                 TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerType);
+                
+                
                 Vector3 projectilePosition = new Vector3(projectileState.PositionX, projectileState.PositionY);
                 ProjectileController projectileController = _context.FieldFactory.CreateProjectileWithId(
-                    towerConfig.TowerAttackConfig.TowerAttacks[0],
-                    projectileState.Id, projectilePosition,
+                    towerConfig.AttacksConfig.Attacks[projectileState.Attackindex],
+                    projectileState.Id,
+                    projectileState.Attackindex,
+                    projectilePosition,
                     projectileState.HasSplash, projectileState.SplashRadius, projectileState.HasProgressiveSplash,
                     projectileState.TowerId, projectileState.TargetId);
                 projectileController.LoadState(projectileState);

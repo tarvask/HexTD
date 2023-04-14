@@ -6,7 +6,8 @@ namespace BuffLogic
 {
     public interface IBaseBuffManager : IOuterLogicUpdatable
     {
-        void AddBuff<T>(IBuffableValue<T> targetValue, IBuff<T> buff);
+        void AddBuff<T>(IBuffableValue targetValue, IBuff<T> buff);
+        IEnumerable<T> GetBuffOf<T>(IBuffableValue<T> targetValue);
     }
     
     public class BaseBuffManager<TValue> : BaseDisposable, IBaseBuffManager
@@ -29,9 +30,19 @@ namespace BuffLogic
             buffList.AddBuff(buff);
         }
 
-        public void AddBuff<T>(IBuffableValue<T> targetValue, IBuff<T> buff)
+        public void AddBuff<T>(IBuffableValue targetValue, IBuff<T> buff)
         {
             AddBuff((IBuffableValue<TValue>)targetValue, (IBuff<TValue>)buff);
+        }
+
+        public IEnumerable<T> GetBuffOf<T>(IBuffableValue<T> targetValue)
+        {
+            var target = (IBuffableValue<TValue>)targetValue;
+
+            if (!_buffs.TryGetValue(target, out var buffList))
+                return new List<T>();
+
+            return (IEnumerable<T>) buffList;
         }
 
         public void OuterLogicUpdate(float frameLength)

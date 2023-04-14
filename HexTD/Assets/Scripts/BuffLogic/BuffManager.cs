@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Tools;
 using Tools.Interfaces;
+using UnityEngine.UIElements;
 
 namespace BuffLogic
 {
@@ -14,7 +15,7 @@ namespace BuffLogic
             _buffManagers = new Dictionary<Type, IBaseBuffManager>();
         }
 
-        public void AddBuff<TValue>(IBuffableValue<TValue> targetValue, IBuff<TValue> buff)
+        public void AddBuff<TValue>(IBuffableValue targetValue, IBuff<TValue> buff)
         {
             if (!_buffManagers.TryGetValue(typeof(TValue), out IBaseBuffManager buffManager))
             {
@@ -23,6 +24,16 @@ namespace BuffLogic
             }
             
             buffManager.AddBuff(targetValue, buff);
+        }
+
+        public IEnumerable<TValue> GetBuffsOf<TValue>(IBuffableValue<TValue> targetValue)
+        {
+            if (_buffManagers.TryGetValue(typeof(TValue), out IBaseBuffManager buffManager))
+            {
+                return buffManager.GetBuffOf(targetValue);
+            }
+
+            return new List<TValue>();
         }
 
         protected override void OnDispose()

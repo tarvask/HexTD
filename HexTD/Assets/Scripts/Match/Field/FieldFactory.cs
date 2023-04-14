@@ -1,5 +1,6 @@
 using System;
 using HexSystem;
+using Match.Field.AttackEffect;
 using Match.Field.Castle;
 using Match.Field.Hexagons;
 using Match.Field.Mob;
@@ -204,20 +205,20 @@ namespace Match.Field
             return mobView;
         }
         
-        public ProjectileController CreateProjectile(BaseTowerAttack baseTowerAttack,
+        public ProjectileController CreateProjectile(BaseAttackEffect attack, int attackIndex,
             Vector3 spawnPosition, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
             int towerId, int targetId)
         {
             _lastProjectileId++;
 
-            return CreateProjectileWithId(baseTowerAttack, 
+            return CreateProjectileWithId(attack, attackIndex,
                 _lastProjectileId, spawnPosition, hasSplashDamage, 
                 splashDamageRadius, hasProgressiveSplash,
                 towerId, targetId);
         }
 
-        public ProjectileController CreateProjectileWithId(BaseTowerAttack baseTowerAttack,
-            int projectileId, Vector3 spawnPosition, bool hasSplashDamage, 
+        public ProjectileController CreateProjectileWithId(BaseAttackEffect baseTowerAttack,
+            int attackIndex, int projectileId, Vector3 spawnPosition, bool hasSplashDamage, 
             float splashDamageRadius, bool hasProgressiveSplash, int towerId, int targetId)
         {
             if (_lastProjectileId < projectileId)
@@ -225,7 +226,7 @@ namespace Match.Field
             
             ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttack.ProjectileView, spawnPosition);
             ProjectileController.Context projectileControllerContext = new ProjectileController.Context(projectileId,
-                baseTowerAttack, projectileInstance, baseTowerAttack.ProjectileSpeed, 
+                baseTowerAttack, attackIndex, projectileInstance, baseTowerAttack.ProjectileSpeed, 
                 hasSplashDamage, splashDamageRadius, hasProgressiveSplash, towerId, targetId);
             ProjectileController projectileController = new ProjectileController(projectileControllerContext);
 

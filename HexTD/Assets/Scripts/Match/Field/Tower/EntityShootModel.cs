@@ -1,26 +1,27 @@
 ﻿using System.Collections.Generic;
+using Match.Field.AttackEffect;
 using Match.Field.Tower.TowerConfigs;
 using Tools;
 using Tools.Interfaces;
 
 namespace Match.Field.Tower
 {
-    public class TowerShootModel : BaseDisposable, IOuterLogicUpdatable
+    public class EntityShootModel : BaseDisposable, IOuterLogicUpdatable
     {
-        private readonly TowerAttackConfig _towerAttackConfig;
+        private readonly AttacksConfig _attacksConfig;
         private Dictionary<int, float> _cooldowns;
 
         private int _readyTowerAttackId;
 
         public bool IsReadyAttack => _readyTowerAttackId > -1;
 
-        public TowerShootModel(TowerAttackConfig towerAttackConfig)
+        public EntityShootModel(AttacksConfig attacksConfig)
         {
-            _towerAttackConfig = towerAttackConfig;
+            _attacksConfig = attacksConfig;
             
             _cooldowns = new Dictionary<int, float>();
             int id = 0;
-            foreach (var towerAttack in _towerAttackConfig.TowerAttacks)
+            foreach (var towerAttack in _attacksConfig.Attacks)
             {
                 _cooldowns.Add(id, towerAttack.Cooldown);
                 id++;
@@ -39,15 +40,17 @@ namespace Match.Field.Tower
             }
         }
 
-        public bool TryReleaseTowerAttack(bool isReloadNeeded, out BaseTowerAttack towerAttack)
+        public bool TryReleaseTowerAttack(bool isReloadNeeded, out BaseAttackEffect towerAttack, out int attackindex)
         {
             if (!IsReadyAttack)
             {
                 towerAttack = null;
+                attackindex = -1;
                 return false;
             }
 
-            towerAttack = _towerAttackConfig.TowerAttacks[_readyTowerAttackId];
+            attackindex = _readyTowerAttackId;
+            towerAttack = _attacksConfig.Attacks[_readyTowerAttackId];
 
             if (isReloadNeeded)
             {

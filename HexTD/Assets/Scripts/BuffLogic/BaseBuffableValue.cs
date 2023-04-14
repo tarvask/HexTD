@@ -12,6 +12,7 @@ namespace BuffLogic
 
         private readonly ReactiveProperty<TValue> _value;
         private readonly TValue _defaultValue;
+        private IEnumerable<IBuff<TValue>> _buffs;
         
         public TValue Value
         {
@@ -39,19 +40,29 @@ namespace BuffLogic
             return value;
         }
 
-        private void ApplyBuffs(IEnumerable<IBuff<TValue>> buffs)
+        public TValue CopyValue(TValue defaultValue)
         {
-            _value.Value = ApplyBuffs(_defaultValue, buffs);
+            if (_buffs == null)
+                return defaultValue;
+            
+            return ApplyBuffs(defaultValue, _buffs);
+        }
+
+        private void ApplyBuffs()
+        {
+            _value.Value = ApplyBuffs(_defaultValue, _buffs);
         }
 
         public void UpdateAddBuff(PrioritizeLinkedList<IBuff<TValue>> buffs, IBuff<TValue> addedBuff)
         {
-            ApplyBuffs(buffs);
+            _buffs = buffs;
+            ApplyBuffs();
         }
 
         public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<TValue>> buffs, IEnumerable<IBuff<TValue>> removedBuffs)
         {
-            ApplyBuffs(buffs);
+            _buffs = buffs;
+            ApplyBuffs();
         }
 
         public void Subscribe(Action<TValue> onChangeAction)

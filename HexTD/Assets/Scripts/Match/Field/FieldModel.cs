@@ -52,7 +52,7 @@ namespace Match.Field
         
         // supporting data
         // objects that can be shot
-        private Dictionary<int, IShootable> _shootables;
+        private Dictionary<int, ITargetable> _shootables;
 
         public int HexGridSize => _context.FieldHexTypesController.HexGridSize;
         
@@ -67,7 +67,7 @@ namespace Match.Field
         public MobsManager MobsManager => _context.MobsManager;
         // projectiles by ids
         public Dictionary<int, ProjectileController> Projectiles => _projectiles;
-        public Dictionary<int, IShootable> Shootables => _shootables;
+        public Dictionary<int, ITargetable> Shootables => _shootables;
 
         public FieldModel(Context context)
         {
@@ -76,7 +76,7 @@ namespace Match.Field
             _castle = AddDisposable(_context.Factory.CreateCastle());
             
             _projectiles = new Dictionary<int, ProjectileController>(WaveMobSpawnerCoordinator.MaxMobsInWave * 8); // random stuff
-            _shootables = new Dictionary<int, IShootable>(WaveMobSpawnerCoordinator.MaxMobsInWave); // + blockers count
+            _shootables = new Dictionary<int, ITargetable>(WaveMobSpawnerCoordinator.MaxMobsInWave); // + blockers count
             
             _context.RemoveMobReactiveCommand.Subscribe(RemoveMob);
         }

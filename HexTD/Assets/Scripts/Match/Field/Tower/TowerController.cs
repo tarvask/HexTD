@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BuffLogic;
 using HexSystem;
-using Match.Field.Buff;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.Shooting.TargetFinding;
@@ -16,7 +16,7 @@ using Object = UnityEngine.Object;
 
 namespace Match.Field.Tower
 {
-    public class TowerController : BaseDisposable, IOuterLogicUpdatable
+    public class TowerController : BaseTargetableEntity, IOuterLogicUpdatable
     {
         public struct Context
         {
@@ -40,48 +40,48 @@ namespace Match.Field.Tower
         }
 
         private readonly Context _context;
-        private readonly TowerShootModel _shootModel;
+        private readonly EntityShootModel _shootModel;
         private readonly TowerStableModel _stableModel;
         private readonly TowerReactiveModel _reactiveModel;
         // effects that are applied to mobs after shot (firing, icing, slowing)
         
         private TowerLevelConfig CurrentLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level - 1];
         private TowerLevelConfig NextLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level];
-        private Vector3 Position => _context.View.transform.localPosition;
+        public override Vector3 Position => _context.View.transform.localPosition;
+        public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
 
         public int Id => _context.Id;
         public Hex2d HexPosition => _context.Position;
+        
+        public override void Hurt(float damage)
+        {
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value - damage);
+        }
+
         public bool IsReadyToShoot => _shootModel.IsReadyAttack;
         public bool HasTarget => _stableModel.TargetId > 0;
-        public int TargetId => _stableModel.TargetId;
+        public override int TargetId => _stableModel.TargetId;
         public bool CanShoot => _stableModel.CanShoot;
         public bool IsAlive => _stableModel.IsAlive;
         public bool IsReadyToRelease => _stableModel.IsReadyToRelease;
         public bool IsReadyToDispose => _stableModel.IsReadyToDispose;
         public TowerType TowerType => _context.TowerConfig.RegularParameters.TowerType;
-        public IReadOnlyReactiveProperty<int> KillsCount => _reactiveModel.KillsCountReactiveProperty;
-        public ProjectileView ProjectilePrefab => _context.TowerConfig.TowerAttackConfig.TowerAttacks[0].ProjectileView;
         public Sprite Icon => _context.Icon;
 
         public TowerController(Context context)
         {
             _context = context;
 
-            _shootModel = AddDisposable(new TowerShootModel(_context.TowerConfig.TowerAttackConfig));
+            _shootModel = AddDisposable(new EntityShootModel(_context.TowerConfig.AttacksConfig));
             _stableModel = AddDisposable(new TowerStableModel());
-            _reactiveModel = AddDisposable(new TowerReactiveModel());
+            _reactiveModel = AddDisposable(new TowerReactiveModel(CurrentLevel.HealthPoint));
             
-            //_buffsManager = AddDisposable(new TowerBuffsManager(new TowerBuffsManager.Context(
-            //    _reactiveModel.AttackPowerReactiveProperty,
-            //    _reactiveModel.AttackRadiusReactiveProperty,
-            //    _reactiveModel.ReloadTimeReactiveProperty)));
             _context.View.SetType(_context.TowerConfig.RegularParameters.TowerName);
         }
 
         public void OuterLogicUpdate(float frameLength)
         {
             _shootModel.OuterLogicUpdate(frameLength);
-            //_buffsManager.OuterLogicUpdate(frameLength);
         }
 
         // TODO: fix abilities' behaviour
@@ -130,30 +130,32 @@ namespace Match.Field.Tower
 
         public bool FindTarget(TargetFinder targetFinder, IReadOnlyDictionary<int, List<MobController>> mobs)
         {
-            if (!_shootModel.TryReleaseTowerAttack(false, out var towerAttack))
+            if (!_shootModel.TryReleaseTowerAttack(false, out var towerAttack, out var attackIndex))
                 return false;
             
             int targetId = targetFinder.GetTargetWithTacticInRange(mobs,
                 _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType,
                 _context.TowerConfig.RegularParameters.TargetFindingTacticType, 
                 HexPosition, towerAttack.AttackRadiusInHex,
-                _context.TowerConfig.RegularParameters.PreferUnbuffedTargets);//, _activeAbilities);
+                _context.TowerConfig.RegularParameters.PreferUnbuffedTargets);
             _stableModel.SetTarget(targetId);
+            
             return HasTarget;
         }
 
         public ProjectileController Shoot(FieldFactory factory)
         {
-            if (!_shootModel.TryReleaseTowerAttack(true, out var towerAttack))
+            if (!_shootModel.TryReleaseTowerAttack(true, out var towerAttack, out int attackIndex))
                 throw new Exception("Try to make attack but no ones ready yet!");
-            
+
             ProjectileController projectile = factory.CreateProjectile(
                 towerAttack,
+                attackIndex,
                 Position,
                 _stableModel.HasSplashDamage, _stableModel.SplashDamageRadius, _stableModel.HasProgressiveSplashDamage,
                 _context.Id, _stableModel.TargetId);
 
-            if (_context.TowerConfig.RegularParameters.ResetTargetEveryShot && !_stableModel.IsTargetBlocker)
+            if (_context.TowerConfig.RegularParameters.ResetTargetEveryShot)
                 _stableModel.ResetTarget();
 
             return projectile;

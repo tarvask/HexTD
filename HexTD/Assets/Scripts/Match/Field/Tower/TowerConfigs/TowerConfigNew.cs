@@ -1,4 +1,5 @@
 ﻿using System;
+using Match.Field.AttackEffect;
 using Tools;
 using UnityEngine;
 
@@ -11,13 +12,13 @@ namespace Match.Field.Tower.TowerConfigs
 		[SerializeField] private TowerView view;
 		[SerializeField] private TowerRegularParameters regularParameters;
 		[SerializeField] private TowerLevelConfigsDictionary towerLevelConfigs;
-		[SerializeField] private TowerAttackConfig towerAttackConfig;
+		[SerializeField] private AttacksConfig attacksConfig;
 
 		public Sprite Icon => icon;
 		public TowerView View => view;
 		public TowerRegularParameters RegularParameters => regularParameters;
 		public TowerLevelConfigsDictionary TowerLevelConfigs => towerLevelConfigs;
-		public TowerAttackConfig TowerAttackConfig => towerAttackConfig;
+		public AttacksConfig AttacksConfig => attacksConfig;
 	}
 
 	[Serializable]
@@ -27,9 +28,12 @@ namespace Match.Field.Tower.TowerConfigs
 		[SerializeField] private int refundPrice;
 		[SerializeField] private int buildTime;
 
+		[SerializeField] private float healthPoint;
+		
 		public int BuildPrice => buildPrice;
 		public int RefundPrice => refundPrice;
 		public int BuildTime => buildTime;
+		public float HealthPoint => healthPoint;
 	}
 
 	[Serializable]

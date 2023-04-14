@@ -14,5 +14,6 @@ namespace BuffLogic
     public interface IReadonlyBuffableValue<TValue> : IBuffableValue<TValue>
     {
         TValue Value { get; }
+        TValue CopyValue(TValue defaultValue);
     }
 }
