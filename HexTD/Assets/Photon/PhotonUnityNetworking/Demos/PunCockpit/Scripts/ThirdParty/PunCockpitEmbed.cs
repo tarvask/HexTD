@@ -24,7 +24,7 @@ namespace Photon.Pun.Demo.Cockpit
     public class PunCockpitEmbed : MonoBehaviourPunCallbacks
     {
 
-        string PunCockpit_scene = "PunCockpit-Scene";
+        string PunCockpit_scene = "PunCockpit";//"PunCockpit-Scene"
 
         public bool EmbeddCockpit = true;
         public string CockpitGameTitle = "";

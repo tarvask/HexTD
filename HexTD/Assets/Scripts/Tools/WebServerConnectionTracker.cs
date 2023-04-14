@@ -1,6 +1,8 @@
 using Cysharp.Threading.Tasks;
+#if UNITY_EDITOR
 using UnityEditor.AddressableAssets;
 using UnityEditor.AddressableAssets.Settings;
+#endif
 using UnityEngine.Networking;
 
 namespace Tools
