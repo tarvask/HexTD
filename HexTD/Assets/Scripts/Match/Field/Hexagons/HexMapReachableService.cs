@@ -25,13 +25,17 @@ namespace Match.Field.Hexagons
             {
                 case ReachableAttackTargetFinderType.Simple:
                     return GetConditionalInRangeMap(position, attackRadius, SimpleCondition);
-                
+
                 case ReachableAttackTargetFinderType.Catapult:
                     return GetConditionalInRangeMap(position, attackRadius, CatapultCondition);
                 
                 case ReachableAttackTargetFinderType.Horizontal:
                     return GetConditionalInRangeMap(position, attackRadius, HorizontalCondition);
-                
+
+                case ReachableAttackTargetFinderType.HeightDependant:
+                    return GetConditionalInRangeMap(position, attackRadius + 
+                        _hexagonalFieldModel[position.GetHashCode()].Height - 1, HeightDependantCondition);
+
                 default:
                     return GetConditionalInRangeMap(position, attackRadius, SimpleCondition);
             }
@@ -69,5 +73,8 @@ namespace Match.Field.Hexagons
 
         public bool HorizontalCondition(HexModel position, HexModel targetHexModel) =>
             position.Height == targetHexModel.Height;
+
+        public bool HeightDependantCondition(HexModel position, HexModel targetHexModel) =>
+            position.Height >= targetHexModel.Height;
     }
 }
