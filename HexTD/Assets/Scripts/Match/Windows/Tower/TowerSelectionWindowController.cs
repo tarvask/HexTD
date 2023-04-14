@@ -31,7 +31,6 @@ namespace Match.Windows.Tower
 
         private readonly Context _context;
         private readonly List<TowerItemView> _playerHandTowerItems;
-        private readonly List<TowerItemView> _artifactTowerItems;
         private Action<TowerShortParams> _onTowerSelectedAction;
 
         public TowerSelectionWindowController(Context context) : base(context.View, context.OpenWindowsCountReactiveProperty)
@@ -42,8 +41,6 @@ namespace Match.Windows.Tower
             // artifact towerItems can be skipped here, as their price is 0
             _context.SilverCoinsCountChangedReactiveCommand.Subscribe(UpdatePlayerHandTowers);
             _playerHandTowerItems = new List<TowerItemView>(_context.PlayerHandParams.Towers.Length);
-            // we don't know count beforehand, hand size is ok
-            _artifactTowerItems = new List<TowerItemView>(_context.PlayerHandParams.Towers.Length); 
             FillContent();
         }
 
@@ -95,7 +92,6 @@ namespace Match.Windows.Tower
         protected override void OnDispose()
         {
             _playerHandTowerItems.Clear();
-            _artifactTowerItems.Clear();
             base.OnDispose();
             
             _context.View.CloseButton.onClick.RemoveListener(HideWindow);

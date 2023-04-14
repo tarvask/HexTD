@@ -173,14 +173,15 @@ namespace Match.Field.Tower
         
         public static int GetTowerSellPrice(TowerLevelConfigsDictionary towerLevels, int towerLevel)
         {
-            int sellPrice = 0;
-            
-            for (int levelIndex = 0; levelIndex < towerLevel; levelIndex++)
-            {
-                sellPrice += towerLevels[levelIndex].BuildPrice;
-            }
-
-            return Mathf.CeilToInt(sellPrice * 0.5f);
+            // int sellPrice = 0;
+            //
+            // for (int levelIndex = 0; levelIndex < towerLevel; levelIndex++)
+            // {
+            //     sellPrice += towerParameters.Levels[levelIndex].LevelRegularParams.Data.Price;
+            // }
+            //
+            // return Mathf.CeilToInt(sellPrice * 0.5f);
+            return towerLevels[towerLevel - 1].RefundPrice;
         }
 
         public void SetRemoving()
@@ -194,6 +195,16 @@ namespace Match.Field.Tower
                 await Task.Delay(_context.TowerRemovingDuration * 1000);
                 _stableModel.SetState(TowerState.ToDispose);
             });
+        }
+
+        public void ShowSelection()
+        {
+            
+        }
+
+        public void HideSelection()
+        {
+            
         }
 
         public void LoadState(in PlayerState.TowerState towerState)

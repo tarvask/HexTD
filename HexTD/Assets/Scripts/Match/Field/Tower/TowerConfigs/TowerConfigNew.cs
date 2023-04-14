@@ -24,9 +24,11 @@ namespace Match.Field.Tower.TowerConfigs
 	public class TowerLevelConfig
 	{
 		[SerializeField] private int buildPrice;
+		[SerializeField] private int refundPrice;
 		[SerializeField] private int buildTime;
 
 		public int BuildPrice => buildPrice;
+		public int RefundPrice => refundPrice;
 		public int BuildTime => buildTime;
 	}
 

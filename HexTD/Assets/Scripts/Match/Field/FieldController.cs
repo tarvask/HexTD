@@ -29,10 +29,11 @@ namespace Match.Field
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public BuffManager BuffManager { get; }
+            public WindowsManager WindowsManager { get; }
             public bool NeedsInput { get; }
             
             public MatchCommands MatchCommands { get; }
-            
+
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             public ReactiveCommand<Hex2d> ClickReactiveCommand { get; }
             public ReactiveCommand<PlayerState> StateSyncedReactiveCommand { get; }
@@ -52,6 +53,7 @@ namespace Match.Field
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
                 BuffManager buffManager,
+                WindowsManager windowsManager,
 
                 bool needsInput,
                 
@@ -77,6 +79,7 @@ namespace Match.Field
                 FieldConfig = fieldConfig;
                 ConfigsRetriever = configsRetriever;
                 BuffManager = buffManager;
+                WindowsManager = windowsManager;
 
                 NeedsInput = needsInput;
                 MatchCommands = matchCommands;
@@ -116,8 +119,6 @@ namespace Match.Field
         
         public const float MoveLerpCoeff = 0.7f;
 
-        public FieldModel FieldModel => _model;
-        
         public FieldController(Context context)
         {
             _context = context;
@@ -198,7 +199,10 @@ namespace Match.Field
             FieldClicksDistributor.Context clicksDistributorContext =
                 new FieldClicksDistributor.Context(_model, _clicksHandler, _context.ConfigsRetriever,
                     _constructionProcessController,
-                    _shootingController, _currencyController, _context.MatchCommands);
+                    _currencyController, _context.MatchCommands,
+                    _context.WindowsManager.TowerSelectionWindowController,
+                    _context.WindowsManager.TowerManipulationWindowController,
+                    _context.WindowsManager.TowerInfoWindowController);
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
 
             PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model, _factory,

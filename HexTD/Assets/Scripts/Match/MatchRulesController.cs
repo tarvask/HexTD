@@ -24,7 +24,6 @@ namespace Match
         }
         
         private readonly Context _context;
-        // TODO: temporary
         private bool _isMatchRunning;
 
         public bool IsMatchRunning => _isMatchRunning;

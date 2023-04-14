@@ -26,10 +26,12 @@ MonoBehaviour:
   towerLevelConfigs:
     keyData: 0000000002000000
     valueData:
-    - buildPrice: 111
-      buildTime: 11
-    - buildPrice: 222
-      buildTime: 22
+    - buildPrice: 0
+      refundPrice: 0
+      buildTime: 1
+    - buildPrice: 1
+      refundPrice: 1
+      buildTime: 1
   towerAttackConfig:
     towerAttacks:
     - rid: 8526325976124358656
