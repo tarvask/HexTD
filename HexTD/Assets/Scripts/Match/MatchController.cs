@@ -236,11 +236,11 @@ namespace Match
             _waveMobSpawnerCoordinator = new WaveMobSpawnerCoordinator(waveMobSpawnerContext);
 
             // rules
-            //MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
-            //    _windowsManager.WinLoseWindowController,
-            //    enemyCastleDestroyedReactiveCommand,
-            //    ourCastleDestroyedReactiveCommand);
-            //_rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
+            MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
+                _windowsManager.WinLoseWindowController,
+                enemyCastleDestroyedReactiveCommand,
+                ourCastleDestroyedReactiveCommand);
+            _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
 
             // input
             HexInteractService hexInteractService = new HexInteractService(_context.MatchView.MainCamera);
@@ -307,8 +307,8 @@ namespace Match
 
         public void OuterLogicUpdate(float frameLength)
         {
-            //if (!_rulesController.IsMatchRunning)
-            //    return;
+            if (!_rulesController.IsMatchRunning)
+                return;
             
             _inputController.OuterLogicUpdate(frameLength);
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
