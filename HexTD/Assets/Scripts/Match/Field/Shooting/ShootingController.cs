@@ -88,8 +88,6 @@ namespace Match.Field.Shooting
                 if (!towerPair.Value.CanShoot)
                     continue;
                 
-                towerPair.Value.UpdateTimer(frameLength);
-
                 if (!towerPair.Value.IsReadyToShoot)
                     continue;
                 
@@ -228,13 +226,12 @@ namespace Match.Field.Shooting
 
         private void HandleHitShootable(ProjectileController projectile, IShootable hitShootable, float sqrDistance)
         {
-            int damage = ComputeDamage(projectile.SpawnTowerId, hitShootable.TargetId,
-                projectile.HasSplashDamage, projectile.SplashDamageRadius, projectile.HasProgressiveSplash,
-                sqrDistance);
+           // int damage = ComputeDamage(projectile.SpawnTowerId, ,
+           //     projectile.HasSplashDamage, projectile.SplashDamageRadius, projectile.HasProgressiveSplash,
+           //     sqrDistance);
             
-            hitShootable.Hurt(damage);
-            
-            projectile.BaseTowerAttackEffect.ApplyAttack(hitShootable, _context.BuffManager);
+            projectile.BaseTowerAttack.ApplyAttackImpact(hitShootable, new List<IBuff<float>>());
+            projectile.BaseTowerAttack.ApplyAttackEffect(hitShootable, _context.BuffManager);
             // List<AbstractBuffParameters> buffs = ComputeBuffs(projectile.SpawnTowerId, hitShootable.TargetId);
             // hitShootable.ApplyBuffs(buffs);
             
@@ -247,7 +244,7 @@ namespace Match.Field.Shooting
             _shootablesWithAttackingTowers[hitShootable.TargetId].Add(projectile.SpawnTowerId);
         }
 
-        private int ComputeDamage(int towerId, int targetId,
+        private int ComputeDamage(int towerId, float damage,
             bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash, float sqrDistance)
         {
             if (hasSplashDamage)
@@ -255,10 +252,10 @@ namespace Match.Field.Shooting
                 float splashDistanceDecreaseCoeff = hasProgressiveSplash
                     ? 1 - sqrDistance / splashDamageRadius
                     : 1;
-                return Mathf.CeilToInt(_context.FieldModel.Towers[towerId].CurrentDamage * splashDistanceDecreaseCoeff);
+                return Mathf.CeilToInt(damage * splashDistanceDecreaseCoeff);
             }
             
-            return Mathf.CeilToInt(_context.FieldModel.Towers[towerId].CurrentDamage);
+            return Mathf.CeilToInt(damage);
         }
 
         // private List<AbstractBuffParameters> ComputeBuffs(int towerId, int targetId)

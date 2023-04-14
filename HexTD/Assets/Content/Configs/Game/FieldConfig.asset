@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 180d3828ff9324840932e97f70a9424f, type: 3}
-  m_Name: New Field Config
+  m_Name: FieldConfig
   m_EditorClassIdentifier: 
   castleHealth: 10
   maxOverlappingWaves: 2

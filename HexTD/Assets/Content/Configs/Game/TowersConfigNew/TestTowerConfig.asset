@@ -31,18 +31,27 @@ MonoBehaviour:
     - buildPrice: 222
       buildTime: 22
   towerAttackConfig:
-    baseDamage: 0
-    cooldown: 1
-    attackRadiusInHex: 2
-    towerAttackEffectConfigs:
-    - rid: 1156272033793572865
+    towerAttacks:
+    - rid: 8526325976124358656
+    - rid: 8526325976124358657
   references:
     version: 2
     RefIds:
-    - rid: 1156272033793572865
-      type: {class: MovementSpeedTowerAttackEffect, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
+    - rid: 8526325976124358656
+      type: {class: SimpleTowerAttack, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
       data:
-        projectileSpeed: 10
+        cooldown: 1
+        attackRadiusInHex: 2
+        projectileSpeed: 25
         projectileView: {fileID: 1455519004008089238, guid: 498ecc4ea3025d94d9840ac734c90ec0, type: 3}
-        duration: 5
-        percentageValue: 1000
+        damage: 5
+    - rid: 8526325976124358657
+      type: {class: GradualDamageTowerAttack, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
+      data:
+        cooldown: 3
+        attackRadiusInHex: 2
+        projectileSpeed: 25
+        projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
+        damageCapacity: 10
+        damagePerDelay: 1
+        delay: 0.1

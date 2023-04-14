@@ -9,8 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1568221066824527546}
-  - component: {fileID: 1568221066824527525}
-  - component: {fileID: 1568221066824527524}
   - component: {fileID: 1568221066824527527}
   m_Layer: 0
   m_Name: TestTower
@@ -35,47 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1568221066824527525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1568221066824527526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26e2619cc7154082b955cb0804e887d3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data:
-    level: 1
-    attackPower: 0
-    reloadTime: 1
-    attackRadiusInHexCount: 2
-    projectileSpeed: 10
-    price: 1
-    buildingTime: 1
---- !u!114 &1568221066824527524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1568221066824527526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 623018b4f01c4af5a491c73ee1a6b753, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data:
-    towerType: 1
-    towerName: TestTower
-    raceType: 2
-    epicDegree: 1
-    reachableAttackTargetFinderType: 0
-    targetFindingTacticType: 1
-    preferUnbuffedTargets: 0
-    resetTargetEveryShot: 0
 --- !u!114 &1568221066824527527
 MonoBehaviour:
   m_ObjectHideFlags: 0

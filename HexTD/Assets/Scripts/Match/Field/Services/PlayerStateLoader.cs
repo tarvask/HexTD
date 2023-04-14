@@ -97,7 +97,7 @@ namespace Match.Field.Services
                 TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerType);
                 Vector3 projectilePosition = new Vector3(projectileState.PositionX, projectileState.PositionY);
                 ProjectileController projectileController = _context.FieldFactory.CreateProjectileWithId(
-                    towerConfig.TowerAttackConfig.TowerAttackEffectConfigs[0],
+                    towerConfig.TowerAttackConfig.TowerAttacks[0],
                     projectileState.Id, projectilePosition,
                     projectileState.HasSplash, projectileState.SplashRadius, projectileState.HasProgressiveSplash,
                     projectileState.TowerId, projectileState.TargetId);

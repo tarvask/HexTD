@@ -204,28 +204,28 @@ namespace Match.Field
             return mobView;
         }
         
-        public ProjectileController CreateProjectile(BaseTowerAttackEffect baseTowerAttackEffect,
+        public ProjectileController CreateProjectile(BaseTowerAttack baseTowerAttack,
             Vector3 spawnPosition, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
             int towerId, int targetId)
         {
             _lastProjectileId++;
 
-            return CreateProjectileWithId(baseTowerAttackEffect, 
+            return CreateProjectileWithId(baseTowerAttack, 
                 _lastProjectileId, spawnPosition, hasSplashDamage, 
                 splashDamageRadius, hasProgressiveSplash,
                 towerId, targetId);
         }
 
-        public ProjectileController CreateProjectileWithId(BaseTowerAttackEffect baseTowerAttackEffect,
+        public ProjectileController CreateProjectileWithId(BaseTowerAttack baseTowerAttack,
             int projectileId, Vector3 spawnPosition, bool hasSplashDamage, 
             float splashDamageRadius, bool hasProgressiveSplash, int towerId, int targetId)
         {
             if (_lastProjectileId < projectileId)
                 _lastProjectileId = projectileId;
             
-            ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttackEffect.ProjectileView, spawnPosition);
+            ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttack.ProjectileView, spawnPosition);
             ProjectileController.Context projectileControllerContext = new ProjectileController.Context(projectileId,
-                baseTowerAttackEffect, projectileInstance, baseTowerAttackEffect.ProjectileSpeed, 
+                baseTowerAttack, projectileInstance, baseTowerAttack.ProjectileSpeed, 
                 hasSplashDamage, splashDamageRadius, hasProgressiveSplash, towerId, targetId);
             ProjectileController projectileController = new ProjectileController(projectileControllerContext);
 

@@ -29,14 +29,19 @@ namespace BuffLogic
             _value = AddDisposable(new ReactiveProperty<TValue>(defaultValue));
         }
 
-        public void ApplyBuffs(PrioritizeLinkedList<IBuff<TValue>> buffs)
+        public static TValue ApplyBuffs(TValue defaultValue, IEnumerable<IBuff<TValue>> buffs)
         {
-            TValue value = _defaultValue;
+            TValue value = defaultValue;
             
             foreach (var buff in buffs)
                 value = buff.ApplyBuff(value);
 
-            _value.Value = value;
+            return value;
+        }
+
+        private void ApplyBuffs(IEnumerable<IBuff<TValue>> buffs)
+        {
+            _value.Value = ApplyBuffs(_defaultValue, buffs);
         }
 
         public void UpdateAddBuff(PrioritizeLinkedList<IBuff<TValue>> buffs, IBuff<TValue> addedBuff)

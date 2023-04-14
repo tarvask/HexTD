@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efeabf95ed884f30b3a8c09f15e8139c, type: 3}
-  m_Name: Towers Config
+  m_Script: {fileID: 11500000, guid: bf1638b98c6a4be9a6f5e6745842d83b, type: 3}
+  m_Name: MatchConfig
   m_EditorClassIdentifier: 
-  towers:
-  - {fileID: 11400000, guid: 9a92fdb94e9996b429d7ec35aa07daad, type: 2}
+  levels:
+  - {fileID: 11400000, guid: 10ea635a97cdd1a4e981b75971e65190, type: 2}

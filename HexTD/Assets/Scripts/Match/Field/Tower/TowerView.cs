@@ -1,9 +1,7 @@
 using Tools;
-using UnityEngine;
 
 namespace Match.Field.Tower
 {
-    [RequireComponent(typeof(TowerRegularParametersMarker))]
     public class TowerView : BaseMonoBehaviour
     {
         public void SetType(string towerType)

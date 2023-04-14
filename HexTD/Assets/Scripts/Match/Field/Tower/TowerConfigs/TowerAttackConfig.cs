@@ -2,20 +2,16 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Match.Field.Tower.TowerConfigs
 {
 	[Serializable]
-	public class TowerAttackConfig
+	public class TowerAttackConfig 
 	{
-		[SerializeField] private float baseDamage;
-		[SerializeField] private float cooldown;
-		[SerializeField] private int attackRadiusInHex;
-		[SerializeReference] [InlineEditor] private List<BaseTowerAttackEffect> towerAttackEffectConfigs;
+		[FormerlySerializedAs("towerAttackEffectConfigs")] [SerializeReference] [InlineEditor] 
+		private List<BaseTowerAttack> towerAttacks;
 
-		public float BaseDamage => baseDamage;
-		public float Cooldown => cooldown;
-		public int AttackRadiusInHex => attackRadiusInHex;
-		public List<BaseTowerAttackEffect> TowerAttackEffectConfigs => towerAttackEffectConfigs;
+		public List<BaseTowerAttack> TowerAttacks => towerAttacks;
 	}
 }
