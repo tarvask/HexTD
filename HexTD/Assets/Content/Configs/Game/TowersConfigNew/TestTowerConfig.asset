@@ -35,15 +35,14 @@ MonoBehaviour:
     cooldown: 1
     attackRadiusInHex: 2
     towerAttackEffectConfigs:
-    - rid: 1156272033793572864
+    - rid: 1156272033793572865
   references:
     version: 2
     RefIds:
-    - rid: 1156272033793572864
-      type: {class: GradualDamageTowerAttackEffect, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
+    - rid: 1156272033793572865
+      type: {class: MovementSpeedTowerAttackEffect, ns: Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs, asm: Assembly-CSharp}
       data:
         projectileSpeed: 10
         projectileView: {fileID: 1455519004008089238, guid: 498ecc4ea3025d94d9840ac734c90ec0, type: 3}
-        damageCapacity: 10
-        damagePerDelay: 1
-        delay: 0.1
+        duration: 5
+        percentageValue: 1000

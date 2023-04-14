@@ -114,14 +114,14 @@ namespace Match.Field.Mob
                 return;
             
             float distanceToTarget = Vector3.Magnitude(_currentPosition - _currentTargetPosition);
-            float distancePerFrame = _context.Parameters.Speed; //_buffsManager.ParameterResultValue(BuffedParameterType.MovementSpeed) * frameLength;
+            float distancePerFrame = _reactiveModel.Speed.Value; //_buffsManager.ParameterResultValue(BuffedParameterType.MovementSpeed) * frameLength;
 
             // special treatment for range attack when approaching castle
             if (!CheckRangeAttackDistance(ref _currentPosition))
             {
                 if (distancePerFrame < distanceToTarget)
                 {
-                    _currentPosition = Vector3.MoveTowards(_currentPosition, _currentTargetPosition, _context.Parameters.Speed);
+                    _currentPosition = Vector3.MoveTowards(_currentPosition, _currentTargetPosition, distancePerFrame);
                     _currentPathLength += distancePerFrame;
                     if (!_wasNewHexReached && 
                         _context.HexPositionConversionService.IsCloseToNewHex(distanceToTarget))

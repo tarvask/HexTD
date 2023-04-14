@@ -14,7 +14,7 @@ namespace Match.Field.Tower.TowerConfigs.TowerAttackEffectConfigs
 		
 		public override void ApplyAttack(IShootable mobController, BuffManager buffManager)
 		{
-			MultiFloatValueBuff speedBuff = new MultiFloatValueBuff(percentageValue);
+			DivideFloatValueBuff speedBuff = new DivideFloatValueBuff(percentageValue);
 			speedBuff.AddCondition(new TimerBuffCondition(duration));
 			buffManager.AddBuff(mobController.Speed, speedBuff);
 		}
