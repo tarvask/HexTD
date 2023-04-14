@@ -220,14 +220,15 @@ namespace Match.Field.Tower
         
         public static int GetTowerSellPrice(TowerParameters towerParameters, int towerLevel)
         {
-            int sellPrice = 0;
-            
-            for (int levelIndex = 0; levelIndex < towerLevel; levelIndex++)
-            {
-                sellPrice += towerParameters.Levels[levelIndex].LevelRegularParams.Data.Price;
-            }
-
-            return Mathf.CeilToInt(sellPrice * 0.5f);
+            // int sellPrice = 0;
+            //
+            // for (int levelIndex = 0; levelIndex < towerLevel; levelIndex++)
+            // {
+            //     sellPrice += towerParameters.Levels[levelIndex].LevelRegularParams.Data.Price;
+            // }
+            //
+            // return Mathf.CeilToInt(sellPrice * 0.5f);
+            return towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.RefundPrice;
         }
 
         public void AddBuff(AbstractBuffParameters buffParameters)
