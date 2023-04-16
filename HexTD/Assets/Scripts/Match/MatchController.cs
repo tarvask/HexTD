@@ -1,21 +1,16 @@
 using System;
 using HexSystem;
-using MapEditor;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
-using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.State;
-using Match.Field.Tower;
 using Match.State;
 using Match.Wave;
-using PathSystem;
 using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
-using UnityEngine;
 
 namespace Match
 {
@@ -150,15 +145,14 @@ namespace Match
 
            // fields
            var hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig);
-           var pathContainer = new PathContainer(_context.MatchInitDataParameters.Paths);
 
            //TODO: click handle separate with field controller
            FieldController.Context enemyFieldContext = new FieldController.Context(
                 _context.MatchView.EnemyFieldRoot,
                 hexFabric,
-                pathContainer,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
+                _windowsManager,
                 false,
                 
                 _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, 
@@ -176,9 +170,9 @@ namespace Match
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
                 hexFabric,
-                pathContainer,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
+                _windowsManager,
                 true,
                 
                 _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, clickReactiveCommand, _ourStateSyncedReactiveCommand,
@@ -239,11 +233,11 @@ namespace Match
             _waveMobSpawnerCoordinator = new WaveMobSpawnerCoordinator(waveMobSpawnerContext);
 
             // rules
-            //MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
-            //    _windowsManager.WinLoseWindowController,
-            //    enemyCastleDestroyedReactiveCommand,
-            //    ourCastleDestroyedReactiveCommand);
-            //_rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
+            MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
+                _windowsManager.WinLoseWindowController,
+                enemyCastleDestroyedReactiveCommand,
+                ourCastleDestroyedReactiveCommand);
+            _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
 
             // input
             HexInteractService hexInteractService = new HexInteractService(_context.MatchView.MainCamera);
@@ -310,8 +304,8 @@ namespace Match
 
         public void OuterLogicUpdate(float frameLength)
         {
-            //if (!_rulesController.IsMatchRunning)
-            //    return;
+            if (!_rulesController.IsMatchRunning)
+                return;
             
             _inputController.OuterLogicUpdate(frameLength);
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);

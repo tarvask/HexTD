@@ -212,7 +212,6 @@ public static class PhotonEventsConstants
         public const string PositionRParam = "rposition";
         public const string TowerTypeParam = "type";
         public const string TowerLevelParam = "level";
-        public const string IsFreeParam = "free";
         public const string TimeParam = "timestamp";
     }
 

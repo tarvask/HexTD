@@ -12,6 +12,7 @@ namespace Match.Field.Tower
         [SerializeField] private int attackRadiusInHexCount;
         [SerializeField] private float projectileSpeed;
         [SerializeField] private int price;
+        [SerializeField] private int refundPrice;
         [SerializeField] private float buildingTime;
         
         public int Level => level;
@@ -20,6 +21,7 @@ namespace Match.Field.Tower
         public int AttackRadiusInHexCount => attackRadiusInHexCount;
         public float ProjectileSpeed => projectileSpeed;
         public int Price => price;
+        public int RefundPrice => refundPrice;
         public float BuildingTime => buildingTime;
 
         public static class FieldNames
@@ -30,6 +32,7 @@ namespace Match.Field.Tower
             public static string AttackRadius => nameof(attackRadiusInHexCount);
             public static string ProjectileSpeed => nameof(projectileSpeed);
             public static string Price => nameof(price);
+            public static string RefundPrice => nameof(refundPrice);
             public static string BuildingTime => nameof(buildingTime);
         }
     }

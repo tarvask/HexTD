@@ -24,13 +24,13 @@ namespace Match.Field
         {
             public Transform FieldRoot { get; }
             public HexFabric HexFabric { get; }
-            public PathContainer PathContainer { get; }
             public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
+            public WindowsManager WindowsManager { get; }
             public bool NeedsInput { get; }
             public MatchCommands MatchCommands { get; }
-            
+
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             public ReactiveCommand<Hex2d> ClickReactiveCommand { get; }
             public ReactiveCommand<PlayerState> StateSyncedReactiveCommand { get; }
@@ -47,9 +47,9 @@ namespace Match.Field
             public Context(
                 Transform fieldRoot,
                 HexFabric hexFabric,
-                PathContainer pathContainer,
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
+                WindowsManager windowsManager,
 
                 bool needsInput,
                 
@@ -69,11 +69,11 @@ namespace Match.Field
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
-                PathContainer = pathContainer;
                 
                 MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
                 ConfigsRetriever = configsRetriever;
+                WindowsManager = windowsManager;
 
                 NeedsInput = needsInput;
                 MatchCommands = matchCommands;
@@ -99,7 +99,9 @@ namespace Match.Field
         private readonly FieldModel _model;
         private readonly HexagonalFieldModel _hexagonalFieldModel;
         private readonly HexMapReachableService _hexMapReachableService;
-
+        private readonly HexPathFindingService _pathFindingService;
+        private readonly PathContainer _pathContainer;
+        
         private readonly FieldMobSpawner _fieldMobSpawner;
         private readonly MobsManager _mobsManager;
         private readonly FieldClicksHandler _clicksHandler;
@@ -111,8 +113,6 @@ namespace Match.Field
         
         public const float MoveLerpCoeff = 0.7f;
 
-        public FieldModel FieldModel => _model;
-        
         public FieldController(Context context)
         {
             _context = context;
@@ -126,12 +126,15 @@ namespace Match.Field
                 _context.FieldRoot.position, _context.MatchInitDataParameters.Hexes);
             _hexMapReachableService = new HexMapReachableService(_hexagonalFieldModel);
             
-            TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
+            _pathFindingService = new HexPathFindingService(_hexagonalFieldModel);
+            _pathContainer = new PathContainer(_pathFindingService, _context.MatchInitDataParameters.Paths);
             
+            TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
+
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
                 _context.HexFabric,
-                _context.PathContainer,
+                _pathContainer,
                 _hexagonalFieldModel,
                 _context.FieldConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,
@@ -190,7 +193,10 @@ namespace Match.Field
             FieldClicksDistributor.Context clicksDistributorContext =
                 new FieldClicksDistributor.Context(_model, _clicksHandler, _context.ConfigsRetriever,
                     _constructionProcessController,
-                    _shootingController, _currencyController, _context.MatchCommands);
+                    _currencyController, _context.MatchCommands,
+                    _context.WindowsManager.TowerSelectionWindowController,
+                    _context.WindowsManager.TowerManipulationWindowController,
+                    _context.WindowsManager.TowerInfoWindowController);
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
 
             PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model, _factory,

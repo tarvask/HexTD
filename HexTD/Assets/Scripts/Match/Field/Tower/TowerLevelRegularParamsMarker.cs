@@ -5,7 +5,7 @@ namespace Match.Field.Tower
 {
     public class TowerLevelRegularParamsMarker : AbstractMarker
     {
-        protected override int NumberOfFields => 7;
+        protected override int NumberOfFields => 8;
         
         [SerializeField] private TowerLevelRegularParams data;
 
@@ -48,9 +48,14 @@ namespace Match.Field.Tower
             pricePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 5;
             DrawProperty(pricePropertyRect, TowerLevelRegularParams.FieldNames.Price, $"{data.Price}");
             
+            Rect refundPricePropertyRect = position;
+            refundPricePropertyRect.height = PropertyHeight; 
+            pricePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 6;
+            DrawProperty(refundPricePropertyRect, TowerLevelRegularParams.FieldNames.RefundPrice, $"{data.RefundPrice}");
+            
             Rect buildingTimePropertyRect = position;
             buildingTimePropertyRect.height = PropertyHeight; 
-            buildingTimePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 6;
+            buildingTimePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 7;
             DrawProperty(buildingTimePropertyRect, TowerLevelRegularParams.FieldNames.BuildingTime, $"{data.BuildingTime}");
         }
 #endif

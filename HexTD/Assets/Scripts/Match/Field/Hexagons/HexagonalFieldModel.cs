@@ -63,6 +63,11 @@ namespace Match.Field.Hexagons
             return distanceToHex < _layout.Size.y && distanceToHex < _layout.Size.x;
         }
 
+        public bool IsHexInMap(Hex2d position)
+        {
+            return _cachedLevelFieldHexes.ContainsKey(position.GetHashCode());
+        }
+
         public void Reset()
         {
             foreach (var fieldHexHashPair in _cachedLevelFieldHexes)
