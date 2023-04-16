@@ -72,7 +72,7 @@ MonoBehaviour:
     towerName: TestTower
     raceType: 2
     epicDegree: 1
-    reachableAttackTargetFinderType: 0
+    reachableAttackTargetFinderType: 2
     targetFindingTacticType: 1
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0

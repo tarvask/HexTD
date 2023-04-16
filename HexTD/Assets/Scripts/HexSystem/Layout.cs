@@ -1,10 +1,19 @@
 using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace HexSystem
 {
 	public struct Layout
 	{
+		/// <summary>
+		/// One sixth of a full rotation (radians).
+		/// </summary>
+		private static readonly float SEXTANT = Mathf.PI / 3;
+
+		// Corner locations in XY space. Private for same reason as neighbors.
+		private readonly Vector2[] corners;
+		
 		public readonly Vector3 Size;
 		public readonly Vector3 Origin;	
 		public readonly bool IsOrientationFlat;
@@ -16,6 +25,18 @@ namespace HexSystem
 			Orientation = IsOrientationFlat ? Orientation.LayoutFlat() : Orientation.LayoutPointy();
 			Size = size;
 			Origin = origin;
+
+			//todo now only for non-flat orientation
+			Vector2 to2dSize = new Vector2(Size.x, Size.z);
+			corners = new[]
+			{
+				to2dSize * new Vector2(Mathf.Sin(SEXTANT), Mathf.Cos(SEXTANT)),
+				to2dSize * new Vector2(0, 1),
+				to2dSize * new Vector2(Mathf.Sin(-SEXTANT), Mathf.Cos(-SEXTANT)),
+				to2dSize * new Vector2(Mathf.Sin(Mathf.PI + SEXTANT), Mathf.Cos(Mathf.PI - SEXTANT)),
+				to2dSize * new Vector2(0, -1),
+				to2dSize * new Vector2(Mathf.Sin(Mathf.PI - SEXTANT), Mathf.Cos(Mathf.PI - SEXTANT))
+			};
 		}
 
 		public Vector3 ToPlane(Hex3d hex)
@@ -85,6 +106,67 @@ namespace HexSystem
 					hex.R,
 					hex.H);
 			}
+		}
+
+		/// <summary>
+		/// Get the Unity position of a corner vertex.
+		/// </summary>
+		/// <remarks>
+		/// Corner 0 is at the upper right, others proceed counterclockwise.
+		/// </remarks>
+		/// <param name="index">Index of the desired corner. Cyclically constrained 0..5.</param>
+		public Vector2 Corner(Hex2d hex, int index)
+		{
+			var toplane = ToPlane(hex);
+			return corners[index] + new Vector2(toplane.x, toplane.z);
+//			return corners[index] + GetHexPosition(hex);
+		}
+
+		/// <summary>
+		/// Determines whether this the is on the line segment between points a and b.
+		/// </summary>
+		public bool IsOnSegment(Hex2d hex, Vector2 a, Vector2 b)
+		{
+			Vector2 ab = b - a;
+
+
+//			Vector2 rand = new Vector2(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
+//			var randcol = Random.ColorHSV();
+////			Vector3 aa = new Vector3((a + rand).x, 0.0f, (a + rand).y);
+////			Vector3 bb = new Vector3((b + rand).x, 0.0f, (b + rand).y);
+//			Vector3 aabb = new Vector3((ab + rand).x, 0.0f, (ab + rand).y);
+////			Debug.DrawLine(aa,bb,randcol,5.0f);
+//			Debug.DrawLine(Vector3.zero,aabb,randcol,5.0f);
+
+
+			float abSqrMagnitude = ab.sqrMagnitude;
+			Vector2 ac = Corner(hex, 0) - a;
+
+
+//			Vector3 acc = new Vector3((ac + rand).x, 0.0f, (ac + rand).y);
+//			Debug.DrawLine(Vector3.zero, acc,randcol,5.0f);
+
+
+			bool within = ac.sqrMagnitude <= abSqrMagnitude && Vector2.Dot(ab, ac) >= 0;
+			int sign = Math.Sign(Vector3.Cross(ab, ac).z);
+			for (int i = 1; i < 6; i++)
+			{
+				ac = Corner(hex, i) - a;
+
+
+//				acc = new Vector3((ac + rand).x, 0.0f, (ac + rand).y);
+//				Debug.DrawLine(Vector3.zero, acc,randcol,5.0f);
+
+
+				bool newWithin = ac.sqrMagnitude <= abSqrMagnitude && Vector2.Dot(ab, ac) >= 0;
+				int newSign = Math.Sign(Vector3.Cross(ab, ac).z);
+				if ((within || newWithin) && (sign * newSign <= 0))
+					return true;
+				within = newWithin;
+				sign = newSign;
+			}
+
+			return false;
 		}
 	}
 }
