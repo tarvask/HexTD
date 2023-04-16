@@ -1,4 +1,5 @@
 ﻿using InputSystem;
+using Tools;
 using UnityEngine;
 using Zenject;
 
@@ -19,7 +20,9 @@ namespace MapEditor
         
         private void Update()
         {
-            _inputRecipient.ApplyInput(Time.deltaTime);
+            if (!PointerOverUiElementDetector.IsPointerOverUIElement())
+                _inputRecipient.ApplyInput(Time.deltaTime);
+                
             _pathEditorController.DrawPath();
         }
     }

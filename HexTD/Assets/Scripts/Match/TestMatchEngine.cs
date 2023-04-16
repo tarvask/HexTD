@@ -15,7 +15,6 @@ namespace Match
         public const float FrameLength = 0.5f;
         
         [SerializeField] private MatchView matchPrefab;
-        [SerializeField] private string[] matchScenesNames;
 
         private MatchController _matchController;
         private OutgoingCommandsProcessor _outgoingCommandsProcessor;
@@ -135,9 +134,6 @@ namespace Match
         {
             _matchController.Dispose();
             _onQuitGameAction();
-            
-            foreach (string sceneName in matchScenesNames)
-                SceneManager.UnloadSceneAsync(sceneName);
         }
 
         private void UpdateConnectionState(bool isConnected)
