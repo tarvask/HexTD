@@ -6,6 +6,9 @@ namespace Tools
 {
     public static class PointerOverUiElementDetector
     {
+        private const int RaycastMaxDepth = 128;
+        private static readonly List<RaycastResult> RaycastResults = new(RaycastMaxDepth);
+        
         // Returns 'true' if we touched or hovering on Unity UI element.
         public static bool IsPointerOverUIElement()
         {
@@ -15,9 +18,11 @@ namespace Tools
         // Returns 'true' if we touched or hovering on Unity UI element.
         private static bool IsPointerOverUIElement(List<RaycastResult> eventSystemRaycastResults )
         {
+            int uiLayerIndex = LayerMask.NameToLayer("UI");
+            
             foreach (var curRaycastResult in eventSystemRaycastResults)
             {
-                if (curRaycastResult.gameObject.layer == LayerMask.NameToLayer("UI"))
+                if (curRaycastResult.gameObject.layer == uiLayerIndex)
                     return true;
             }
 
@@ -29,9 +34,9 @@ namespace Tools
         {   
             PointerEventData eventData = new PointerEventData(EventSystem.current);
             eventData.position = Input.mousePosition;
-            List<RaycastResult> raycastResults = new List<RaycastResult>();
-            EventSystem.current.RaycastAll( eventData, raycastResults );
-            return raycastResults;
+            RaycastResults.Clear();
+            EventSystem.current.RaycastAll(eventData, RaycastResults);
+            return RaycastResults;
         }
     }
 }
