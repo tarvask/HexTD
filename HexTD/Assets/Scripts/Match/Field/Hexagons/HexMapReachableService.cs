@@ -12,9 +12,9 @@ namespace Match.Field.Hexagons
         private readonly List<Hex2d> _reachableHexes;
         private readonly HexagonalFieldModel _hexagonalFieldModel;
         
-        //Тип атаки/позиция/радиус атаки
-        private Dictionary<ReachableAttackTargetFinderType, Dictionary<int,Dictionary<int,IReadOnlyCollection<Hex2d>>>>
-            _cashedAreas = new ();
+        // Attack type / position / attack radius
+        private readonly Dictionary<ReachableAttackTargetFinderType, Dictionary<int,Dictionary<int,IReadOnlyCollection<Hex2d>>>>
+            _cachedAreas = new ();
 
         public HexMapReachableService(HexagonalFieldModel hexagonalFieldModel)
         {
@@ -22,7 +22,7 @@ namespace Match.Field.Hexagons
             _reachableHexes = new List<Hex2d>(hexagonalFieldModel.HexGridSize);
         }
 
-        public IReadOnlyCollection<Hex2d> GeInRangeMapByTargetFinderType(
+        public IReadOnlyCollection<Hex2d> GetInRangeMapByTargetFinderType(
             Hex2d position,
             int attackRadius,
             ReachableAttackTargetFinderType reachableAttackTargetFinderType)
@@ -31,7 +31,7 @@ namespace Match.Field.Hexagons
             var positionHexModel = _hexagonalFieldModel[positionHashCode];
             
             {
-                if (_cashedAreas.TryGetValue(reachableAttackTargetFinderType, out var x))
+                if (_cachedAreas.TryGetValue(reachableAttackTargetFinderType, out var x))
                 {
                     if (x.TryGetValue(positionHashCode, out var y))
                     {
@@ -66,27 +66,27 @@ namespace Match.Field.Hexagons
             switch (reachableAttackTargetFinderType)
             {
                 case ReachableAttackTargetFinderType.Simple:
-                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, SimpleCondition);
+                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, attackRadius, SimpleCondition);
                     break;
                 case ReachableAttackTargetFinderType.HeightDependant:
-                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, HeightDependantCondition);
+                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, attackRadius, HeightDependantCondition);
                     break;
                 case ReachableAttackTargetFinderType.Catapult:
-                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, CatapultCondition);
+                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, attackRadius, CatapultCondition);
                     break;
                 case ReachableAttackTargetFinderType.Horizontal:
-                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, HorizontalCondition);
+                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, attackRadius, HorizontalCondition);
                     break;
                 default:
-                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, SimpleCondition);
+                    res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, attackRadius, SimpleCondition);
                     break;
             }
 
             {
-                if (!_cashedAreas.TryGetValue(reachableAttackTargetFinderType, out var x))
+                if (!_cachedAreas.TryGetValue(reachableAttackTargetFinderType, out var x))
                 {
                     x = new Dictionary<int, Dictionary<int, IReadOnlyCollection<Hex2d>>>();
-                    _cashedAreas.Add(reachableAttackTargetFinderType, x);
+                    _cachedAreas.Add(reachableAttackTargetFinderType, x);
                 }
 
                 if (!x.TryGetValue(positionHashCode, out var y))
@@ -108,8 +108,9 @@ namespace Match.Field.Hexagons
         private IReadOnlyCollection<Hex2d> GetConditionalInRangeMap(
             List<Hex2d> hexesInRadius, 
             List<Hex2d> obstacles,
-            Hex2d position, 
-            Func<List<Hex2d>, HexModel, HexModel, bool> condition)
+            Hex2d position,
+            int attackRadius,
+            Func<List<Hex2d>, HexModel, HexModel, int, bool> condition)
         {
             _reachableHexes.Clear();
 
@@ -122,39 +123,58 @@ namespace Match.Field.Hexagons
                     continue;
 
                 if (obstacles.Contains(hex))
-                {
                     continue;
-                }
 
                 HexModel hexModel = _hexagonalFieldModel[hash];
                 
-                if(condition.Invoke(obstacles, positionHexModel, hexModel))
+                if(condition.Invoke(obstacles, positionHexModel, hexModel, attackRadius))
                     _reachableHexes.Add(hexModel.Position);
             }
 
             return _reachableHexes;
         }
-
-        //TODO: added condition on hexes by hex
-        public bool SimpleCondition(List<Hex2d> obstacles, HexModel position, HexModel targetHexModel) =>
-            position.Height >= targetHexModel.Height;
         
-        public bool HeightDependantCondition(List<Hex2d> obstacles, HexModel position, HexModel targetHexModel)
+        private bool SimpleCondition(List<Hex2d> obstacles, HexModel position, HexModel targetHexModel,
+            int attackRadius)
         {
-            var pos1 = _hexagonalFieldModel.GetPlanePosition(position.Position);
-            var pos2 = _hexagonalFieldModel.GetPlanePosition(targetHexModel.Position);
+            Vector3 pos1 = _hexagonalFieldModel.GetPlanePosition(position.Position);
+            Vector3 pos2 = _hexagonalFieldModel.GetPlanePosition(targetHexModel.Position);
+            
+            // shooter is higher, no obstacles
+            return position.Height >= targetHexModel.Height
+                && !obstacles.Any(obstacleHex => _hexagonalFieldModel.IsOnSegment(obstacleHex,
+                    new Vector2(pos1.x, pos1.z), new Vector2(pos2.x, pos2.z)));
+        }
+
+        private bool HeightDependantCondition(List<Hex2d> obstacles, HexModel position, HexModel targetHexModel,
+            int attackRadius)
+        {
+            Vector3 pos1 = _hexagonalFieldModel.GetPlanePosition(position.Position);
+            Vector3 pos2 = _hexagonalFieldModel.GetPlanePosition(targetHexModel.Position);
 
 //            Vector3 rand = new Vector3(Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f), Random.Range(-0.1f, 0.1f));
 //            Debug.DrawLine(pos1+rand,pos2+rand,Color.green,5.0f);
             
-            return !obstacles.Any(obstacleHex => _hexagonalFieldModel.IsOnSegment(obstacleHex,
-                new Vector2(pos1.x,pos1.z),new Vector2(pos2.x,pos2.z)));
+            // shooter is higher than target, height delta is added to attack radius, no obstacles
+            return position.Height >= targetHexModel.Height
+                   && (position.Position - targetHexModel.Position).Length <= attackRadius + position.Height - targetHexModel.Height
+                   && !obstacles.Any(obstacleHex => _hexagonalFieldModel.IsOnSegment(obstacleHex,
+                                                               new Vector2(pos1.x,pos1.z),new Vector2(pos2.x,pos2.z)));
         }
 
-        public bool CatapultCondition(List<Hex2d> obstacles, HexModel position, HexModel targetHexModel) =>
+        private bool CatapultCondition(List<Hex2d> obstacles, HexModel position, HexModel targetHexModel, int attackRadius) =>
             true;
 
-        public bool HorizontalCondition(List<Hex2d> obstacles, HexModel position, HexModel targetHexModel) =>
-            position.Height == targetHexModel.Height;
+        private bool HorizontalCondition(List<Hex2d> obstacles, HexModel position, HexModel targetHexModel,
+            int attackRadius)
+        {
+            Vector3 pos1 = _hexagonalFieldModel.GetPlanePosition(position.Position);
+            Vector3 pos2 = _hexagonalFieldModel.GetPlanePosition(targetHexModel.Position);
+            
+            // shooter is at the same height, no obstacles
+            return position.Height == targetHexModel.Height
+                   && !obstacles.Any(obstacleHex => _hexagonalFieldModel.IsOnSegment(obstacleHex,
+                       new Vector2(pos1.x, pos1.z), new Vector2(pos2.x, pos2.z)));
+        }
     }
 }
