@@ -15,7 +15,10 @@ namespace Match.Field.Hexagons
 
         public int HexGridSize => _cachedLevelFieldHexes.Count;
 
-        public HexModel this[int positionHash] => _cachedLevelFieldHexes[positionHash].HexModel;
+        public HexModel this[int positionHash] => _cachedLevelFieldHexes.ContainsKey(positionHash)
+            ? _cachedLevelFieldHexes[positionHash].HexModel
+            : null;
+        
         public bool IsHexInMap(int positionHash) => _cachedLevelFieldHexes.ContainsKey(positionHash);        
         
         public FieldHexType GetHexTypeByPosition(Hex2d position) => CurrentFieldHexTypes[position.GetHashCode()];
@@ -82,5 +85,7 @@ namespace Match.Field.Hexagons
         {
             return GetEnumerator();
         }
+
+        public bool IsOnSegment(Hex2d hex, Vector2 a, Vector2 b) => _layout.IsOnSegment(hex, a, b);
     }
 }
