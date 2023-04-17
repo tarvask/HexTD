@@ -33,8 +33,7 @@ namespace Match.Field.Hexagons
                     return GetConditionalInRangeMap(position, attackRadius, HorizontalCondition);
 
                 case ReachableAttackTargetFinderType.HeightDependant:
-                    return GetConditionalInRangeMap(position, attackRadius + 
-                        _hexagonalFieldModel[position.GetHashCode()].Height - 1, HeightDependantCondition);
+                    return GetConditionalInRangeMap(position, attackRadius, HeightDependantCondition);
 
                 default:
                     return GetConditionalInRangeMap(position, attackRadius, SimpleCondition);
@@ -42,7 +41,7 @@ namespace Match.Field.Hexagons
         }
 
         private IReadOnlyCollection<Hex2d> GetConditionalInRangeMap(Hex2d position, 
-            int radius, Func<HexModel, HexModel, bool> condition)
+            int radius, Func<HexModel, HexModel, int, bool> condition)
         {
             _reachableHexes.Clear();
 
@@ -56,8 +55,8 @@ namespace Match.Field.Hexagons
                     continue;
 
                 HexModel hexModel = _hexagonalFieldModel[hash];
-                
-                if(condition.Invoke(positionHexModel, hexModel))
+
+                if(condition.Invoke(positionHexModel, hexModel, radius))
                     _reachableHexes.Add(hexModel.Position);
             }
 
@@ -65,16 +64,16 @@ namespace Match.Field.Hexagons
         }
 
         //TODO: added condition on hexes by hex
-        public bool SimpleCondition(HexModel position, HexModel targetHexModel) =>
+        public bool SimpleCondition(HexModel position, HexModel targetHexModel, int attackRadius) =>
             position.Height >= targetHexModel.Height;
 
-        public bool CatapultCondition(HexModel position, HexModel targetHexModel) =>
+        public bool CatapultCondition(HexModel position, HexModel targetHexModel, int attackRadius) =>
             true;
 
-        public bool HorizontalCondition(HexModel position, HexModel targetHexModel) =>
+        public bool HorizontalCondition(HexModel position, HexModel targetHexModel, int attackRadius) =>
             position.Height == targetHexModel.Height;
 
-        public bool HeightDependantCondition(HexModel position, HexModel targetHexModel) =>
-            position.Height >= targetHexModel.Height;
+        public bool HeightDependantCondition(HexModel position, HexModel targetHexModel, int attackRadius) =>
+            position.Height - 1 + attackRadius >= targetHexModel.Height + position.Position.DistanceTo(targetHexModel.Position);
     }
 }
