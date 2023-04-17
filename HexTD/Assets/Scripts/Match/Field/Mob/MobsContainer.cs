@@ -59,7 +59,7 @@ namespace Match.Field.Mob
         {
             _mobs.Remove(mobController.Id);
             RemoveByPosition(mobController);
-            mobController.SubscribeOnHexPositionChange(HandleMobHexPositionUpdate);
+            mobController.UnsubscribeOnHexPositionChange(HandleMobHexPositionUpdate);
         }
 
         private void RemoveByPosition(MobController mobController)

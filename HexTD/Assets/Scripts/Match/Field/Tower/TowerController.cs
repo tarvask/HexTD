@@ -6,7 +6,6 @@ using Match.Field.Shooting.TargetFinding;
 using Match.Field.State;
 using Match.Field.Tower.TowerConfigs;
 using Tools.Interfaces;
-using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -51,7 +50,7 @@ namespace Match.Field.Tower
         public override Hex2d HexPosition => _context.Position;
         public override Vector3 Position => _context.View.transform.position;
 
-        public bool IsAttackReady => _shootModel.IsReadyAttack;
+        public bool IsAttackReady => _shootModel.IsReadyAttack && CanShoot;
         public bool HasTarget => _stableModel.TargetId > 0;
         public override int TargetId => _context.TargetId;
         public bool CanShoot => _stableModel.CanShoot;
