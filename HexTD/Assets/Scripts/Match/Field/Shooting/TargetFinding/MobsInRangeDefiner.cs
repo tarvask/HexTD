@@ -24,7 +24,7 @@ namespace Match.Field.Shooting.TargetFinding
             IReadOnlyDictionary<int, List<ITargetable>> mobsByPosition,
             Hex2d towerPosition, int attackRadius)
         {
-            IReadOnlyCollection<Hex2d> hexes = _hexMapReachableService.GeInRangeMapByTargetFinderType(
+            IReadOnlyCollection<Hex2d> hexes = _hexMapReachableService.GetInRangeMapByTargetFinderType(
                 towerPosition, attackRadius, reachableAttackTargetFinderType);
             _mobsInRange.Clear();
             

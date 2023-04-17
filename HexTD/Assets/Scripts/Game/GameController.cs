@@ -1,5 +1,8 @@
-﻿using Match;
+﻿using Cysharp.Threading.Tasks;
+using Match;
 using MatchStarter;
+using Services.PhotonRelated;
+using UnityEngine;
 
 namespace Game
 {
@@ -18,6 +21,12 @@ namespace Game
 
 		public async void RunBattle(bool isMultiPlayer)
 		{
+			if (isMultiPlayer)
+			{
+				var photonConnectionService = new PhotonConnectionService().ConnectNow();
+				await new WaitWhile(() => photonConnectionService.IsConnectedToRoom);
+			}
+			
 			_matchSettingsProvider.Settings = new MatchSettings(isMultiPlayer);
 
 			var matchStarter = await _matchStarterLoader.LoadAsync();

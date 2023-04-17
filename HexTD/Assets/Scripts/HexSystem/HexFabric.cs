@@ -20,6 +20,7 @@ namespace HexSystem
             HexObject hexInstance = Object.Instantiate(hexPrefab, root);
             hexInstance.SetHex(hexModel.Position);
             hexInstance.transform.position = position; //_layout.ToPlane((Hex3d)hexModel);
+            hexInstance.gameObject.name = hexModel.Position.ToString();
 
             if (hexModel.Data.TryGetValue(HexParamsNameConstants.HexRotationParam, out string rotation))
             {
