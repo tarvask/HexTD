@@ -21,6 +21,11 @@ namespace Match.Field.Mob
         {
             _onHexPositionChange += actionOnChange;
         }
+
+        public void UnsubscribeOnHexPositionChange(Action<MobController, Hex2d> actionOnChange)
+        {
+            _onHexPositionChange -= actionOnChange;
+        }
         
         public void OnHexPositionChange(MobController mobController, Hex2d newPosition)
         {

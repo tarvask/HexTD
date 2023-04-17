@@ -72,16 +72,13 @@ namespace Match.Field.Shooting
 
         private void UpdateShooters(float frameLength)
         {
-            foreach (KeyValuePair<int, TowerController> towerPair in _context.FieldModel.Towers)
+            foreach (var shooter in _context.FieldModel.Shooters)
             {
-                if (!towerPair.Value.CanShoot)
+                if (!shooter.IsAttackReady)
                     continue;
                 
-                if (!towerPair.Value.IsReadyToShoot)
-                    continue;
-                
-                if (Aim(towerPair.Value))
-                    Shoot(towerPair.Value);
+                if (Aim(shooter))
+                    Shoot(shooter);
             }
         }
 
@@ -95,7 +92,9 @@ namespace Match.Field.Shooting
 
                 Vector3 targetPosition;
                 
-                if (_context.FieldModel.Shootables.TryGetValue(projectilePair.Value.TargetId, out ITargetable target))
+                if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectilePair.Value.TargetId, 
+                        projectilePair.Value.BaseAttackEffect.AttackTargetType,
+                        out ITargetable target))
                     targetPosition = target.Position;
                 else
                 {
@@ -116,19 +115,22 @@ namespace Match.Field.Shooting
             {
                 if (projectile.HasSplashDamage)
                 {
-                    SplashTargetDistanceComputer.GetTargetsWithSqrDistances(projectile, _context.FieldModel.Shootables,
+                    SplashTargetDistanceComputer.GetTargetsWithSqrDistances(projectile, 
+                        _context.FieldModel.Targets.IterateTargetsWithTypes(projectile.BaseAttackEffect.AttackTargetType),
                         ref _targetsWithSqrDistances);
                 }
-                else if (_context.FieldModel.Shootables.ContainsKey(projectile.TargetId))
+                else if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectile.TargetId, 
+                             projectile.BaseAttackEffect.AttackTargetType, out var target))
                 {
                     // distance is 0 for straight hit
-                    _targetsWithSqrDistances.Add(new TargetWithSqrDistancePair(projectile.TargetId, 0));
+                    _targetsWithSqrDistances.Add(new TargetWithSqrDistancePair(target, 0));
                 }
 
                 // handle hit for every target in damage area
                 foreach (TargetWithSqrDistancePair targetWithSqrDistance in _targetsWithSqrDistances)
                 {
-                    HandleHitShootable(projectile, _context.FieldModel.Shootables[targetWithSqrDistance.TargetId],
+                    HandleHitShootable(projectile, 
+                        targetWithSqrDistance.Target,
                         targetWithSqrDistance.SqrDistance);
                 }
 
@@ -165,14 +167,15 @@ namespace Match.Field.Shooting
             _endSplashingProjectiles.Clear();
         }
 
-        private bool Aim(TowerController tower)
+        private bool Aim(IShootable tower)
         {
-            return tower.FindTarget(_targetFinder, _context.FieldModel.MobsManager.MobsByPosition);
+            return tower.TryFindTarget(_targetFinder, _context.FieldModel.Targets);
         }
 
-        private void Shoot(TowerController tower)
+        private void Shoot(IShootable tower)
         {
-            _context.FieldModel.AddProjectile(tower.Shoot(_context.Factory));
+            var projectileController = tower.CreateAndInitProjectile(_context.Factory);
+            _context.FieldModel.AddProjectile(projectileController);
         }
 
         private void HandleHitShootable(ProjectileController projectile, ITargetable hitTargetable, float sqrDistance)

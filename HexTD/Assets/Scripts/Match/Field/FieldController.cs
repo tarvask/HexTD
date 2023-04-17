@@ -149,8 +149,7 @@ namespace Match.Field
                 removeMobReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
-            MobsManager.Context mobMoverContext = new MobsManager.Context(_hexagonalFieldModel, 
-                castleAttackedByMobReactiveCommand);
+            MobsManager.Context mobMoverContext = new MobsManager.Context(castleAttackedByMobReactiveCommand);
             _mobsManager = AddDisposable(new MobsManager(mobMoverContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
@@ -232,9 +231,7 @@ namespace Match.Field
             
             _constructionProcessController.OuterLogicUpdate(frameLength);
             _mobsManager.OuterLogicUpdate(frameLength);
-
-            foreach (KeyValuePair<int,TowerController> towerPair in _model.Towers)
-                towerPair.Value.OuterLogicUpdate(frameLength);
+            _model.TowersManager.OuterLogicUpdate(frameLength);
             
             _shootingController.OuterLogicUpdate(frameLength);
         }

@@ -1,36 +1,33 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using BuffLogic;
 using HexSystem;
-using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.Shooting.TargetFinding;
 using Match.Field.State;
 using Match.Field.Tower.TowerConfigs;
-using Tools;
 using Tools.Interfaces;
-using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Match.Field.Tower
 {
-    public class TowerController : BaseTargetableEntity, IOuterLogicUpdatable
+    public class TowerController : BaseTargetableEntity, IOuterLogicUpdatable, IShootable
     {
         public struct Context
         {
             public int Id { get; }
+            public int TargetId { get; }
             public Hex2d Position { get; }
             public TowerConfigNew TowerConfig { get; }
             public TowerView View { get; }
             public Sprite Icon { get; }
             public int TowerRemovingDuration { get; }
 
-            public Context(int id, Hex2d position, TowerConfigNew towerConfig, 
+            public Context(int id, int targetId, Hex2d position, TowerConfigNew towerConfig, 
                 TowerView view, Sprite icon, int towerRemovingDuration)
             {
                 Id = id;
+                TargetId = targetId;
                 TowerConfig = towerConfig;
                 View = view;
                 Icon = icon;
@@ -51,16 +48,16 @@ namespace Match.Field.Tower
         public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
 
         public int Id => _context.Id;
-        public Hex2d HexPosition => _context.Position;
+        public override Hex2d HexPosition => _context.Position;
         
         public override void Hurt(float damage)
         {
             _reactiveModel.SetHealth(_reactiveModel.Health.Value - damage);
         }
 
-        public bool IsReadyToShoot => _shootModel.IsReadyAttack;
+        public bool IsAttackReady => _shootModel.IsReadyAttack;
         public bool HasTarget => _stableModel.TargetId > 0;
-        public override int TargetId => _stableModel.TargetId;
+        public override int TargetId => _context.TargetId;
         public bool CanShoot => _stableModel.CanShoot;
         public bool IsAlive => _stableModel.IsAlive;
         public bool IsReadyToRelease => _stableModel.IsReadyToRelease;
@@ -128,12 +125,12 @@ namespace Match.Field.Tower
             return new TowerShortParams(_context.TowerConfig.RegularParameters.TowerType, _stableModel.Level);
         }
 
-        public bool FindTarget(TargetFinder targetFinder, IReadOnlyDictionary<int, List<MobController>> mobs)
+        public bool TryFindTarget(TargetFinder targetFinder, TargetContainer targetContainer)
         {
             if (!_shootModel.TryReleaseTowerAttack(false, out var towerAttack, out var attackIndex))
                 return false;
             
-            int targetId = targetFinder.GetTargetWithTacticInRange(mobs,
+            int targetId = targetFinder.GetTargetWithTacticInRange(targetContainer.GetTargetsByPosition(EnumAttackTargetType.Mob),
                 _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType,
                 _context.TowerConfig.RegularParameters.TargetFindingTacticType, 
                 HexPosition, towerAttack.AttackRadiusInHex,
@@ -143,7 +140,7 @@ namespace Match.Field.Tower
             return HasTarget;
         }
 
-        public ProjectileController Shoot(FieldFactory factory)
+        public ProjectileController CreateAndInitProjectile(FieldFactory factory)
         {
             if (!_shootModel.TryReleaseTowerAttack(true, out var towerAttack, out int attackIndex))
                 throw new Exception("Try to make attack but no ones ready yet!");
@@ -217,6 +214,7 @@ namespace Match.Field.Tower
         public PlayerState.TowerState GetTowerState()
         {
             return new PlayerState.TowerState(_context.Id, 
+                _context.TargetId,
                 (byte)_context.Position.Q, (byte)_context.Position.R,
                 _context.TowerConfig.RegularParameters.TowerType,
                 (byte)_stableModel.Level,

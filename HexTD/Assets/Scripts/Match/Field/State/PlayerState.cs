@@ -56,7 +56,7 @@ namespace Match.Field.State
             _currentCrystals = currentCrystals;
             
             _castleState = new CastleState(fieldModel.Castle);
-            _towersState = new TowersState(fieldModel.Towers);
+            _towersState = new TowersState(fieldModel.TowersManager.Towers);
             _mobsState = new MobsState(fieldModel.MobsManager.Mobs);
             _projectilesState = new ProjectilesState(fieldModel.Projectiles);
         }
@@ -138,7 +138,7 @@ namespace Match.Field.State
                 _towers = towers;
             }
 
-            public TowersState(Dictionary<int, TowerController> towersControllers)
+            public TowersState(IReadOnlyDictionary<int, TowerController> towersControllers)
             {
                 int activeTowers = 0;
                 
@@ -183,6 +183,7 @@ namespace Match.Field.State
         public readonly struct TowerState
         {
             private readonly int _id;
+            private readonly int _targetId;
             private readonly short _qPosition;
             private readonly short _rPosition;
             private readonly TowerType _type;
@@ -190,15 +191,17 @@ namespace Match.Field.State
             private readonly int _constructionTime;
 
             public int Id => _id;
+            public int TargetId => _targetId;
             public short PositionQ => _qPosition;
             public short PositionR => _rPosition;
             public TowerType Type => _type;
             public byte Level => _level;
             public int ConstructionTime => _constructionTime;
 
-            public TowerState(int id, short qPosition, short rPosition, TowerType type, byte level, int constructionTime)
+            public TowerState(int id, int targetId, short qPosition, short rPosition, TowerType type, byte level, int constructionTime)
             {
                 _id = id;
+                _targetId = targetId;
                 _qPosition = qPosition;
                 _rPosition = rPosition;
                 _type = type;
@@ -209,13 +212,14 @@ namespace Match.Field.State
             public static TowerState TowerFromHashtable(Hashtable towerHashtable)
             {
                 int id = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerIdParam];
+                int targetId = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTargetIdParam];
                 short qPosition = (short)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.PositionQParam];
                 short rPosition = (short)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.PositionRParam];
                 TowerType type = (TowerType)(byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTypeParam];
                 byte level = (byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerLevelParam];
                 int constructionTime = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerConstructionTimeParam];
 
-                return new TowerState(id, qPosition, rPosition, type, level, constructionTime);
+                return new TowerState(id, targetId, qPosition, rPosition, type, level, constructionTime);
             }
 
             public static Hashtable TowerToHashtable(in TowerState towersState)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using BuffLogic;
+using HexSystem;
 using Tools;
 using Tools.PriorityTools;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace Match.Field.Shooting
     public abstract class BaseTargetableEntity : BaseDisposable, ITargetable
     {
         public abstract int TargetId { get; }
+        public abstract Hex2d HexPosition { get; }
         public abstract Vector3 Position { get; }
         public abstract BaseReactiveModel BaseReactiveModel { get; }
 

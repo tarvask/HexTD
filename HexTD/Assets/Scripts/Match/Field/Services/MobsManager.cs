@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Match.Field.Hexagons;
 using Match.Field.Mob;
+using Match.Field.Shooting;
 using Match.Wave;
 using Tools;
 using Tools.Interfaces;
@@ -12,13 +13,10 @@ namespace Match.Field.Services
     {
         public struct Context
         {
-            public IHexPositionConversionService HexPositionConversionService { get; }
             public ReactiveCommand<int> AttackCastleByMobReactiveCommand { get; }
 
-            public Context(IHexPositionConversionService hexPositionConversionService,
-                ReactiveCommand<int> attackCastleByMobReactiveCommand)
+            public Context(ReactiveCommand<int> attackCastleByMobReactiveCommand)
             {
-                HexPositionConversionService = hexPositionConversionService;
                 AttackCastleByMobReactiveCommand = attackCastleByMobReactiveCommand;
             }
         }
@@ -30,15 +28,15 @@ namespace Match.Field.Services
         private readonly List<MobController> _carrionBodies;
         private readonly List<MobController> _escapingMobs;
 
+        public ITypeTargetContainer MobContainer => _mobsContainer;
         public IReadOnlyDictionary<int, MobController> Mobs => _mobsContainer.Mobs;
-        public IReadOnlyDictionary<int, List<MobController>> MobsByPosition => _mobsContainer.MobsByPosition;
         public int MobCount => _mobsContainer.Mobs.Count;
 
         public MobsManager(Context context)
         {
             _context = context;
 
-            _mobsContainer = new MobsContainer(_context.HexPositionConversionService);
+            _mobsContainer = new MobsContainer();
             _dyingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _deadBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _carrionBodies = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
@@ -59,7 +57,6 @@ namespace Match.Field.Services
         {
             UpdateMobsHealth(frameLength);
             UpdateMobsLogicMoving(frameLength);
-            //UpdateMobsAttacking(frameLength);
             UpdateMobsEscaping(frameLength);
         }
         
@@ -116,20 +113,6 @@ namespace Match.Field.Services
                 mobPair.Value.VisualMove(frameLength);
             }
         }
-        
-        // private void UpdateMobsAttacking(float frameLength)
-        // {
-        //     foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
-        //     {
-        //         if (!mobPair.Value.HasReachedCastle)
-        //             continue;
-        //         
-        //         mobPair.Value.UpdateTimer(frameLength);
-        //         
-        //         if (mobPair.Value.IsReadyToAttack)
-        //             _context.AttackCastleByMobReactiveCommand.Execute(mobPair.Value.Attack());
-        //     }
-        // }
 
         private void UpdateMobsEscaping(float frameLength)
         {

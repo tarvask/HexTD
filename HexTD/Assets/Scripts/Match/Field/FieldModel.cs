@@ -52,14 +52,13 @@ namespace Match.Field
         
         // supporting data
         // objects that can be shot
-        private Dictionary<int, ITargetable> _shootables;
+        private TargetContainer _targets;
+        private ShooterContainer _shooters;
 
         public int HexGridSize => _context.FieldHexTypesController.HexGridSize;
         
         // towers by ids
-        public Dictionary<int, TowerController> Towers => _context.TowersManager.Towers;
-        // towers by positions, it's convenient to use in building/upgrading/selling
-        public Dictionary<int, TowerController> TowersByPositions => _context.TowersManager.TowersByPositions;
+        public TowersManager TowersManager => _context.TowersManager;
 
         // castle
         public CastleController Castle => _castle;
@@ -67,7 +66,8 @@ namespace Match.Field
         public MobsManager MobsManager => _context.MobsManager;
         // projectiles by ids
         public Dictionary<int, ProjectileController> Projectiles => _projectiles;
-        public Dictionary<int, ITargetable> Shootables => _shootables;
+        public TargetContainer Targets => _targets;
+        public ShooterContainer Shooters => _shooters;
 
         public FieldModel(Context context)
         {
@@ -76,7 +76,8 @@ namespace Match.Field
             _castle = AddDisposable(_context.Factory.CreateCastle());
             
             _projectiles = new Dictionary<int, ProjectileController>(WaveMobSpawnerCoordinator.MaxMobsInWave * 8); // random stuff
-            _shootables = new Dictionary<int, ITargetable>(WaveMobSpawnerCoordinator.MaxMobsInWave); // + blockers count
+            _targets = new TargetContainer(MobsManager.MobContainer, TowersManager.TowerContainer);
+            _shooters = new ShooterContainer(_context.TowersManager.TowerContainer); 
             
             _context.RemoveMobReactiveCommand.Subscribe(RemoveMob);
         }
@@ -96,8 +97,8 @@ namespace Match.Field
         {
             if(!_context.FieldHexTypesController.TryAddTower(position.GetHashCode()))
                 return;
-            
-            _context.TowersManager.AddTower(tower, position);
+
+            _context.TowersManager.AddTower(tower);
         }
 
         public void UpgradeTower(TowerController tower)
@@ -109,15 +110,13 @@ namespace Match.Field
         {
             if(!_context.FieldHexTypesController.TryRemoveTower(positionHash))
                 return;
-            
-            
-            removingTower.Dispose();
+
+            _context.TowersManager.RemoveTower(removingTower);
         }
 
         public void AddMob(MobController mobController)
         {
             _context.MobsManager.AddMob(mobController);
-            _shootables.Add(mobController.TargetId, mobController);
             _context.MobSpawnedReactiveCommand.Execute(mobController);
 
             if (!_context.HasMobsOnFieldReactiveProperty.Value)
@@ -126,8 +125,6 @@ namespace Match.Field
 
         private void RemoveMob(MobController mobController)
         {
-            _shootables.Remove(mobController.TargetId);
-            
             if (_context.MobsManager.MobCount == 0 && _context.HasMobsOnFieldReactiveProperty.Value)
                 _context.HasMobsOnFieldReactiveProperty.Value = false;
         }

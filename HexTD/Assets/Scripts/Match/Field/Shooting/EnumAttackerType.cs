@@ -1,6 +1,6 @@
-﻿namespace Match.Field.AttackEffect
+﻿namespace Match.Field.Shooting
 {
-    public enum EnumAttackTarget
+    public enum EnumAttackerType
     {
         Undefined = 0,
         

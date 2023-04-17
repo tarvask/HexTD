@@ -66,8 +66,7 @@ namespace Match.Field.Mob
         public IReadonlyBuffableValue<float> Speed => _reactiveModel.Speed;
         public float PathLength => _currentPathLength;
         public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
-        public Hex2d HexPosition => _currentHexPosition;
-
+        public override Hex2d HexPosition => _currentHexPosition;
 
         public bool HasReachedCastle => _hasReachedCastle;
         public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.ReloadTime;
@@ -137,6 +136,11 @@ namespace Match.Field.Mob
             _reactiveModel.SubscribeOnHexPositionChange(actionOnChange);
         }
 
+        public void UnsubscribeOnHexPositionChange(Action<MobController, Hex2d> actionOnChange)
+        {
+            _reactiveModel.UnsubscribeOnHexPositionChange(actionOnChange);
+        }
+        
         private void UpdateHexPosition()
         {
             var oldHexPosition = _currentHexPosition;

@@ -8,17 +8,18 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
     {
         public TargetFindingTacticType TacticType => TargetFindingTacticType.FirstInLine;
         
-        public int GetTargetWithTactic(Dictionary<int, MobController> mobs)
+        public int GetTargetWithTactic(IReadOnlyList<ITargetable> targets)
         {
             float longestPath = 0;
             int mobWithLongestPathId = -1;
             
-            foreach (KeyValuePair<int, MobController> mobPair in mobs)
+            foreach (var target in targets)
             {
-                if (mobPair.Value.PathLength > longestPath)
+                MobController mobController = (MobController)target;
+                if (mobController.PathLength > longestPath)
                 {
-                    longestPath = mobPair.Value.PathLength;
-                    mobWithLongestPathId = mobPair.Value.TargetId;
+                    longestPath = mobController.PathLength;
+                    mobWithLongestPathId = mobController.TargetId;
                 }
             }
 

@@ -124,19 +124,23 @@ namespace Match.Field
             Hex2d position)
         {
             _lastBuildingId++;
+            _lastTargetId++;
             
-            return CreateTowerWithId(towerConfig, position, _lastBuildingId);
+            return CreateTowerWithId(towerConfig, position, _lastBuildingId, _lastTargetId);
         }
         
         public TowerController CreateTowerWithId(TowerConfigNew towerConfig,
-            Hex2d position, int towerId)
+            Hex2d position, int towerId, int targetId)
         {
             if (_lastBuildingId < towerId)
                 _lastBuildingId = towerId;
+
+            if (_lastTargetId < targetId)
+                _lastTargetId = targetId;
             
             TowerView towerView = CreateTowerView(towerConfig.RegularParameters.TowerName, 
                 towerId, towerConfig.View, position);
-            TowerController.Context towerControllerContext = new TowerController.Context(towerId,
+            TowerController.Context towerControllerContext = new TowerController.Context(towerId, targetId,
                 position, towerConfig, towerView, towerConfig.Icon, _context.TowerRemovingDuration);
             TowerController towerController = new TowerController(towerControllerContext);
 
