@@ -6,16 +6,14 @@ namespace Match.Field.Mob
 {
     public class MobsContainer
     {
-        private readonly IHexPositionConversionService _hexPositionConversionService;
         private readonly Dictionary<int, MobController> _mobs;
         private readonly Dictionary<int, List<MobController>> _mobsByPosition;
 
         public IReadOnlyDictionary<int, MobController> Mobs => _mobs;
         public IReadOnlyDictionary<int, List<MobController>> MobsByPosition => _mobsByPosition;
 
-        public MobsContainer(IHexPositionConversionService hexPositionConversionService)
+        public MobsContainer()
         {
-            _hexPositionConversionService = hexPositionConversionService;
             _mobs = new Dictionary<int, MobController>();
             _mobsByPosition = new Dictionary<int, List<MobController>>();
         }

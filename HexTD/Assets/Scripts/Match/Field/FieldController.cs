@@ -143,8 +143,7 @@ namespace Match.Field
                 removeMobReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
-            MobsManager.Context mobMoverContext = new MobsManager.Context(_hexagonalFieldModel, 
-                castleAttackedByMobReactiveCommand);
+            MobsManager.Context mobMoverContext = new MobsManager.Context(castleAttackedByMobReactiveCommand);
             _mobsManager = AddDisposable(new MobsManager(mobMoverContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
