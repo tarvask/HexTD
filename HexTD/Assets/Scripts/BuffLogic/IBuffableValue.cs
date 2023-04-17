@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Tools.PriorityTools;
 
 namespace BuffLogic
@@ -15,5 +16,6 @@ namespace BuffLogic
     {
         TValue Value { get; }
         TValue CopyValue(TValue defaultValue);
+        void Subscribe(Action<TValue> onChange);
     }
 }

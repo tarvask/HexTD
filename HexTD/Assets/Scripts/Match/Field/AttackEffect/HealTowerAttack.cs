@@ -19,8 +19,8 @@ namespace Match.Field.AttackEffect
 
         protected override void ApplyAttackEffect(ITargetable targetController, BuffManager buffManager)
         {
-            HealBuff poisonBuff = new HealBuff(healCapacity, healPerDelay, delay);
-            buffManager.AddBuff(targetController, poisonBuff);
+            HealBuff healBuff = new HealBuff(healCapacity, healPerDelay, delay);
+            buffManager.AddBuff(targetController, healBuff);
         }
     }
 }

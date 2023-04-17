@@ -4,7 +4,7 @@
     {
         Undefined = 0,
         
-        Health = 1,
+        MaxHealth = 1,
         Damage = 2,
         Speed = 3
     }

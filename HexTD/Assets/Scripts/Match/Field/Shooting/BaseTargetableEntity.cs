@@ -14,6 +14,8 @@ namespace Match.Field.Shooting
         public abstract Vector3 Position { get; }
         public abstract BaseReactiveModel BaseReactiveModel { get; }
 
+        public abstract void Heal(float heal);
+
         public abstract void Hurt(float damage);
 
         public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITargetable>> buffs, IBuff<ITargetable> addedBuff)

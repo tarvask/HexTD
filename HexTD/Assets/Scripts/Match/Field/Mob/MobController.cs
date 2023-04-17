@@ -62,7 +62,7 @@ namespace Match.Field.Mob
         public int Id => _context.Id;
         public override int TargetId => _context.TargetId;
         public override Vector3 Position => _currentPosition;
-        public IReadonlyBuffableValue<float> Health => _reactiveModel.Health;
+        public IReadOnlyReactiveProperty<float> Health => _reactiveModel.Health;
         public IReadonlyBuffableValue<float> Speed => _reactiveModel.Speed;
         public float PathLength => _currentPathLength;
         public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
@@ -188,6 +188,13 @@ namespace Match.Field.Mob
             //_currentPathLength +=
             //    Mathf.Abs(Position.x - _context.Waypoints[waypointIndex - 1].x)
             //    + Mathf.Abs(Position.y - _context.Waypoints[waypointIndex - 1].y);
+        }
+
+        public override void Heal(float heal)
+        {
+            float newHealth = _reactiveModel.Health.Value + heal;
+            newHealth = Mathf.Clamp(newHealth, 0, _reactiveModel.MaxHealth.Value);
+            _reactiveModel.SetHealth(newHealth);
         }
 
         public override void Hurt(float damage)

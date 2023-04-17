@@ -6,6 +6,7 @@ using Match.Field.Shooting.TargetFinding;
 using Match.Field.State;
 using Match.Field.Tower.TowerConfigs;
 using Tools.Interfaces;
+using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -44,16 +45,11 @@ namespace Match.Field.Tower
         
         private TowerLevelConfig CurrentLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level - 1];
         private TowerLevelConfig NextLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level];
-        public override Vector3 Position => _context.View.transform.localPosition;
         public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
 
         public int Id => _context.Id;
         public override Hex2d HexPosition => _context.Position;
-        
-        public override void Hurt(float damage)
-        {
-            _reactiveModel.SetHealth(_reactiveModel.Health.Value - damage);
-        }
+        public override Vector3 Position => _context.View.transform.position;
 
         public bool IsAttackReady => _shootModel.IsReadyAttack;
         public bool HasTarget => _stableModel.TargetId > 0;
@@ -74,11 +70,15 @@ namespace Match.Field.Tower
             _reactiveModel = AddDisposable(new TowerReactiveModel(CurrentLevel.HealthPoint));
             
             _context.View.SetType(_context.TowerConfig.RegularParameters.TowerName);
+            
+            //TODO: test code for healing test
+            _reactiveModel.SetHealth(CurrentLevel.HealthPoint/2);
         }
 
         public void OuterLogicUpdate(float frameLength)
         {
             _shootModel.OuterLogicUpdate(frameLength);
+            
         }
 
         // TODO: fix abilities' behaviour
@@ -120,6 +120,22 @@ namespace Match.Field.Tower
             _stableModel.SetState(TowerState.Active);
         }
 
+        public override void Heal(float heal)
+        {
+            float newHealth = _reactiveModel.Health.Value + heal;
+            newHealth = Mathf.Clamp(newHealth, 0, _reactiveModel.MaxHealth.Value);
+            _reactiveModel.SetHealth(newHealth);
+            
+#if UNITY_EDITOR
+            Debug.Log(newHealth);
+#endif
+        }
+
+        public override void Hurt(float damage)
+        {
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value - damage);
+        }
+
         public TowerShortParams GetShortParams()
         {
             return new TowerShortParams(_context.TowerConfig.RegularParameters.TowerType, _stableModel.Level);
@@ -129,12 +145,14 @@ namespace Match.Field.Tower
         {
             if (!_shootModel.TryReleaseTowerAttack(false, out var towerAttack, out var attackIndex))
                 return false;
-            
-            int targetId = targetFinder.GetTargetWithTacticInRange(targetContainer.GetTargetsByPosition(EnumAttackTargetType.Mob),
-                _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType,
-                _context.TowerConfig.RegularParameters.TargetFindingTacticType, 
-                HexPosition, towerAttack.AttackRadiusInHex,
-                _context.TowerConfig.RegularParameters.PreferUnbuffedTargets);
+
+            int targetId = targetFinder.GetTargetWithTacticInRange(
+                targetContainer.GetTargetsByPosition(towerAttack.AttackTargetType),
+                    _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType,
+                    _context.TowerConfig.RegularParameters.TargetFindingTacticType, 
+                    HexPosition, towerAttack.AttackRadiusInHex,
+                    _context.TowerConfig.RegularParameters.PreferUnbuffedTargets);
+                            
             _stableModel.SetTarget(targetId);
             
             return HasTarget;

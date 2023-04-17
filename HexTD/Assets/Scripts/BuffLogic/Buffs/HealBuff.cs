@@ -27,7 +27,7 @@ namespace BuffLogic
 
             while (_delayAccumulator >= _healDelay)
             {
-                BuffableValue.Hurt(-_healPerDelay);
+                BuffableValue.Heal(_healPerDelay);
                 _healImpact += _healPerDelay;
                 _delayAccumulator -= _healDelay;
             }
