@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1568221066824527546}
   - component: {fileID: 1568221066824527527}
   m_Layer: 0
-  m_Name: TestTower
+  m_Name: 009 test_tower9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,7 +107,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a045e9fcfe6374f59a9c6940e11b934f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

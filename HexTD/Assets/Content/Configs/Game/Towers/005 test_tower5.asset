@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 398afa8f30d34e06aa6fe453f5b8873b, type: 3}
-  m_Name: TestTowerConfig
+  m_Name: 005 test_tower5
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 0ac55f9f886d827408c102bdf33c5ff7, type: 3}
-  view: {fileID: 1568221066824527527, guid: 9dee75195704b1e4a93614334de38814, type: 3}
+  view: {fileID: 1568221066824527527, guid: 8efdcb991bf45452da177e75486dc5b0, type: 3}
   regularParameters:
-    towerType: 1
+    towerType: 5
     towerName: TestTower
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
