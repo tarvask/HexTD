@@ -12,12 +12,10 @@ namespace Match.Windows
         [SerializeField] private TextMeshProUGUI mobPowerText;
         [SerializeField] private Image mobIcon;
         
-        [SerializeField] private TextMeshProUGUI mobPriceText;
         [SerializeField] private TextMeshProUGUI mobHealthText;
         [SerializeField] private TextMeshProUGUI mobAttackPowerText;
         [SerializeField] private TextMeshProUGUI mobAttackRateText;
         [SerializeField] private TextMeshProUGUI mobSpeedText;
-        [SerializeField] private TextMeshProUGUI mobRewardText;
 
         [SerializeField] private TextMeshProUGUI mobAbilitiesDescription;
 
@@ -27,12 +25,10 @@ namespace Match.Windows
         public TextMeshProUGUI MobPowerText => mobPowerText;
         public Image MobIcon => mobIcon;
 
-        public TextMeshProUGUI MobPriceText => mobPriceText;
         public TextMeshProUGUI MobHealthText => mobHealthText;
         public TextMeshProUGUI MobAttackPowerText => mobAttackPowerText;
         public TextMeshProUGUI MobAttackRateText => mobAttackRateText;
         public TextMeshProUGUI MobSpeedText => mobSpeedText;
-        public TextMeshProUGUI MobRewardText => mobRewardText;
 
         public TextMeshProUGUI MobAbilitiesDescription => mobAbilitiesDescription;
     }

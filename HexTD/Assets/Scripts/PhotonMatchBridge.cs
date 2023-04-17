@@ -303,16 +303,13 @@ public class PhotonMatchBridge : BaseMonoBehaviour
 
     private PlayerHandParams LoadPlayerHand()
     {
-        TowerType[] towersInHand = new TowerType[8];
+        TowerType[] towersInHand = new TowerType[TestMatchEngine.TowersInHandCount];
 
-        for (int itemIndex = 0; itemIndex < 8; itemIndex++)
+        for (int itemIndex = 0; itemIndex < TestMatchEngine.TowersInHandCount; itemIndex++)
         {
             // TODO: take from presaved hand
-            if (itemIndex == 1)
-                towersInHand[itemIndex] = (TowerType)itemIndex;
-            else
-                towersInHand[itemIndex] = TowerType.Undefined;
-                //(TowerType)PlayerPrefs.GetInt($"CurrentHandItem{itemIndex}", (int)TowerType.Undefined);
+            towersInHand[itemIndex] = (TowerType)itemIndex;
+            //(TowerType)PlayerPrefs.GetInt($"CurrentHandItem{itemIndex}", (int)TowerType.Undefined);
         }
 
         return new PlayerHandParams(towersInHand);;
@@ -320,9 +317,9 @@ public class PhotonMatchBridge : BaseMonoBehaviour
 
     private void SendPlayerHand()
     {
-        int[] playerHandParameters = new int[8];
+        int[] playerHandParameters = new int[TestMatchEngine.TowersInHandCount];
             
-        for (int itemIndex = 0; itemIndex < 8; itemIndex++)
+        for (int itemIndex = 0; itemIndex < TestMatchEngine.TowersInHandCount; itemIndex++)
         {
             int towerType = PlayerPrefs.GetInt($"CurrentHandItem{itemIndex}", (int)TowerType.Undefined);
             playerHandParameters[itemIndex] = towerType;

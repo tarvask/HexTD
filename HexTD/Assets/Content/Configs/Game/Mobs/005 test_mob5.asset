@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b317ea3aaae2403cb08ca532736885c8, type: 3}
-  m_Name: 001 test_mob
+  m_Name: 005 test_mob5
   m_EditorClassIdentifier: 
-  view: {fileID: 923938435347180788, guid: bb478d152e1c64447a51d57816e59dab, type: 3}
+  view: {fileID: 923938435347180788, guid: 0d7ba6e1956084c3da0a62eb1918b02d, type: 3}
   icon: {fileID: 21300000, guid: 881798b77426a8f47b533dcc4767e9e5, type: 3}
   parameters:
-    typeId: 1
+    typeId: 5
     powerType: 1
     healthPoints: 10
     speed: 0.1

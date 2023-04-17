@@ -14,6 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterMobs:
   - {fileID: 11400000, guid: 23d61973ccd81704bbc499cbda29b0db, type: 2}
+  - {fileID: 11400000, guid: d8febc478fdb2400e8157fe0a53ad223, type: 2}
+  - {fileID: 11400000, guid: d6f912febb12a4e988fa93a334dcdaa6, type: 2}
+  - {fileID: 11400000, guid: 30543b36bc1a84d2392870d304a2304c, type: 2}
+  - {fileID: 11400000, guid: 764891039a49b4aef8339a5d6746e61f, type: 2}
+  - {fileID: 11400000, guid: c5ff0df447aa0495283e1021cf9fd3fd, type: 2}
+  - {fileID: 11400000, guid: 0181fb95bf0b54d8984ddb79abf27a64, type: 2}
+  - {fileID: 11400000, guid: 36134d36edc564e2ea7eca732f6d8bd1, type: 2}
+  - {fileID: 11400000, guid: 78a690015d673457a897f9e6351bb96a, type: 2}
+  - {fileID: 11400000, guid: 8b577ee3ed54d42168bdac6ad05f1a97, type: 2}
   fireMobs: []
   earthMobs: []
   natureMobs: []
