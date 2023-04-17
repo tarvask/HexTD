@@ -9,7 +9,7 @@ namespace Match.Field.AttackEffect
 	[Serializable]
 	public class AttacksConfig 
 	{
-		[SerializeReference] [InlineEditor] 
+		[SerializeReference]
 		private List<BaseAttackEffect> attacks;
 
 		public List<BaseAttackEffect> Attacks => attacks;
