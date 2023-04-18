@@ -61,7 +61,7 @@ namespace Match.Field.Mob
 
         public int Id => _context.Id;
         public override int TargetId => _context.TargetId;
-        public override Vector3 Position => _currentPosition;
+        public override Vector3 Position => _context.View.transform.localPosition;
         public IReadOnlyReactiveProperty<float> Health => _reactiveModel.Health;
         public IReadonlyBuffableValue<float> Speed => _reactiveModel.Speed;
         public float PathLength => _currentPathLength;
@@ -92,7 +92,7 @@ namespace Match.Field.Mob
                 _context.PathEnumerator.Current, false);
             _currentPosition = _currentTargetPosition;
             _context.View.transform.localPosition = _currentPosition;
-            _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition);
+            _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false);
         }
 
         public void LogicMove(float frameLength)
@@ -144,7 +144,7 @@ namespace Match.Field.Mob
         private void UpdateHexPosition()
         {
             var oldHexPosition = _currentHexPosition;
-            _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition);;
+            _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false);
             _reactiveModel.OnHexPositionChange(this, oldHexPosition);
         }
 

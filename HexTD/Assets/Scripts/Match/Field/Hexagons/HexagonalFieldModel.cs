@@ -60,9 +60,9 @@ namespace Match.Field.Hexagons
             return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height + 1, isWorld);
         }
 
-        public Hex2d ToHexFromWorldPosition(Vector3 position)
+        public Hex2d ToHexFromWorldPosition(Vector3 position, bool isWorld = true)
         {
-            return (Hex2d)_layout.ToHex(position).RoundToHex();
+            return (Hex2d)_layout.ToHex(position, isWorld).RoundToHex();
         }
 
         public bool IsCloseToNewHex(float distanceToHex)

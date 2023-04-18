@@ -240,7 +240,7 @@ namespace Match.Field
         private ProjectileView CreateProjectileView(int projectileId, ProjectileView projectilePrefab, Vector3 spawnPosition)
         {
             ProjectileView projectileInstance = Object.Instantiate(projectilePrefab, _projectilesRoot);
-            projectileInstance.transform.position = spawnPosition;
+            projectileInstance.transform.localPosition = spawnPosition;
             projectileInstance.name = $"{projectileId}_bullet";
 
             return projectileInstance;

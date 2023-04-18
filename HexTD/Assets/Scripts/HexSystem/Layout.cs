@@ -58,11 +58,12 @@ namespace HexSystem
 			return new Vector3(x + offset.x, y + offset.y, z + offset.z);
 		}
 
-		public FractionalHex ToHex(Vector3 positionInPlane)
+		public FractionalHex ToHex(Vector3 positionInPlane, bool isWorld = true)
 		{
+			Vector3 offset = isWorld ? Origin : Vector3.zero;
 			Orientation orientation = Orientation;
-			Vector3 pt = new Vector3((positionInPlane.x - Origin.x) / Size.x, (positionInPlane.y - Origin.y) / Size.y,
-				(positionInPlane.z - Origin.z) / Size.z);
+			Vector3 pt = new Vector3((positionInPlane.x - offset.x) / Size.x, (positionInPlane.y - offset.y) / Size.y,
+				(positionInPlane.z - offset.z) / Size.z);
 			double q = orientation.B0 * pt.x + orientation.B1 * pt.z;
 			double r = orientation.B2 * pt.x + orientation.B3 * pt.z;
 			return new FractionalHex(q, r, -q - r);
