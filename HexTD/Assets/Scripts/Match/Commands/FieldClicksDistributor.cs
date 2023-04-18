@@ -1,10 +1,9 @@
 using HexSystem;
 using Match.Field;
 using Match.Field.Currency;
-using Match.Field.Shooting;
+using Match.Field.Hand;
 using Match.Field.Tower;
 using Match.Field.Tower.TowerConfigs;
-using Match.Windows;
 using Match.Windows.Tower;
 using Services;
 using Tools;
@@ -20,19 +19,18 @@ namespace Match.Commands
             public FieldClicksHandler ClicksHandler { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public FieldConstructionProcessController ConstructionProcessController { get; }
-            public CurrencyController CurrencyController { get; }
+            public PlayerHandController PlayerHandController { get; }
             public MatchCommands MatchCommands { get; }
             
-            public TowerSelectionWindowController TowerSelectionWindowController { get; }
             public TowerManipulationWindowController TowerManipulationWindowController { get; }
             public TowerInfoWindowController TowerInfoWindowController { get; }
 
             public Context(
-                FieldModel fieldModel, FieldClicksHandler clicksHandler, ConfigsRetriever configsRetriever,
+                FieldModel fieldModel, FieldClicksHandler clicksHandler, 
+                ConfigsRetriever configsRetriever,
                 FieldConstructionProcessController constructionProcessController,
-                CurrencyController currencyController,
+                PlayerHandController playerHandController,
                 MatchCommands matchCommands,
-                TowerSelectionWindowController towerSelectionWindowController,
                 TowerManipulationWindowController towerManipulationWindowController,
                 TowerInfoWindowController towerInfoWindowController)
             {
@@ -40,10 +38,9 @@ namespace Match.Commands
                 ClicksHandler = clicksHandler;
                 ConfigsRetriever = configsRetriever;
                 ConstructionProcessController = constructionProcessController;
-                CurrencyController = currencyController;
+                PlayerHandController = playerHandController;
                 MatchCommands = matchCommands;
                 
-                TowerSelectionWindowController = towerSelectionWindowController;
                 TowerManipulationWindowController = towerManipulationWindowController;
                 TowerInfoWindowController = towerInfoWindowController;
             }
@@ -86,14 +83,15 @@ namespace Match.Commands
 
         private void ProcessPreBuild(Hex2d clickedCell)
         {
-            _context.TowerSelectionWindowController.ShowWindow(_context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
-                (towerToBuild) =>
-            {
-                TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerToBuild.TowerType);
+            if(!_context.PlayerHandController.IsTowerChoice)
+                return;
+            
+            TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(
+                _context.PlayerHandController.ChoiceTowerType);
                 
-                if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.TowerLevelConfigs[0].BuildPrice)
-                    _context.MatchCommands.Outgoing.RequestBuildTower.Fire(clickedCell, towerToBuild);
-            });
+            if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >= towerConfig.TowerLevelConfigs[0].BuildPrice)
+                _context.MatchCommands.Outgoing.RequestBuildTower.Fire(clickedCell, 
+                    new TowerShortParams(_context.PlayerHandController.ChoiceTowerType, 1));
         }
 
         private void ProcessBuild(Hex2d position, TowerShortParams towerShortParams)
@@ -103,7 +101,7 @@ namespace Match.Commands
                 return;
             
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.CurrencyController.SpendSilver(towerConfig.TowerLevelConfigs[0].BuildPrice);
+            _context.PlayerHandController.UseChoiceTower(towerConfig.TowerLevelConfigs[0].BuildPrice);
             _context.ConstructionProcessController.SetTowerBuilding(towerConfig, position);
         }
 
@@ -124,10 +122,10 @@ namespace Match.Commands
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
             
             _context.TowerManipulationWindowController.ShowWindow(towerConfig, towerShortParams.Level,
-                _context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
+                _context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value,
                 () =>
                 {
-                    if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice)
+                    if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >= towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice)
                         _context.MatchCommands.Outgoing.RequestUpgradeTower.Fire(clickedHex, towerShortParams);
                 },
                 () =>
@@ -156,7 +154,7 @@ namespace Match.Commands
                 return;
 
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.CurrencyController.SpendSilver(towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice);
+            _context.PlayerHandController.UseChoiceTower(towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice);
             _context.ConstructionProcessController.SetTowerUpgrading(towerInstance);
         }
 
@@ -172,7 +170,7 @@ namespace Match.Commands
             
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
             int sellPrice = TowerController.GetTowerSellPrice(towerConfig.TowerLevelConfigs, towerShortParams.Level);
-            _context.CurrencyController.AddSilver(sellPrice);
+            _context.PlayerHandController.AddEnergy(sellPrice);
             _context.ConstructionProcessController.SetTowerRemoving(position);
         }
     }

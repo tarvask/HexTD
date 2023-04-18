@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using HexSystem;
+using Match.Field.Hand;
 using Match.Field.Tower;
 using Match.Wave;
 using PathSystem;

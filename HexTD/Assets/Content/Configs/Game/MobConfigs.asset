@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2050b3007a3a4472925fb33ab46129ac, type: 3}
   m_Name: MobConfigs
   m_EditorClassIdentifier: 
-  waterMobs:
+  mobs:
   - {fileID: 11400000, guid: 23d61973ccd81704bbc499cbda29b0db, type: 2}
   - {fileID: 11400000, guid: d8febc478fdb2400e8157fe0a53ad223, type: 2}
   - {fileID: 11400000, guid: d6f912febb12a4e988fa93a334dcdaa6, type: 2}
@@ -23,8 +23,3 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 36134d36edc564e2ea7eca732f6d8bd1, type: 2}
   - {fileID: 11400000, guid: 78a690015d673457a897f9e6351bb96a, type: 2}
   - {fileID: 11400000, guid: 8b577ee3ed54d42168bdac6ad05f1a97, type: 2}
-  fireMobs: []
-  earthMobs: []
-  natureMobs: []
-  deathMobs: []
-  troops: []

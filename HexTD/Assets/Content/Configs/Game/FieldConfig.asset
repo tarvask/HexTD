@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: FieldConfig
   m_EditorClassIdentifier: 
   castleHealth: 10
+  energyRecoverySpeed: 0.5
   maxOverlappingWaves: 2
   towerRemovingDuration: 1
   matchInfoShowDuration: 1

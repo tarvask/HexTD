@@ -1,6 +1,7 @@
 ﻿using System;
 using HexSystem;
 using Match.Field;
+using Match.Field.Hand;
 using Match.Wave;
 using PathSystem;
 
@@ -12,13 +13,13 @@ namespace Match
         public PathData.SavePathData[] Paths { get; }
         public WaveParams[] Waves { get; }
         public int SilverCoinsCount { get; }
-        public PlayerHandParams HandParams { get; }
+        public PlayerHandParams PlayerHandParams { get; }
         
         public MatchInitDataParameters(HexModel[] hexes,
             PathData.SavePathData[] paths,
             WaveParams[] waves,
             int silverCoinsCount,
-            PlayerHandParams handParams)
+            PlayerHandParams playerHandParams)
         {
             // fill cells from linear array
             Hexes = new FieldHex[hexes.Length];
@@ -38,7 +39,7 @@ namespace Match
             // currency and magic
             SilverCoinsCount = silverCoinsCount;
             // hand
-            HandParams = handParams;
+            PlayerHandParams = playerHandParams;
         }
 
         public byte[] GetHexesTypes()
