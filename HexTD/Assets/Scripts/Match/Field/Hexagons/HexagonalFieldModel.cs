@@ -38,19 +38,26 @@ namespace Match.Field.Hexagons
             CurrentFieldHexTypes = new FieldHexTypesController(_cachedLevelFieldHexes);
         }
 
-        public Vector3 GetPlanePosition(Hex2d hexPosition) => _layout.ToPlane(hexPosition);
-        public Vector3 GetWorldPosition(Hex3d hexPosition) => _layout.ToPlane(hexPosition);
-        
-        public Vector3 GetWorldPosition(Hex2d hexPosition)
+        public Vector3 GetPlanePosition(Hex2d hexPosition, bool isWorld = true)
         {
-            FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
-            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height);
+            return _layout.ToPlane(hexPosition, isWorld);
         }
-        
-        public Vector3 GetUpHexWorldPosition(Hex2d hexPosition)
+
+        public Vector3 GetHexPosition(Hex3d hexPosition, bool isWorld = true)
+        {
+            return _layout.ToPlane(hexPosition, isWorld);
+        }
+
+        public Vector3 GetHexPosition(Hex2d hexPosition, bool isWorld = true)
         {
             FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
-            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height + 1);
+            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height, isWorld);
+        }
+
+        public Vector3 GetUpHexPosition(Hex2d hexPosition, bool isWorld = true)
+        {
+            FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
+            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height + 1, isWorld);
         }
 
         public Hex2d ToHexFromWorldPosition(Vector3 position)

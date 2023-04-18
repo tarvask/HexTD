@@ -88,10 +88,10 @@ namespace Match.Field.Mob
             _wasNewHexReached = false;
             _context.PathEnumerator.Reset();
 
-            _currentTargetPosition = _context.HexPositionConversionService.GetUpHexWorldPosition(
-                _context.PathEnumerator.Current);
+            _currentTargetPosition = _context.HexPositionConversionService.GetUpHexPosition(
+                _context.PathEnumerator.Current, false);
             _currentPosition = _currentTargetPosition;
-            _context.View.transform.position = _currentPosition;
+            _context.View.transform.localPosition = _currentPosition;
             _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition);
         }
 
@@ -124,8 +124,8 @@ namespace Match.Field.Mob
 
                     if (!_hasReachedCastle)
                     {
-                        _currentTargetPosition = _context.HexPositionConversionService.GetUpHexWorldPosition(
-                            _context.PathEnumerator.Current);
+                        _currentTargetPosition = _context.HexPositionConversionService.GetUpHexPosition(
+                            _context.PathEnumerator.Current, false);
                     }
                 }
             }

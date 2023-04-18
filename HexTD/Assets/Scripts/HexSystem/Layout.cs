@@ -39,22 +39,23 @@ namespace HexSystem
 			};
 		}
 
-		public Vector3 ToPlane(Hex3d hex)
+		public Vector3 ToPlane(Hex3d hex, bool isWorld = true)
 		{
-			return ToPlane(hex.Q, hex.R, hex.H);
+			return ToPlane(hex.Q, hex.R, hex.H, isWorld);
 		}
 
-		public Vector3 ToPlane(Hex2d hex)
+		public Vector3 ToPlane(Hex2d hex, bool isWorld = true)
 		{
-			return ToPlane(hex.Q, hex.R);
+			return ToPlane(hex.Q, hex.R, 0, isWorld);
 		}
 
-		public Vector3 ToPlane(int q, int r, int h = 0)
+		public Vector3 ToPlane(int q, int r, int h, bool isWorld = true)
 		{
+			Vector3 offset = isWorld ? Origin : Vector3.zero;
 			float x = (float)((Orientation.F0 * q + Orientation.F1 * r) * Size.x);
 			float y = (float)(h * Size.y);
 			float z = (float)((Orientation.F2 * q + Orientation.F3 * r) * Size.z);
-			return new Vector3(x + Origin.x, y + Origin.y, z + Origin.z);
+			return new Vector3(x + offset.x, y + offset.y, z + offset.z);
 		}
 
 		public FractionalHex ToHex(Vector3 positionInPlane)
