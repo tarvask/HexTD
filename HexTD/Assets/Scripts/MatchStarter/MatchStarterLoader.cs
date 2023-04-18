@@ -31,7 +31,7 @@ namespace MatchStarter
 			MatchStarterSettings matchStarterSettings,
 			IInstantiator instantiator)
 		{
-			this._downloadingProvider = downloadingProvider;
+			_downloadingProvider = downloadingProvider;
 			_matchStarterSettings = matchStarterSettings;
 			_instantiator = instantiator;
 		}
@@ -45,7 +45,8 @@ namespace MatchStarter
 			await _downloadingProvider.DownloadAssetWithLabelIfRequiredAsync(_matchStarterSettings.MatchStarterLabel);
 			await InitLocationHandle();
 
-			_currentLocation = _instantiator.InstantiatePrefab(_locationHandle.Value.Result);
+			if (_locationHandle.HasValue)
+				_currentLocation = _instantiator.InstantiatePrefab(_locationHandle.Value.Result);
 
 			var matchStarter = _currentLocation.transform.GetComponent<MatchStarter>();
 

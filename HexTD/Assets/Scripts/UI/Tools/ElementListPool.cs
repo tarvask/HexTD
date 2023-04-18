@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace UI.Tools
 {
-    public abstract class ElementListPool<T> : IDisposable, IEnumerable<T>
+    public abstract class ElementListPool<T> : IDisposable, IEnumerable<T> where T : class
     {
         private readonly LinkedList<T> _activeElements;
         private readonly Queue<T> _pooledElements;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Match.Field.Hand;
 using Match.Field.Tower;
 using Services;
 using UniRx;
@@ -14,17 +15,17 @@ namespace Match.Windows.Tower
             public TowerSelectionWindowView View { get; }
             public IReactiveProperty<int> OpenWindowsCountReactiveProperty { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
-            public PlayerHandParams PlayerHandParams { get; }
+            public PlayerHandController PlayerHandController { get; }
             public ReactiveCommand<int> SilverCoinsCountChangedReactiveCommand { get; }
 
             public Context(TowerSelectionWindowView view, IReactiveProperty<int> openWindowsCountReactiveProperty,
-                ConfigsRetriever configsRetriever, PlayerHandParams playerHandParams,
+                ConfigsRetriever configsRetriever, PlayerHandController playerHandController,
                 ReactiveCommand<int> silverCoinsCountChangedReactiveCommand)
             {
                 View = view;
                 OpenWindowsCountReactiveProperty = openWindowsCountReactiveProperty;
                 ConfigsRetriever = configsRetriever;
-                PlayerHandParams = playerHandParams;
+                PlayerHandController = playerHandController;
                 SilverCoinsCountChangedReactiveCommand = silverCoinsCountChangedReactiveCommand;
             }
         }
@@ -40,13 +41,13 @@ namespace Match.Windows.Tower
             _context.View.CloseButton.onClick.AddListener(HideWindow);
             // artifact towerItems can be skipped here, as their price is 0
             _context.SilverCoinsCountChangedReactiveCommand.Subscribe(UpdatePlayerHandTowers);
-            _playerHandTowerItems = new List<TowerItemView>(_context.PlayerHandParams.Towers.Length);
+            _playerHandTowerItems = new List<TowerItemView>(_context.PlayerHandController.Towers.Count);
             FillContent();
         }
 
         private void FillContent()
         {
-            foreach (TowerType tower in _context.PlayerHandParams.Towers)
+            foreach (TowerType tower in _context.PlayerHandController.Towers)
             {
                 AddPlayerHandTower(tower);
             }

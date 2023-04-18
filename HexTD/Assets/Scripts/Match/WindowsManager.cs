@@ -1,9 +1,11 @@
 using Cysharp.Threading.Tasks;
 using Match.Field.Castle;
+using Match.Field.Hand;
 using Match.Field.Mob;
 using Match.Field.Tower;
 using Match.Wave;
 using Match.Windows;
+using Match.Windows.Hand;
 using Match.Windows.Tower;
 using Services;
 using Tools;
@@ -22,7 +24,7 @@ namespace Match
             public Camera MainCamera { get; }
             public Canvas Canvas { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
-            public PlayerHandParams PlayerHandParams { get; }
+            public PlayerHandController PlayerHandController { get; }
             public WaveParams[] Waves { get; }
             
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
@@ -41,7 +43,7 @@ namespace Match
 
             public Context(MatchUiViewsCollection uiViews, Camera mainCamera, Canvas canvas,
                 ConfigsRetriever configsRetriever,
-                PlayerHandParams playerHandParams,
+                PlayerHandController playerHandController,
                 WaveParams[] waves,
                 
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
@@ -62,7 +64,7 @@ namespace Match
                 MainCamera = mainCamera;
                 Canvas = canvas;
                 ConfigsRetriever = configsRetriever;
-                PlayerHandParams = playerHandParams;
+                PlayerHandController = playerHandController;
                 Waves = waves;
 
                 IsConnectedReactiveProperty = isConnectedReactiveProperty;
@@ -90,6 +92,7 @@ namespace Match
         
         // windows
         private readonly MatchStartInfoWindowController _matchStartInfoWindowController;
+        private readonly HandTowerSelectionController _handTowerSelectionController;
         private readonly WaveStartInfoWindowController _waveStartInfoWindowController;
         private readonly WinLoseWindowController _winLoseWindowController;
         private readonly DisconnectBlockerWindowController _disconnectBlockerWindowController;
@@ -118,6 +121,12 @@ namespace Match
             MatchStartInfoWindowController.Context matchStartInfoWindowControllerContext = new MatchStartInfoWindowController.Context(
                 _context.UiViews.MatchStartInfoView, OpenWindowsCountReactiveProperty);
             _matchStartInfoWindowController = AddDisposable(new MatchStartInfoWindowController(matchStartInfoWindowControllerContext));
+            
+            // tower selection hud from hand
+            HandTowerSelectionController.Context handTowerSelectionControllerContext = new HandTowerSelectionController.Context(
+                _context.UiViews.HandTowerSelectionView, _context.PlayerHandController,
+                _context.ConfigsRetriever);
+            _handTowerSelectionController = new HandTowerSelectionController(handTowerSelectionControllerContext);
             
             // wave start info
             WaveStartInfoWindowController.Context waveStartInfoWindowControllerContext = new WaveStartInfoWindowController.Context(
@@ -154,7 +163,7 @@ namespace Match
             // tower selection window
             TowerSelectionWindowController.Context towerSelectionWindowControllerContext = new TowerSelectionWindowController.Context(
                 _context.UiViews.TowerSelectionWindowView, OpenWindowsCountReactiveProperty,
-                _context.ConfigsRetriever, _context.PlayerHandParams, _context.OurGoldenCoinsCountChangedReactiveCommand);
+                _context.ConfigsRetriever, _context.PlayerHandController, _context.OurGoldenCoinsCountChangedReactiveCommand);
             _towerSelectionWindowController = AddDisposable(new TowerSelectionWindowController(towerSelectionWindowControllerContext));
             
             // tower manipulation window

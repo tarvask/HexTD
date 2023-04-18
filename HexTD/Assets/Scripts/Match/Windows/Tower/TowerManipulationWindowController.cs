@@ -52,7 +52,7 @@ namespace Match.Windows.Tower
             _onTowerSellClickAction = onTowerSellClickAction;
 
             _hasUpgrade = towerLevel < towerParameters.TowerLevelConfigs.Count;
-            _currentUpgradePrice = _hasUpgrade ? towerParameters.TowerLevelConfigs[towerLevel].BuildPrice : -1;
+            _currentUpgradePrice = _hasUpgrade ? towerParameters.TowerLevelConfigs[towerLevel-1].BuildPrice : -1;
             _currentSellPrice = TowerController.GetTowerSellPrice(towerParameters.TowerLevelConfigs, towerLevel);
             
             Refresh(currentSilverCoinsCount);

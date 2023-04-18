@@ -4,6 +4,7 @@ using HexSystem;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
+using Match.Field.Hand;
 using Match.Field.Mob;
 using Match.Field.State;
 using Match.State;
@@ -72,6 +73,7 @@ namespace Match
 
         private readonly Context _context;
         private readonly ConfigsRetriever _configsRetriever;
+        private readonly PlayerHandController _playerHandController;
         private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
@@ -82,6 +84,8 @@ namespace Match
         private readonly WaveMobSpawnerCoordinator _waveMobSpawnerCoordinator;
         private readonly MatchRulesController _rulesController;
         private readonly InputController _inputController;
+        private readonly FieldClicksHandler _clicksHandler;
+        private readonly FieldClicksDistributor _clicksDistributor;
         private readonly MatchStateSaver _stateSaver;
 
         private readonly ReactiveCommand<PlayerState> _enemyStateSyncedReactiveCommand;
@@ -122,12 +126,16 @@ namespace Match
             _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
 
             WaveParams[] waves =_context.MatchInitDataParameters.Waves;
+
+            _playerHandController = new PlayerHandController(
+                _context.MatchInitDataParameters.PlayerHandParams.Towers,
+                _context.MatchView.FieldConfig.EnergyRecoverySpeed);
             
             // windows
-           WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
+            WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
                _context.MatchView.MatchUiViews, _context.MatchView.MainCamera, _context.MatchView.Canvas,
                _configsRetriever,
-               _context.MatchInitDataParameters.HandParams,
+               _playerHandController,
                waves,
                
                _context.IsConnectedReactiveProperty,
@@ -157,8 +165,6 @@ namespace Match
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 _buffManager,
-                _windowsManager,
-                false,
                 
                 _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, 
                 clickReactiveCommand, _enemyStateSyncedReactiveCommand,
@@ -178,8 +184,6 @@ namespace Match
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 _buffManager,
-                _windowsManager,
-                true,
                 
                 _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, clickReactiveCommand, _ourStateSyncedReactiveCommand,
                 spawnOurMobReactiveCommand,
@@ -195,6 +199,8 @@ namespace Match
             ReactiveCommand<MobConfig> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
             MatchCommands player1MatchCommands, player2MatchCommands;
 
+            FieldController ourField;
+
             if (_context.OurGameRoleReactiveProperty.Value == ProcessRoles.Player1)
             {
                 _player1FieldController = AddDisposable(new FieldController(ourFieldContext));
@@ -203,6 +209,7 @@ namespace Match
                 _player2FieldController = AddDisposable(new FieldController(enemyFieldContext));
                 spawnPlayer2MobReactiveCommand = spawnEnemyMobReactiveCommand;
                 player2MatchCommands = _context.MatchCommandsEnemy;
+                ourField = _player1FieldController;
             }
             else
             {
@@ -212,7 +219,10 @@ namespace Match
                 _player2FieldController = AddDisposable(new FieldController(ourFieldContext));
                 spawnPlayer2MobReactiveCommand = spawnOurMobReactiveCommand;
                 player2MatchCommands = _context.MatchCommandsOur;
+                ourField = _player2FieldController;
             }
+
+            ourField.InitPlayerHand(_playerHandController);
             
             // wave mob spawner
             WaveMobSpawnerCoordinator.Context waveMobSpawnerContext = new WaveMobSpawnerCoordinator.Context(
@@ -238,19 +248,32 @@ namespace Match
                 hasMobsOnOurField);
             _waveMobSpawnerCoordinator = new WaveMobSpawnerCoordinator(waveMobSpawnerContext);
 
-            // rules
-            MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
-                _windowsManager.WinLoseWindowController,
-                enemyCastleDestroyedReactiveCommand,
-                ourCastleDestroyedReactiveCommand);
-            _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
-
             // input
             HexInteractService hexInteractService = new HexInteractService(_context.MatchView.MainCamera);
             
             InputController.Context inputControllerContext = new InputController.Context(
                 hexInteractService, clickReactiveCommand);
             _inputController = AddDisposable(new InputController(inputControllerContext));
+            
+            FieldClicksHandler.Context clicksHandlerContext = new FieldClicksHandler.Context(
+                clickReactiveCommand);
+            _clicksHandler = AddDisposable(new FieldClicksHandler(clicksHandlerContext));
+
+            FieldClicksDistributor.Context clicksDistributorContext =
+                new FieldClicksDistributor.Context(
+                    ourField.FieldModel, _clicksHandler, _configsRetriever,
+                    ourField.FieldConstructionProcessController,
+                    _playerHandController, _context.MatchCommandsOur,
+                    _windowsManager.TowerManipulationWindowController,
+                    _windowsManager.TowerInfoWindowController);
+            _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
+
+            // rules
+            MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
+                _windowsManager.WinLoseWindowController,
+                enemyCastleDestroyedReactiveCommand,
+                ourCastleDestroyedReactiveCommand);
+            _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
             
             // state saver
             MatchStateSaver.Context stateSaverContext = new MatchStateSaver.Context(
@@ -314,8 +337,12 @@ namespace Match
                 return;
             
             _inputController.OuterLogicUpdate(frameLength);
+            _clicksDistributor.OuterLogicUpdate(frameLength);
+            
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
             _buffManager.OuterLogicUpdate(frameLength);
+
+            _playerHandController.OuterLogicUpdate(frameLength);
             _windowsManager.OuterLogicUpdate(frameLength);
             
             // the order is important due to calls to Random inside

@@ -11,6 +11,7 @@ namespace Match.Field
     public class FieldConfig : ScriptableObject
     {
         [SerializeField] private int castleHealth;
+        [SerializeField] private float energyRecoverySpeed;
         [SerializeField] private byte maxOverlappingWaves;
         
         [Header("Delays and durations")]
@@ -31,6 +32,7 @@ namespace Match.Field
         [SerializeField] private MobsConfig mobsConfig;
 
         public int CastleHealth => castleHealth;
+        public float EnergyRecoverySpeed => energyRecoverySpeed;
         public byte MaxOverlappingWaves => maxOverlappingWaves;
 
         // delays and duration

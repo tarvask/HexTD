@@ -6,6 +6,7 @@ using MapEditor;
 using Match;
 using Match.Commands;
 using Match.EventBus;
+using Match.Field.Hand;
 using Match.Field.Tower;
 using Photon.Pun;
 using Photon.Realtime;
@@ -184,7 +185,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             {PhotonEventsConstants.SyncMatch.MatchConfigPathsCount, (byte)mapModel.PathDatas.Count},
             {PhotonEventsConstants.SyncMatch.MatchConfigFieldTypesParam, matchParameters.GetHexesTypes()},
             {PhotonEventsConstants.SyncMatch.MatchStartSilverCoinsParam, matchParameters.SilverCoinsCount},
-            {PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam, matchParameters.HandParams.TowersNetwork},
+            {PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam, matchParameters.PlayerHandParams.TowersNetwork},
             {PhotonEventsConstants.SyncMatch.RandomSeed, randomSeed}
         };
 
@@ -312,11 +313,11 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         for (int itemIndex = 0; itemIndex < TestMatchEngine.TowersInHandCount; itemIndex++)
         {
             // TODO: take from presaved hand
-            towersInHand[itemIndex] = (TowerType)itemIndex;
+            towersInHand[itemIndex] = (TowerType)(itemIndex+1);
             //(TowerType)PlayerPrefs.GetInt($"CurrentHandItem{itemIndex}", (int)TowerType.Undefined);
         }
 
-        return new PlayerHandParams(towersInHand);;
+        return new PlayerHandParams(towersInHand);
     }
 
     private void SendPlayerHand()

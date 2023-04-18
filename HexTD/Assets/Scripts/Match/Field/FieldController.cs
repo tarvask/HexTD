@@ -4,6 +4,7 @@ using HexSystem;
 using Match.Commands;
 using Match.Field.Castle;
 using Match.Field.Currency;
+using Match.Field.Hand;
 using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.Services;
@@ -29,8 +30,6 @@ namespace Match.Field
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public BuffManager BuffManager { get; }
-            public WindowsManager WindowsManager { get; }
-            public bool NeedsInput { get; }
             
             public MatchCommands MatchCommands { get; }
 
@@ -53,9 +52,6 @@ namespace Match.Field
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
                 BuffManager buffManager,
-                WindowsManager windowsManager,
-
-                bool needsInput,
                 
                 MatchCommands matchCommands,
                 
@@ -79,9 +75,7 @@ namespace Match.Field
                 FieldConfig = fieldConfig;
                 ConfigsRetriever = configsRetriever;
                 BuffManager = buffManager;
-                WindowsManager = windowsManager;
 
-                NeedsInput = needsInput;
                 MatchCommands = matchCommands;
                 
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
@@ -118,6 +112,9 @@ namespace Match.Field
         private readonly PlayerStateLoader _stateLoader;
         
         public const float MoveLerpCoeff = 0.7f;
+
+        public FieldConstructionProcessController FieldConstructionProcessController => _constructionProcessController;
+        public FieldModel FieldModel => _model;
 
         public FieldController(Context context)
         {
@@ -166,14 +163,6 @@ namespace Match.Field
                 _context.SpawnMobReactiveCommand);
             _fieldMobSpawner = AddDisposable(new FieldMobSpawner(mobSpawnerContext));
 
-            // we only need input for player field
-            if (_context.NeedsInput)
-            {
-                FieldClicksHandler.Context clicksHandlerContext = new FieldClicksHandler.Context(
-                    _context.ClickReactiveCommand);
-                _clicksHandler = AddDisposable(new FieldClicksHandler(clicksHandlerContext));
-            }
-            
             // construction
             FieldConstructionProcessController.Context constructionProcessControllerContext =
                 new FieldConstructionProcessController.Context(_model, _factory);
@@ -195,14 +184,6 @@ namespace Match.Field
             //_towersAreaBuffsManager = AddDisposable(new FieldTowersAreaBuffsManager(towersAreaBuffsManagerContext));
 
             // clicks distribution
-            FieldClicksDistributor.Context clicksDistributorContext =
-                new FieldClicksDistributor.Context(_model, _clicksHandler, _context.ConfigsRetriever,
-                    _constructionProcessController,
-                    _currencyController, _context.MatchCommands,
-                    _context.WindowsManager.TowerSelectionWindowController,
-                    _context.WindowsManager.TowerManipulationWindowController,
-                    _context.WindowsManager.TowerInfoWindowController);
-            _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
 
             PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model, _factory,
                 _context.ConfigsRetriever,
@@ -226,9 +207,6 @@ namespace Match.Field
         
         public void OuterLogicUpdate(float frameLength)
         { 
-            if (_context.NeedsInput)
-                _clicksDistributor.OuterLogicUpdate(frameLength);
-            
             _constructionProcessController.OuterLogicUpdate(frameLength);
             _mobsManager.OuterLogicUpdate(frameLength);
             _model.TowersManager.OuterLogicUpdate(frameLength);
@@ -246,6 +224,14 @@ namespace Match.Field
         {
             _stateLoader.ClearState();
             _stateLoader.LoadState(playerState);
+        }
+
+        public void InitPlayerHand(PlayerHandController playerHandController)
+        {
+            _model.TowersManager.TowerBuiltReactiveCommand.Subscribe(
+                addedTower => playerHandController.RemoveTower(addedTower.TowerType));
+            _model.TowersManager.TowerRemovedReactiveCommand.Subscribe(
+                removedTower => playerHandController.AddTower(removedTower.TowerType));
         }
 
         public PlayerState GetPlayerState()

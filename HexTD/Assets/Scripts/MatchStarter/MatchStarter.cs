@@ -52,16 +52,7 @@ namespace MatchStarter
 			IsLoaded = true;
 		}
 
-//		private void Update()
-//		{
-//			if (Input.GetKeyDown(KeyCode.Backspace))
-//			{
-//				_windowsManager.OpenAsync<MainMenuWindowController>();
-//				_matchStarterLoader.DestroyAndRelease();
-//			}
-//		}
-		
-		private void OnDestroy()
+		protected override void OnDestroy()
 		{
 			if (!_isDisposed)
 				Dispose();
