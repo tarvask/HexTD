@@ -12,11 +12,15 @@ using Photon.Realtime;
 using Services;
 using Services.PhotonRelated;
 using Tools;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
 public class PhotonMatchBridge : BaseMonoBehaviour
 {
+    public IObservable<Unit> OnQuitMatch => _onQuitMatch;
+    private Subject<Unit> _onQuitMatch = new Subject<Unit>();
+
 //    [SerializeField] private bool isMultiPlayerGame;
     [SerializeField] private MatchesConfig levelsConfig;
 
@@ -166,7 +170,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
             _connectionMaintainer.IsConnectedReactiveProperty,
             LeaveRoom,
-            Dispose,
+            OnQuitMatchHandler,
             _isMultiPlayerGame); //ProcessRoles.Player1
 
         // re-init seed, because server had many calls to random while creating MatchConfig
@@ -229,7 +233,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
             _connectionMaintainer.IsConnectedReactiveProperty,
             LeaveRoom,
-            Dispose,
+            OnQuitMatchHandler,
             _isMultiPlayerGame);
             
         // mark room 
@@ -346,6 +350,12 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         _matchEngine.RollbackState();
     }
 
+    private void OnQuitMatchHandler()
+    {
+        Dispose();
+        _onQuitMatch.OnNext(Unit.Default);
+    }
+    
     private void Dispose()
     {
         Destroy(_matchEngine);

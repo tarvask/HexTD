@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
-using UI.MainMenuWindow;
-using UI.No_Connection_Window;
+using Tools;
+using UniRx;
 using UnityEngine;
 using WindowSystem;
 using Zenject;
@@ -11,22 +11,36 @@ using Zenject;
 
 namespace MatchStarter
 {
-	public class MatchStarter : MonoBehaviour
+	public class MatchStarter : BaseMonoBehaviour
 	{
-		public bool IsLoaded { get; private set; }
+		public IObservable<Unit> OnQuitMatch => _onQuitMatch;
+		private Subject<Unit> _onQuitMatch = new Subject<Unit>();
 		
+		public bool IsLoaded { get; private set; }
+
 		private List<Sprite> _loadedSprites = new List<Sprite>();
 		private List<SpriteRenderer> _loadedSpriteRenderers = new List<SpriteRenderer>();
 
 		private IMatchStarterLoader _matchStarterLoader;
-		private IWindowsManager _windowsManager;
+//		private IWindowsManager _windowsManager;
+
+		private IDisposable _battleDisposable;
+		
+		private bool _isDisposed;
 			
 		[Inject]
-		public void Construct(IMatchStarterLoader matchStarterLoader,
-			IWindowsManager windowsManager)
+		public void Construct(IMatchStarterLoader matchStarterLoader
+//			,
+//			IWindowsManager windowsManager
+			)
 		{
 			_matchStarterLoader = matchStarterLoader;
-			_windowsManager = windowsManager;
+//			_windowsManager = windowsManager;
+		}
+
+		private void Awake()
+		{
+			_battleDisposable = FindObjectOfType<PhotonMatchBridge>().OnQuitMatch.Subscribe(_onQuitMatch);
 		}
 
 		private async void Start()
@@ -38,18 +52,21 @@ namespace MatchStarter
 			IsLoaded = true;
 		}
 
-		private void Update()
-		{
-			if (Input.GetKeyDown(KeyCode.Backspace))
-			{
-				_windowsManager.OpenAsync<MainMenuWindowController>();
-				_matchStarterLoader.DestroyAndRelease();
-			}
-		}
-
+//		private void Update()
+//		{
+//			if (Input.GetKeyDown(KeyCode.Backspace))
+//			{
+//				_windowsManager.OpenAsync<MainMenuWindowController>();
+//				_matchStarterLoader.DestroyAndRelease();
+//			}
+//		}
+		
 		private void OnDestroy()
 		{
-			RemoveLoadedSprites();
+			if (!_isDisposed)
+				Dispose();
+			
+			base.OnDestroy();
 		}
 
 		private void RemoveLoadedSprites()
@@ -85,6 +102,14 @@ namespace MatchStarter
 		public async UniTaskVoid LoadLocation()
 		{
 			var (parallaxRoot, parallaxObjects) = await InstantiateAsync(false);
+		}
+
+		private void Dispose()
+		{
+			RemoveLoadedSprites();
+			
+			_battleDisposable?.Dispose();
+			_battleDisposable = null;
 		}
 	}
 }

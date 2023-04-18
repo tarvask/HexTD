@@ -26,7 +26,7 @@ MonoBehaviour:
   towerLevelConfigs:
     keyData: 0000000002000000
     valueData:
-    - buildPrice: 0
+    - buildPrice: 6
       refundPrice: 0
       buildTime: 1
       healthPoint: 100

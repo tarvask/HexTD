@@ -21,4 +21,4 @@ MonoBehaviour:
     elements:
     - mobId: 1
       maxCount: 10
-  silverCoinsCount: 100
+  silverCoinsCount: 80
