@@ -21,4 +21,7 @@ MonoBehaviour:
     elements:
     - mobId: 1
       maxCount: 10
-  silverCoinsCount: 10
+  silverCoinsCount: 6
+  energyRestoreDelay: 0
+  energyRestoreValue: 0
+  maxEnergy: 0

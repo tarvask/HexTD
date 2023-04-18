@@ -53,7 +53,8 @@ MonoBehaviour:
     reloadTime: 1
     attackRadiusInHexCount: 2
     projectileSpeed: 10
-    price: 1
+    price: 4
+    refundPrice: 0
     buildingTime: 1
 --- !u!114 &1568221066824527524
 MonoBehaviour:

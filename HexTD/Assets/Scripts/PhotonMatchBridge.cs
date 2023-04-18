@@ -157,7 +157,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         MatchInitDataParameters matchParameters = new MatchInitDataParameters(mapModel.HexModels.ToArray(), 
             mapModel.PathDatas.ToArray(),
             levelsConfig.Levels[levelIndexToPlay].Waves, 
-            levelsConfig.Levels[levelIndexToPlay].SilverCoinsCount, 
+            levelsConfig.Levels[levelIndexToPlay].SilverCoinsCount,
             playerHand);
         
         _matchEngine = FindObjectOfType<TestMatchEngine>();

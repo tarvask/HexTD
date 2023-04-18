@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: New Field Config
   m_EditorClassIdentifier: 
   castleHealth: 10
+  energyRestoreDelay: 2
+  energyRestoreValue: 2
+  maxEnergy: 10
   maxOverlappingWaves: 2
   towerRemovingDuration: 1
   matchInfoShowDuration: 1

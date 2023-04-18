@@ -37,6 +37,7 @@ namespace Match
             
             // currency and magic
             SilverCoinsCount = silverCoinsCount;
+            
             // hand
             HandParams = handParams;
         }

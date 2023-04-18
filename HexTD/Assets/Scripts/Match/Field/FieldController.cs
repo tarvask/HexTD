@@ -43,6 +43,7 @@ namespace Match.Field
             public ReactiveCommand<int> GoldenCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand<int> GoldenCoinsIncomeChangedReactiveCommand { get; }
             public ReactiveCommand<int> CrystalsCountChangedReactiveCommand { get; }
+            public ReactiveCommand<float> MatchStartedReactiveCommand { get; }
 
             public Context(
                 Transform fieldRoot,
@@ -65,7 +66,8 @@ namespace Match.Field
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<int> goldenCoinsCountChangedReactiveCommand,
                 ReactiveCommand<int> goldenCoinsIncomeChangedReactiveCommand,
-                ReactiveCommand<int> crystalsCountChangedReactiveCommand)
+                ReactiveCommand<int> crystalsCountChangedReactiveCommand,
+                ReactiveCommand<float> matchStartedReactiveCommand)
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
@@ -90,6 +92,7 @@ namespace Match.Field
                 GoldenCoinsCountChangedReactiveCommand = goldenCoinsCountChangedReactiveCommand;
                 GoldenCoinsIncomeChangedReactiveCommand = goldenCoinsIncomeChangedReactiveCommand;
                 CrystalsCountChangedReactiveCommand = crystalsCountChangedReactiveCommand;
+                MatchStartedReactiveCommand = matchStartedReactiveCommand;
             }
         }
 
@@ -180,8 +183,13 @@ namespace Match.Field
             _shootingController = AddDisposable(new ShootingController(shootingControllerContext));
             
             // currency
-            CurrencyController.Context currencyControllerContext = new CurrencyController.Context(_context.MatchInitDataParameters.SilverCoinsCount,
-                5, removeMobReactiveCommand, crystalCollectedReactiveCommand);
+            CurrencyController.Context currencyControllerContext = new CurrencyController.Context(
+                _context.MatchInitDataParameters.SilverCoinsCount,
+                5,
+                _context.FieldConfig.EnergyRestoreDelay,
+                _context.FieldConfig.EnergyRestoreValue,
+                _context.FieldConfig.MaxEnergy,
+                 removeMobReactiveCommand, crystalCollectedReactiveCommand,_context.MatchStartedReactiveCommand);
             _currencyController = AddDisposable(new CurrencyController(currencyControllerContext));
 
             // area buffs
@@ -231,6 +239,8 @@ namespace Match.Field
                 towerPair.Value.OuterLogicUpdate(frameLength);
             
             _shootingController.OuterLogicUpdate(frameLength);
+            
+            _currencyController.OuterLogicUpdate(frameLength);
         }
 
         public void OuterViewUpdate(float frameLength)

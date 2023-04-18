@@ -165,7 +165,8 @@ namespace Match
                 enemyCastleDestroyedReactiveCommand,
                 enemyGoldenCoinsCountChangedReactiveCommand,
                 enemyGoldCoinsIncomeChangedReactiveCommand,
-                enemyCrystalsCountChangedReactiveCommand);
+                enemyCrystalsCountChangedReactiveCommand,
+                matchStartedReactiveCommand);
 
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
@@ -184,7 +185,8 @@ namespace Match
                 ourCastleDestroyedReactiveCommand,
                 ourGoldenCoinsCountChangedReactiveCommand,
                 ourGoldCoinsIncomeChangedReactiveCommand,
-                ourCrystalsCountChangedReactiveCommand);
+                ourCrystalsCountChangedReactiveCommand,
+                matchStartedReactiveCommand);
 
             ReactiveCommand<MobConfig> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
             MatchCommands player1MatchCommands, player2MatchCommands;

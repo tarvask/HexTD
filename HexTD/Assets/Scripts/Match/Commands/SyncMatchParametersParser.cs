@@ -119,7 +119,7 @@ namespace Match.Commands
             }
             
             // silver coins
-            int silverCoins = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartSilverCoinsParam];
+            int startSilverCoins = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartSilverCoinsParam];
 
             // hand
             // towers
@@ -132,7 +132,8 @@ namespace Match.Commands
             }
 
             PlayerHandParams clientPlayerHand = new PlayerHandParams(towers);
-            MatchInitDataParameters clientMatchParameters = new MatchInitDataParameters(hexModels, paths, waves, silverCoins, clientPlayerHand);
+            MatchInitDataParameters clientMatchParameters = new MatchInitDataParameters(
+                hexModels, paths, waves, startSilverCoins, clientPlayerHand);
 
             // random seed
             int randomSeed = (int) parametersTable[PhotonEventsConstants.SyncMatch.RandomSeed];
