@@ -41,17 +41,17 @@ namespace Match.Field.Services
 
         public void LoadState(PlayerState playerState)
         {
-            // silver
-            if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value > playerState.SilverCoins)
-                _context.CurrencyController.SpendSilver(_context.CurrencyController.GoldCoinsCountReactiveProperty.Value - playerState.SilverCoins);
+            // coins
+            if (_context.CurrencyController.СoinsCountReactiveProperty.Value > playerState.Coins)
+                _context.CurrencyController.SpendCoins(_context.CurrencyController.СoinsCountReactiveProperty.Value - playerState.Coins);
             else
-                _context.CurrencyController.AddSilver(playerState.SilverCoins - _context.CurrencyController.GoldCoinsCountReactiveProperty.Value);
+                _context.CurrencyController.AddCoins(playerState.Coins - _context.CurrencyController.СoinsCountReactiveProperty.Value);
             
             // crystals
-            if (_context.CurrencyController.CrystalsCountReactiveProperty.Value > playerState.CurrentCrystals)
-                _context.CurrencyController.SpendCrystals(_context.CurrencyController.CrystalsCountReactiveProperty.Value - playerState.CurrentCrystals);
+            if (_context.CurrencyController.CrystalsCountReactiveProperty.Value > playerState.Crystals)
+                _context.CurrencyController.SpendCrystals(_context.CurrencyController.CrystalsCountReactiveProperty.Value - playerState.Crystals);
             else
-                _context.CurrencyController.AddCrystals(_context.CurrencyController.CrystalsCountReactiveProperty.Value - playerState.CurrentCrystals);
+                _context.CurrencyController.AddCrystals(_context.CurrencyController.CrystalsCountReactiveProperty.Value - playerState.Crystals);
 
             // castle
             _context.FieldModel.Castle.LoadState(playerState.Castle);
@@ -113,8 +113,8 @@ namespace Match.Field.Services
 
         public PlayerState SaveState()
         {
-            // silver
-            int silverCoins = _context.CurrencyController.GoldCoinsCountReactiveProperty.Value;
+            // coins
+            int coins = _context.CurrencyController.СoinsCountReactiveProperty.Value;
             
             // crystals
             int crystals = _context.CurrencyController.CrystalsCountReactiveProperty.Value;
@@ -131,7 +131,7 @@ namespace Match.Field.Services
             // projectiles
             PlayerState.ProjectilesState projectilesState = new PlayerState.ProjectilesState(_context.FieldModel.Projectiles);
 
-            return new PlayerState(0, silverCoins, crystals,
+            return new PlayerState(0, coins, crystals,
                 castleState, towersState, mobsState, projectilesState);
         }
         

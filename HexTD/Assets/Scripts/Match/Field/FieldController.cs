@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using BuffLogic;
 using HexSystem;
 using Match.Commands;
@@ -43,8 +42,8 @@ namespace Match.Field
             public ReactiveCommand<HealthInfo> CastleHealthChangedReactiveCommand { get; }
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
             public ReactiveCommand<int> GoldenCoinsCountChangedReactiveCommand { get; }
-            public ReactiveCommand<int> GoldenCoinsIncomeChangedReactiveCommand { get; }
             public ReactiveCommand<int> CrystalsCountChangedReactiveCommand { get; }
+            public ReactiveCommand<float> MatchStartedReactiveCommand { get; }
 
             public Context(
                 Transform fieldRoot,
@@ -65,8 +64,8 @@ namespace Match.Field
                 ReactiveCommand<HealthInfo> castleHealthChangedReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<int> goldenCoinsCountChangedReactiveCommand,
-                ReactiveCommand<int> goldenCoinsIncomeChangedReactiveCommand,
-                ReactiveCommand<int> crystalsCountChangedReactiveCommand)
+                ReactiveCommand<int> crystalsCountChangedReactiveCommand,
+                ReactiveCommand<float> matchStartedReactiveCommand)
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
@@ -88,8 +87,8 @@ namespace Match.Field
                 CastleHealthChangedReactiveCommand = castleHealthChangedReactiveCommand;
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
                 GoldenCoinsCountChangedReactiveCommand = goldenCoinsCountChangedReactiveCommand;
-                GoldenCoinsIncomeChangedReactiveCommand = goldenCoinsIncomeChangedReactiveCommand;
                 CrystalsCountChangedReactiveCommand = crystalsCountChangedReactiveCommand;
+                MatchStartedReactiveCommand = matchStartedReactiveCommand;
             }
         }
 
@@ -174,8 +173,10 @@ namespace Match.Field
             _shootingController = AddDisposable(new ShootingController(shootingControllerContext));
             
             // currency
-            CurrencyController.Context currencyControllerContext = new CurrencyController.Context(_context.MatchInitDataParameters.SilverCoinsCount,
-                5, removeMobReactiveCommand, crystalCollectedReactiveCommand);
+            CurrencyController.Context currencyControllerContext = new CurrencyController.Context(
+                _context.MatchInitDataParameters.CoinsCount,
+                5,
+                 removeMobReactiveCommand, crystalCollectedReactiveCommand);
             _currencyController = AddDisposable(new CurrencyController(currencyControllerContext));
 
             // area buffs
@@ -195,10 +196,8 @@ namespace Match.Field
             // subscribe outer event to model change
             _model.Castle.CastleHealthReactiveProperty.Subscribe((newValue) =>
                 _context.CastleHealthChangedReactiveCommand.Execute(new HealthInfo(newValue, _model.Castle.CastleMaxHealthReactiveProperty.Value)));
-            _currencyController.GoldCoinsCountReactiveProperty.Subscribe((newValue) =>
+            _currencyController.СoinsCountReactiveProperty.Subscribe((newValue) =>
                 _context.GoldenCoinsCountChangedReactiveCommand.Execute(newValue));
-            _currencyController.GoldCoinsIncomeReactiveProperty.Subscribe((newValue) =>
-                _context.GoldenCoinsIncomeChangedReactiveCommand.Execute(newValue));
             _currencyController.CrystalsCountReactiveProperty.Subscribe((newValue) =>
                 _context.CrystalsCountChangedReactiveCommand.Execute(newValue));
             

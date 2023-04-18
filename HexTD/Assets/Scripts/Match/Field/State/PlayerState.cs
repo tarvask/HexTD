@@ -12,8 +12,8 @@ namespace Match.Field.State
         private readonly int _playerId;
         
         // currencies
-        private readonly int _silverCoins;
-        private readonly int _currentCrystals;
+        private readonly int _coins;
+        private readonly int _crystals;
 
         // castle
         private readonly CastleState _castleState;
@@ -28,20 +28,20 @@ namespace Match.Field.State
         private readonly ProjectilesState _projectilesState;
 
         public int PlayerId => _playerId;
-        public int SilverCoins => _silverCoins;
-        public int CurrentCrystals => _currentCrystals;
+        public int Coins => _coins;
+        public int Crystals => _crystals;
         public CastleState Castle => _castleState;
         public TowersState Towers => _towersState;
         public MobsState Mobs => _mobsState;
         public ProjectilesState Projectiles => _projectilesState;
         
-        public PlayerState(int playerId, int silverCoins, int currentCrystals,
+        public PlayerState(int playerId, int coins, int crystals,
             CastleState castleState, TowersState towersState, MobsState mobsState,
             ProjectilesState projectilesState)
         {
             _playerId = playerId;
-            _silverCoins = silverCoins;
-            _currentCrystals = currentCrystals;
+            _coins = coins;
+            _crystals = crystals;
             
             _castleState = castleState;
             _towersState = towersState;
@@ -49,11 +49,11 @@ namespace Match.Field.State
             _projectilesState = projectilesState;
         }
 
-        public PlayerState(int playerId, int silverCoins, int currentCrystals, FieldModel fieldModel)
+        public PlayerState(int playerId, int coins, int crystals, FieldModel fieldModel)
         {
             _playerId = playerId;
-            _silverCoins = silverCoins;
-            _currentCrystals = currentCrystals;
+            _coins = coins;
+            _crystals = crystals;
             
             _castleState = new CastleState(fieldModel.Castle);
             _towersState = new TowersState(fieldModel.TowersManager.Towers);
@@ -64,15 +64,15 @@ namespace Match.Field.State
         public static PlayerState FromHashtable(Hashtable playerStateHashtable)
         {
             int playerId = (int) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.PlayerId];
-            int silverCoins = (int)playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.Silver];
-            int crystals = (int) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.CurrentCrystals];
+            int coins = (int)playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.Coins];
+            int crystals = (int) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.Crystals];
             
             CastleState castleState = CastleState.CastleFromHashtable((Hashtable) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.CastleParam]);
             TowersState towersState = TowersState.TowersFromHashtable((Hashtable) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.TowersParam]);
             MobsState mobsState = MobsState.MobsFromHashtable((Hashtable) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.MobsParam]);
             ProjectilesState projectilesState = ProjectilesState.ProjectilesFromHashtable((Hashtable) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.ProjectilesParam]);
 
-            return new PlayerState(playerId, silverCoins, crystals,
+            return new PlayerState(playerId, coins, crystals,
                 castleState, towersState, mobsState, projectilesState);
         }
 
@@ -81,8 +81,8 @@ namespace Match.Field.State
             return new Hashtable
             {
                 {PhotonEventsConstants.SyncState.PlayerState.PlayerId, playerState.PlayerId},
-                {PhotonEventsConstants.SyncState.PlayerState.Silver, playerState.SilverCoins},
-                {PhotonEventsConstants.SyncState.PlayerState.CurrentCrystals, playerState.CurrentCrystals},
+                {PhotonEventsConstants.SyncState.PlayerState.Coins, playerState.Coins},
+                {PhotonEventsConstants.SyncState.PlayerState.Crystals, playerState.Crystals},
                 {PhotonEventsConstants.SyncState.PlayerState.CastleParam, CastleState.CastleToHashtable(playerState.Castle)},
                 {PhotonEventsConstants.SyncState.PlayerState.TowersParam, TowersState.TowersToHashtable(playerState.Towers)},
                 {PhotonEventsConstants.SyncState.PlayerState.MobsParam, MobsState.MobsToHashtable(playerState.Mobs)},

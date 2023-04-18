@@ -70,7 +70,7 @@ namespace Match.Field.Mob
 
         public bool HasReachedCastle => _hasReachedCastle;
         public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.ReloadTime;
-        public int RewardInSilver => _context.Parameters.RewardInSilver;
+        public int RewardInCoins => _context.Parameters.RewardInCoins;
         public bool IsCarrion => _isCarrion;
         public bool IsEscaping => _isEscaping;
         public bool IsInSafety => _isInSafety;

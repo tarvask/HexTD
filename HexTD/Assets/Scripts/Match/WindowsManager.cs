@@ -1,8 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Match.Field.Castle;
 using Match.Field.Hand;
-using Match.Field.Mob;
-using Match.Field.Tower;
 using Match.Wave;
 using Match.Windows;
 using Match.Windows.Hand;
@@ -21,7 +19,6 @@ namespace Match
         public struct Context
         {
             public MatchUiViewsCollection UiViews { get; }
-            public Camera MainCamera { get; }
             public Canvas Canvas { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public PlayerHandController PlayerHandController { get; }
@@ -36,12 +33,11 @@ namespace Match
             public ReactiveCommand<float> ArtifactChoosingStartedReactiveCommand { get; }
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
             public ReactiveCommand<int> OurGoldenCoinsCountChangedReactiveCommand { get; }
-            public ReactiveCommand<int> OurGoldCoinsIncomeChangedReactiveCommand { get; }
             public ReactiveCommand<int> OurCrystalsCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand QuitMatchReactiveCommand { get; }
             public WindowSystem.IWindowsManager NewWindowsManager { get; }
 
-            public Context(MatchUiViewsCollection uiViews, Camera mainCamera, Canvas canvas,
+            public Context(MatchUiViewsCollection uiViews, Canvas canvas,
                 ConfigsRetriever configsRetriever,
                 PlayerHandController playerHandController,
                 WaveParams[] waves,
@@ -55,13 +51,11 @@ namespace Match
                 ReactiveCommand<float> artifactChoosingStartedReactiveCommand,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
                 ReactiveCommand<int> ourGoldenCoinsCountChangedReactiveCommand,
-                ReactiveCommand<int> ourGoldCoinsIncomeChangedReactiveCommand,
                 ReactiveCommand<int> ourCrystalsCoinsCountChangedReactiveCommand,
                 ReactiveCommand quitMatchReactiveCommand,
                 WindowSystem.IWindowsManager newWindowsManager)
             {
                 UiViews = uiViews;
-                MainCamera = mainCamera;
                 Canvas = canvas;
                 ConfigsRetriever = configsRetriever;
                 PlayerHandController = playerHandController;
@@ -76,7 +70,6 @@ namespace Match
                 ArtifactChoosingStartedReactiveCommand = artifactChoosingStartedReactiveCommand;
                 WaveNumberChangedReactiveCommand = waveNumberChangedReactiveCommand;
                 OurGoldenCoinsCountChangedReactiveCommand = ourGoldenCoinsCountChangedReactiveCommand;
-                OurGoldCoinsIncomeChangedReactiveCommand = ourGoldCoinsIncomeChangedReactiveCommand;
                 OurCrystalsCoinsCountChangedReactiveCommand = ourCrystalsCoinsCountChangedReactiveCommand;
                 QuitMatchReactiveCommand = quitMatchReactiveCommand;
                 NewWindowsManager = newWindowsManager;
@@ -136,7 +129,6 @@ namespace Match
             // hud
             MatchInfoPanelController.Context matchInfoPanelControllerContext = new MatchInfoPanelController.Context(
                 _context.UiViews.MatchInfoPanelView,
-                _context.MainCamera,
                 _context.Canvas,
                 _context.Waves,
                 
@@ -146,7 +138,6 @@ namespace Match
                 _context.BetweenWavesPlanningStartedReactiveCommand,
                 _context.WaveNumberChangedReactiveCommand,
                 _context.OurGoldenCoinsCountChangedReactiveCommand,
-                _context.OurGoldCoinsIncomeChangedReactiveCommand,
                 _context.OurCrystalsCoinsCountChangedReactiveCommand);
             _matchInfoPanelController = AddDisposable(new MatchInfoPanelController(matchInfoPanelControllerContext));
 

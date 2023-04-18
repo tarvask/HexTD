@@ -73,7 +73,8 @@ namespace Match
 
         private readonly Context _context;
         private readonly ConfigsRetriever _configsRetriever;
-        private readonly PlayerHandController _playerHandController;
+        private readonly PlayerHandController _ourPlayerHandController;
+        private readonly PlayerHandController _enemyPlayerHandController;
         private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
@@ -117,8 +118,6 @@ namespace Match
             ReactiveCommand ourCastleDestroyedReactiveCommand = AddDisposable(new ReactiveCommand());
             ReactiveCommand<int> enemyGoldenCoinsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<int> ourGoldenCoinsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
-            ReactiveCommand<int> enemyGoldCoinsIncomeChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
-            ReactiveCommand<int> ourGoldCoinsIncomeChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<int> enemyCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<int> ourCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
 
@@ -127,15 +126,23 @@ namespace Match
 
             WaveParams[] waves =_context.MatchInitDataParameters.Waves;
 
-            _playerHandController = new PlayerHandController(
+            _ourPlayerHandController = new PlayerHandController(
                 _context.MatchInitDataParameters.PlayerHandParams.Towers,
-                _context.MatchView.FieldConfig.EnergyRecoverySpeed);
+                _context.FieldConfig.EnergyRestoreDelay,
+                _context.FieldConfig.EnergyRestoreValue,
+                _context.FieldConfig.MaxEnergy);
+            
+            _enemyPlayerHandController = new PlayerHandController(
+                _context.MatchInitDataParameters.PlayerHandParams.Towers,
+                _context.FieldConfig.EnergyRestoreDelay,
+                _context.FieldConfig.EnergyRestoreValue,
+                _context.FieldConfig.MaxEnergy);
             
             // windows
             WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
-               _context.MatchView.MatchUiViews, _context.MatchView.MainCamera, _context.MatchView.Canvas,
+               _context.MatchView.MatchUiViews, _context.MatchView.Canvas,
                _configsRetriever,
-               _playerHandController,
+               _ourPlayerHandController,
                waves,
                
                _context.IsConnectedReactiveProperty,
@@ -147,7 +154,6 @@ namespace Match
                artifactChoosingStartedReactiveCommand,
                waveNumberChangedReactiveCommand,
                ourGoldenCoinsCountChangedReactiveCommand,
-               ourGoldCoinsIncomeChangedReactiveCommand,
                ourCrystalsCountChangedReactiveCommand,
                _context.QuitMatchReactiveCommand,
                _context.NewWindowsManager);
@@ -175,8 +181,8 @@ namespace Match
                 enemyCastleHealthChangedReactiveCommand,
                 enemyCastleDestroyedReactiveCommand,
                 enemyGoldenCoinsCountChangedReactiveCommand,
-                enemyGoldCoinsIncomeChangedReactiveCommand,
-                enemyCrystalsCountChangedReactiveCommand);
+                enemyCrystalsCountChangedReactiveCommand,
+                matchStartedReactiveCommand);
 
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
@@ -193,8 +199,8 @@ namespace Match
                 ourCastleHealthChangedReactiveCommand,
                 ourCastleDestroyedReactiveCommand,
                 ourGoldenCoinsCountChangedReactiveCommand,
-                ourGoldCoinsIncomeChangedReactiveCommand,
-                ourCrystalsCountChangedReactiveCommand);
+                ourCrystalsCountChangedReactiveCommand,
+                matchStartedReactiveCommand);
 
             ReactiveCommand<MobConfig> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
             MatchCommands player1MatchCommands, player2MatchCommands;
@@ -222,7 +228,7 @@ namespace Match
                 ourField = _player2FieldController;
             }
 
-            ourField.InitPlayerHand(_playerHandController);
+            ourField.InitPlayerHand(_ourPlayerHandController);
             
             // wave mob spawner
             WaveMobSpawnerCoordinator.Context waveMobSpawnerContext = new WaveMobSpawnerCoordinator.Context(
@@ -263,7 +269,7 @@ namespace Match
                 new FieldClicksDistributor.Context(
                     ourField.FieldModel, _clicksHandler, _configsRetriever,
                     ourField.FieldConstructionProcessController,
-                    _playerHandController, _context.MatchCommandsOur,
+                    _ourPlayerHandController, _context.MatchCommandsOur,
                     _windowsManager.TowerManipulationWindowController,
                     _windowsManager.TowerInfoWindowController);
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
@@ -342,7 +348,7 @@ namespace Match
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
             _buffManager.OuterLogicUpdate(frameLength);
 
-            _playerHandController.OuterLogicUpdate(frameLength);
+            _ourPlayerHandController.OuterLogicUpdate(frameLength);
             _windowsManager.OuterLogicUpdate(frameLength);
             
             // the order is important due to calls to Random inside

@@ -11,20 +11,21 @@ namespace Match.Field.Hand
         private readonly EnergyCharger _energyCharger;
         private readonly ReactiveCollection<TowerType> _towers;
 
-        private TowerType _choiceTowerType;
+        private TowerType _chosenTowerType;
 
-        public TowerType ChoiceTowerType => _choiceTowerType;
-        public bool IsTowerChoice => _choiceTowerType != TowerType.Undefined;
+        public TowerType ChosenTowerType => _chosenTowerType;
+        public bool IsTowerChoice => _chosenTowerType != TowerType.Undefined;
         
         public EnergyCharger EnergyCharger => _energyCharger;
         public IReadOnlyList<TowerType> Towers => _towers;
         public IReadOnlyReactiveCollection<TowerType> ReactiveTowers => _towers;
 
-        public PlayerHandController(TowerType[] towers, float energyRecoverySpeed)
+        public PlayerHandController(TowerType[] towers,
+            float energyRestoreDelay, int energyRestoreValue, int maxEnergy)
         {
             _towers = new ReactiveCollection<TowerType>(towers);
-            _energyCharger = AddDisposable(new EnergyCharger(energyRecoverySpeed));
-            _choiceTowerType = TowerType.Undefined;
+            _energyCharger = AddDisposable(new EnergyCharger(energyRestoreDelay, energyRestoreValue, maxEnergy));
+            _chosenTowerType = TowerType.Undefined;
         }
 
         public void AddTower(TowerType towerType)
@@ -37,16 +38,16 @@ namespace Match.Field.Hand
             _towers.Remove(towerType);
         }
 
-        public void SetChoiceTower(TowerType towerType)
+        public void SetChosenTower(TowerType towerType)
         {
-            _choiceTowerType = towerType;
+            _chosenTowerType = towerType;
         }
 
-        public void UseChoiceTower(int cost)
+        public void UseChosenTower(int cost)
         {
-            _towers.Remove(_choiceTowerType);
+            _towers.Remove(_chosenTowerType);
             _energyCharger.SpendEnergy(cost);
-            _choiceTowerType = TowerType.Undefined;
+            _chosenTowerType = TowerType.Undefined;
         }
 
         public void AddEnergy(int refundCount)

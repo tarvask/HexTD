@@ -12,13 +12,13 @@ namespace Match
         public FieldHex[] Hexes { get; }
         public PathData.SavePathData[] Paths { get; }
         public WaveParams[] Waves { get; }
-        public int SilverCoinsCount { get; }
+        public int CoinsCount { get; }
         public PlayerHandParams PlayerHandParams { get; }
         
         public MatchInitDataParameters(HexModel[] hexes,
             PathData.SavePathData[] paths,
             WaveParams[] waves,
-            int silverCoinsCount,
+            int coinsCount,
             PlayerHandParams playerHandParams)
         {
             // fill cells from linear array
@@ -37,7 +37,8 @@ namespace Match
             Array.Copy(waves, Waves, waves.Length);
             
             // currency and magic
-            SilverCoinsCount = silverCoinsCount;
+            CoinsCount = coinsCount;
+            
             // hand
             PlayerHandParams = playerHandParams;
         }

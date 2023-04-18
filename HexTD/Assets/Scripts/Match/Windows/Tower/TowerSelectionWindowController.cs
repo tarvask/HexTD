@@ -16,17 +16,17 @@ namespace Match.Windows.Tower
             public IReactiveProperty<int> OpenWindowsCountReactiveProperty { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public PlayerHandController PlayerHandController { get; }
-            public ReactiveCommand<int> SilverCoinsCountChangedReactiveCommand { get; }
+            public ReactiveCommand<int> CoinsCountChangedReactiveCommand { get; }
 
             public Context(TowerSelectionWindowView view, IReactiveProperty<int> openWindowsCountReactiveProperty,
                 ConfigsRetriever configsRetriever, PlayerHandController playerHandController,
-                ReactiveCommand<int> silverCoinsCountChangedReactiveCommand)
+                ReactiveCommand<int> coinsCountChangedReactiveCommand)
             {
                 View = view;
                 OpenWindowsCountReactiveProperty = openWindowsCountReactiveProperty;
                 ConfigsRetriever = configsRetriever;
                 PlayerHandController = playerHandController;
-                SilverCoinsCountChangedReactiveCommand = silverCoinsCountChangedReactiveCommand;
+                CoinsCountChangedReactiveCommand = coinsCountChangedReactiveCommand;
             }
         }
 
@@ -40,7 +40,7 @@ namespace Match.Windows.Tower
 
             _context.View.CloseButton.onClick.AddListener(HideWindow);
             // artifact towerItems can be skipped here, as their price is 0
-            _context.SilverCoinsCountChangedReactiveCommand.Subscribe(UpdatePlayerHandTowers);
+            _context.CoinsCountChangedReactiveCommand.Subscribe(UpdatePlayerHandTowers);
             _playerHandTowerItems = new List<TowerItemView>(_context.PlayerHandController.Towers.Count);
             FillContent();
         }
@@ -71,22 +71,22 @@ namespace Match.Windows.Tower
             HideWindow();
         }
         
-        public void ShowWindow(int currentSilverCoinsCount, Action<TowerShortParams> onTowerSelectedAction)
+        public void ShowWindow(int currentCoinsCount, Action<TowerShortParams> onTowerSelectedAction)
         {
             // update select action
             _onTowerSelectedAction = onTowerSelectedAction;
 
             // refresh towers from player hand
-            UpdatePlayerHandTowers(currentSilverCoinsCount);
+            UpdatePlayerHandTowers(currentCoinsCount);
             
             base.ShowWindow();
         }
 
-        private void UpdatePlayerHandTowers(int silverCoinsCount)
+        private void UpdatePlayerHandTowers(int coinsCount)
         {
             foreach (TowerItemView towerItem in _playerHandTowerItems)
             {
-                towerItem.Refresh(silverCoinsCount);
+                towerItem.Refresh(coinsCount);
             }
         }
 

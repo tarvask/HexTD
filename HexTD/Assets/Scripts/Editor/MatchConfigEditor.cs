@@ -28,8 +28,8 @@ namespace Editor
             // cells
             //DrawCells();
             EditorGUILayout.Space();
-            // silver coins
-            _config.SilverCoinsCount = EditorGUILayout.IntField("Silver coins count", _config.SilverCoinsCount);
+            // coins
+            _config.CoinsCount = EditorGUILayout.IntField("Coins count", _config.CoinsCount);
 
             if (GUI.changed)
                 EditorUtility.SetDirty(target);

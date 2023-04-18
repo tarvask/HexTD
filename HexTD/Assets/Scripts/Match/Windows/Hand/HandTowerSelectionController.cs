@@ -64,7 +64,7 @@ namespace Match.Windows.Hand
             
             towerCardView.Button.onClick.RemoveAllListeners();
             towerCardView.Button.onClick.AddListener(() => 
-                _context.PlayerHandController.SetChoiceTower(towerType));
+                _context.PlayerHandController.SetChosenTower(towerType));
 
             _context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Subscribe(
                 currentEnergyValue => SetTowerCardReadyState(towerCardView, price <= currentEnergyValue));

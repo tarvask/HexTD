@@ -11,14 +11,14 @@ namespace Match.Windows.Tower
         {
             public TowerManipulationWindowView View { get; }
             public IReactiveProperty<int> OpenWindowsCountReactiveProperty { get; }
-            public ReactiveCommand<int> SilverCoinsCountChangedReactiveCommand { get; }
+            public ReactiveCommand<int> CoinsCountChangedReactiveCommand { get; }
             
             public Context(TowerManipulationWindowView view, IReactiveProperty<int> openWindowsCountReactiveProperty,
-                ReactiveCommand<int> silverCoinsCountChangedReactiveCommand)
+                ReactiveCommand<int> coinsCountChangedReactiveCommand)
             {
                 View = view;
                 OpenWindowsCountReactiveProperty = openWindowsCountReactiveProperty;
-                SilverCoinsCountChangedReactiveCommand = silverCoinsCountChangedReactiveCommand;
+                CoinsCountChangedReactiveCommand = coinsCountChangedReactiveCommand;
             }
         }
 
@@ -39,10 +39,10 @@ namespace Match.Windows.Tower
             _context.View.InfoButton.onClick.AddListener(OnTowerInfoClickedHandler);
             _context.View.SellButton.onClick.AddListener(OnTowerSellClickedHandler);
 
-            _context.SilverCoinsCountChangedReactiveCommand.Subscribe(Refresh);
+            _context.CoinsCountChangedReactiveCommand.Subscribe(Refresh);
         }
         
-        public void ShowWindow(TowerConfigNew towerParameters, int towerLevel, int currentSilverCoinsCount,
+        public void ShowWindow(TowerConfigNew towerParameters, int towerLevel, int currentCoinsCount,
             Action onTowerUpgradeClickAction,
             Action onTowerInfoClickAction,
             Action onTowerSellClickAction)
@@ -55,18 +55,18 @@ namespace Match.Windows.Tower
             _currentUpgradePrice = _hasUpgrade ? towerParameters.TowerLevelConfigs[towerLevel-1].BuildPrice : -1;
             _currentSellPrice = TowerController.GetTowerSellPrice(towerParameters.TowerLevelConfigs, towerLevel);
             
-            Refresh(currentSilverCoinsCount);
+            Refresh(currentCoinsCount);
 
             base.ShowWindow();
         }
 
-        private void Refresh(int silverCoinsCount)
+        private void Refresh(int coinsCount)
         {
             if (_hasUpgrade)
             {
                 _context.View.UpgradePriceText.text = $"{_currentUpgradePrice}";
                 _context.View.UpgradeButton.gameObject.SetActive(true);
-                _context.View.UpgradeButton.interactable = _currentUpgradePrice <= silverCoinsCount;
+                _context.View.UpgradeButton.interactable = _currentUpgradePrice <= coinsCount;
             }
             else
                 _context.View.UpgradeButton.gameObject.SetActive(false);

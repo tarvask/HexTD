@@ -87,11 +87,11 @@ namespace Match.Commands
                 return;
             
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(
-                _context.PlayerHandController.ChoiceTowerType);
+                _context.PlayerHandController.ChosenTowerType);
                 
             if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >= towerConfig.TowerLevelConfigs[0].BuildPrice)
                 _context.MatchCommands.Outgoing.RequestBuildTower.Fire(clickedCell, 
-                    new TowerShortParams(_context.PlayerHandController.ChoiceTowerType, 1));
+                    new TowerShortParams(_context.PlayerHandController.ChosenTowerType, 1));
         }
 
         private void ProcessBuild(Hex2d position, TowerShortParams towerShortParams)
@@ -101,7 +101,7 @@ namespace Match.Commands
                 return;
             
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.PlayerHandController.UseChoiceTower(towerConfig.TowerLevelConfigs[0].BuildPrice);
+            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[0].BuildPrice);
             _context.ConstructionProcessController.SetTowerBuilding(towerConfig, position);
         }
 
@@ -154,7 +154,7 @@ namespace Match.Commands
                 return;
 
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.PlayerHandController.UseChoiceTower(towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice);
+            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice);
             _context.ConstructionProcessController.SetTowerUpgrading(towerInstance);
         }
 
