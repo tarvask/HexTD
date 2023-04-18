@@ -10,14 +10,16 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
         
         public int GetTargetWithTactic(Dictionary<int, MobController> mobs)
         {
-            float longestPath = 0;
+            float shorterPath = float.MaxValue;
             int mobWithLongestPathId = -1;
             
             foreach (KeyValuePair<int, MobController> mobPair in mobs)
             {
-                if (mobPair.Value.PathLength > longestPath)
+                mobPair.Value.CalculateRemainingPathDistance();
+
+                if (mobPair.Value.RemainingPathDistance < shorterPath)
                 {
-                    longestPath = mobPair.Value.PathLength;
+                    shorterPath = mobPair.Value.RemainingPathDistance;
                     mobWithLongestPathId = mobPair.Value.TargetId;
                 }
             }

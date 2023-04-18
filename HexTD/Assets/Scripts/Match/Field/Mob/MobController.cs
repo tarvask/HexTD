@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using HexSystem;
 using Match.Field.Hexagons;
@@ -50,6 +51,7 @@ namespace Match.Field.Mob
         
         private byte _pathIndex;
         private float _currentPathLength;
+        private float _remainingPathDistance;
         
         private float _attackingTimer;
         private byte _currentDamageTextIndex;
@@ -63,6 +65,7 @@ namespace Match.Field.Mob
         public int TargetId => _context.TargetId;
         public int Health => _reactiveModel.HealthReactiveProperty.Value;
         public float PathLength => _currentPathLength;
+        public float RemainingPathDistance => _remainingPathDistance;
         public Vector3 Position => _currentPosition;
         public Hex2d HexPosition => _currentHexPosition;
         public bool HasReachedCastle => _hasReachedCastle;
@@ -81,7 +84,7 @@ namespace Match.Field.Mob
             _reactiveModel = AddDisposable(new MobReactiveModel(_context.Parameters.Speed, _context.Parameters.HealthPoints));
             // _buffsManager = AddDisposable(new MobBuffsManager(new MobBuffsManager.Context(_reactiveModel.SpeedReactiveProperty,
             //     _reactiveModel.HealthReactiveProperty)));
-            
+
             _currentPathLength = 0;
             _currentDamageTextIndex = 0;
 
@@ -134,6 +137,27 @@ namespace Match.Field.Mob
                             _context.PathEnumerator.Current);
                     }
                 }
+            }
+        }
+
+        public void CalculateRemainingPathDistance()
+        {
+            _remainingPathDistance = 0;
+            UpdateHexPosition();
+
+            LinkedListNode<Hex2d> node1 = _context.PathEnumerator.Points.Find(_currentHexPosition);
+
+            while (node1 != null)
+            {
+                LinkedListNode<Hex2d> node2 = node1.Next;
+                while (node2 != null)
+                {
+                    _remainingPathDistance += node1.Value.DistanceTo(node2.Value);
+
+                    node2 = node2.Next;
+                }
+
+                node1 = node1.Next;
             }
         }
 
