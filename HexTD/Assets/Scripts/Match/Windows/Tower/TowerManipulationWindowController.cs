@@ -1,5 +1,6 @@
 using System;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using UniRx;
 
 namespace Match.Windows.Tower
@@ -41,7 +42,7 @@ namespace Match.Windows.Tower
             _context.SilverCoinsCountChangedReactiveCommand.Subscribe(Refresh);
         }
         
-        public void ShowWindow(TowerParameters towerParameters, int towerLevel, int currentSilverCoinsCount,
+        public void ShowWindow(TowerConfigNew towerParameters, int towerLevel, int currentSilverCoinsCount,
             Action onTowerUpgradeClickAction,
             Action onTowerInfoClickAction,
             Action onTowerSellClickAction)
@@ -50,9 +51,9 @@ namespace Match.Windows.Tower
             _onTowerInfoClickAction = onTowerInfoClickAction;
             _onTowerSellClickAction = onTowerSellClickAction;
 
-            _hasUpgrade = towerLevel < towerParameters.Levels.Length;
-            _currentUpgradePrice = _hasUpgrade ? towerParameters.Levels[towerLevel].LevelRegularParams.Data.Price : -1;
-            _currentSellPrice = TowerController.GetTowerSellPrice(towerParameters, towerLevel);
+            _hasUpgrade = towerLevel < towerParameters.TowerLevelConfigs.Count;
+            _currentUpgradePrice = _hasUpgrade ? towerParameters.TowerLevelConfigs[towerLevel].BuildPrice : -1;
+            _currentSellPrice = TowerController.GetTowerSellPrice(towerParameters.TowerLevelConfigs, towerLevel);
             
             Refresh(currentSilverCoinsCount);
 

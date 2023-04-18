@@ -2,6 +2,7 @@ using System.ComponentModel;
 using Configs;
 using Match.Field.Mob;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using UnityEngine;
 
 namespace Match.Field
@@ -27,7 +28,7 @@ namespace Match.Field
         [SerializeField] private HexagonPrefabConfig hexagonPrefabConfig;
 
         [Header("Towers")]
-        [SerializeField] private TowersConfig towersConfig;
+        [SerializeField] private TowerConfigsNew towersConfig;
 
         [Header("Mobs")]
         [SerializeField] private MobsConfig mobsConfig;
@@ -50,7 +51,7 @@ namespace Match.Field
         public HexagonPrefabConfig HexagonPrefabConfig => hexagonPrefabConfig;
 
         // towers
-        public TowersConfig TowersConfig => towersConfig;
+        public TowerConfigsNew TowersConfig => towersConfig;
         
         // mobs
         public MobsConfig MobsConfig => mobsConfig;

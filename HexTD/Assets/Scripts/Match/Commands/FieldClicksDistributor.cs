@@ -3,6 +3,7 @@ using Match.Field;
 using Match.Field.Currency;
 using Match.Field.Shooting;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using Match.Windows;
 using Match.Windows.Tower;
 using Services;
@@ -88,9 +89,9 @@ namespace Match.Commands
             _context.TowerSelectionWindowController.ShowWindow(_context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
                 (towerToBuild) =>
             {
-                TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerToBuild.TowerType);
+                TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerToBuild.TowerType);
                 
-                if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.Parameters.Levels[0].LevelRegularParams.Data.Price)
+                if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.TowerLevelConfigs[0].BuildPrice)
                     _context.MatchCommands.Outgoing.RequestBuildTower.Fire(clickedCell, towerToBuild);
             });
         }
@@ -101,8 +102,8 @@ namespace Match.Commands
             if (!_context.FieldModel.IsHexWithType(position, FieldHexType.Free))
                 return;
             
-            TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.CurrencyController.SpendSilver(towerConfig.Parameters.Levels[0].LevelRegularParams.Data.Price);
+            TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
+            _context.CurrencyController.SpendSilver(towerConfig.TowerLevelConfigs[0].BuildPrice);
             _context.ConstructionProcessController.SetTowerBuilding(towerConfig, position);
         }
 
@@ -113,25 +114,26 @@ namespace Match.Commands
                 return;
             
             int towerKey = clickedHex.GetHashCode();
-            TowerController towerInstance = _context.FieldModel.TowersByPositions[towerKey];
+            TowerController towerInstance = _context.FieldModel.TowersManager.TowerContainer.
+                GetTowerByPositionHash(towerKey);
 
             if (!towerInstance.CanShoot)
                 return;
             
             TowerShortParams towerShortParams = towerInstance.GetShortParams();
-            TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
+            TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
             
-            _context.TowerManipulationWindowController.ShowWindow(towerConfig.Parameters, towerShortParams.Level,
+            _context.TowerManipulationWindowController.ShowWindow(towerConfig, towerShortParams.Level,
                 _context.CurrencyController.GoldCoinsCountReactiveProperty.Value,
                 () =>
                 {
-                    if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.Parameters.Levels[towerShortParams.Level].LevelRegularParams.Data.Price)
+                    if (_context.CurrencyController.GoldCoinsCountReactiveProperty.Value >= towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice)
                         _context.MatchCommands.Outgoing.RequestUpgradeTower.Fire(clickedHex, towerShortParams);
                 },
                 () =>
                 {
                     towerInstance.ShowSelection();
-                    _context.TowerInfoWindowController.ShowWindow(towerConfig.Parameters, towerShortParams.Level,
+                    _context.TowerInfoWindowController.ShowWindow(towerConfig, towerShortParams.Level,
                         //towerInstance.Buffs,
                         () =>
                         {
@@ -147,26 +149,29 @@ namespace Match.Commands
             if (!_context.FieldModel.IsHexWithType(position, FieldHexType.Tower))
                 return;
             
-            TowerController towerInstance = _context.FieldModel.TowersByPositions[position.GetHashCode()];
+            TowerController towerInstance = _context.FieldModel.TowersManager.TowerContainer.
+                GetTowerByPositionHash(position.GetHashCode());
 
             if (!towerInstance.CanShoot)
                 return;
 
-            TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.CurrencyController.SpendSilver(towerConfig.Parameters.Levels[towerShortParams.Level].LevelRegularParams.Data.Price);
+            TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
+            _context.CurrencyController.SpendSilver(towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice);
             _context.ConstructionProcessController.SetTowerUpgrading(towerInstance);
         }
 
         private void ProcessSell(Hex2d position, TowerShortParams towerShortParams)
         {
             int positionHashcode = position.GetHashCode();
+            TowerController towerInstance = _context.FieldModel.TowersManager.TowerContainer.
+                GetTowerByPositionHash(positionHashcode);
             
             if (!_context.FieldModel.IsHexWithType(position, FieldHexType.Tower)
-                || !_context.FieldModel.TowersByPositions[positionHashcode].CanShoot)
+                || !towerInstance.CanShoot)
                 return;
             
-            TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            int sellPrice = TowerController.GetTowerSellPrice(towerConfig.Parameters, towerShortParams.Level);
+            TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
+            int sellPrice = TowerController.GetTowerSellPrice(towerConfig.TowerLevelConfigs, towerShortParams.Level);
             _context.CurrencyController.AddSilver(sellPrice);
             _context.ConstructionProcessController.SetTowerRemoving(position);
         }

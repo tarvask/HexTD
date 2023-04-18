@@ -1,10 +1,12 @@
 using System;
 using HexSystem;
+using Match.Field.AttackEffect;
 using Match.Field.Castle;
 using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using PathSystem;
 using Tools;
 using UniRx;
@@ -118,24 +120,28 @@ namespace Match.Field
             _projectilesRoot.localScale = Vector3.one;
         }
 
-        public TowerController CreateTower(TowerConfig towerConfig,
+        public TowerController CreateTower(TowerConfigNew towerConfig,
             Hex2d position)
         {
             _lastBuildingId++;
+            _lastTargetId++;
             
-            return CreateTowerWithId(towerConfig, position, _lastBuildingId);
+            return CreateTowerWithId(towerConfig, position, _lastBuildingId, _lastTargetId);
         }
         
-        public TowerController CreateTowerWithId(TowerConfig towerConfig,
-            Hex2d position, int towerId)
+        public TowerController CreateTowerWithId(TowerConfigNew towerConfig,
+            Hex2d position, int towerId, int targetId)
         {
             if (_lastBuildingId < towerId)
                 _lastBuildingId = towerId;
+
+            if (_lastTargetId < targetId)
+                _lastTargetId = targetId;
             
-            TowerView towerView = CreateTowerView(towerConfig.Parameters.RegularParameters.Data.TowerName, 
+            TowerView towerView = CreateTowerView(towerConfig.RegularParameters.TowerName, 
                 towerId, towerConfig.View, position);
-            TowerController.Context towerControllerContext = new TowerController.Context(towerId,
-                position, towerConfig.Parameters, towerView, towerConfig.Icon, _context.TowerRemovingDuration);
+            TowerController.Context towerControllerContext = new TowerController.Context(towerId, targetId,
+                position, towerConfig, towerView, towerConfig.Icon, _context.TowerRemovingDuration);
             TowerController towerController = new TowerController(towerControllerContext);
 
             return towerController;
@@ -203,28 +209,29 @@ namespace Match.Field
             return mobView;
         }
         
-        public ProjectileController CreateProjectile(ProjectileView projectilePrefab, Vector3 spawnPosition,
-            float projectileSpeed, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
+        public ProjectileController CreateProjectile(BaseAttackEffect attack, int attackIndex,
+            Vector3 spawnPosition, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
             int towerId, int targetId)
         {
             _lastProjectileId++;
 
-            return CreateProjectileWithId(projectilePrefab, _lastProjectileId, spawnPosition,
-                projectileSpeed, hasSplashDamage, splashDamageRadius, hasProgressiveSplash,
+            return CreateProjectileWithId(attack, attackIndex,
+                _lastProjectileId, spawnPosition, hasSplashDamage, 
+                splashDamageRadius, hasProgressiveSplash,
                 towerId, targetId);
         }
 
-        public ProjectileController CreateProjectileWithId(ProjectileView projectilePrefab, int projectileId, Vector3 spawnPosition,
-            float projectileSpeed, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
-            int towerId, int targetId)
+        public ProjectileController CreateProjectileWithId(BaseAttackEffect baseTowerAttack,
+            int attackIndex, int projectileId, Vector3 spawnPosition, bool hasSplashDamage, 
+            float splashDamageRadius, bool hasProgressiveSplash, int towerId, int targetId)
         {
             if (_lastProjectileId < projectileId)
                 _lastProjectileId = projectileId;
             
-            ProjectileView projectileInstance = CreateProjectileView(projectileId, projectilePrefab, spawnPosition);
+            ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttack.ProjectileView, spawnPosition);
             ProjectileController.Context projectileControllerContext = new ProjectileController.Context(projectileId,
-                projectileInstance, projectileSpeed, hasSplashDamage, splashDamageRadius, hasProgressiveSplash,
-                towerId, targetId);
+                baseTowerAttack, attackIndex, projectileInstance, baseTowerAttack.ProjectileSpeed, 
+                hasSplashDamage, splashDamageRadius, hasProgressiveSplash, towerId, targetId);
             ProjectileController projectileController = new ProjectileController(projectileControllerContext);
 
             return projectileController;

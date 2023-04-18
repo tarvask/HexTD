@@ -2,6 +2,7 @@ using MapEditor;
 using Match.Field;
 using Match.Field.Mob;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 
 namespace Services
@@ -43,7 +44,7 @@ namespace Services
             return _fieldConfigCellsRetriever.GetCellByType(hexTypeName);
         }
 
-        public TowerConfig GetTowerByType(TowerType towerType)
+        public TowerConfigNew GetTowerByType(TowerType towerType)
         {
             return _towerConfigRetriever.GetTowerByType(towerType);
         }

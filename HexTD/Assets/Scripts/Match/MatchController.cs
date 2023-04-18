@@ -1,4 +1,5 @@
 using System;
+using BuffLogic;
 using HexSystem;
 using Match.Commands;
 using Match.Field;
@@ -74,6 +75,7 @@ namespace Match
         private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
+        private readonly BuffManager _buffManager;
         private readonly FieldController _player1FieldController;
         private readonly FieldController _player2FieldController;
         private readonly FieldFactory _fieldFactory;
@@ -143,6 +145,8 @@ namespace Match
                _context.NewWindowsManager);
            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
+           _buffManager = new BuffManager();
+
            // fields
            var hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig);
 
@@ -152,6 +156,7 @@ namespace Match
                 hexFabric,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
+                _buffManager,
                 _windowsManager,
                 false,
                 
@@ -173,6 +178,7 @@ namespace Match
                 hexFabric,
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
+                _buffManager,
                 _windowsManager,
                 true,
                 
@@ -311,6 +317,7 @@ namespace Match
             
             _inputController.OuterLogicUpdate(frameLength);
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
+            _buffManager.OuterLogicUpdate(frameLength);
             _windowsManager.OuterLogicUpdate(frameLength);
             
             // the order is important due to calls to Random inside

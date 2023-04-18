@@ -1,23 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using HexSystem;
-using Match.Field.Hexagons;
+using Match.Field.Shooting;
 
 namespace Match.Field.Mob
 {
-    public class MobsContainer
+    public class MobsContainer : ITypeTargetContainer
     {
-        private readonly IHexPositionConversionService _hexPositionConversionService;
         private readonly Dictionary<int, MobController> _mobs;
-        private readonly Dictionary<int, List<MobController>> _mobsByPosition;
+        private readonly Dictionary<int, List<ITargetable>> _mobsByPosition;
 
+        public IReadOnlyDictionary<int, List<ITargetable>> TargetsByPosition => _mobsByPosition;
         public IReadOnlyDictionary<int, MobController> Mobs => _mobs;
-        public IReadOnlyDictionary<int, List<MobController>> MobsByPosition => _mobsByPosition;
 
-        public MobsContainer(IHexPositionConversionService hexPositionConversionService)
+        public MobsContainer()
         {
-            _hexPositionConversionService = hexPositionConversionService;
             _mobs = new Dictionary<int, MobController>();
-            _mobsByPosition = new Dictionary<int, List<MobController>>();
+            _mobsByPosition = new Dictionary<int, List<ITargetable>>();
         }
 
         public void UpdateMobsLogicMoving(float frameLength)
@@ -50,7 +49,7 @@ namespace Match.Field.Mob
             }
             else
             {
-                List<MobController> mobControllers = new List<MobController>();
+                List<ITargetable> mobControllers = new List<ITargetable>();
                 _mobsByPosition.Add(positionHash, mobControllers);
                 mobControllers.Add(mobController);
             }
@@ -59,13 +58,35 @@ namespace Match.Field.Mob
         public void RemoveMob(MobController mobController)
         {
             _mobs.Remove(mobController.Id);
-            _mobsByPosition.Remove(mobController.HexPosition.GetHashCode());
+            RemoveByPosition(mobController);
+            mobController.UnsubscribeOnHexPositionChange(HandleMobHexPositionUpdate);
+        }
+
+        private void RemoveByPosition(MobController mobController)
+        {
+            if(!_mobsByPosition.TryGetValue(mobController.HexPosition.GetHashCode(), out var mobsList))
+                return;
+
+            mobsList.Remove(mobController);
         }
 
         public void Clear()
         {
             _mobs.Clear();
             _mobsByPosition.Clear();
+        }
+
+        public IEnumerator<ITargetable> GetEnumerator()
+        {
+            foreach (var mobControllerPair in _mobs)
+            {
+                yield return mobControllerPair.Value;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

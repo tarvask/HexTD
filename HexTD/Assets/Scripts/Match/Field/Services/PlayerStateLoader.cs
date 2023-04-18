@@ -5,6 +5,7 @@ using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.State;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using Services;
 using Tools;
 using UnityEngine;
@@ -60,10 +61,10 @@ namespace Match.Field.Services
             {
                 ref readonly PlayerState.TowerState towerState = ref playerState.Towers.Towers[towerIndex];
                 
-                TowerConfig towerConfig = _context.ConfigsRetriever.GetTowerByType(towerState.Type);
+                TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerState.Type);
                 Hex2d towerHexPosition = new Hex2d(towerState.PositionQ, towerState.PositionR);
                 TowerController towerController = _context.FieldFactory.CreateTowerWithId(towerConfig,
-                    towerHexPosition, towerState.Id);
+                    towerHexPosition, towerState.Id, towerState.TargetId);
                 towerController.LoadState(towerState);
 
                 _context.FieldModel.AddTower(towerController, towerHexPosition);
@@ -91,11 +92,17 @@ namespace Match.Field.Services
                 
                 if (projectileState.Id == 0 || projectileState.TowerId == 0)
                     Debug.LogError($"Somehow id = 0: projectile is {projectileState.Id}, tower is {projectileState.TowerId}");
-                    
+
+                TowerType towerType = _context.FieldModel.TowersManager.Towers[projectileState.TowerId].TowerType;
+                TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerType);
+                
+                
                 Vector3 projectilePosition = new Vector3(projectileState.PositionX, projectileState.PositionY);
                 ProjectileController projectileController = _context.FieldFactory.CreateProjectileWithId(
-                    _context.FieldModel.Towers[projectileState.TowerId].ProjectilePrefab,
-                    projectileState.Id, projectilePosition, projectileState.Speed,
+                    towerConfig.AttacksConfig.Attacks[projectileState.Attackindex],
+                    projectileState.Id,
+                    projectileState.Attackindex,
+                    projectilePosition,
                     projectileState.HasSplash, projectileState.SplashRadius, projectileState.HasProgressiveSplash,
                     projectileState.TowerId, projectileState.TargetId);
                 projectileController.LoadState(projectileState);
@@ -116,7 +123,7 @@ namespace Match.Field.Services
             PlayerState.CastleState castleState = new PlayerState.CastleState(_context.FieldModel.Castle);
 
             // towers
-            PlayerState.TowersState towersState = new PlayerState.TowersState(_context.FieldModel.Towers);
+            PlayerState.TowersState towersState = new PlayerState.TowersState(_context.FieldModel.TowersManager.Towers);
             
             // mobs
             PlayerState.MobsState mobsState = new PlayerState.MobsState(_context.FieldModel.MobsManager.Mobs);
@@ -131,11 +138,10 @@ namespace Match.Field.Services
         public void ClearState()
         {
             // towers
-            foreach (KeyValuePair<int, TowerController> towerPair in _context.FieldModel.Towers)
+            foreach (KeyValuePair<int, TowerController> towerPair in _context.FieldModel.TowersManager.Towers)
                 towerPair.Value.Dispose();
             
-            _context.FieldModel.Towers.Clear();
-            _context.FieldModel.TowersByPositions.Clear();
+            _context.FieldModel.TowersManager.Clear();
 
             // mobs
             foreach (KeyValuePair<int, MobController> mobPair in _context.FieldModel.MobsManager.Mobs)
@@ -148,9 +154,6 @@ namespace Match.Field.Services
                 projectilePair.Value.Dispose();
             
             _context.FieldModel.Projectiles.Clear();
-            
-            // shootables
-            _context.FieldModel.Shootables.Clear();
         }
     }
 }

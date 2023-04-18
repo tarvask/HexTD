@@ -1,18 +1,20 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using BuffLogic;
 using HexSystem;
 using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.State;
 using PathSystem;
-using Tools;
+using Tools.PriorityTools;
 using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Match.Field.Mob
 {
-    public class MobController : BaseDisposable, IShootable
+    public class MobController : BaseTargetableEntity
     {
         public struct Context
         {
@@ -43,7 +45,6 @@ namespace Match.Field.Mob
 
         private readonly Context _context;
         private readonly MobReactiveModel _reactiveModel;
-        //private readonly MobBuffsManager _buffsManager;
         private Vector3 _currentPosition;
         private Vector3 _currentTargetPosition;
         private Hex2d _currentHexPosition;
@@ -52,7 +53,6 @@ namespace Match.Field.Mob
         private float _currentPathLength;
         
         private float _attackingTimer;
-        private byte _currentDamageTextIndex;
         private bool _wasNewHexReached;
         private bool _isCarrion;
         private bool _hasReachedCastle;
@@ -60,11 +60,14 @@ namespace Match.Field.Mob
         private bool _isInSafety;
 
         public int Id => _context.Id;
-        public int TargetId => _context.TargetId;
-        public int Health => _reactiveModel.HealthReactiveProperty.Value;
+        public override int TargetId => _context.TargetId;
+        public override Vector3 Position => _currentPosition;
+        public IReadOnlyReactiveProperty<float> Health => _reactiveModel.Health;
+        public IReadonlyBuffableValue<float> Speed => _reactiveModel.Speed;
         public float PathLength => _currentPathLength;
-        public Vector3 Position => _currentPosition;
-        public Hex2d HexPosition => _currentHexPosition;
+        public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
+        public override Hex2d HexPosition => _currentHexPosition;
+
         public bool HasReachedCastle => _hasReachedCastle;
         public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.ReloadTime;
         public int RewardInSilver => _context.Parameters.RewardInSilver;
@@ -79,11 +82,8 @@ namespace Match.Field.Mob
             _context = context;
 
             _reactiveModel = AddDisposable(new MobReactiveModel(_context.Parameters.Speed, _context.Parameters.HealthPoints));
-            // _buffsManager = AddDisposable(new MobBuffsManager(new MobBuffsManager.Context(_reactiveModel.SpeedReactiveProperty,
-            //     _reactiveModel.HealthReactiveProperty)));
             
             _currentPathLength = 0;
-            _currentDamageTextIndex = 0;
 
             _wasNewHexReached = false;
             _context.PathEnumerator.Reset();
@@ -95,26 +95,20 @@ namespace Match.Field.Mob
             _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition);
         }
 
-        public void UpdateHealth(float frameLength)
-        {
-            //_buffsManager.OuterUpdate(frameLength);
-            //_reactiveModel.HealthReactiveProperty.Value += (int)_buffsManager.ParameterResultValue(BuffedParameterType.Health);
-        }
-
         public void LogicMove(float frameLength)
         {
             if (_hasReachedCastle)
                 return;
             
             float distanceToTarget = Vector3.Magnitude(_currentPosition - _currentTargetPosition);
-            float distancePerFrame = _context.Parameters.Speed; //_buffsManager.ParameterResultValue(BuffedParameterType.MovementSpeed) * frameLength;
+            float distancePerFrame = _reactiveModel.Speed.Value; //_buffsManager.ParameterResultValue(BuffedParameterType.MovementSpeed) * frameLength;
 
             // special treatment for range attack when approaching castle
             if (!CheckRangeAttackDistance(ref _currentPosition))
             {
                 if (distancePerFrame < distanceToTarget)
                 {
-                    _currentPosition = Vector3.MoveTowards(_currentPosition, _currentTargetPosition, _context.Parameters.Speed);
+                    _currentPosition = Vector3.MoveTowards(_currentPosition, _currentTargetPosition, distancePerFrame);
                     _currentPathLength += distancePerFrame;
                     if (!_wasNewHexReached && 
                         _context.HexPositionConversionService.IsCloseToNewHex(distanceToTarget))
@@ -142,6 +136,11 @@ namespace Match.Field.Mob
             _reactiveModel.SubscribeOnHexPositionChange(actionOnChange);
         }
 
+        public void UnsubscribeOnHexPositionChange(Action<MobController, Hex2d> actionOnChange)
+        {
+            _reactiveModel.UnsubscribeOnHexPositionChange(actionOnChange);
+        }
+        
         private void UpdateHexPosition()
         {
             var oldHexPosition = _currentHexPosition;
@@ -191,29 +190,17 @@ namespace Match.Field.Mob
             //    + Mathf.Abs(Position.y - _context.Waypoints[waypointIndex - 1].y);
         }
 
-        public void Hurt(int damage)
+        public override void Heal(float heal)
         {
-            _reactiveModel.HealthReactiveProperty.Value -= damage;
-            ShowDamage(damage);
+            float newHealth = _reactiveModel.Health.Value + heal;
+            newHealth = Mathf.Clamp(newHealth, 0, _reactiveModel.MaxHealth.Value);
+            _reactiveModel.SetHealth(newHealth);
         }
 
-        // public void ApplyBuffs(List<AbstractBuffParameters> buffs)
-        // {
-        //     foreach (AbstractBuffParameters buff in buffs)
-        //     {
-        //         _buffsManager.AddBuff(buff);
-        //     }
-        // }
-        //
-        // public void RemoveBuff(BuffedParameterType buffedParameterType, byte buffSubtype)
-        // {
-        //     _buffsManager.RemoveBuff(buffedParameterType, buffSubtype);
-        // }
-        //
-        // public bool HasBuff(AbstractBuffParameters buff)
-        // {
-        //     return _buffsManager.HasBuff(buff);
-        // }
+        public override void Hurt(float damage)
+        {
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value - damage);
+        }
 
         public void Die()
         {
@@ -253,29 +240,31 @@ namespace Match.Field.Mob
             _attackingTimer = 0;
             return _context.Parameters.AttackPower;
         }
-
-        private void ShowDamage(int damage)
-        {
-            //_context.View.DamageTextItems[_currentDamageTextIndex].text = $"{-damage}";
-            //_context.View.DamageTextItems[_currentDamageTextIndex].gameObject.SetActive(false);
-            //_context.View.DamageTextItems[_currentDamageTextIndex].gameObject.SetActive(true);
-            //_currentDamageTextIndex++;
-            
-            //if (_currentDamageTextIndex == _context.View.DamageTextItems.Length)
-            //    _currentDamageTextIndex = 0;
-        }
         
         public void LoadState(in PlayerState.MobState mobState)
         {
             _context.PathEnumerator.MoveTo(mobState.NextWaypoint);
             ComputePathLengthAfterTeleport();
-            _reactiveModel.HealthReactiveProperty.Value = mobState.CurrentHealth;
+            _reactiveModel.SetHealth(mobState.CurrentHealth);
         }
         
         public PlayerState.MobState GetMobState()
         {
             return new PlayerState.MobState(_context.Id, _context.TargetId, _context.Parameters.TypeId,
-                Position.x, Position.y, _context.PathEnumerator.CurrentPointIndex, _reactiveModel.HealthReactiveProperty.Value);
+                Position.x, Position.y, _context.PathEnumerator.CurrentPointIndex, _reactiveModel.Health.Value);
+        }
+
+        public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITargetable>> buffs, IBuff<ITargetable> addedBuff)
+        {
+            addedBuff.ApplyBuff(this);
+        }
+
+        public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<ITargetable>> buffs, IEnumerable<IBuff<ITargetable>> removedBuffs)
+        {
+            foreach (var removedBuff in removedBuffs)
+            {
+                removedBuff.ApplyBuff(this);
+            }
         }
 
         protected override void OnDispose()

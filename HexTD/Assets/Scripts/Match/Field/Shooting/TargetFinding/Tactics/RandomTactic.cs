@@ -7,35 +7,19 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
 {
     public class RandomTactic : BaseDisposable, ITargetFindingTactic
     {
-        private readonly List<int> _possibleTargets;
-        
         public RandomTactic()
         {
-            _possibleTargets = new List<int>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }
         
         public TargetFindingTacticType TacticType => TargetFindingTacticType.Random;
-        
-        public int GetTargetWithTactic(Dictionary<int, MobController> mobs)
+
+        public int GetTargetWithTactic(IReadOnlyList<ITargetable> targets)
         {
-            _possibleTargets.Clear();
-            
-            foreach (KeyValuePair<int, MobController> mobPair in mobs)
-                _possibleTargets.Add(mobPair.Key);
-            
-            if (_possibleTargets.Count == 0)
+            if (targets.Count == 0)
                 return -1;
-
-            int randomMobIndex = _possibleTargets[Randomizer.GetRandomInRange(0, _possibleTargets.Count)];
             
-            return mobs[randomMobIndex].TargetId;
-        }
-
-        protected override void OnDispose()
-        {
-            base.OnDispose();
-            
-            _possibleTargets.Clear();
+            var randomMobIndex = targets[Randomizer.GetRandomInRange(0, targets.Count)];
+            return randomMobIndex.TargetId;
         }
     }
 }

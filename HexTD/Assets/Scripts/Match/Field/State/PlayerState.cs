@@ -56,7 +56,7 @@ namespace Match.Field.State
             _currentCrystals = currentCrystals;
             
             _castleState = new CastleState(fieldModel.Castle);
-            _towersState = new TowersState(fieldModel.Towers);
+            _towersState = new TowersState(fieldModel.TowersManager.Towers);
             _mobsState = new MobsState(fieldModel.MobsManager.Mobs);
             _projectilesState = new ProjectilesState(fieldModel.Projectiles);
         }
@@ -138,7 +138,7 @@ namespace Match.Field.State
                 _towers = towers;
             }
 
-            public TowersState(Dictionary<int, TowerController> towersControllers)
+            public TowersState(IReadOnlyDictionary<int, TowerController> towersControllers)
             {
                 int activeTowers = 0;
                 
@@ -183,6 +183,7 @@ namespace Match.Field.State
         public readonly struct TowerState
         {
             private readonly int _id;
+            private readonly int _targetId;
             private readonly short _qPosition;
             private readonly short _rPosition;
             private readonly TowerType _type;
@@ -190,15 +191,17 @@ namespace Match.Field.State
             private readonly int _constructionTime;
 
             public int Id => _id;
+            public int TargetId => _targetId;
             public short PositionQ => _qPosition;
             public short PositionR => _rPosition;
             public TowerType Type => _type;
             public byte Level => _level;
             public int ConstructionTime => _constructionTime;
 
-            public TowerState(int id, short qPosition, short rPosition, TowerType type, byte level, int constructionTime)
+            public TowerState(int id, int targetId, short qPosition, short rPosition, TowerType type, byte level, int constructionTime)
             {
                 _id = id;
+                _targetId = targetId;
                 _qPosition = qPosition;
                 _rPosition = rPosition;
                 _type = type;
@@ -209,13 +212,14 @@ namespace Match.Field.State
             public static TowerState TowerFromHashtable(Hashtable towerHashtable)
             {
                 int id = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerIdParam];
+                int targetId = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTargetIdParam];
                 short qPosition = (short)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.PositionQParam];
                 short rPosition = (short)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.PositionRParam];
                 TowerType type = (TowerType)(byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTypeParam];
                 byte level = (byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerLevelParam];
                 int constructionTime = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerConstructionTimeParam];
 
-                return new TowerState(id, qPosition, rPosition, type, level, constructionTime);
+                return new TowerState(id, targetId, qPosition, rPosition, type, level, constructionTime);
             }
 
             public static Hashtable TowerToHashtable(in TowerState towersState)
@@ -286,7 +290,7 @@ namespace Match.Field.State
             private readonly float _xPosition;
             private readonly float _yPosition;
             private readonly byte _nextWaypoint;
-            private readonly int _currentHealth;
+            private readonly float _currentHealth;
 
             public int Id => _id;
             public int TargetId => _targetId;
@@ -294,10 +298,10 @@ namespace Match.Field.State
             public float PositionX => _xPosition;
             public float PositionY => _yPosition;
             public byte NextWaypoint => _nextWaypoint;
-            public int CurrentHealth => _currentHealth;
+            public float CurrentHealth => _currentHealth;
 
             public MobState(int id, int targetId, byte typeId, float xPosition, float yPosition, byte nextWaypoint,
-                int currentHealth)
+                float currentHealth)
             {
                 _id = id;
                 _targetId = targetId;
@@ -316,7 +320,7 @@ namespace Match.Field.State
                 float xPosition = (float)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.PositionXParam];
                 float yPosition = (float)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.PositionYParam];
                 byte nextWaypoint = (byte)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.NextWaypointParam];
-                int currentHealth = (int)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.CurrentHealthParam];
+                float currentHealth = (float)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.CurrentHealthParam];
                 
                 return new MobState(id, targetId, typeId, xPosition, yPosition, nextWaypoint, currentHealth);
             }
@@ -394,6 +398,7 @@ namespace Match.Field.State
             private readonly int _id;
             private readonly int _towerId;
             private readonly int _targetId;
+            private readonly int _attackIndex;
             private readonly float _xPosition;
             private readonly float _yPosition;
             // can be computed by tower
@@ -405,6 +410,7 @@ namespace Match.Field.State
             public int Id => _id;
             public int TowerId => _towerId;
             public int TargetId => _targetId;
+            public int Attackindex => _attackIndex;
             public float PositionX => _xPosition;
             public float PositionY => _yPosition;
             public float Speed => _speed;
@@ -412,12 +418,13 @@ namespace Match.Field.State
             public float SplashRadius => _splashRadius;
             public bool HasProgressiveSplash => _hasProgressiveSplash;
 
-            public ProjectileState(int id, int towerId, int targetId, float xPosition, float yPosition,
+            public ProjectileState(int id, int towerId, int targetId, int attackIndex, float xPosition, float yPosition,
                 float speed, bool hasSplash, float splashRadius, bool hasProgressiveSplash)
             {
                 _id = id;
                 _towerId = towerId;
                 _targetId = targetId;
+                _attackIndex = attackIndex;
                 _xPosition = xPosition;
                 _yPosition = yPosition;
                 _speed = speed;
@@ -426,19 +433,20 @@ namespace Match.Field.State
                 _hasProgressiveSplash = hasProgressiveSplash;
             }
             
-            public static ProjectileState ProjectileFromHashtable(Hashtable crystalHashtable)
+            public static ProjectileState ProjectileFromHashtable(Hashtable projectileHashtable)
             {
-                int id = (int)crystalHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.ProjectileIdParam];
-                int towerId = (int)crystalHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.TowerIdParam];
-                int targetId = (int)crystalHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.TargetIdParam];
-                float xPosition = (float)crystalHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionXParam];
-                float yPosition = (float)crystalHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionYParam];
-                float speed = (float)crystalHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.SpeedParam];
-                bool hasSplash = (bool)crystalHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.HasSplashDamageParam];
-                float splashRadius = (float)crystalHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.SplashRadiusParam];
-                bool hasProgressiveSplash = (bool)crystalHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.HasProgressiveSplashParam];
+                int id = (int)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.ProjectileIdParam];
+                int towerId = (int)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.TowerIdParam];
+                int targetId = (int)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.TargetIdParam];
+                int attackIndex = (int)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.AttackIndex];
+                float xPosition = (float)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionXParam];
+                float yPosition = (float)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionYParam];
+                float speed = (float)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.SpeedParam];
+                bool hasSplash = (bool)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.HasSplashDamageParam];
+                float splashRadius = (float)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.SplashRadiusParam];
+                bool hasProgressiveSplash = (bool)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.HasProgressiveSplashParam];
                 
-                return new ProjectileState(id, towerId, targetId, xPosition, yPosition,
+                return new ProjectileState(id, towerId, targetId, attackIndex, xPosition, yPosition,
                     speed, hasSplash, splashRadius, hasProgressiveSplash);
             }
 

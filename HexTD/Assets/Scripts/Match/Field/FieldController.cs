@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using BuffLogic;
 using HexSystem;
 using Match.Commands;
 using Match.Field.Castle;
@@ -27,8 +28,10 @@ namespace Match.Field
             public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
+            public BuffManager BuffManager { get; }
             public WindowsManager WindowsManager { get; }
             public bool NeedsInput { get; }
+            
             public MatchCommands MatchCommands { get; }
 
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
@@ -50,11 +53,13 @@ namespace Match.Field
                 HexFabric hexFabric,
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
+                BuffManager buffManager,
                 WindowsManager windowsManager,
 
                 bool needsInput,
                 
                 MatchCommands matchCommands,
+                
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
                 ReactiveCommand<Hex2d> clickReactiveCommand,
                 ReactiveCommand<PlayerState> stateSyncedReactiveCommand,
@@ -75,6 +80,7 @@ namespace Match.Field
                 MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
                 ConfigsRetriever = configsRetriever;
+                BuffManager = buffManager;
                 WindowsManager = windowsManager;
 
                 NeedsInput = needsInput;
@@ -146,8 +152,7 @@ namespace Match.Field
                 removeMobReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
-            MobsManager.Context mobMoverContext = new MobsManager.Context(_hexagonalFieldModel, 
-                castleAttackedByMobReactiveCommand);
+            MobsManager.Context mobMoverContext = new MobsManager.Context(castleAttackedByMobReactiveCommand);
             _mobsManager = AddDisposable(new MobsManager(mobMoverContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
@@ -179,7 +184,7 @@ namespace Match.Field
             
             // shooting
             ShootingController.Context shootingControllerContext = new ShootingController.Context(_model, 
-                _hexMapReachableService, _factory);
+                _hexMapReachableService, _factory, _context.BuffManager);
             _shootingController = AddDisposable(new ShootingController(shootingControllerContext));
             
             // currency
@@ -234,9 +239,7 @@ namespace Match.Field
             
             _constructionProcessController.OuterLogicUpdate(frameLength);
             _mobsManager.OuterLogicUpdate(frameLength);
-
-            foreach (KeyValuePair<int,TowerController> towerPair in _model.Towers)
-                towerPair.Value.OuterLogicUpdate(frameLength);
+            _model.TowersManager.OuterLogicUpdate(frameLength);
             
             _shootingController.OuterLogicUpdate(frameLength);
             

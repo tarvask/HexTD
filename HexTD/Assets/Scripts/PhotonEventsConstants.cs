@@ -139,6 +139,7 @@ public static class PhotonEventsConstants
             public static class Towers
             {
                 public const string TowerIdParam = "id";
+                public const string TowerTargetIdParam = "targetId";
                 public const string PositionQParam = "qposition";
                 public const string PositionRParam = "rposition";
                 public const string TowerTypeParam = "type";
@@ -169,6 +170,7 @@ public static class PhotonEventsConstants
                 public const string ProjectileIdParam = "id";
                 public const string TowerIdParam = "towerId";
                 public const string TargetIdParam = "targetId";
+                public const string AttackIndex = "attackIndex";
                 public const string PositionXParam = "xposition";
                 public const string PositionYParam = "yposition";
                 // can be computed by tower

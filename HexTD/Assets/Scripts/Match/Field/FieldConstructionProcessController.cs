@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using HexSystem;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 using Tools.Interfaces;
 
@@ -50,8 +51,10 @@ namespace Match.Field
 
             foreach (int towerPositionHash in _towersToRelease)
             {
+                TowerController releaseTower = _context.FieldModel.TowersManager.TowerContainer.GetTowerByPositionHash(towerPositionHash);
+
                 _constructingTowers.Remove(towerPositionHash);
-                _context.FieldModel.TowersByPositions[towerPositionHash].Release();
+                releaseTower.Release();
             }
             
             _towersToRelease.Clear();
@@ -66,7 +69,9 @@ namespace Match.Field
             foreach (int towerPositionHash in _towersToDispose)
             {
                 _removingTowers.Remove(towerPositionHash);
-                _context.FieldModel.RemoveTower(towerPositionHash, _context.FieldModel.TowersByPositions[towerPositionHash]);
+                TowerController towerInPosition = 
+                    _context.FieldModel.TowersManager.TowerContainer.GetTowerByPositionHash(towerPositionHash);
+                _context.FieldModel.RemoveTower(towerPositionHash, towerInPosition);
             }
             
             _towersToDispose.Clear();
@@ -75,12 +80,13 @@ namespace Match.Field
         public void SetTowerRemoving(Hex2d position)
         {
             int hexHashCode = position.GetHashCode();
-            TowerController removingTower = _context.FieldModel.TowersByPositions[hexHashCode];
+            TowerController removingTower = 
+                _context.FieldModel.TowersManager.TowerContainer.GetTowerByPositionHash(hexHashCode);
             _removingTowers.Add(hexHashCode, removingTower);
             removingTower.SetRemoving();
         }
 
-        public TowerController SetTowerBuilding(TowerConfig towerConfig, Hex2d position)
+        public TowerController SetTowerBuilding(TowerConfigNew towerConfig, Hex2d position)
         {
             int positionHash = position.GetHashCode();
             TowerController towerInstance = _context.Factory.CreateTower(towerConfig, position);

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180d3828ff9324840932e97f70a9424f, type: 3}
+  m_Name: FieldConfig
+  m_EditorClassIdentifier: 
+  castleHealth: 10
+  energyRestoreDelay: 2
+  energyRestoreValue: 2
+  maxEnergy: 10
+  maxOverlappingWaves: 2
+  towerRemovingDuration: 1
+  matchInfoShowDuration: 1
+  waveInfoShowDuration: 1
+  targetArtifactChoosingDuration: 1
+  technicalPauseBetweenWavesDuration: 1
+  hexSettingsConfig: {fileID: 11400000, guid: de8e5719bbe23694495832da453b5ee0, type: 2}
+  hexagonPrefabConfig: {fileID: 11400000, guid: 1aba3ec50fc95fc4288bd063b741fc44, type: 2}
+  towersConfig: {fileID: 11400000, guid: edfd41f6b405f0d4386c877845ad8a5a, type: 2}
+  mobsConfig: {fileID: 11400000, guid: 3731662891967634795c1eab2b8e14ef, type: 2}

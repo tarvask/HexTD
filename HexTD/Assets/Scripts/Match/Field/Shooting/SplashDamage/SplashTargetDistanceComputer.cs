@@ -6,18 +6,18 @@ namespace Match.Field.Shooting.SplashDamage
     public static class SplashTargetDistanceComputer
     {
         public static void GetTargetsWithSqrDistances(ProjectileController projectile,
-            Dictionary<int, IShootable> shootables, ref List<TargetWithSqrDistancePair> targetWithDistances)
+            IEnumerable<ITargetable> shootables, ref List<TargetWithSqrDistancePair> targetWithDistances)
         {
             Vector3 projectilePosition = projectile.CurrentPosition;
             float projectileSplashSqrRadius = projectile.SplashDamageRadius * projectile.SplashDamageRadius;
             
-            foreach (KeyValuePair<int,IShootable> shootablePair in shootables)
+            foreach (var target in shootables)
             {
                 float shootableToProjectileSqrDistance =
-                    (shootablePair.Value.Position - projectilePosition).sqrMagnitude;
+                    (target.Position - projectilePosition).sqrMagnitude;
                 
                 if (shootableToProjectileSqrDistance <= projectileSplashSqrRadius)
-                    targetWithDistances.Add(new TargetWithSqrDistancePair(shootablePair.Key,
+                    targetWithDistances.Add(new TargetWithSqrDistancePair(target,
                         shootableToProjectileSqrDistance));
             }
         }

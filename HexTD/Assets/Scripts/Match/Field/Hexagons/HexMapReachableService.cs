@@ -97,7 +97,6 @@ namespace Match.Field.Hexagons
 
                 if (!y.ContainsKey(attackRadius))
                 {
-                    Debug.Log(111);
                     y.Add(attackRadius, res);
                 }
             }
@@ -157,7 +156,7 @@ namespace Match.Field.Hexagons
             
             // shooter is higher than target, height delta is added to attack radius, no obstacles
             return position.Height >= targetHexModel.Height
-                   && (position.Position - targetHexModel.Position).Length <= attackRadius + position.Height - targetHexModel.Height
+                   && position.Position.DistanceTo(targetHexModel.Position) <= attackRadius + position.Height - targetHexModel.Height
                    && !obstacles.Any(obstacleHex => _hexagonalFieldModel.IsOnSegment(obstacleHex,
                                                                new Vector2(pos1.x,pos1.z),new Vector2(pos2.x,pos2.z)));
         }

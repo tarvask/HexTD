@@ -1,5 +1,6 @@
 using System;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using TMPro;
 using Tools;
 using UnityEngine;
@@ -23,19 +24,19 @@ namespace Match.Windows.Tower
 
         private Action _onBuyButtonClickAction;
 
-        public void Init(TowerConfig config, Action onBuyButtonClickAction)
+        public void Init(TowerConfigNew config, Action onBuyButtonClickAction)
         {
-            Init(config, config.Parameters.Levels[0].LevelRegularParams.Data.Price, onBuyButtonClickAction);
+            Init(config, config.TowerLevelConfigs[0].BuildPrice, onBuyButtonClickAction);
         }
 
-        public void Init(TowerConfig config, int price, Action onBuyButtonClickAction)
+        public void Init(TowerConfigNew config, int price, Action onBuyButtonClickAction)
         {
-            _towerShortParams = new TowerShortParams(config.Parameters.RegularParameters.Data.TowerType, 1);
+            _towerShortParams = new TowerShortParams(config.RegularParameters.TowerType, 1);
             _towerPriceInSilver = price;
             
-            towerNameLabel.text = config.Parameters.RegularParameters.Data.TowerName;
+            towerNameLabel.text = config.RegularParameters.TowerName;
             towerPriceLabel.text = $"{_towerPriceInSilver}";
-            towerIcon.color = raceColors[(int) config.Parameters.RegularParameters.Data.RaceType];
+            towerIcon.color = raceColors[(int) config.RegularParameters.RaceType];
             towerDisabledCover.SetActive(false);
 
             _onBuyButtonClickAction = onBuyButtonClickAction;
