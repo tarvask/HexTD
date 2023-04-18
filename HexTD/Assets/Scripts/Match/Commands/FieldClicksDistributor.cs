@@ -112,8 +112,10 @@ namespace Match.Commands
                 return;
             
             int towerKey = clickedHex.GetHashCode();
-            TowerController towerInstance = _context.FieldModel.TowersManager.TowerContainer.
-                GetTowerByPositionHash(towerKey);
+
+            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(towerKey,
+                    out TowerController towerInstance))
+                return;
 
             if (!towerInstance.CanShoot)
                 return;
@@ -147,8 +149,11 @@ namespace Match.Commands
             if (!_context.FieldModel.IsHexWithType(position, FieldHexType.Tower))
                 return;
             
-            TowerController towerInstance = _context.FieldModel.TowersManager.TowerContainer.
-                GetTowerByPositionHash(position.GetHashCode());
+            int positionHashcode = position.GetHashCode();
+            
+            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(positionHashcode,
+                    out TowerController towerInstance))
+                return;
 
             if (!towerInstance.CanShoot)
                 return;
@@ -161,8 +166,10 @@ namespace Match.Commands
         private void ProcessSell(Hex2d position, TowerShortParams towerShortParams)
         {
             int positionHashcode = position.GetHashCode();
-            TowerController towerInstance = _context.FieldModel.TowersManager.TowerContainer.
-                GetTowerByPositionHash(positionHashcode);
+            
+            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(positionHashcode,
+                    out TowerController towerInstance))
+                return;
             
             if (!_context.FieldModel.IsHexWithType(position, FieldHexType.Tower)
                 || !towerInstance.CanShoot)

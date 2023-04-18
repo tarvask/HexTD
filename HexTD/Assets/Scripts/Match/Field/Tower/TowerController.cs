@@ -77,7 +77,6 @@ namespace Match.Field.Tower
         public void OuterLogicUpdate(float frameLength)
         {
             _shootModel.OuterLogicUpdate(frameLength);
-            
         }
 
         // TODO: fix abilities' behaviour
