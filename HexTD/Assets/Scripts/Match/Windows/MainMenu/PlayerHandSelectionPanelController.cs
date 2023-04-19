@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Match.Field;
 using Match.Field.Mob;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using Match.Windows.Tower;
 using Services;
 using Tools;
@@ -40,7 +41,7 @@ namespace Match.Windows.MainMenu
         private readonly ReactiveCommand<PlayerHandSelectionPossibleItemController> _selectPossibleTowerItemReactiveCommand;
         private readonly ReactiveCommand<TowerInHandChangeParameters> _towerInHandChangedReactiveCommand;
 
-        private List<List<TowerConfig>> _hands;
+        private List<List<TowerConfigNew>> _hands;
 
         public PlayerHandSelectionPanelController(Context context)
         {
@@ -71,7 +72,7 @@ namespace Match.Windows.MainMenu
             _towerInHandChangedReactiveCommand.Subscribe(ChangeTowerInHand);
         }
         
-        public void Show(ref List<List<TowerConfig>> hands)
+        public void Show(ref List<List<TowerConfigNew>> hands)
         {
             _hands = hands;
             SelectHand(_context.SelectedHandIndexReactiveProperty.Value, true);
@@ -91,7 +92,7 @@ namespace Match.Windows.MainMenu
             for (int towerIndex = 0; towerIndex < _hands[_context.SelectedHandIndexReactiveProperty.Value].Count; towerIndex++)
             {
                 if (_hands[_context.SelectedHandIndexReactiveProperty.Value][towerIndex] != null)
-                    _context.View.HandTowerItems[towerIndex].SetData(_hands[_context.SelectedHandIndexReactiveProperty.Value][towerIndex].Parameters.RegularParameters.Data);
+                    _context.View.HandTowerItems[towerIndex].SetData(_hands[_context.SelectedHandIndexReactiveProperty.Value][towerIndex].RegularParameters);
                 else
                     _context.View.HandTowerItems[towerIndex].SetData(null);
             }
@@ -101,10 +102,10 @@ namespace Match.Windows.MainMenu
         {
             _towersInventory = new List<PlayerHandSelectionPossibleItemController>(_context.FieldConfig.TowersConfig.Towers.Count);
             
-            foreach (TowerConfig towerConfig in _context.FieldConfig.TowersConfig.Towers)
+            foreach (TowerConfigNew towerConfig in _context.FieldConfig.TowersConfig.Towers)
             {
                 PlayerHandSelectionPossibleItemView towerItemView =
-                    Object.Instantiate(_context.View.PossibleTowerItemPrefab, GetElementRootByRace(towerConfig.Parameters.RegularParameters.Data.RaceType));
+                    Object.Instantiate(_context.View.PossibleTowerItemPrefab, GetElementRootByRace(towerConfig.RegularParameters.RaceType));
                 
                 PlayerHandSelectionPossibleItemController.Context towerItemControllerContext =
                     new PlayerHandSelectionPossibleItemController.Context(towerItemView, towerConfig, _selectPossibleTowerItemReactiveCommand);
@@ -126,7 +127,7 @@ namespace Match.Windows.MainMenu
                 new Vector2(_context.View.TowerItemsRoot.anchoredPosition.x, clampedScrollPositionY);
 
             // set up data
-            _context.View.TowerItemMenu.TowerItem.SetData(possibleTowerItem.TowerConfig.Parameters.RegularParameters.Data);
+            _context.View.TowerItemMenu.TowerItem.SetData(possibleTowerItem.TowerConfig.RegularParameters);
 
             // set up position, do not use cached, because it has changed
             _context.View.TowerItemMenu.MenuRectTransform.position = possibleTowerItem.ItemRectTransform.position;
@@ -147,12 +148,12 @@ namespace Match.Windows.MainMenu
             _context.View.TowerItemMenuCloseButton.gameObject.SetActive(false);
         }
 
-        private void ShowTowerInfoWindow(TowerConfig towerConfig)
+        private void ShowTowerInfoWindow(TowerConfigNew towerConfig)
         {
-            _towerInfoWindowController.ShowWindow(towerConfig.Parameters, 1,  /* null,*/ () => { });
+            _towerInfoWindowController.ShowWindow(towerConfig, 1,  /* null,*/ () => { });
         }
 
-        private void ShowPlayerHandTowerSelectionWindow(TowerConfig selectedTowerConfig)
+        private void ShowPlayerHandTowerSelectionWindow(TowerConfigNew selectedTowerConfig)
         {
             _playerHandTowerSelectionWindowController.Show(_hands[_context.SelectedHandIndexReactiveProperty.Value],
                 _context.SelectedHandIndexReactiveProperty.Value, selectedTowerConfig);

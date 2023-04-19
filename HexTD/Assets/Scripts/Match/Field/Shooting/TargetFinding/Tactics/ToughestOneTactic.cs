@@ -8,22 +8,23 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
     {
         public TargetFindingTacticType TacticType => TargetFindingTacticType.ToughestOne;
 
-        public int GetTargetWithTactic(Dictionary<int, MobController> mobs)
+        public int GetTargetWithTactic(IReadOnlyList<ITargetable> targets)
         {
-            int highestHealth = 0;
+            float highestHealth = 0;
             int mobWithHighestHealthId = -1;
             float pathOfMobWithHighestHealth = 0;
 
-            foreach (KeyValuePair<int, MobController> mobPair in mobs)
+            foreach (ITargetable target in targets)
             {
-                int healthDelta = mobPair.Value.Health - highestHealth;
+                MobController mobController = (MobController)target;
+                float healthDelta = target.BaseReactiveModel.Health.Value - highestHealth;
 
                 if (healthDelta > 0
-                    || healthDelta == 0 && mobPair.Value.PathLength > pathOfMobWithHighestHealth)
+                    || healthDelta == 0 && mobController.PathLength > pathOfMobWithHighestHealth)
                 {
-                    highestHealth = mobPair.Value.Health;
-                    pathOfMobWithHighestHealth = mobPair.Value.PathLength;
-                    mobWithHighestHealthId = mobPair.Value.TargetId;
+                    highestHealth = target.BaseReactiveModel.Health.Value;
+                    pathOfMobWithHighestHealth = mobController.PathLength;
+                    mobWithHighestHealthId = target.TargetId;
                 }
             }
 

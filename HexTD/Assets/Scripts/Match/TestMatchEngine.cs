@@ -1,11 +1,9 @@
 using System;
-using Configs;
 using Match.Commands;
 using Match.EventBus;
 using Tools;
 using UniRx;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace Match
@@ -13,6 +11,7 @@ namespace Match
     public class TestMatchEngine : BaseMonoBehaviour
     {
         public const float FrameLength = 0.5f;
+        public const byte TowersInHandCount = 12;
         
         [SerializeField] private MatchView matchPrefab;
 

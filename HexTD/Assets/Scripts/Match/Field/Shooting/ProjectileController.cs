@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
+using Match.Field.AttackEffect;
 using Match.Field.State;
+using Match.Field.Tower.TowerConfigs;
 using Tools;
 using UnityEngine;
 
@@ -10,6 +12,8 @@ namespace Match.Field.Shooting
         public struct Context
         {
             public int Id { get; }
+            public BaseAttackEffect BaseAttackEffect { get; }
+            public int AttackIndex { get; }
             public ProjectileView View { get; }
             public float Speed { get; }
             public int SpawnTowerId { get; }
@@ -18,10 +22,14 @@ namespace Match.Field.Shooting
             public float SplashDamageRadius { get; }
             public bool HasProgressiveSplash { get; }
 
-            public Context(int id, ProjectileView view, float speed, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
-                int spawnTowerId, int targetId)
+            public Context(int id, BaseAttackEffect baseAttackEffect,
+                int attackIndex,
+                ProjectileView view, float speed, bool hasSplashDamage, float splashDamageRadius, 
+                bool hasProgressiveSplash, int spawnTowerId, int targetId)
             {
                 Id = id;
+                BaseAttackEffect = baseAttackEffect;
+                AttackIndex = attackIndex;
                 View = view;
                 Speed = speed;
                 HasSplashDamage = hasSplashDamage;
@@ -38,6 +46,7 @@ namespace Match.Field.Shooting
         private bool _hasReachedTarget;
         private bool _hasPlayedSplash;
 
+        public BaseAttackEffect BaseAttackEffect => _context.BaseAttackEffect;
         public int Id => _context.Id;
         public int SpawnTowerId => _context.SpawnTowerId;
         public int TargetId => _context.TargetId;
@@ -109,7 +118,7 @@ namespace Match.Field.Shooting
         public PlayerState.ProjectileState GetProjectileState()
         {
             return new PlayerState.ProjectileState(_context.Id, _context.SpawnTowerId, _context.TargetId,
-                CurrentPosition.x, CurrentPosition.y, _context.Speed,
+                _context.AttackIndex, CurrentPosition.x, CurrentPosition.y, _context.Speed,
                 _context.HasSplashDamage, _context.SplashDamageRadius, _context.HasProgressiveSplash);
         }
     }

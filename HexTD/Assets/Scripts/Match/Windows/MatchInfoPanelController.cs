@@ -12,7 +12,6 @@ namespace Match.Windows
         public struct Context
         {
             public MatchInfoPanelView View { get; }
-            public Camera MainCamera { get; }
             public Canvas Canvas { get; }
             public WaveParams[] Waves { get; }
             
@@ -22,10 +21,9 @@ namespace Match.Windows
             public ReactiveCommand<float> BetweenWavesPlanningStartedReactiveCommand { get; }
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
             public ReactiveCommand<int> OurGoldenCoinsCountChangedReactiveCommand { get; }
-            public ReactiveCommand<int> OurGoldenCoinsIncomeChangedReactiveCommand { get; }
             public ReactiveCommand<int> OurCrystalsCountChangedReactiveCommand { get; }
 
-            public Context(MatchInfoPanelView view, Camera mainCamera, Canvas canvas, WaveParams[] waves,
+            public Context(MatchInfoPanelView view, Canvas canvas, WaveParams[] waves,
                 
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,
                 ReactiveCommand<HealthInfo> ourCastleHealthChangedReactiveCommand,
@@ -33,11 +31,9 @@ namespace Match.Windows
                 ReactiveCommand<float> betweenWavesPlanningStartedReactiveCommand,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
                 ReactiveCommand<int> ourGoldenCoinsCountChangedReactiveCommand,
-                ReactiveCommand<int> ourGoldenCoinsIncomeChangedReactiveCommand,
                 ReactiveCommand<int> ourCrystalsCountChangedReactiveCommand)
             {
                 View = view;
-                MainCamera = mainCamera;
                 Canvas = canvas;
                 Waves = waves;
 
@@ -47,7 +43,6 @@ namespace Match.Windows
                 BetweenWavesPlanningStartedReactiveCommand = betweenWavesPlanningStartedReactiveCommand;
                 WaveNumberChangedReactiveCommand = waveNumberChangedReactiveCommand;
                 OurGoldenCoinsCountChangedReactiveCommand = ourGoldenCoinsCountChangedReactiveCommand;
-                OurGoldenCoinsIncomeChangedReactiveCommand = ourGoldenCoinsIncomeChangedReactiveCommand;
                 OurCrystalsCountChangedReactiveCommand = ourCrystalsCountChangedReactiveCommand;
             }
         }
@@ -73,7 +68,6 @@ namespace Match.Windows
             _context.BetweenWavesPlanningStartedReactiveCommand.Subscribe(OnBetweenWavesPlanningStartedEventHandler);
             _context.WaveStartedReactiveCommand.Subscribe(OnWaveStartedEventHandler);
             _context.OurGoldenCoinsCountChangedReactiveCommand.Subscribe(OnOurGoldenCoinsCountChangedEventHandler);
-            _context.OurGoldenCoinsIncomeChangedReactiveCommand.Subscribe(OnOurGoldenCoinsIncomeChangedEventHandler);
             _context.OurCrystalsCountChangedReactiveCommand.Subscribe(OnOurCrystalsCountChangedEventHandler);
         }
 
@@ -115,11 +109,6 @@ namespace Match.Windows
         private void OnOurGoldenCoinsCountChangedEventHandler(int newGoldenCoinsCount)
         {
             _context.View.OurGoldCoinsCountText.text = $"{newGoldenCoinsCount}";
-        }
-        
-        private void OnOurGoldenCoinsIncomeChangedEventHandler(int newIncomeSize)
-        {
-            _context.View.OurGoldCoinsIncomeText.text = $"{newIncomeSize}";
         }
 
         private void OnOurCrystalsCountChangedEventHandler(int newCrystalsCount)

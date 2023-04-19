@@ -7,7 +7,7 @@ namespace Match
     public class MatchConfig : ScriptableObject
     {
         [SerializeField] private WaveParams[] waves;
-        [SerializeField] private int silverCoinsCount;
+        [SerializeField] private int coinsCount;
 
         public WaveParams[] Waves
         {
@@ -17,11 +17,11 @@ namespace Match
 #endif
         }
 
-        public int SilverCoinsCount
+        public int CoinsCount
         {
-            get { return silverCoinsCount; }
+            get { return coinsCount; }
 #if UNITY_EDITOR
-            set { silverCoinsCount = value; }
+            set { coinsCount = value; }
 #endif
         }
 

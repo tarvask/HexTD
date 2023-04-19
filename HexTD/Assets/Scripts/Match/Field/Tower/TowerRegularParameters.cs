@@ -10,12 +10,14 @@ namespace Match.Field.Tower
     {
         [SerializeField] private TowerType towerType;
         [SerializeField] private string towerName;
-        [SerializeField] private RaceType raceType;
-        [SerializeField] private byte epicDegree;
-        [SerializeField] private ReachableAttackTargetFinderType reachableAttackTargetFinderType;
-        [SerializeField] private TargetFindingTacticType targetFindingTacticType;
         [SerializeField] private bool preferUnbuffedTargets;
         [SerializeField] private bool resetTargetEveryShot;
+        [SerializeField] private ReachableAttackTargetFinderType reachableAttackTargetFinderType;
+        [SerializeField] private TargetFindingTacticType targetFindingTacticType;
+        
+        [Header("Out of using")]
+        [SerializeField] private RaceType raceType;
+        [SerializeField] private byte epicDegree;
         
         public TowerType TowerType => towerType;
         public string TowerName => towerName;

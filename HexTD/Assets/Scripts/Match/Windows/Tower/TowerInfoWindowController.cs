@@ -1,5 +1,6 @@
 using System;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -31,17 +32,19 @@ namespace Match.Windows.Tower
             _context.View.CloseButton.onClick.AddListener(CloseWindow);
         }
         
-        public void ShowWindow(TowerParameters towerParameters, int towerLevel, //Dictionary<int, AbstractBuffModel> buffs,
+        public void ShowWindow(TowerConfigNew towerParameters, int towerLevel, //Dictionary<int, AbstractBuffModel> buffs,
             Action onCloseWindowClickedHandler)
         {
             _onCloseWindowClickAction = onCloseWindowClickedHandler;
+            
+            _context.View.TowerNameText.text = towerParameters.RegularParameters.TowerName;
 
-            _context.View.TowerNameText.text = towerParameters.RegularParameters.Data.TowerName;
-            _context.View.TowerDamageText.text = $"{towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.AttackPower}";
-            _context.View.TowerAttackRateText.text =
-                $"{(1f / towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.ReloadTime):F2} / sec";
-            _context.View.TowerRangeText.text = $"{towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.AttackRadiusInHexCount}";
-            _context.View.TowerTargetText.text = $"{towerParameters.RegularParameters.Data.TargetFindingTacticType}";
+            //TODO: adaptive new levels config init
+            //_context.View.TowerDamageText.text = $"{towerParameters.TowerLevelConfigs[towerLevel - 1].LevelRegularParams.Data.AttackPower}";
+            //_context.View.TowerAttackRateText.text =
+            //    $"{(1f / towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.ReloadTime):F2} / sec";
+            //_context.View.TowerRangeText.text = $"{towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.AttackRadiusInHexCount}";
+            //_context.View.TowerTargetText.text = $"{towerParameters.RegularParameters.Data.TargetFindingTacticType}";
             
             // buffs
             // if (buffs != null)

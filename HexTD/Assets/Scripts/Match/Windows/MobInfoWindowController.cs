@@ -38,12 +38,10 @@ namespace Match.Windows
             _context.View.MobPowerText.text = $"{mobParameters.PowerType}";
             _context.View.MobIcon.sprite = mobIcon;
             
-            _context.View.MobPriceText.text = $"{mobParameters.PriceInSilver}";
             _context.View.MobHealthText.text = $"{mobParameters.HealthPoints}";;
             _context.View.MobAttackPowerText.text = $"{mobParameters.AttackPower}";
             _context.View.MobAttackRateText.text = $"{(1f / mobParameters.ReloadTime):F2} / sec";
             _context.View.MobSpeedText.text = $"{mobParameters.Speed}";
-            _context.View.MobRewardText.text = $"{mobParameters.RewardInSilver}";
 
             base.ShowWindow();
         }

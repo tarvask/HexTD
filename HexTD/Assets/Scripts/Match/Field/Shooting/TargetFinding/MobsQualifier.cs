@@ -7,14 +7,14 @@ namespace Match.Field.Shooting.TargetFinding
 {
     public class MobsQualifier : BaseDisposable
     {
-        private readonly Dictionary<int, MobController> _qualifyingMobs;
+        private readonly List<ITargetable> _qualifyingMobs;
 
         public MobsQualifier()
         {
-            _qualifyingMobs = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            _qualifyingMobs = new List<ITargetable>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }
         
-        public Dictionary<int, MobController> GetMobsWithoutBuffs(Dictionary<int, MobController> mobs, bool preferUnbuffed)//,
+        public IReadOnlyList<ITargetable> GetMobsWithoutBuffs(IReadOnlyList<ITargetable> mobs, bool preferUnbuffed)//,
             //List<AbstractBuffParameters> towerActiveBuffs)
         {
             //if (!preferUnbuffed || towerActiveBuffs == null || towerActiveBuffs.Count == 0)
@@ -23,7 +23,7 @@ namespace Match.Field.Shooting.TargetFinding
             _qualifyingMobs.Clear();
             
             // query mobs that do not have at least one buff from tower
-            foreach (KeyValuePair<int, MobController> mobPair in mobs)
+            foreach (var mob in mobs)
             {
                 // foreach (AbstractBuffParameters towerBuff in towerActiveBuffs)
                 // {
@@ -33,7 +33,7 @@ namespace Match.Field.Shooting.TargetFinding
                 //         break;
                 //     }
                 // }
-                _qualifyingMobs.Add(mobPair.Key, mobPair.Value);
+                _qualifyingMobs.Add(mob);
             }
 
             if (_qualifyingMobs.Count == 0)

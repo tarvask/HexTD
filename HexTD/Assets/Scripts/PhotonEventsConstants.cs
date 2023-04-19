@@ -15,7 +15,7 @@ public static class PhotonEventsConstants
         public const string MatchConfigPathsCount = "matchConfighPathCount";
         public const string MatchConfigPathFieldParam = "matchConfighPathField";
         
-        public const string MatchStartSilverCoinsParam = "silver";
+        public const string MatchStartCoinsParam = "coins";
         public const string MatchConfigRolesAndUsers = "rolesAndUsers";
         public const string MatchConfigHandTowersParam = "matchConfigHandTowers";
         public const string RandomSeed = "randomSeed";
@@ -95,8 +95,8 @@ public static class PhotonEventsConstants
         public static class PlayerState
         {
             public const string PlayerId = "playerId";
-            public const string Silver = "silver";
-            public const string CurrentCrystals = "crystals";
+            public const string Coins = "coins";
+            public const string Crystals = "crystals";
             public const string RerollCount = "reroll";
                 
             // artifacts
@@ -139,12 +139,12 @@ public static class PhotonEventsConstants
             public static class Towers
             {
                 public const string TowerIdParam = "id";
+                public const string TowerTargetIdParam = "targetId";
                 public const string PositionQParam = "qposition";
                 public const string PositionRParam = "rposition";
                 public const string TowerTypeParam = "type";
                 public const string TowerLevelParam = "level";
                 public const string TowerConstructionTimeParam = "buildTime";
-                public const string IsFreeParam = "isFree";
             }
 
             // mobs
@@ -169,6 +169,7 @@ public static class PhotonEventsConstants
                 public const string ProjectileIdParam = "id";
                 public const string TowerIdParam = "towerId";
                 public const string TargetIdParam = "targetId";
+                public const string AttackIndex = "attackIndex";
                 public const string PositionXParam = "xposition";
                 public const string PositionYParam = "yposition";
                 // can be computed by tower
@@ -177,17 +178,7 @@ public static class PhotonEventsConstants
                 public const string SplashRadiusParam = "splashRadius";
                 public const string HasProgressiveSplashParam = "hasProgressiveSplash";
             }
-                
-            // crystals
-            public const string CrystalsParam = "groundCrystals";
 
-            public static class Crystals
-            {
-                public const string CrystalIdParam = "id";
-                public const string PositionXParam = "xposition";
-                public const string PositionYParam = "yposition";
-            }
-                
             // magic
             public const string MagicSpellsParam = "magicSpells";
 

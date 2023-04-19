@@ -1,5 +1,6 @@
 using System;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using TMPro;
 using Tools;
 using UnityEngine;
@@ -18,24 +19,24 @@ namespace Match.Windows.Tower
 
         // model stuff
         private TowerShortParams _towerShortParams;
-        private int _towerPriceInSilver;
+        private int _towerPriceInCoins;
         public TowerShortParams TowerShortParams => _towerShortParams;
 
         private Action _onBuyButtonClickAction;
 
-        public void Init(TowerConfig config, Action onBuyButtonClickAction)
+        public void Init(TowerConfigNew config, Action onBuyButtonClickAction)
         {
-            Init(config, config.Parameters.Levels[0].LevelRegularParams.Data.Price, onBuyButtonClickAction);
+            Init(config, config.TowerLevelConfigs[0].BuildPrice, onBuyButtonClickAction);
         }
 
-        public void Init(TowerConfig config, int price, Action onBuyButtonClickAction)
+        public void Init(TowerConfigNew config, int price, Action onBuyButtonClickAction)
         {
-            _towerShortParams = new TowerShortParams(config.Parameters.RegularParameters.Data.TowerType, 1);
-            _towerPriceInSilver = price;
+            _towerShortParams = new TowerShortParams(config.RegularParameters.TowerType, 1);
+            _towerPriceInCoins = price;
             
-            towerNameLabel.text = config.Parameters.RegularParameters.Data.TowerName;
-            towerPriceLabel.text = $"{_towerPriceInSilver}";
-            towerIcon.color = raceColors[(int) config.Parameters.RegularParameters.Data.RaceType];
+            towerNameLabel.text = config.RegularParameters.TowerName;
+            towerPriceLabel.text = $"{_towerPriceInCoins}";
+            towerIcon.color = raceColors[(int) config.RegularParameters.RaceType];
             towerDisabledCover.SetActive(false);
 
             _onBuyButtonClickAction = onBuyButtonClickAction;
@@ -45,9 +46,9 @@ namespace Match.Windows.Tower
             gameObject.SetActive(true);
         }
 
-        public void Refresh(int currentSilverCoinsCount)
+        public void Refresh(int currentCoinsCount)
         {
-            buyButton.interactable = currentSilverCoinsCount >= _towerPriceInSilver;
+            buyButton.interactable = currentCoinsCount >= _towerPriceInCoins;
         }
 
         public void Hide()

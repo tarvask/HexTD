@@ -6,17 +6,22 @@ using MapEditor;
 using Match;
 using Match.Commands;
 using Match.EventBus;
+using Match.Field.Hand;
 using Match.Field.Tower;
 using Photon.Pun;
 using Photon.Realtime;
 using Services;
 using Services.PhotonRelated;
 using Tools;
+using UniRx;
 using UnityEngine;
 using Zenject;
 
 public class PhotonMatchBridge : BaseMonoBehaviour
 {
+    public IObservable<Unit> OnQuitMatch => _onQuitMatch;
+    private Subject<Unit> _onQuitMatch = new Subject<Unit>();
+
 //    [SerializeField] private bool isMultiPlayerGame;
     [SerializeField] private MatchesConfig levelsConfig;
 
@@ -157,7 +162,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         MatchInitDataParameters matchParameters = new MatchInitDataParameters(mapModel.HexModels.ToArray(), 
             mapModel.PathDatas.ToArray(),
             levelsConfig.Levels[levelIndexToPlay].Waves, 
-            levelsConfig.Levels[levelIndexToPlay].SilverCoinsCount, 
+            levelsConfig.Levels[levelIndexToPlay].CoinsCount,
             playerHand);
         
         _matchEngine = FindObjectOfType<TestMatchEngine>();
@@ -166,7 +171,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
             _connectionMaintainer.IsConnectedReactiveProperty,
             LeaveRoom,
-            Dispose,
+            OnQuitMatchHandler,
             _isMultiPlayerGame); //ProcessRoles.Player1
 
         // re-init seed, because server had many calls to random while creating MatchConfig
@@ -179,8 +184,8 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             {PhotonEventsConstants.SyncMatch.MatchConfigWavesCount, (byte)matchParameters.Waves.Length},
             {PhotonEventsConstants.SyncMatch.MatchConfigPathsCount, (byte)mapModel.PathDatas.Count},
             {PhotonEventsConstants.SyncMatch.MatchConfigFieldTypesParam, matchParameters.GetHexesTypes()},
-            {PhotonEventsConstants.SyncMatch.MatchStartSilverCoinsParam, matchParameters.SilverCoinsCount},
-            {PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam, matchParameters.HandParams.TowersNetwork},
+            {PhotonEventsConstants.SyncMatch.MatchStartCoinsParam, matchParameters.CoinsCount},
+            {PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam, matchParameters.PlayerHandParams.TowersNetwork},
             {PhotonEventsConstants.SyncMatch.RandomSeed, randomSeed}
         };
 
@@ -229,7 +234,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
             _connectionMaintainer.IsConnectedReactiveProperty,
             LeaveRoom,
-            Dispose,
+            OnQuitMatchHandler,
             _isMultiPlayerGame);
             
         // mark room 
@@ -303,26 +308,23 @@ public class PhotonMatchBridge : BaseMonoBehaviour
 
     private PlayerHandParams LoadPlayerHand()
     {
-        TowerType[] towersInHand = new TowerType[8];
+        TowerType[] towersInHand = new TowerType[TestMatchEngine.TowersInHandCount];
 
-        for (int itemIndex = 0; itemIndex < 8; itemIndex++)
+        for (int itemIndex = 0; itemIndex < TestMatchEngine.TowersInHandCount; itemIndex++)
         {
             // TODO: take from presaved hand
-            if (itemIndex == 1)
-                towersInHand[itemIndex] = (TowerType)itemIndex;
-            else
-                towersInHand[itemIndex] = TowerType.Undefined;
-                //(TowerType)PlayerPrefs.GetInt($"CurrentHandItem{itemIndex}", (int)TowerType.Undefined);
+            towersInHand[itemIndex] = (TowerType)(itemIndex+1);
+            //(TowerType)PlayerPrefs.GetInt($"CurrentHandItem{itemIndex}", (int)TowerType.Undefined);
         }
 
-        return new PlayerHandParams(towersInHand);;
+        return new PlayerHandParams(towersInHand);
     }
 
     private void SendPlayerHand()
     {
-        int[] playerHandParameters = new int[8];
+        int[] playerHandParameters = new int[TestMatchEngine.TowersInHandCount];
             
-        for (int itemIndex = 0; itemIndex < 8; itemIndex++)
+        for (int itemIndex = 0; itemIndex < TestMatchEngine.TowersInHandCount; itemIndex++)
         {
             int towerType = PlayerPrefs.GetInt($"CurrentHandItem{itemIndex}", (int)TowerType.Undefined);
             playerHandParameters[itemIndex] = towerType;
@@ -349,6 +351,12 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         _matchEngine.RollbackState();
     }
 
+    private void OnQuitMatchHandler()
+    {
+        Dispose();
+        _onQuitMatch.OnNext(Unit.Default);
+    }
+    
     private void Dispose()
     {
         Destroy(_matchEngine);

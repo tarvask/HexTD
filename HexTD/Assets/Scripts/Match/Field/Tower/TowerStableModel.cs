@@ -6,10 +6,8 @@ namespace Match.Field.Tower
     {
         // main
         private int _level;
-        private float _shootingTimer;
         private float _constructionTimeLabel;
         private int _targetId;
-        private bool _isTargetBlocker;
         private TowerState _towerState;
         
         // splash
@@ -19,10 +17,8 @@ namespace Match.Field.Tower
         private bool _hasSplashInitially;
 
         public int Level => _level;
-        public float ShootingTimer => _shootingTimer;
         public float ConstructionTimeLabel => _constructionTimeLabel;
         public int TargetId => _targetId;
-        public bool IsTargetBlocker => _isTargetBlocker;
         public bool CanShoot => _towerState == TowerState.Active;
         public bool IsAlive => _towerState != TowerState.Removing && _towerState != TowerState.ToDispose; 
         public bool IsConstructing => _towerState == TowerState.Constructing;
@@ -38,9 +34,9 @@ namespace Match.Field.Tower
             _level = 1;
         }
 
-        public void SetLevel(TowerLevelParams levelParams, float timeLabel)
+        public void SetLevel(int level, float timeLabel)
         {
-            _level = levelParams.LevelRegularParams.Data.Level;
+            _level = level;
             _constructionTimeLabel = timeLabel;
         }
 
@@ -49,20 +45,9 @@ namespace Match.Field.Tower
             _towerState = towerState;
         }
 
-        public void UpdateShootingTimer(float frameLength)
-        {
-            _shootingTimer += frameLength;
-        }
-
         public void SetTarget(int targetId)
         {
             _targetId = targetId;
-            _isTargetBlocker = false;
-        }
-
-        public void ResetShootingTimer()
-        {
-            _shootingTimer = 0;
         }
 
         public void ResetTarget()

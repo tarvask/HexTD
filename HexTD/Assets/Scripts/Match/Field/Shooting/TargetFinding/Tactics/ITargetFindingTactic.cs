@@ -6,6 +6,6 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
     public interface ITargetFindingTactic
     {
         TargetFindingTacticType TacticType { get; }
-        int GetTargetWithTactic(Dictionary<int, MobController> mobs);
+        int GetTargetWithTactic(IReadOnlyList<ITargetable> targets);
     }
 }

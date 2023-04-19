@@ -11,17 +11,17 @@ namespace Match.Field.Shooting.TargetFinding
     public class MobsInRangeDefiner : BaseDisposable
     {
         private readonly HexMapReachableService _hexMapReachableService;
-        private readonly Dictionary<int, MobController> _mobsInRange;
+        private readonly List<ITargetable> _mobsInRange;
 
         public MobsInRangeDefiner(HexMapReachableService hexMapReachableService)
         {
             _hexMapReachableService = hexMapReachableService;
-            _mobsInRange = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            _mobsInRange = new List<ITargetable>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }
         
-        public Dictionary<int, MobController> GetTargetsInRange(
+        public IReadOnlyList<ITargetable> GetTargetsInRange(
             ReachableAttackTargetFinderType reachableAttackTargetFinderType,
-            IReadOnlyDictionary<int, List<MobController>> mobsByPosition,
+            IReadOnlyDictionary<int, List<ITargetable>> mobsByPosition,
             Hex2d towerPosition, int attackRadius)
         {
             IReadOnlyCollection<Hex2d> hexes = _hexMapReachableService.GetInRangeMapByTargetFinderType(
@@ -34,7 +34,7 @@ namespace Match.Field.Shooting.TargetFinding
                     continue;
                 
                 foreach (var mobController in mobsInPosition)
-                    _mobsInRange.Add(mobController.Id, mobController);
+                    _mobsInRange.Add(mobController);
             }
 
             return _mobsInRange;

@@ -59,14 +59,13 @@ namespace PathSystem
         public PathData(string name, IEnumerable<Hex2d> points)
         {
             Name = name;
-            PathLength = CalcPathLength(Vector3.one);
             Points = new LinkedList<Hex2d>(points);
+            PathLength = CalcPathLength(Vector3.one);
         }
 
         public PathData(HexPathFindingService hexPathFindingService, string name, IEnumerable<Hex2d> points)
         {
             Name = name;
-            PathLength = CalcPathLength(hexPathFindingService.HexSize);
             Points = new LinkedList<Hex2d>();
 
             List<Hex2d> middlePath = new List<Hex2d>();
@@ -98,6 +97,8 @@ namespace PathSystem
                 
                 prevPoint = pointsEnumerator.Current;
             }
+            
+            PathLength = CalcPathLength(hexPathFindingService.HexSize);
         }
 
         private LinkedListNode<Hex2d> FillLine(Hex2d firstPoint, Hex2d secondPoint, LinkedListNode<Hex2d> lastNode)

@@ -2,6 +2,7 @@ using System.ComponentModel;
 using Configs;
 using Match.Field.Mob;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using UnityEngine;
 
 namespace Match.Field
@@ -10,6 +11,9 @@ namespace Match.Field
     public class FieldConfig : ScriptableObject
     {
         [SerializeField] private int castleHealth;
+        [SerializeField] private float energyRestoreDelay;
+        [SerializeField] private int energyRestoreValue;
+        [SerializeField] private int maxEnergy;
         [SerializeField] private byte maxOverlappingWaves;
         
         [Header("Delays and durations")]
@@ -24,12 +28,15 @@ namespace Match.Field
         [SerializeField] private HexagonPrefabConfig hexagonPrefabConfig;
 
         [Header("Towers")]
-        [SerializeField] private TowersConfig towersConfig;
+        [SerializeField] private TowerConfigsNew towersConfig;
 
         [Header("Mobs")]
         [SerializeField] private MobsConfig mobsConfig;
 
         public int CastleHealth => castleHealth;
+        public float EnergyRestoreDelay => energyRestoreDelay;
+        public int EnergyRestoreValue => energyRestoreValue;
+        public int MaxEnergy => maxEnergy;
         public byte MaxOverlappingWaves => maxOverlappingWaves;
 
         // delays and duration
@@ -44,7 +51,7 @@ namespace Match.Field
         public HexagonPrefabConfig HexagonPrefabConfig => hexagonPrefabConfig;
 
         // towers
-        public TowersConfig TowersConfig => towersConfig;
+        public TowerConfigsNew TowersConfig => towersConfig;
         
         // mobs
         public MobsConfig MobsConfig => mobsConfig;

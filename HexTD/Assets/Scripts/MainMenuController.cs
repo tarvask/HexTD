@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Match.Field.Tower;
+using Match.Field.Tower.TowerConfigs;
 using Match.Windows.MainMenu;
 using Photon.Pun.UtilityScripts;
 using Services;
@@ -27,14 +28,14 @@ public class MainMenuController : BaseDisposable
     private readonly Context _context;
 
     private readonly ReactiveProperty<byte> _selectedHandIndexReactiveProperty;
-    private List<List<TowerConfig>> _possibleHands;
+    private List<List<TowerConfigNew>> _possibleHands;
     private readonly ConfigsRetriever _configsRetriever;
     private readonly MainMenuPanelController _mainMenuPanelController;
     private readonly StartGamePanelController _startGamePanelController;
     private readonly PlayerHandSelectionPanelController _playerHandSelectionPanelController;
     private readonly ChooseLevelPanelController _chooseLevelPanelController;
 
-    private List<TowerConfig> SelectedHand => _possibleHands[_selectedHandIndexReactiveProperty.Value];
+    private List<TowerConfigNew> SelectedHand => _possibleHands[_selectedHandIndexReactiveProperty.Value];
 
     public MainMenuController(Context context)
     {
@@ -42,10 +43,10 @@ public class MainMenuController : BaseDisposable
 
         // create hands
         _selectedHandIndexReactiveProperty = AddDisposable(new ReactiveProperty<byte>(0));
-        _possibleHands = new List<List<TowerConfig>>();
+        _possibleHands = new List<List<TowerConfigNew>>();
         for (int handIndex = 0; handIndex < HandsNumber; handIndex++)
         {
-            _possibleHands.Add(new List<TowerConfig>(HandSize));
+            _possibleHands.Add(new List<TowerConfigNew>(HandSize));
             for (int itemIndex = 0; itemIndex < HandSize; itemIndex++)
                 _possibleHands[handIndex].Add( null);
         }
@@ -131,7 +132,7 @@ public class MainMenuController : BaseDisposable
             for (int itemIndex = 0; itemIndex < HandSize; itemIndex++)
             {
                 TowerType towerType = _possibleHands[handIndex][itemIndex] ?
-                    _possibleHands[handIndex][itemIndex].Parameters.RegularParameters.Data.TowerType
+                    _possibleHands[handIndex][itemIndex].RegularParameters.TowerType
                     : TowerType.Undefined;
                 PlayerPrefs.SetInt($"Hand{handIndex}Item{itemIndex}", (int)towerType);
             }
@@ -141,7 +142,7 @@ public class MainMenuController : BaseDisposable
         for (int itemIndex = 0; itemIndex < HandSize; itemIndex++)
         {
             TowerType towerType = SelectedHand[itemIndex] ?
-                SelectedHand[itemIndex].Parameters.RegularParameters.Data.TowerType
+                SelectedHand[itemIndex].RegularParameters.TowerType
                 : TowerType.Undefined;
             PlayerPrefs.SetInt($"CurrentHandItem{itemIndex}", (int)towerType);
         }

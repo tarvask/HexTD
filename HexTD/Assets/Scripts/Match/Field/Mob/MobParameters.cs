@@ -19,9 +19,7 @@ namespace Match.Field.Mob
         [SerializeField] private string pathName;
 
         [SerializeField] [Description("Reward for killed mob")]
-        private int rewardInSilver;
-        [SerializeField] [Description("Price of mob in reinforcement")]
-        private int priceInSilver;
+        private int rewardInCoins;
 
         public byte TypeId => typeId;
         public PowerType PowerType => powerType;
@@ -34,7 +32,6 @@ namespace Match.Field.Mob
 
         public string PathName => pathName;
 
-        public int RewardInSilver => rewardInSilver;
-        public int PriceInSilver => priceInSilver;
+        public int RewardInCoins => rewardInCoins;
     }
 }

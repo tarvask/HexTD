@@ -2,12 +2,12 @@ namespace Match.Field.Shooting.SplashDamage
 {
     public struct TargetWithSqrDistancePair
     {
-        public int TargetId { get; }
+        public ITargetable Target { get; }
         public float SqrDistance { get; }
 
-        public TargetWithSqrDistancePair(int targetId, float sqrDistance)
+        public TargetWithSqrDistancePair(ITargetable target, float sqrDistance)
         {
-            TargetId = targetId;
+            Target = target;
             SqrDistance = sqrDistance;
         }
     }

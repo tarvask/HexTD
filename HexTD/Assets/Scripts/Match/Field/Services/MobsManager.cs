@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using Match.Field.Hexagons;
 using Match.Field.Mob;
+using Match.Field.Shooting;
 using Match.Wave;
 using Tools;
 using Tools.Interfaces;
@@ -27,8 +27,8 @@ namespace Match.Field.Services
         private readonly List<MobController> _carrionBodies;
         private readonly List<MobController> _escapingMobs;
 
+        public ITypeTargetContainer MobContainer => _mobsContainer;
         public IReadOnlyDictionary<int, MobController> Mobs => _mobsContainer.Mobs;
-        public IReadOnlyDictionary<int, List<MobController>> MobsByPosition => _mobsContainer.MobsByPosition;
         public int MobCount => _mobsContainer.Mobs.Count;
 
         public MobsManager(Context context)
@@ -56,7 +56,6 @@ namespace Match.Field.Services
         {
             UpdateMobsHealth(frameLength);
             UpdateMobsLogicMoving(frameLength);
-            //UpdateMobsAttacking(frameLength);
             UpdateMobsEscaping(frameLength);
         }
         
@@ -69,9 +68,7 @@ namespace Match.Field.Services
         {
             foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
-                mobPair.Value.UpdateHealth(frameLength);
-
-                if (mobPair.Value.Health <= 0)
+                if (mobPair.Value.Health.Value <= 0)
                 {
                     _dyingMobs.Add(mobPair.Value);
                 }
@@ -115,20 +112,6 @@ namespace Match.Field.Services
                 mobPair.Value.VisualMove(frameLength);
             }
         }
-        
-        // private void UpdateMobsAttacking(float frameLength)
-        // {
-        //     foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
-        //     {
-        //         if (!mobPair.Value.HasReachedCastle)
-        //             continue;
-        //         
-        //         mobPair.Value.UpdateTimer(frameLength);
-        //         
-        //         if (mobPair.Value.IsReadyToAttack)
-        //             _context.AttackCastleByMobReactiveCommand.Execute(mobPair.Value.Attack());
-        //     }
-        // }
 
         private void UpdateMobsEscaping(float frameLength)
         {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using HexSystem;
+using BuffLogic;
 using Match.Field.Hexagons;
 using Match.Field.Shooting.SplashDamage;
 using Match.Field.Shooting.TargetFinding;
@@ -18,14 +18,17 @@ namespace Match.Field.Shooting
             public FieldModel FieldModel { get; }
             public HexMapReachableService HexMapReachableService { get; }
             public FieldFactory Factory { get; }
+            public BuffManager BuffManager { get; }
 
             public Context(FieldModel fieldModel, 
                 HexMapReachableService hexMapReachableService,
-                FieldFactory factory)
+                FieldFactory factory,
+                BuffManager buffManager)
             {
                 FieldModel = fieldModel;
                 HexMapReachableService = hexMapReachableService;
                 Factory = factory;
+                BuffManager = buffManager;
             }
         }
 
@@ -35,12 +38,8 @@ namespace Match.Field.Shooting
         
         private readonly List<ProjectileController> _hittingProjectiles;
         private readonly List<ProjectileController> _endSplashingProjectiles;
-        private readonly Dictionary<int, IShootable> _hitShootables;
-        private readonly Dictionary<int, IShootable> _deadBodies;
-        private readonly List<IShootable> _carrionBodies;
         private readonly Dictionary<int, List<int>> _shootablesWithAttackingTowers;
         private List<TargetWithSqrDistancePair> _targetsWithSqrDistances;
-        private int _blockerTargetId;
 
         public ShootingController(Context context)
         {
@@ -50,10 +49,6 @@ namespace Match.Field.Shooting
             
             _hittingProjectiles = new List<ProjectileController>(MaxHitsPerFrame);
             _endSplashingProjectiles = new List<ProjectileController>(MaxHitsPerFrame);
-            _hitShootables = new Dictionary<int, IShootable>(WaveMobSpawnerCoordinator.MaxMobsInWave);
-            
-            _deadBodies = new Dictionary<int, IShootable>(WaveMobSpawnerCoordinator.MaxMobsInWave);
-            _carrionBodies = new List<IShootable>(MaxHitsPerFrame);
             
             _shootablesWithAttackingTowers = new Dictionary<int, List<int>>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _targetsWithSqrDistances = new List<TargetWithSqrDistancePair>(WaveMobSpawnerCoordinator.MaxMobsInWave);
@@ -65,8 +60,6 @@ namespace Match.Field.Shooting
             UpdateMovingProjectiles(frameLength);
             UpdateHittingProjectiles();
             UpdateSplashingProjectiles();
-            UpdateHitShootables();
-            UpdateDeadBodies();
         }
 
         public void OuterViewUpdate(float frameLength)
@@ -79,18 +72,13 @@ namespace Match.Field.Shooting
 
         private void UpdateShooters(float frameLength)
         {
-            foreach (KeyValuePair<int, TowerController> towerPair in _context.FieldModel.Towers)
+            foreach (var shooter in _context.FieldModel.Shooters)
             {
-                if (!towerPair.Value.CanShoot)
+                if (!shooter.IsAttackReady)
                     continue;
                 
-                towerPair.Value.UpdateTimer(frameLength);
-
-                if (!towerPair.Value.IsReadyToShoot)
-                    continue;
-                
-                if (Aim(towerPair.Value))
-                    Shoot(towerPair.Value);
+                if (Aim(shooter))
+                    Shoot(shooter);
             }
         }
 
@@ -104,7 +92,9 @@ namespace Match.Field.Shooting
 
                 Vector3 targetPosition;
                 
-                if (_context.FieldModel.Shootables.TryGetValue(projectilePair.Value.TargetId, out IShootable target))
+                if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectilePair.Value.TargetId, 
+                        projectilePair.Value.BaseAttackEffect.AttackTargetType,
+                        out ITargetable target))
                     targetPosition = target.Position;
                 else
                 {
@@ -125,19 +115,22 @@ namespace Match.Field.Shooting
             {
                 if (projectile.HasSplashDamage)
                 {
-                    SplashTargetDistanceComputer.GetTargetsWithSqrDistances(projectile, _context.FieldModel.Shootables,
+                    SplashTargetDistanceComputer.GetTargetsWithSqrDistances(projectile, 
+                        _context.FieldModel.Targets.IterateTargetsWithTypes(projectile.BaseAttackEffect.AttackTargetType),
                         ref _targetsWithSqrDistances);
                 }
-                else if (_context.FieldModel.Shootables.ContainsKey(projectile.TargetId))
+                else if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectile.TargetId, 
+                             projectile.BaseAttackEffect.AttackTargetType, out var target))
                 {
                     // distance is 0 for straight hit
-                    _targetsWithSqrDistances.Add(new TargetWithSqrDistancePair(projectile.TargetId, 0));
+                    _targetsWithSqrDistances.Add(new TargetWithSqrDistancePair(target, 0));
                 }
 
                 // handle hit for every target in damage area
                 foreach (TargetWithSqrDistancePair targetWithSqrDistance in _targetsWithSqrDistances)
                 {
-                    HandleHitShootable(projectile, _context.FieldModel.Shootables[targetWithSqrDistance.TargetId],
+                    HandleHitShootable(projectile, 
+                        targetWithSqrDistance.Target,
                         targetWithSqrDistance.SqrDistance);
                 }
 
@@ -174,73 +167,28 @@ namespace Match.Field.Shooting
             _endSplashingProjectiles.Clear();
         }
 
-        private void UpdateHitShootables()
+        private bool Aim(IShootable tower)
         {
-            foreach (KeyValuePair<int, IShootable> shootablePair in _hitShootables)
-            {
-                if (shootablePair.Value.Health <= 0)
-                {
-                    _deadBodies.Add(shootablePair.Key, shootablePair.Value);
-                    shootablePair.Value.Die();
-
-                    // count kill
-                    foreach (int attackingTowerId in _shootablesWithAttackingTowers[shootablePair.Key])
-                    {
-                        _context.FieldModel.Towers[attackingTowerId].IncreaseScore();
-                    }
-                }
-            }
-            
-            _hitShootables.Clear();
-            _shootablesWithAttackingTowers.Clear();
+            return tower.TryFindTarget(_targetFinder, _context.FieldModel.Targets);
         }
 
-        private void UpdateDeadBodies()
+        private void Shoot(IShootable tower)
         {
-            foreach (KeyValuePair<int, IShootable> deadBodyPair in _deadBodies)
-            {
-                if (deadBodyPair.Value.IsCarrion)
-                    _carrionBodies.Add(deadBodyPair.Value);
-            }
-
-            foreach (IShootable carrionBody in _carrionBodies)
-            {
-                _deadBodies.Remove(carrionBody.TargetId);
-                carrionBody.RemoveBody();
-            }
-            
-            _carrionBodies.Clear();
+            var projectileController = tower.CreateAndInitProjectile(_context.Factory);
+            _context.FieldModel.AddProjectile(projectileController);
         }
 
-        private bool Aim(TowerController tower)
+        private void HandleHitShootable(ProjectileController projectile, ITargetable hitTargetable, float sqrDistance)
         {
-            return tower.FindTarget(_targetFinder, _context.FieldModel.MobsManager.MobsByPosition);
+            projectile.BaseAttackEffect.ApplyAttack(hitTargetable, _context.BuffManager);
+            
+            if (!_shootablesWithAttackingTowers.ContainsKey(hitTargetable.TargetId))
+                _shootablesWithAttackingTowers.Add(hitTargetable.TargetId, new List<int>());
+            
+            _shootablesWithAttackingTowers[hitTargetable.TargetId].Add(projectile.SpawnTowerId);
         }
 
-        private void Shoot(TowerController tower)
-        {
-            _context.FieldModel.AddProjectile(tower.Shoot(_context.Factory));
-        }
-
-        private void HandleHitShootable(ProjectileController projectile, IShootable hitShootable, float sqrDistance)
-        {
-            int damage = ComputeDamage(projectile.SpawnTowerId, hitShootable.TargetId,
-                projectile.HasSplashDamage, projectile.SplashDamageRadius, projectile.HasProgressiveSplash,
-                sqrDistance);
-            hitShootable.Hurt(damage);
-            // List<AbstractBuffParameters> buffs = ComputeBuffs(projectile.SpawnTowerId, hitShootable.TargetId);
-            // hitShootable.ApplyBuffs(buffs);
-            
-            if (!_hitShootables.ContainsKey(hitShootable.TargetId))
-                _hitShootables.Add(hitShootable.TargetId, hitShootable);
-            
-            if (!_shootablesWithAttackingTowers.ContainsKey(hitShootable.TargetId))
-                _shootablesWithAttackingTowers.Add(hitShootable.TargetId, new List<int>());
-            
-            _shootablesWithAttackingTowers[hitShootable.TargetId].Add(projectile.SpawnTowerId);
-        }
-
-        private int ComputeDamage(int towerId, int targetId,
+        private int ComputeIfSplashDamage(int towerId, float damage,
             bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash, float sqrDistance)
         {
             if (hasSplashDamage)
@@ -248,16 +196,11 @@ namespace Match.Field.Shooting
                 float splashDistanceDecreaseCoeff = hasProgressiveSplash
                     ? 1 - sqrDistance / splashDamageRadius
                     : 1;
-                return Mathf.CeilToInt(_context.FieldModel.Towers[towerId].CurrentDamage * splashDistanceDecreaseCoeff);
+                return Mathf.CeilToInt(damage * splashDistanceDecreaseCoeff);
             }
             
-            return Mathf.CeilToInt(_context.FieldModel.Towers[towerId].CurrentDamage);
+            return Mathf.CeilToInt(damage);
         }
-
-        // private List<AbstractBuffParameters> ComputeBuffs(int towerId, int targetId)
-        // {
-        //     return _context.FieldModel.Towers[towerId].MobsBuffs;
-        // }
 
         protected override void OnDispose()
         {
@@ -265,7 +208,6 @@ namespace Match.Field.Shooting
             
             _hittingProjectiles.Clear();
             _endSplashingProjectiles.Clear();
-            _hitShootables.Clear();
             _shootablesWithAttackingTowers.Clear();
             _targetsWithSqrDistances.Clear();
         }
