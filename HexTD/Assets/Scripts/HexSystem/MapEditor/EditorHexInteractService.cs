@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Lean.Touch;
+using UnityEngine;
 
 namespace HexSystem
 {
@@ -14,21 +15,27 @@ namespace HexSystem
             _touchDetectionPlane = new Plane(Vector3.up, Vector3.zero);
         }
 
-        public bool TryGetHexUnderPointer(out Hex2d hitHex)
+        public bool TryGetHexUnderPointer(LeanFinger finger, out Hex2d hitHex)
         {
-            if (TryClickHexTile(out hitHex))
+            if (finger.IsOverGui)
+            {
+                hitHex = new Hex2d();                
+                return false;
+            }
+            
+            if (TryClickHexTile(finger, out hitHex))
                 return true;
             
-            if (TryClickHexPlane(out hitHex))
+            if (TryClickHexPlane(finger, out hitHex))
                 return true;
 
             hitHex = new Hex2d();
             return false;
         }
 
-        public bool TryClickHexPlane(out Hex2d hitHex)
+        public bool TryClickHexPlane(LeanFinger finger, out Hex2d hitHex)
         {
-            var ray = MainCamera.ScreenPointToRay(Input.mousePosition);
+            var ray = finger.GetRay();
             
             if (_touchDetectionPlane.Raycast(ray, out var enter))
             {

@@ -1,4 +1,5 @@
 using HexSystem;
+using Lean.Touch;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -6,7 +7,7 @@ using UnityEngine;
 
 namespace Match
 {
-    public class InputController : BaseDisposable, IOuterLogicUpdatable
+    public class InputController : BaseDisposable
     {
         public struct Context
         {
@@ -22,39 +23,20 @@ namespace Match
         }
 
         private readonly Context _context;
-        private bool _isInteractable;
 
         public InputController(Context context)
         {
             _context = context;
-            _isInteractable = true;
+            LeanTouch.OnFingerDown += GetInput;
         }
 
-        public void OuterLogicUpdate(float frameLength)
+        private void GetInput(LeanFinger finger)
         {
-            GetInput();
-        }
-        
-        private void LockInput()
-        {
-            _isInteractable = false;
-        }
-        
-        private void UnlockInput()
-        {
-            _isInteractable = true;
-        }
-
-        private void GetInput()
-        {
-            if (!_isInteractable)
+            if (finger.IsOverGui)
                 return;
-            
-            if (Input.GetMouseButtonUp(0))
-            {
-                if(_context.HexInteractService.TryClickHexTile(out Hex2d clickedHex))
-                    _context.ClickEvent.Execute(clickedHex);
-            }
+
+            if (_context.HexInteractService.TryClickHexTile(finger, out Hex2d clickedHex))
+                _context.ClickEvent.Execute(clickedHex);
         }
     }
 }
