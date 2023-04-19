@@ -16,6 +16,7 @@ namespace Match.Field.Hexagons
        public FieldHexTypesController CurrentFieldHexTypes { get; }
 
         public int HexGridSize => _cachedLevelFieldHexes.Count;
+        public Vector3 HexSize => _layout.HexSize;
 
         public HexModel this[int positionHash] => _cachedLevelFieldHexes.ContainsKey(positionHash)
             ? _cachedLevelFieldHexes[positionHash].HexModel

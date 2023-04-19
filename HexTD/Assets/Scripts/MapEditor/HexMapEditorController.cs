@@ -95,14 +95,14 @@ namespace MapEditor
             _currentHexSetController.HandleRevokeInteractWithHex(hexModel);
         }
 
-        public void ApplyKeyboardInput(Hex2d hex)
+        public void ApplyKeyboardInput(Hex2d hex, bool isHexUnderMouse)
         {
             _hexSpawnerController.UpdateHexType();
             
             if(Input.GetKeyDown(KeyCode.R))
                 SwitchHexSetController();
             
-            if(Input.GetKeyDown(KeyCode.X))
+            if(isHexUnderMouse && Input.GetKeyDown(KeyCode.X))
                 _hexGridModel.RemoveHexFromHexGrid(hex);
 
             if (Input.GetKeyDown(KeyCode.B))

@@ -19,7 +19,7 @@ MonoBehaviour:
     powerType: 1
     healthPoints: 10
     speed: 0.1
-    attackPower: 1
+    attackPower: 10
     reloadTime: 1
     hasRangeDamage: 0
     attackRangeRadius: 0

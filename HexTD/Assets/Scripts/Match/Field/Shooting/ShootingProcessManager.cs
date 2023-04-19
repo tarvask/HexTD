@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Match.Field.Shooting
 {
-    public class ShootingController : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable
+    public class ShootingProcessManager : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable
     {
         public struct Context
         {
@@ -41,7 +41,7 @@ namespace Match.Field.Shooting
         private readonly Dictionary<int, List<int>> _shootablesWithAttackingTowers;
         private List<TargetWithSqrDistancePair> _targetsWithSqrDistances;
 
-        public ShootingController(Context context)
+        public ShootingProcessManager(Context context)
         {
             _context = context;
             

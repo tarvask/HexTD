@@ -376,7 +376,6 @@ namespace Match
             if (!_rulesController.IsMatchRunning)
                 return;
             
-            _inputController.OuterLogicUpdate(frameLength);
             _clicksDistributor.OuterLogicUpdate(frameLength);
             
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);

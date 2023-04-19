@@ -1,4 +1,5 @@
-﻿using System.Linq;
+using System.Linq;
+using Lean.Touch;
 using MapEditor;
 using UnityEngine;
 
@@ -6,16 +7,16 @@ namespace HexSystem
 {
     public class HexInteractService
     {
-        protected readonly Camera MainCamera;
+        protected readonly Camera MainCamera;   
 
         public HexInteractService(Camera mainCamera)
         {
             MainCamera = mainCamera;
         }
 
-        public bool TryClickHexTile(out Hex2d hitHex)
+        public bool TryClickHexTile(LeanFinger finger, out Hex2d hitHex)
         {
-            var ray = MainCamera.ScreenPointToRay(Input.mousePosition);
+            var ray = finger.GetRay();
 
             var raycasts = Physics.RaycastAll(ray);
 

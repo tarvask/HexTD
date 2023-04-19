@@ -19,14 +19,6 @@ namespace Match.Field.Mob
             _mobsByPosition = new Dictionary<int, List<ITargetable>>();
         }
 
-        public void UpdateMobsLogicMoving(float frameLength)
-        {
-            foreach (KeyValuePair<int, MobController> mobPair in _mobs)
-            {
-                mobPair.Value.LogicMove(frameLength);
-            }
-        }
-
         public void AddMob(MobController mobController)
         {
             _mobs.Add(mobController.Id, mobController);

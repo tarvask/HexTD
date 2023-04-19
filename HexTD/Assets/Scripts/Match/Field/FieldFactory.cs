@@ -26,18 +26,16 @@ namespace Match.Field
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
             
-            public ReactiveCommand<int> AttackCastleByMobReactiveCommand { get; }
+            public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
-            public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
 
             public Context(Transform fieldRoot,
                 HexFabric hexFabric,
                 PathContainer pathContainer,
                 HexagonalFieldModel hexagonalFieldModel,
                 int castleHealth, int towerRemovingDuration,
-                ReactiveCommand<int> attackCastleByMobReactiveCommand,
-                ReactiveCommand castleDestroyedReactiveCommand,
-                ReactiveCommand<MobController> removeMobReactiveCommand)
+                ReactiveCommand<int> reachCastleByMobReactiveCommand,
+                ReactiveCommand castleDestroyedReactiveCommand)
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
@@ -46,9 +44,8 @@ namespace Match.Field
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
-                AttackCastleByMobReactiveCommand = attackCastleByMobReactiveCommand;
+                ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
-                RemoveMobReactiveCommand = removeMobReactiveCommand;
             }
         }
 
@@ -160,7 +157,7 @@ namespace Match.Field
         public CastleController CreateCastle()
         {
             CastleController.Context castleContext = new CastleController.Context(_context.CastleHealth,
-                _context.AttackCastleByMobReactiveCommand, _context.CastleDestroyedReactiveCommand);
+                _context.ReachCastleByMobReactiveCommand, _context.CastleDestroyedReactiveCommand);
             CastleController castle = new CastleController(castleContext);
             
             return castle;
@@ -193,7 +190,7 @@ namespace Match.Field
                 mobConfig.Parameters,
                 pathData.GetPathEnumerator(), 
                 _context.HexagonalFieldModel,
-                mobView, _context.RemoveMobReactiveCommand);
+                mobView);
             MobController mobController = new MobController(mobControllerContext);
 
             return mobController;
