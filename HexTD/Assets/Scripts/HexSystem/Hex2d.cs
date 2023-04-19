@@ -178,7 +178,7 @@ namespace HexSystem
 
 		public static IEnumerable<Hex2d> IterateSpiralRing(Hex2d center, int radius)
 		{
-			//yield return center;
+			yield return center;
 
 			for (int r = 1; r <= radius; r++)
 			{

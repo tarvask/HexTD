@@ -34,6 +34,13 @@ namespace Match.Field.Mob
             AddMobByPosition(mobController);
         }
 
+        public void RemoveMob(MobController mobController)
+        {
+            _mobs.Remove(mobController.Id);
+            RemoveByPosition(mobController);
+            mobController.UnsubscribeOnHexPositionChange(HandleMobHexPositionUpdate);
+        }
+
         private void HandleMobHexPositionUpdate(MobController mobController, Hex2d oldPosition)
         {
             _mobsByPosition[oldPosition.GetHashCode()].Remove(mobController);
@@ -53,13 +60,6 @@ namespace Match.Field.Mob
                 _mobsByPosition.Add(positionHash, mobControllers);
                 mobControllers.Add(mobController);
             }
-        }
-
-        public void RemoveMob(MobController mobController)
-        {
-            _mobs.Remove(mobController.Id);
-            RemoveByPosition(mobController);
-            mobController.UnsubscribeOnHexPositionChange(HandleMobHexPositionUpdate);
         }
 
         private void RemoveByPosition(MobController mobController)

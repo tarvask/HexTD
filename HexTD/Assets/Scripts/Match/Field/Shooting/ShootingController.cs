@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using BuffLogic;
+using HexSystem;
+using Match.Field.AttackEffect;
 using Match.Field.Hexagons;
 using Match.Field.Shooting.SplashDamage;
 using Match.Field.Shooting.TargetFinding;
@@ -91,15 +93,26 @@ namespace Match.Field.Shooting
                     continue;
 
                 Vector3 targetPosition;
-                
-                if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectilePair.Value.TargetId, 
-                        projectilePair.Value.BaseAttackEffect.AttackTargetType,
-                        out ITargetable target))
-                    targetPosition = target.Position;
-                else
+
+                switch (projectilePair.Value.SplashShootType)
                 {
-                    // fly to last target position
-                    targetPosition = projectilePair.Value.CurrentTargetPosition;
+                    case SplashShootType.ToTarget:
+                        if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectilePair.Value.TargetId, 
+                                projectilePair.Value.BaseAttackEffect.AttackTargetType,
+                                out ITargetable target))
+                            targetPosition = target.Position;
+                        else
+                            targetPosition = projectilePair.Value.CurrentTargetPosition;
+                        break;
+                    
+                    case SplashShootType.UnderSelf:
+                        targetPosition = projectilePair.Value.CurrentPosition;
+                        break;
+                        
+                    default:
+                        Debug.LogError("Splash Shoot Type is Undefined!");
+                        targetPosition = projectilePair.Value.CurrentTargetPosition;
+                        break;
                 }
                 
                 projectilePair.Value.LogicMove(targetPosition, frameLength);
@@ -116,8 +129,9 @@ namespace Match.Field.Shooting
                 if (projectile.HasSplashDamage)
                 {
                     SplashTargetDistanceComputer.GetTargetsWithSqrDistances(projectile, 
-                        _context.FieldModel.Targets.IterateTargetsWithTypes(projectile.BaseAttackEffect.AttackTargetType),
-                        ref _targetsWithSqrDistances);
+                        _context.FieldModel.HexPositionConversionService,
+                        _context.FieldModel.Targets.GetTargetsByPosition(projectile.BaseAttackEffect.AttackTargetType),
+                        _targetsWithSqrDistances);
                 }
                 else if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectile.TargetId, 
                              projectile.BaseAttackEffect.AttackTargetType, out var target))
@@ -135,7 +149,11 @@ namespace Match.Field.Shooting
                 }
 
                 if (projectile.HasSplashDamage)
-                    projectile.ShowSplash();
+                {
+                    int hexRadius = ((BaseSplashAttack)projectile.BaseAttackEffect).SplashRadiusInHex;
+                    float radius = _context.FieldModel.HexPositionConversionService.GetRadiusFromRadiusInHex(hexRadius);
+                    projectile.ShowSplash(radius);
+                }
                 else
                     projectile.ShowSingleHit();
                 
@@ -180,7 +198,8 @@ namespace Match.Field.Shooting
 
         private void HandleHitShootable(ProjectileController projectile, ITargetable hitTargetable, float sqrDistance)
         {
-            projectile.BaseAttackEffect.ApplyAttack(hitTargetable, _context.BuffManager);
+            projectile.BaseAttackEffect.ApplyAttackImpact(hitTargetable, sqrDistance);
+            projectile.BaseAttackEffect.ApplyAttackEffect(hitTargetable, _context.BuffManager);
             
             if (!_shootablesWithAttackingTowers.ContainsKey(hitTargetable.TargetId))
                 _shootablesWithAttackingTowers.Add(hitTargetable.TargetId, new List<int>());

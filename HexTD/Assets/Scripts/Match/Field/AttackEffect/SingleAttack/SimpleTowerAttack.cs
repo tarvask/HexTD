@@ -10,13 +10,13 @@ namespace Match.Field.AttackEffect
     {
         [SerializeField] private float baseDamage;
 
-        protected override void ApplyAttackImpact(ITargetable targetController, BuffManager buffManager)
+        public override void ApplyAttackImpact(ITargetable targetController, float sqrDistance)
         {
             float damage = targetController.BaseReactiveModel.Damage.CopyValue(baseDamage);
             targetController.Hurt(damage);
         }
 
-        protected override void ApplyAttackEffect(ITargetable targetController, BuffManager buffManager)
+        public override void ApplyAttackEffect(ITargetable targetController, BuffManager buffManager)
         {
             
         }

@@ -175,8 +175,6 @@ public static class PhotonEventsConstants
                 // can be computed by tower
                 public const string SpeedParam = "speed";
                 public const string HasSplashDamageParam = "hasSplash";
-                public const string SplashRadiusParam = "splashRadius";
-                public const string HasProgressiveSplashParam = "hasProgressiveSplash";
             }
 
             // magic

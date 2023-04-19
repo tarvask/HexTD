@@ -10,12 +10,6 @@ namespace Match.Field.Tower
         private int _targetId;
         private TowerState _towerState;
         
-        // splash
-        private bool _hasSplashDamage;
-        private float _splashDamageRadius;
-        private bool _hasProgressiveSplashDamage;
-        private bool _hasSplashInitially;
-
         public int Level => _level;
         public float ConstructionTimeLabel => _constructionTimeLabel;
         public int TargetId => _targetId;
@@ -24,10 +18,6 @@ namespace Match.Field.Tower
         public bool IsConstructing => _towerState == TowerState.Constructing;
         public bool IsReadyToRelease => _towerState == TowerState.ToRelease;
         public bool IsReadyToDispose => _towerState == TowerState.ToDispose;
-
-        public bool HasSplashDamage => _hasSplashDamage;
-        public float SplashDamageRadius => _splashDamageRadius;
-        public bool HasProgressiveSplashDamage => _hasProgressiveSplashDamage;
 
         public TowerStableModel()
         {
