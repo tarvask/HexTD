@@ -1,9 +1,7 @@
 using HexSystem;
 using Lean.Touch;
 using Tools;
-using Tools.Interfaces;
 using UniRx;
-using UnityEngine;
 
 namespace Match
 {
@@ -37,6 +35,11 @@ namespace Match
 
             if (_context.HexInteractService.TryClickHexTile(finger, out Hex2d clickedHex))
                 _context.ClickEvent.Execute(clickedHex);
+        }
+
+        protected override void OnDispose()
+        {
+            LeanTouch.OnFingerDown -= GetInput;
         }
     }
 }
