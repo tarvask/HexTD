@@ -141,6 +141,8 @@ namespace PathSystem
         {
             return new PathEnumerator(Points);
         }
+
+        public bool GetHexIsRoad(Hex2d hex2d) => Points.Contains(hex2d);
         
         public virtual IEnumerator<Hex2d> GetEnumerator()
         {

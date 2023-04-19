@@ -19,6 +19,7 @@ MonoBehaviour:
     towerName: TestTower
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
+    placementType: 1
     reachableAttackTargetFinderType: 1
     targetFindingTacticType: 2
     raceType: 1

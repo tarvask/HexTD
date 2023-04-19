@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Configs;
+using Configs.Constants;
 using HexSystem;
 using UnityEngine;
 
@@ -55,10 +56,10 @@ namespace Match.Field.Hexagons
             return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height, isWorld);
         }
 
-        public Vector3 GetUpHexPosition(Hex2d hexPosition, bool isWorld = true)
+        public Vector3 GetBottomHexPosition(Hex2d hexPosition, bool isWorld = true)
         {
             FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
-            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height + 1, isWorld);
+            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height -2, isWorld);
         }
 
         public Hex2d ToHexFromWorldPosition(Vector3 position, bool isWorld = true)
@@ -144,6 +145,22 @@ namespace Match.Field.Hexagons
             Bounds bounds = new Bounds(min + size / 2.0f, size + _layout.HexSize);
 
             return bounds;
+        }
+
+        public bool GetHexIsBlocker(Hex2d hex)
+        {
+            if (_cachedLevelFieldHexes.ContainsKey(hex.GetHashCode()))
+            {
+                if (_cachedLevelFieldHexes[hex.GetHashCode()].HexModel.Data.TryGetValue(
+                        HexParamsNameConstants.IsBlockerParam, out var isBlocker))
+                {
+                    return bool.Parse(isBlocker);
+                }
+
+                return false;
+            }
+
+            return true;
         }
     }
 }

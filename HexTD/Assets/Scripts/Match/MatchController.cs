@@ -6,6 +6,7 @@ using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
 using Match.Field.Hand;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.State;
 using Match.State;
@@ -185,7 +186,7 @@ namespace Match
                 enemyGoldenCoinsCountChangedReactiveCommand,
                 enemyCrystalsCountChangedReactiveCommand,
                 matchStartedReactiveCommand);
-
+               
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
                 hexFabric,
@@ -301,7 +302,10 @@ namespace Match
                     ourField.FieldConstructionProcessController,
                     _ourPlayerHandController, _context.MatchCommandsOur,
                     _windowsManager.TowerManipulationWindowController,
-                    _windowsManager.TowerInfoWindowController);
+                    _windowsManager.TowerInfoWindowController,
+                    ourField.HexagonalFieldModel,
+                    ourField.PathContainer
+                );
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
 
             // rules

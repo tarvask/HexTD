@@ -28,6 +28,15 @@ namespace HexSystem
                 hexInstance.transform.Rotate(Vector3.up, MapConstants.AngleStep * stepNum);
             }
             
+            if (hexModel.Data.TryGetValue(HexParamsNameConstants.IsBlockerParam, out string isBlocker))
+            {
+                hexInstance.SetIsBlocker(bool.Parse(isBlocker));
+            }
+            else
+            {
+                hexInstance.SetIsBlocker(false);
+            }
+            
             return hexInstance;
         }
 

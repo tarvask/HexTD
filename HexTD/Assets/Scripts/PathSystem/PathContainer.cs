@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using HexSystem;
 using Match.Field.Hexagons;
 
 namespace PathSystem
@@ -17,5 +19,7 @@ namespace PathSystem
                 Paths.Add(pathData.Name, path);
             }
         }
+        
+        public bool GetHexIsRoad(Hex2d hex2d) => Paths.Values.Any(patchData => patchData.GetHexIsRoad(hex2d));
     }
 }

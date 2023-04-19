@@ -151,7 +151,7 @@ namespace Match.Field
             Hex2d position)
         {
             TowerView towerView = Object.Instantiate(towerPrefab, _buildingsRoot);
-            towerView.transform.position = _context.HexagonalFieldModel.GetUpHexPosition(position);
+            towerView.transform.position = _context.HexagonalFieldModel.GetHexPosition(position);
             towerView.name = $"{towerId}_{towerName}";
 
             return towerView;

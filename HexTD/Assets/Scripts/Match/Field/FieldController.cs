@@ -112,6 +112,9 @@ namespace Match.Field
         
         public const float MoveLerpCoeff = 0.7f;
 
+        public HexagonalFieldModel HexagonalFieldModel => _hexagonalFieldModel;
+        public PathContainer PathContainer => _pathContainer;
+
         public FieldConstructionProcessController FieldConstructionProcessController => _constructionProcessController;
         public FieldModel FieldModel => _model;
 

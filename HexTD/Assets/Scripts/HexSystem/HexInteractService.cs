@@ -1,4 +1,5 @@
-﻿using MapEditor;
+﻿using System.Linq;
+using MapEditor;
 using UnityEngine;
 
 namespace HexSystem
@@ -16,14 +17,16 @@ namespace HexSystem
         {
             var ray = MainCamera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out var hitInfo))
+            var raycasts = Physics.RaycastAll(ray);
+
+            var hexObject = raycasts
+                .Select(hit => hit.transform.GetComponentInParent<HexObject>())
+                .FirstOrDefault(hexObject => hexObject != null);
+            
+            if (hexObject != null)
             {
-                var hexObject = hitInfo.transform.GetComponent<HexObject>();
-                if (hexObject != null)
-                {
-                    hitHex = hexObject.HitHex;
-                    return true;
-                }
+                hitHex = hexObject.HitHex;
+                return true;
             }
 
             hitHex = new Hex2d();

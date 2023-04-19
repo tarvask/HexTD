@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Configs.Constants;
 using MapEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace HexSystem
 {
@@ -8,30 +10,29 @@ namespace HexSystem
 	{
 		private readonly EditorHexFabric _hexFabric;
 		private readonly Layout _layout;
-		private readonly List<HexModel> _hexModels;
-		private readonly IDictionary<HexModel, HexObject> _hexagons;
+		private readonly IDictionary<int, HexModel> _hexModels;
+		private readonly IDictionary<int, HexObject> _hexObjects;
 
 		public HexGridModel(EditorHexFabric hexFabric, Layout layout)
 		{
 			_hexFabric = hexFabric;
 			_layout = layout;
-			_hexModels = new List<HexModel>();
-			_hexagons = new Dictionary<HexModel, HexObject>();
+			_hexModels = new Dictionary<int, HexModel>();
+			_hexObjects = new Dictionary<int, HexObject>();
 		}
-		
-		public HexModel GetData(Hex2d hex)
-		{
-			return _hexModels.Find(data => data.Position.Q == hex.Q && data.Position.R == hex.R);
-		}
+
+		public HexModel GetHexModel(Hex2d hex) => _hexModels.ContainsKey(hex.GetHashCode())
+			? _hexModels[hex.GetHashCode()]
+			: null;
 
 		public HexModel CreateHex(Hex2d hexPosition, List<(string, string)> parameters)
 		{
 			var hexModel = new HexModel(hexPosition, 0, parameters);
-			_hexModels.Add(hexModel);
+			_hexModels.Add(hexModel.GetHashCode(), hexModel);
 
 			Vector3 spawnPosition = _layout.ToPlane(hexPosition);
 			HexObject hexInstance = _hexFabric.CreateHexObject(hexModel, spawnPosition);
-			_hexagons.Add(hexModel, hexInstance);
+			_hexObjects.Add(hexModel.GetHashCode(), hexInstance);
 
 			return hexModel;
 		}
@@ -39,21 +40,21 @@ namespace HexSystem
 		public void CreateHex(HexModel hexModel)
 		{
 			var copiedHexModel = new HexModel(hexModel);
-			_hexModels.Add(copiedHexModel);
+			_hexModels.Add(copiedHexModel.GetHashCode(), copiedHexModel);
 
 			Vector3 spawnPosition = _layout.ToPlane(hexModel.Q, hexModel.R, hexModel.Height);
 			HexObject hexInstance = _hexFabric.CreateHexObject(copiedHexModel, spawnPosition);
-			_hexagons.Add(copiedHexModel, hexInstance);
+			_hexObjects.Add(copiedHexModel.GetHashCode(), hexInstance);
 		}
 
 		public HexObject GetHexagonInstance(HexModel hexModel)
 		{
-			return _hexagons[hexModel];
+			return _hexObjects[hexModel.GetHashCode()];
 		}
 		
 		public void RemoveHexFromHexGrid(Hex2d hex)
 		{
-			var hexModel = GetData(hex);
+			var hexModel = GetHexModel(hex);
 			if(hexModel == null)
 				return;
 			
@@ -62,27 +63,52 @@ namespace HexSystem
 		
 		public void RemoveHexFromHexGrid(HexModel hexModel)
 		{
-			if(!_hexagons.Remove(hexModel, out var hex))
+			if(!_hexObjects.Remove(hexModel.GetHashCode(), out var hex))
 				return;
             
 			Object.Destroy(hex.gameObject);
-			_hexModels.Remove(hexModel);
+			_hexModels.Remove(hexModel.GetHashCode());
 		}
 
 		public List<HexModel> GetAllHexes()
 		{
-			return new List<HexModel>(_hexModels);
+			return new List<HexModel>(_hexModels.Values);
 		}
 
 		public void Clear()
 		{
-			foreach (var hexagon in _hexagons)
+			foreach (var hexagon in _hexObjects)
 			{
 				Object.Destroy(hexagon.Value.gameObject);
 			}   
 			
-			_hexagons.Clear();
+			_hexObjects.Clear();
 			_hexModels.Clear();
+		}
+
+		public bool GetHexIsBlocker(Hex2d hex)
+		{
+			if (!_hexModels[hex.GetHashCode()].Data
+				    .TryGetValue(HexParamsNameConstants.IsBlockerParam, out var isBlocker))
+			{
+				return false;
+			}
+
+			return bool.Parse(isBlocker);
+		}
+
+		public void SetHexIsBlocker(Hex2d hex, bool isBlocker)
+		{
+			if (!_hexModels[hex.GetHashCode()].Data.ContainsKey(HexParamsNameConstants.IsBlockerParam))
+			{
+				_hexModels[hex.GetHashCode()].Data.Add(HexParamsNameConstants.IsBlockerParam,isBlocker.ToString());
+			}
+			else
+			{
+				_hexModels[hex.GetHashCode()].Data[HexParamsNameConstants.IsBlockerParam] = isBlocker.ToString();
+			}
+
+			_hexObjects[hex.GetHashCode()].SetIsBlocker(isBlocker);
 		}
 	}
 }
