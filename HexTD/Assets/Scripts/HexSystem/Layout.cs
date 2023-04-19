@@ -14,20 +14,20 @@ namespace HexSystem
 		// Corner locations in XY space. Private for same reason as neighbors.
 		private readonly Vector2[] corners;
 		
-		public readonly Vector3 Size;
+		public readonly Vector3 HexSize;
 		public readonly Vector3 Origin;	
 		public readonly bool IsOrientationFlat;
 		public readonly Orientation Orientation;
 
-		public Layout(Vector3 size, Vector3 origin, bool isOrientationFlat)
+		public Layout(Vector3 hexSize, Vector3 origin, bool isOrientationFlat)
 		{
 			IsOrientationFlat = isOrientationFlat;
 			Orientation = IsOrientationFlat ? Orientation.LayoutFlat() : Orientation.LayoutPointy();
-			Size = size;
+			HexSize = hexSize;
 			Origin = origin;
 
 			//todo now only for non-flat orientation
-			Vector2 to2dSize = new Vector2(Size.x, Size.z);
+			Vector2 to2dSize = new Vector2(HexSize.x, HexSize.z);
 			corners = new[]
 			{
 				to2dSize * new Vector2(Mathf.Sin(SEXTANT), Mathf.Cos(SEXTANT)),
@@ -51,17 +51,17 @@ namespace HexSystem
 
 		public Vector3 ToPlane(int q, int r, int h = 0)
 		{
-			float x = (float)((Orientation.F0 * q + Orientation.F1 * r) * Size.x);
-			float y = (float)(h * Size.y);
-			float z = (float)((Orientation.F2 * q + Orientation.F3 * r) * Size.z);
+			float x = (float)((Orientation.F0 * q + Orientation.F1 * r) * HexSize.x);
+			float y = (float)(h * HexSize.y);
+			float z = (float)((Orientation.F2 * q + Orientation.F3 * r) * HexSize.z);
 			return new Vector3(x + Origin.x, y + Origin.y, z + Origin.z);
 		}
 
 		public FractionalHex ToHex(Vector3 positionInPlane)
 		{
 			Orientation orientation = Orientation;
-			Vector3 pt = new Vector3((positionInPlane.x - Origin.x) / Size.x, (positionInPlane.y - Origin.y) / Size.y,
-				(positionInPlane.z - Origin.z) / Size.z);
+			Vector3 pt = new Vector3((positionInPlane.x - Origin.x) / HexSize.x, (positionInPlane.y - Origin.y) / HexSize.y,
+				(positionInPlane.z - Origin.z) / HexSize.z);
 			double q = orientation.B0 * pt.x + orientation.B1 * pt.z;
 			double r = orientation.B2 * pt.x + orientation.B3 * pt.z;
 			return new FractionalHex(q, r, -q - r);

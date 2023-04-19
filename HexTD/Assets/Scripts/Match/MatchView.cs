@@ -8,7 +8,8 @@ namespace Match
     {
         [SerializeField] private Transform ourFieldRoot;
         [SerializeField] private Transform enemyFieldRoot;
-        [SerializeField] private Camera mainCamera;
+        [SerializeField] private Camera ourFieldCamera;
+        [SerializeField] private Camera enemyFieldCamera;
         [SerializeField] private Canvas canvas;
         [SerializeField] private CanvasHeightOrWidthFitter canvasFitter;
 
@@ -18,7 +19,8 @@ namespace Match
 
         public Transform OurFieldRoot => ourFieldRoot;
         public Transform EnemyFieldRoot => enemyFieldRoot;
-        public Camera MainCamera => mainCamera;
+        public Camera OurFieldCamera => ourFieldCamera;
+        public Camera EnemyFieldCamera => enemyFieldCamera;
         public Canvas Canvas => canvas;
         public CanvasHeightOrWidthFitter CanvasFitter => canvasFitter;
 

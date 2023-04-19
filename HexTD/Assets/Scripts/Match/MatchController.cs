@@ -1,5 +1,6 @@
 using System;
 using BuffLogic;
+using Extensions;
 using HexSystem;
 using Match.Commands;
 using Match.Field;
@@ -12,6 +13,7 @@ using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
+using UnityEngine;
 
 namespace Match
 {
@@ -125,7 +127,7 @@ namespace Match
             
             // windows
            WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
-               _context.MatchView.MatchUiViews, _context.MatchView.MainCamera, _context.MatchView.Canvas,
+               _context.MatchView.MatchUiViews, _context.MatchView.OurFieldCamera, _context.MatchView.Canvas,
                _configsRetriever,
                _context.MatchInitDataParameters.HandParams,
                waves,
@@ -213,7 +215,32 @@ namespace Match
                 spawnPlayer2MobReactiveCommand = spawnOurMobReactiveCommand;
                 player2MatchCommands = _context.MatchCommandsOur;
             }
-            
+
+            {
+                {
+                    var player1FieldBounds = _player1FieldController.GetFieldBounds();
+                    DebugDrawingTools.DrawBounds(player1FieldBounds, Color.white, 5.0f);
+
+                    if (_context.MatchView.OurFieldCamera.TryGetFocusTransforms(player1FieldBounds, out var pos,
+                            out var rot))
+                    {
+                        _context.MatchView.OurFieldCamera.transform.position = pos;
+                        _context.MatchView.OurFieldCamera.transform.rotation = rot;
+                    }
+                }
+                {
+                    var player2FieldBounds = _player2FieldController.GetFieldBounds();
+                    DebugDrawingTools.DrawBounds(player2FieldBounds, Color.white, 5.0f);
+
+                    if (_context.MatchView.EnemyFieldCamera.TryGetFocusTransforms(player2FieldBounds, out var pos,
+                            out var rot))
+                    {
+                        _context.MatchView.EnemyFieldCamera.transform.position = pos;
+                        _context.MatchView.EnemyFieldCamera.transform.rotation = rot;
+                    }
+                }
+            }
+
             // wave mob spawner
             WaveMobSpawnerCoordinator.Context waveMobSpawnerContext = new WaveMobSpawnerCoordinator.Context(
                 _configsRetriever,
@@ -246,7 +273,7 @@ namespace Match
             _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
 
             // input
-            HexInteractService hexInteractService = new HexInteractService(_context.MatchView.MainCamera);
+            HexInteractService hexInteractService = new HexInteractService(_context.MatchView.OurFieldCamera);
             
             InputController.Context inputControllerContext = new InputController.Context(
                 hexInteractService, clickReactiveCommand);
@@ -266,7 +293,7 @@ namespace Match
             _context.MatchCommandsCommon.IncomingGeneral.ApplySyncState.Subscribe(SyncState);
 
             _context.RollbackStateReactiveCommand.Subscribe(RollbackState);
-        }        
+        }
 
         private void SendState()
         {

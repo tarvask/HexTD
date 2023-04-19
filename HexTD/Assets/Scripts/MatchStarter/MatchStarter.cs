@@ -4,7 +4,6 @@ using Cysharp.Threading.Tasks;
 using Tools;
 using UniRx;
 using UnityEngine;
-using WindowSystem;
 using Zenject;
 #if UNITY_EDITOR
 #endif
@@ -22,20 +21,15 @@ namespace MatchStarter
 		private List<SpriteRenderer> _loadedSpriteRenderers = new List<SpriteRenderer>();
 
 		private IMatchStarterLoader _matchStarterLoader;
-//		private IWindowsManager _windowsManager;
 
 		private IDisposable _battleDisposable;
 		
 		private bool _isDisposed;
 			
 		[Inject]
-		public void Construct(IMatchStarterLoader matchStarterLoader
-//			,
-//			IWindowsManager windowsManager
-			)
+		public void Construct(IMatchStarterLoader matchStarterLoader)
 		{
 			_matchStarterLoader = matchStarterLoader;
-//			_windowsManager = windowsManager;
 		}
 
 		private void Awake()
@@ -52,15 +46,6 @@ namespace MatchStarter
 			IsLoaded = true;
 		}
 
-//		private void Update()
-//		{
-//			if (Input.GetKeyDown(KeyCode.Backspace))
-//			{
-//				_windowsManager.OpenAsync<MainMenuWindowController>();
-//				_matchStarterLoader.DestroyAndRelease();
-//			}
-//		}
-		
 		private void OnDestroy()
 		{
 			if (!_isDisposed)

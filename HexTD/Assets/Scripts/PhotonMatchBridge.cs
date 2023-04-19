@@ -21,7 +21,6 @@ public class PhotonMatchBridge : BaseMonoBehaviour
     public IObservable<Unit> OnQuitMatch => _onQuitMatch;
     private Subject<Unit> _onQuitMatch = new Subject<Unit>();
 
-//    [SerializeField] private bool isMultiPlayerGame;
     [SerializeField] private MatchesConfig levelsConfig;
 
     private const bool HasAuthorityServer = false;

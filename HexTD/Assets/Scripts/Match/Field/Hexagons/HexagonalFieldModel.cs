@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Configs;
 using HexSystem;
 using UnityEngine;
@@ -60,7 +61,7 @@ namespace Match.Field.Hexagons
 
         public bool IsCloseToNewHex(float distanceToHex)
         {
-            return distanceToHex < _layout.Size.y && distanceToHex < _layout.Size.x;
+            return distanceToHex < _layout.HexSize.y && distanceToHex < _layout.HexSize.x;
         }
 
         public bool IsHexInMap(Hex2d position)
@@ -87,5 +88,55 @@ namespace Match.Field.Hexagons
         }
 
         public bool IsOnSegment(Hex2d hex, Vector2 a, Vector2 b) => _layout.IsOnSegment(hex, a, b);
+
+        public Bounds GetBounds()
+        {
+            Vector3 min, max;
+            min = max = GetPlanePosition(_cachedLevelFieldHexes.Values.First().HexModel.Position);
+            min.y = max.y = _cachedLevelFieldHexes.Values.First().HexModel.Height;
+
+            foreach (var fieldHex in _cachedLevelFieldHexes.Values.Skip(1))
+            {
+                var nextPlanePosition = GetPlanePosition(fieldHex.HexModel.Position);
+                var nextHeight = fieldHex.HexModel.Height;
+
+                if (nextPlanePosition.x < min.x)
+                {
+                    min.x = nextPlanePosition.x;
+                }
+
+                if (nextPlanePosition.x > max.x)
+                {
+                    max.x = nextPlanePosition.x;
+                }
+
+                if (nextPlanePosition.z < min.z)
+                {
+                    min.z = nextPlanePosition.z;
+                }
+
+                if (nextPlanePosition.z > max.z)
+                {
+                    max.z = nextPlanePosition.z;
+                }
+
+                if (nextHeight < min.y)
+                {
+                    min.y = nextHeight;
+                }
+
+                if (nextHeight > max.y)
+                {
+                    max.y = nextHeight;
+                }
+            }
+
+            var size = max - min;
+            size = new Vector3(size.x, size.y * _layout.HexSize.y, size.z);
+            
+            Bounds bounds = new Bounds(min + size / 2.0f, size + _layout.HexSize);
+
+            return bounds;
+        }
     }
 }

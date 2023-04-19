@@ -253,6 +253,8 @@ namespace Match.Field
             return _stateLoader.SaveState();
         }
 
+        public Bounds GetFieldBounds() => _hexagonalFieldModel.GetBounds();
+
         public void Reset()
         {
             _hexagonalFieldModel.Reset();
