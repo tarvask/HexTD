@@ -15,8 +15,6 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
             
             foreach (KeyValuePair<int, MobController> mobPair in mobs)
             {
-                mobPair.Value.CalculateRemainingPathDistance();
-
                 if (mobPair.Value.RemainingPathDistance < shorterPath)
                 {
                     shorterPath = mobPair.Value.RemainingPathDistance;

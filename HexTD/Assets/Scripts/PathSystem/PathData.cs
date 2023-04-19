@@ -52,17 +52,21 @@ namespace PathSystem
         }
 
         public string Name { get; protected set; }
+
+        protected readonly float PathLength;
         protected readonly LinkedList<Hex2d> Points;
 
         public PathData(string name, IEnumerable<Hex2d> points)
         {
             Name = name;
+            PathLength = CalcPathLength(Vector3.one);
             Points = new LinkedList<Hex2d>(points);
         }
 
         public PathData(HexPathFindingService hexPathFindingService, string name, IEnumerable<Hex2d> points)
         {
             Name = name;
+            PathLength = CalcPathLength(hexPathFindingService.HexSize);
             Points = new LinkedList<Hex2d>();
 
             List<Hex2d> middlePath = new List<Hex2d>();
@@ -139,17 +143,37 @@ namespace PathSystem
         
         public IPathEnumerator GetPathEnumerator()
         {
-            return new PathEnumerator(Points);
+            return new PathEnumerator(Points, PathLength);
         }
         
         public virtual IEnumerator<Hex2d> GetEnumerator()
         {
-            return new PathEnumerator(Points);
+            return new PathEnumerator(Points, PathLength);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private float CalcPathLength(Vector3 hexSize)
+        {
+            float pathLength = 0f;
+            float diagonalLength = Mathf.Sqrt(hexSize.x * hexSize.x + hexSize.z * hexSize.z);
+
+            var curPoint = Points.First.Next;
+            while (curPoint != null)
+            {
+                var delta = curPoint.Value - curPoint.Previous.Value;
+                if (delta.Q == 0)
+                    pathLength += hexSize.x;
+                else
+                    pathLength += diagonalLength;
+                
+                curPoint = curPoint.Next;
+            }
+
+            return pathLength;
         }
     }
 }
