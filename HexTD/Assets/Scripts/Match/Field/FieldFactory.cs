@@ -151,7 +151,7 @@ namespace Match.Field
             Hex2d position)
         {
             TowerView towerView = Object.Instantiate(towerPrefab, _buildingsRoot);
-            towerView.transform.position = _context.HexagonalFieldModel.GetUpHexWorldPosition(position);
+            towerView.transform.position = _context.HexagonalFieldModel.GetUpHexPosition(position);
             towerView.name = $"{towerId}_{towerName}";
 
             return towerView;
@@ -240,7 +240,7 @@ namespace Match.Field
         private ProjectileView CreateProjectileView(int projectileId, ProjectileView projectilePrefab, Vector3 spawnPosition)
         {
             ProjectileView projectileInstance = Object.Instantiate(projectilePrefab, _projectilesRoot);
-            projectileInstance.transform.position = spawnPosition;
+            projectileInstance.transform.localPosition = spawnPosition;
             projectileInstance.name = $"{projectileId}_bullet";
 
             return projectileInstance;
@@ -256,7 +256,7 @@ namespace Match.Field
 
         public void CreateHexTile(HexModel hexModel)
         {
-            Vector3 spawnPosition = _context.HexagonalFieldModel.GetWorldPosition(
+            Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition(
                 (Hex3d)hexModel);
             _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
         }

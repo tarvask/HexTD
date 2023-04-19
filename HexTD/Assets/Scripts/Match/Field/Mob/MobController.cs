@@ -61,7 +61,7 @@ namespace Match.Field.Mob
 
         public int Id => _context.Id;
         public override int TargetId => _context.TargetId;
-        public override Vector3 Position => _currentPosition;
+        public override Vector3 Position => _context.View.transform.localPosition;
         public IReadOnlyReactiveProperty<float> Health => _reactiveModel.Health;
         public IReadonlyBuffableValue<float> Speed => _reactiveModel.Speed;
         public float PathLength => _currentPathLength;
@@ -70,7 +70,7 @@ namespace Match.Field.Mob
 
         public bool HasReachedCastle => _hasReachedCastle;
         public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.ReloadTime;
-        public int RewardInSilver => _context.Parameters.RewardInSilver;
+        public int RewardInCoins => _context.Parameters.RewardInCoins;
         public bool IsCarrion => _isCarrion;
         public bool IsEscaping => _isEscaping;
         public bool IsInSafety => _isInSafety;
@@ -88,11 +88,11 @@ namespace Match.Field.Mob
             _wasNewHexReached = false;
             _context.PathEnumerator.Reset();
 
-            _currentTargetPosition = _context.HexPositionConversionService.GetUpHexWorldPosition(
-                _context.PathEnumerator.Current);
+            _currentTargetPosition = _context.HexPositionConversionService.GetUpHexPosition(
+                _context.PathEnumerator.Current, false);
             _currentPosition = _currentTargetPosition;
-            _context.View.transform.position = _currentPosition;
-            _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition);
+            _context.View.transform.localPosition = _currentPosition;
+            _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false);
         }
 
         public void LogicMove(float frameLength)
@@ -124,8 +124,8 @@ namespace Match.Field.Mob
 
                     if (!_hasReachedCastle)
                     {
-                        _currentTargetPosition = _context.HexPositionConversionService.GetUpHexWorldPosition(
-                            _context.PathEnumerator.Current);
+                        _currentTargetPosition = _context.HexPositionConversionService.GetUpHexPosition(
+                            _context.PathEnumerator.Current, false);
                     }
                 }
             }
@@ -144,7 +144,7 @@ namespace Match.Field.Mob
         private void UpdateHexPosition()
         {
             var oldHexPosition = _currentHexPosition;
-            _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition);;
+            _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false);
             _reactiveModel.OnHexPositionChange(this, oldHexPosition);
         }
 

@@ -8,17 +8,19 @@ namespace Match.Field.Currency
     {
         public struct Context
         {
-            public int StartSilverCoins { get; }
+            public int StartCoins { get; }
             public int StartCrystals { get; }
-            
+
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
             public ReactiveCommand<int> CrystalCollectedReactiveCommand { get; }
 
-            public Context(int startSilverCoins, int startCrystals,
+            public Context(
+                int startCoins, 
+                int startCrystals,
                 ReactiveCommand<MobController> removeMobReactiveCommand,
                 ReactiveCommand<int> crystalCollectedReactiveCommand)
             {
-                StartSilverCoins = startSilverCoins;
+                StartCoins = startCoins;
                 StartCrystals = startCrystals;
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
                 CrystalCollectedReactiveCommand = crystalCollectedReactiveCommand;
@@ -27,45 +29,37 @@ namespace Match.Field.Currency
 
         private readonly Context _context;
 
-        private readonly ReactiveProperty<int> _goldCoinsCountReactiveProperty;
-        private readonly ReactiveProperty<int> _goldCoinsIncomeReactiveProperty;
+        private readonly ReactiveProperty<int> _сoinsCountReactiveProperty;
         private readonly ReactiveProperty<int> _crystalsCountReactiveProperty;
 
-        public IReadOnlyReactiveProperty<int> GoldCoinsCountReactiveProperty => _goldCoinsCountReactiveProperty;
-        public IReadOnlyReactiveProperty<int> GoldCoinsIncomeReactiveProperty => _goldCoinsIncomeReactiveProperty;
+        public IReadOnlyReactiveProperty<int> СoinsCountReactiveProperty => _сoinsCountReactiveProperty;
         public IReadOnlyReactiveProperty<int> CrystalsCountReactiveProperty => _crystalsCountReactiveProperty;
 
         public CurrencyController(Context context)
         {
             _context = context;
             
-            _goldCoinsCountReactiveProperty = AddDisposable(new ReactiveProperty<int>(_context.StartSilverCoins));
-            _goldCoinsIncomeReactiveProperty = AddDisposable(new ReactiveProperty<int>(0));
+            _сoinsCountReactiveProperty = AddDisposable(new ReactiveProperty<int>(_context.StartCoins));
             _crystalsCountReactiveProperty = AddDisposable(new ReactiveProperty<int>(_context.StartCrystals));
 
             _context.RemoveMobReactiveCommand.Subscribe(RewardForRemovedMob);
             _context.CrystalCollectedReactiveCommand.Subscribe(AddCrystals);
         }
 
-        public bool SpendSilver(int priceInSilver)
+        public bool SpendCoins(int priceInCoins)
         {
-            if (priceInSilver <= _goldCoinsCountReactiveProperty.Value)
+            if (priceInCoins <= _сoinsCountReactiveProperty.Value)
             {
-                _goldCoinsCountReactiveProperty.Value -= priceInSilver;
+                _сoinsCountReactiveProperty.Value -= priceInCoins;
                 return true;
             }
             
             return false;
         }
 
-        public void AddSilver(int rewardInSilver)
+        public void AddCoins(int rewardInCoins)
         {
-            _goldCoinsCountReactiveProperty.Value += rewardInSilver;
-        }
-
-        public void IncreaseIncome(int incomeIncreaseDelta)
-        {
-            _goldCoinsIncomeReactiveProperty.Value += incomeIncreaseDelta;
+            _сoinsCountReactiveProperty.Value += rewardInCoins;
         }
 
         public bool SpendCrystals(int priceInCrystals)
@@ -87,7 +81,7 @@ namespace Match.Field.Currency
         private void RewardForRemovedMob(MobController mob)
         {
             if (!mob.IsEscaping)
-                AddSilver(mob.RewardInSilver);
+                AddCoins(mob.RewardInCoins);
         }
     }
 }

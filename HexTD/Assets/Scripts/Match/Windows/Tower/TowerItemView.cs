@@ -19,7 +19,7 @@ namespace Match.Windows.Tower
 
         // model stuff
         private TowerShortParams _towerShortParams;
-        private int _towerPriceInSilver;
+        private int _towerPriceInCoins;
         public TowerShortParams TowerShortParams => _towerShortParams;
 
         private Action _onBuyButtonClickAction;
@@ -32,10 +32,10 @@ namespace Match.Windows.Tower
         public void Init(TowerConfigNew config, int price, Action onBuyButtonClickAction)
         {
             _towerShortParams = new TowerShortParams(config.RegularParameters.TowerType, 1);
-            _towerPriceInSilver = price;
+            _towerPriceInCoins = price;
             
             towerNameLabel.text = config.RegularParameters.TowerName;
-            towerPriceLabel.text = $"{_towerPriceInSilver}";
+            towerPriceLabel.text = $"{_towerPriceInCoins}";
             towerIcon.color = raceColors[(int) config.RegularParameters.RaceType];
             towerDisabledCover.SetActive(false);
 
@@ -46,9 +46,9 @@ namespace Match.Windows.Tower
             gameObject.SetActive(true);
         }
 
-        public void Refresh(int currentSilverCoinsCount)
+        public void Refresh(int currentCoinsCount)
         {
-            buyButton.interactable = currentSilverCoinsCount >= _towerPriceInSilver;
+            buyButton.interactable = currentCoinsCount >= _towerPriceInCoins;
         }
 
         public void Hide()

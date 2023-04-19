@@ -46,7 +46,7 @@ namespace MatchStarter
 			IsLoaded = true;
 		}
 
-		private void OnDestroy()
+		protected override void OnDestroy()
 		{
 			if (!_isDisposed)
 				Dispose();

@@ -40,7 +40,7 @@ namespace Game
 
 			var matchStarter = await _matchStarterLoader.LoadAsync();
 
-			_matchDisposable=matchStarter.OnQuitMatch.Subscribe(OnQuitMatchHandler);
+			_matchDisposable = matchStarter.OnQuitMatch.Subscribe(OnQuitMatchHandler);
 		}
 
 		private void OnQuitMatchHandler(Unit asd)

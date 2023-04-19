@@ -19,6 +19,8 @@ namespace Services
             }
         }
 
+        public int TowerCount => _context.FieldConfig.TowersConfig.Towers.Count;
+
         public ConfigsRetriever(Context context)
         {
             _context = context;

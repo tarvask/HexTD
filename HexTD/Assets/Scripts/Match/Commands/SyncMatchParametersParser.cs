@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using HexSystem;
+using Match.Field.Hand;
 using Match.Field.Tower;
 using Match.Wave;
 using PathSystem;
@@ -118,8 +119,8 @@ namespace Match.Commands
                 paths[pathIndex] = new PathData.SavePathData(name, points);
             }
             
-            // silver coins
-            int silverCoins = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartSilverCoinsParam];
+            // coins
+            int startCoins = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartCoinsParam];
 
             // hand
             // towers
@@ -132,7 +133,8 @@ namespace Match.Commands
             }
 
             PlayerHandParams clientPlayerHand = new PlayerHandParams(towers);
-            MatchInitDataParameters clientMatchParameters = new MatchInitDataParameters(hexModels, paths, waves, silverCoins, clientPlayerHand);
+            MatchInitDataParameters clientMatchParameters = new MatchInitDataParameters(
+                hexModels, paths, waves, startCoins, clientPlayerHand);
 
             // random seed
             int randomSeed = (int) parametersTable[PhotonEventsConstants.SyncMatch.RandomSeed];

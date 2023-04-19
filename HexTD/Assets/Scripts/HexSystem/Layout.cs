@@ -39,29 +39,31 @@ namespace HexSystem
 			};
 		}
 
-		public Vector3 ToPlane(Hex3d hex)
+		public Vector3 ToPlane(Hex3d hex, bool isWorld = true)
 		{
-			return ToPlane(hex.Q, hex.R, hex.H);
+			return ToPlane(hex.Q, hex.R, hex.H, isWorld);
 		}
 
-		public Vector3 ToPlane(Hex2d hex)
+		public Vector3 ToPlane(Hex2d hex, bool isWorld = true)
 		{
-			return ToPlane(hex.Q, hex.R);
+			return ToPlane(hex.Q, hex.R, 0, isWorld);
 		}
 
-		public Vector3 ToPlane(int q, int r, int h = 0)
+		public Vector3 ToPlane(int q, int r, int h, bool isWorld = true)
 		{
+			Vector3 offset = isWorld ? Origin : Vector3.zero;
 			float x = (float)((Orientation.F0 * q + Orientation.F1 * r) * HexSize.x);
 			float y = (float)(h * HexSize.y);
 			float z = (float)((Orientation.F2 * q + Orientation.F3 * r) * HexSize.z);
-			return new Vector3(x + Origin.x, y + Origin.y, z + Origin.z);
+			return new Vector3(x + offset.x, y + offset.y, z + offset.z);
 		}
 
-		public FractionalHex ToHex(Vector3 positionInPlane)
+		public FractionalHex ToHex(Vector3 positionInPlane, bool isWorld = true)
 		{
+			Vector3 offset = isWorld ? Origin : Vector3.zero;
 			Orientation orientation = Orientation;
-			Vector3 pt = new Vector3((positionInPlane.x - Origin.x) / HexSize.x, (positionInPlane.y - Origin.y) / HexSize.y,
-				(positionInPlane.z - Origin.z) / HexSize.z);
+			Vector3 pt = new Vector3((positionInPlane.x - offset.x) / HexSize.x, (positionInPlane.y - offset.y) / HexSize.y,
+				(positionInPlane.z - offset.z) / HexSize.z);
 			double q = orientation.B0 * pt.x + orientation.B1 * pt.z;
 			double r = orientation.B2 * pt.x + orientation.B3 * pt.z;
 			return new FractionalHex(q, r, -q - r);
