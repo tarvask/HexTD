@@ -14,7 +14,7 @@ namespace Match.Field.Hexagons
        public FieldHexTypesController CurrentFieldHexTypes { get; }
 
         public int HexGridSize => _cachedLevelFieldHexes.Count;
-        public Vector3 SingleHexSize => _layout.Size;
+        public Vector3 HexSize => _layout.Size;
 
         public HexModel this[int positionHash] => _cachedLevelFieldHexes.ContainsKey(positionHash)
             ? _cachedLevelFieldHexes[positionHash].HexModel
@@ -39,24 +39,31 @@ namespace Match.Field.Hexagons
             CurrentFieldHexTypes = new FieldHexTypesController(_cachedLevelFieldHexes);
         }
 
-        public Vector3 GetPlanePosition(Hex2d hexPosition) => _layout.ToPlane(hexPosition);
-        public Vector3 GetWorldPosition(Hex3d hexPosition) => _layout.ToPlane(hexPosition);
-        
-        public Vector3 GetWorldPosition(Hex2d hexPosition)
+        public Vector3 GetPlanePosition(Hex2d hexPosition, bool isWorld = true)
         {
-            FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
-            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height);
-        }
-        
-        public Vector3 GetUpHexWorldPosition(Hex2d hexPosition)
-        {
-            FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
-            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height + 1);
+            return _layout.ToPlane(hexPosition, isWorld);
         }
 
-        public Hex2d ToHexFromWorldPosition(Vector3 position)
+        public Vector3 GetHexPosition(Hex3d hexPosition, bool isWorld = true)
         {
-            return (Hex2d)_layout.ToHex(position).RoundToHex();
+            return _layout.ToPlane(hexPosition, isWorld);
+        }
+
+        public Vector3 GetHexPosition(Hex2d hexPosition, bool isWorld = true)
+        {
+            FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
+            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height, isWorld);
+        }
+
+        public Vector3 GetUpHexPosition(Hex2d hexPosition, bool isWorld = true)
+        {
+            FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
+            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height + 1, isWorld);
+        }
+
+        public Hex2d ToHexFromWorldPosition(Vector3 position, bool isWorld = true)
+        {
+            return (Hex2d)_layout.ToHex(position, isWorld).RoundToHex();
         }
 
         public bool IsCloseToNewHex(float distanceToHex)

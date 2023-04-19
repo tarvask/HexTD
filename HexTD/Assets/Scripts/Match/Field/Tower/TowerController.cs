@@ -48,7 +48,7 @@ namespace Match.Field.Tower
 
         public int Id => _context.Id;
         public override Hex2d HexPosition => _context.Position;
-        public override Vector3 Position => _context.View.transform.position;
+        public override Vector3 Position => _context.View.transform.localPosition;
 
         public bool IsAttackReady => _shootModel.IsReadyAttack && CanShoot;
         public bool HasTarget => _stableModel.TargetId > 0;

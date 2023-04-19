@@ -149,7 +149,7 @@ namespace Match.Field
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
             MobsByTowersBlocker.Context mobsByTowersBlockerContext = new MobsByTowersBlocker.Context(
-                _hexagonalFieldModel.SingleHexSize, towersManager, removeMobReactiveCommand);
+                _hexagonalFieldModel.HexSize, towersManager, removeMobReactiveCommand);
             _mobsByTowersBlocker = AddDisposable(new MobsByTowersBlocker(mobsByTowersBlockerContext));
 
             MobsManager.Context mobsManagerContext = new MobsManager.Context(
