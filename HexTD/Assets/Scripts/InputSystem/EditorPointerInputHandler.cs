@@ -80,9 +80,9 @@ namespace InputSystem
             _currentPointerInputListener.RmbClickHandle(hex);
         }
 
-        public void KeyboardInputHandle(Hex2d hex)
+        public void KeyboardInputHandle(Hex2d hex, bool isHexUnderMouse)
         {
-            _hexMapController.ApplyKeyboardInput(hex);
+            _hexMapController.ApplyKeyboardInput(hex, isHexUnderMouse);
             
             if(Input.GetKeyDown(KeyCode.Space))
                 SwitchEditMode();
