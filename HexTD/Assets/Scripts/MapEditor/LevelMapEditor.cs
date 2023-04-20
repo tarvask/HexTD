@@ -20,9 +20,7 @@ namespace MapEditor
         
         private void Update()
         {
-            if (!PointerOverUiElementDetector.IsPointerOverUIElement())
-                _inputRecipient.ApplyInput(Time.deltaTime);
-                
+            _inputRecipient.ApplyInput(Time.deltaTime);
             _pathEditorController.DrawPath();
         }
     }

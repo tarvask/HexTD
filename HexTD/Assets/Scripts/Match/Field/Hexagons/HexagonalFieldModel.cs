@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Configs;
+using Configs.Constants;
 using HexSystem;
 using UnityEngine;
 
@@ -14,6 +16,7 @@ namespace Match.Field.Hexagons
        public FieldHexTypesController CurrentFieldHexTypes { get; }
 
         public int HexGridSize => _cachedLevelFieldHexes.Count;
+        public Vector3 HexSize => _layout.HexSize;
 
         public HexModel this[int positionHash] => _cachedLevelFieldHexes.ContainsKey(positionHash)
             ? _cachedLevelFieldHexes[positionHash].HexModel
@@ -54,10 +57,10 @@ namespace Match.Field.Hexagons
             return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height, isWorld);
         }
 
-        public Vector3 GetUpHexPosition(Hex2d hexPosition, bool isWorld = true)
+        public Vector3 GetBottomHexPosition(Hex2d hexPosition, bool isWorld = true)
         {
             FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
-            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height + 1, isWorld);
+            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, (int)(hex.HexModel.Height - _layout.HexSize.y), isWorld);
         }
 
         public Hex2d ToHexFromWorldPosition(Vector3 position, bool isWorld = true)
@@ -72,7 +75,7 @@ namespace Match.Field.Hexagons
 
         public bool IsCloseToNewHex(float distanceToHex)
         {
-            return distanceToHex < _layout.Size.y && distanceToHex < _layout.Size.x;
+            return distanceToHex < _layout.HexSize.y && distanceToHex < _layout.HexSize.x;
         }
 
         public bool IsHexInMap(Hex2d position)
@@ -99,5 +102,71 @@ namespace Match.Field.Hexagons
         }
 
         public bool IsOnSegment(Hex2d hex, Vector2 a, Vector2 b) => _layout.IsOnSegment(hex, a, b);
+
+        public Bounds GetBounds()
+        {
+            Vector3 min, max;
+            min = max = GetPlanePosition(_cachedLevelFieldHexes.Values.First().HexModel.Position);
+            min.y = max.y = _cachedLevelFieldHexes.Values.First().HexModel.Height;
+
+            foreach (var fieldHex in _cachedLevelFieldHexes.Values.Skip(1))
+            {
+                var nextPlanePosition = GetPlanePosition(fieldHex.HexModel.Position);
+                var nextHeight = fieldHex.HexModel.Height;
+
+                if (nextPlanePosition.x < min.x)
+                {
+                    min.x = nextPlanePosition.x;
+                }
+
+                if (nextPlanePosition.x > max.x)
+                {
+                    max.x = nextPlanePosition.x;
+                }
+
+                if (nextPlanePosition.z < min.z)
+                {
+                    min.z = nextPlanePosition.z;
+                }
+
+                if (nextPlanePosition.z > max.z)
+                {
+                    max.z = nextPlanePosition.z;
+                }
+
+                if (nextHeight < min.y)
+                {
+                    min.y = nextHeight;
+                }
+
+                if (nextHeight > max.y)
+                {
+                    max.y = nextHeight;
+                }
+            }
+
+            var size = max - min;
+            size = new Vector3(size.x, size.y * _layout.HexSize.y, size.z);
+            
+            Bounds bounds = new Bounds(min + size / 2.0f, size + _layout.HexSize);
+
+            return bounds;
+        }
+
+        public bool GetHexIsBlocker(Hex2d hex)
+        {
+            if (_cachedLevelFieldHexes.ContainsKey(hex.GetHashCode()))
+            {
+                if (_cachedLevelFieldHexes[hex.GetHashCode()].HexModel.Data.TryGetValue(
+                        HexParamsNameConstants.IsBlockerParam, out var isBlocker))
+                {
+                    return bool.Parse(isBlocker);
+                }
+
+                return false;
+            }
+
+            return true;
+        }
     }
 }

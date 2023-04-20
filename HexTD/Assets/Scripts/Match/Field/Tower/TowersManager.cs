@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using HexSystem;
-using Match.Field.Shooting;
+﻿using System.Collections.Generic;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -11,6 +8,7 @@ namespace Match.Field.Tower
     public class TowersManager : BaseDisposable, IOuterLogicUpdatable
     {
         private readonly TowerContainer _towerContainer;
+        private readonly List<TowerController> _dyingTowers;
         
         public ReactiveCommand<TowerController> TowerBuiltReactiveCommand { get; }
         public ReactiveCommand<TowerController> TowerPreUpgradedReactiveCommand { get; }
@@ -24,6 +22,7 @@ namespace Match.Field.Tower
         public TowersManager(int fieldHexGridSize)
         {
             _towerContainer = new TowerContainer(fieldHexGridSize);
+            _dyingTowers = new List<TowerController>(fieldHexGridSize);
             
             TowerBuiltReactiveCommand = AddDisposable(new ReactiveCommand<TowerController>());
             TowerPreUpgradedReactiveCommand = AddDisposable(new ReactiveCommand<TowerController>());
@@ -56,7 +55,17 @@ namespace Match.Field.Tower
             foreach (var tower in TowerContainer.Towers.Values)
             {
                 tower.OuterLogicUpdate(frameLength);
+
+                if (tower.BaseReactiveModel.Health.Value <= 0)
+                    _dyingTowers.Add(tower);
             }
+
+            foreach (TowerController dyingTower in _dyingTowers)
+            {
+                RemoveTower(dyingTower);
+            }
+            
+            _dyingTowers.Clear();
         }
 
         public void Clear()

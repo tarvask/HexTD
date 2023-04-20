@@ -52,12 +52,15 @@ namespace PathSystem
         }
 
         public string Name { get; protected set; }
+
+        protected readonly float PathLength;
         protected readonly LinkedList<Hex2d> Points;
 
         public PathData(string name, IEnumerable<Hex2d> points)
         {
             Name = name;
             Points = new LinkedList<Hex2d>(points);
+            PathLength = CalcPathLength(Vector3.one);
         }
 
         public PathData(HexPathFindingService hexPathFindingService, string name, IEnumerable<Hex2d> points)
@@ -94,6 +97,8 @@ namespace PathSystem
                 
                 prevPoint = pointsEnumerator.Current;
             }
+            
+            PathLength = CalcPathLength(hexPathFindingService.HexSize);
         }
 
         private LinkedListNode<Hex2d> FillLine(Hex2d firstPoint, Hex2d secondPoint, LinkedListNode<Hex2d> lastNode)
@@ -139,17 +144,39 @@ namespace PathSystem
         
         public IPathEnumerator GetPathEnumerator()
         {
-            return new PathEnumerator(Points);
+            return new PathEnumerator(Points, PathLength);
         }
+
+        public bool GetHexIsRoad(Hex2d hex2d) => Points.Contains(hex2d);
         
         public virtual IEnumerator<Hex2d> GetEnumerator()
         {
-            return new PathEnumerator(Points);
+            return new PathEnumerator(Points, PathLength);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private float CalcPathLength(Vector3 hexSize)
+        {
+            float pathLength = 0f;
+            float diagonalLength = Mathf.Sqrt(hexSize.x * hexSize.x + hexSize.z * hexSize.z);
+
+            var curPoint = Points.First.Next;
+            while (curPoint != null)
+            {
+                var delta = curPoint.Value - curPoint.Previous.Value;
+                if (delta.Q == 0)
+                    pathLength += hexSize.x;
+                else
+                    pathLength += diagonalLength;
+                
+                curPoint = curPoint.Next;
+            }
+
+            return pathLength;
         }
     }
 }

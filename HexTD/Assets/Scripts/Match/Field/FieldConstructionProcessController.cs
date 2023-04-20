@@ -51,8 +51,10 @@ namespace Match.Field
 
             foreach (int towerPositionHash in _towersToRelease)
             {
-                TowerController releaseTower = _context.FieldModel.TowersManager.TowerContainer.GetTowerByPositionHash(towerPositionHash);
-
+                if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(towerPositionHash,
+                        out TowerController releaseTower))
+                    continue;
+                
                 _constructingTowers.Remove(towerPositionHash);
                 releaseTower.Release();
             }
@@ -69,9 +71,10 @@ namespace Match.Field
             foreach (int towerPositionHash in _towersToDispose)
             {
                 _removingTowers.Remove(towerPositionHash);
-                TowerController towerInPosition = 
-                    _context.FieldModel.TowersManager.TowerContainer.GetTowerByPositionHash(towerPositionHash);
-                _context.FieldModel.RemoveTower(towerPositionHash, towerInPosition);
+                
+                if (_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(towerPositionHash,
+                    out TowerController towerInPosition))
+                    _context.FieldModel.RemoveTower(towerPositionHash, towerInPosition);
             }
             
             _towersToDispose.Clear();
@@ -80,8 +83,11 @@ namespace Match.Field
         public void SetTowerRemoving(Hex2d position)
         {
             int hexHashCode = position.GetHashCode();
-            TowerController removingTower = 
-                _context.FieldModel.TowersManager.TowerContainer.GetTowerByPositionHash(hexHashCode);
+
+            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(hexHashCode,
+                    out TowerController removingTower))
+                return;
+            
             _removingTowers.Add(hexHashCode, removingTower);
             removingTower.SetRemoving();
         }

@@ -1,10 +1,12 @@
 using System;
 using BuffLogic;
+using Extensions;
 using HexSystem;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
 using Match.Field.Hand;
+using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.State;
 using Match.State;
@@ -13,6 +15,7 @@ using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
+using UnityEngine;
 
 namespace Match
 {
@@ -183,7 +186,7 @@ namespace Match
                 enemyGoldenCoinsCountChangedReactiveCommand,
                 enemyCrystalsCountChangedReactiveCommand,
                 matchStartedReactiveCommand);
-
+               
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
                 hexFabric,
@@ -228,6 +231,34 @@ namespace Match
                 ourField = _player2FieldController;
             }
 
+            {
+                {
+                    var player1FieldBounds = _player1FieldController.GetFieldBounds();
+                    DebugDrawingTools.DrawBounds(player1FieldBounds, Color.white, 5.0f);
+
+                    if (_context.MatchView.OurFieldCamera.TryGetFocusTransforms(player1FieldBounds, out var pos,
+                            out var rot))
+                    {
+                        _context.MatchView.OurFieldCamera.transform.position = pos;
+                        _context.MatchView.OurFieldCamera.transform.rotation = rot;
+
+                        _context.MatchView.OurFieldCamera.transform.position -=
+                            _context.MatchView.OurFieldCamera.transform.up * 5.0f;
+                    }
+                }
+                {
+                    var player2FieldBounds = _player2FieldController.GetFieldBounds();
+                    DebugDrawingTools.DrawBounds(player2FieldBounds, Color.white, 5.0f);
+
+                    if (_context.MatchView.EnemyFieldCamera.TryGetFocusTransforms(player2FieldBounds, out var pos,
+                            out var rot))
+                    {
+                        _context.MatchView.EnemyFieldCamera.transform.position = pos;
+                        _context.MatchView.EnemyFieldCamera.transform.rotation = rot;
+                    }
+                }
+            }
+
             ourField.InitPlayerHand(_ourPlayerHandController);
             
             // wave mob spawner
@@ -255,7 +286,7 @@ namespace Match
             _waveMobSpawnerCoordinator = new WaveMobSpawnerCoordinator(waveMobSpawnerContext);
 
             // input
-            HexInteractService hexInteractService = new HexInteractService(_context.MatchView.MainCamera);
+            HexInteractService hexInteractService = new HexInteractService(_context.MatchView.OurFieldCamera);
             
             InputController.Context inputControllerContext = new InputController.Context(
                 hexInteractService, clickReactiveCommand);
@@ -271,7 +302,10 @@ namespace Match
                     ourField.FieldConstructionProcessController,
                     _ourPlayerHandController, _context.MatchCommandsOur,
                     _windowsManager.TowerManipulationWindowController,
-                    _windowsManager.TowerInfoWindowController);
+                    _windowsManager.TowerInfoWindowController,
+                    ourField.HexagonalFieldModel,
+                    ourField.PathContainer
+                );
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
 
             // rules
@@ -295,7 +329,7 @@ namespace Match
             _context.MatchCommandsCommon.IncomingGeneral.ApplySyncState.Subscribe(SyncState);
 
             _context.RollbackStateReactiveCommand.Subscribe(RollbackState);
-        }        
+        }
 
         private void SendState()
         {
@@ -342,7 +376,6 @@ namespace Match
             if (!_rulesController.IsMatchRunning)
                 return;
             
-            _inputController.OuterLogicUpdate(frameLength);
             _clicksDistributor.OuterLogicUpdate(frameLength);
             
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);

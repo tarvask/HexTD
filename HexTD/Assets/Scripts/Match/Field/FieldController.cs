@@ -102,15 +102,21 @@ namespace Match.Field
         private readonly PathContainer _pathContainer;
         
         private readonly FieldMobSpawner _fieldMobSpawner;
+        private readonly MobsByTowersBlocker _mobsByTowersBlocker;
+        private readonly MeleeCombatManager _meleeCombatManager;
         private readonly MobsManager _mobsManager;
+        
         private readonly FieldClicksHandler _clicksHandler;
         private readonly FieldClicksDistributor _clicksDistributor;
         private readonly FieldConstructionProcessController _constructionProcessController;
-        private readonly ShootingController _shootingController;
+        private readonly ShootingProcessManager _shootingProcessManager;
         private readonly CurrencyController _currencyController;
         private readonly PlayerStateLoader _stateLoader;
         
         public const float MoveLerpCoeff = 0.7f;
+
+        public HexagonalFieldModel HexagonalFieldModel => _hexagonalFieldModel;
+        public PathContainer PathContainer => _pathContainer;
 
         public FieldConstructionProcessController FieldConstructionProcessController => _constructionProcessController;
         public FieldModel FieldModel => _model;
@@ -118,8 +124,9 @@ namespace Match.Field
         public FieldController(Context context)
         {
             _context = context;
-            
-            ReactiveCommand<int> castleAttackedByMobReactiveCommand = AddDisposable(new ReactiveCommand<int>());
+
+            ReactiveCommand<MobController> attackTowerByMobReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
+            ReactiveCommand<int> castleReachedByMobReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<MobController> removeMobReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<MobController> mobSpawnedReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<int> crystalCollectedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
@@ -140,13 +147,20 @@ namespace Match.Field
                 _hexagonalFieldModel,
                 _context.FieldConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,
-                castleAttackedByMobReactiveCommand,
-                _context.CastleDestroyedReactiveCommand,
-                removeMobReactiveCommand);
+                castleReachedByMobReactiveCommand,
+                _context.CastleDestroyedReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
-            MobsManager.Context mobMoverContext = new MobsManager.Context(castleAttackedByMobReactiveCommand);
-            _mobsManager = AddDisposable(new MobsManager(mobMoverContext));
+            MobsByTowersBlocker.Context mobsByTowersBlockerContext = new MobsByTowersBlocker.Context(
+                _hexagonalFieldModel.HexSize, towersManager, removeMobReactiveCommand);
+            _mobsByTowersBlocker = AddDisposable(new MobsByTowersBlocker(mobsByTowersBlockerContext));
+
+            MobsManager.Context mobsManagerContext = new MobsManager.Context(
+                _mobsByTowersBlocker,
+                attackTowerByMobReactiveCommand,
+                castleReachedByMobReactiveCommand,
+                removeMobReactiveCommand);
+            _mobsManager = AddDisposable(new MobsManager(mobsManagerContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
                 _hexagonalFieldModel,
@@ -163,15 +177,19 @@ namespace Match.Field
                 _context.SpawnMobReactiveCommand);
             _fieldMobSpawner = AddDisposable(new FieldMobSpawner(mobSpawnerContext));
 
+            MeleeCombatManager.Context meleeCombatManagerContext =
+                new MeleeCombatManager.Context(_model, attackTowerByMobReactiveCommand);
+            _meleeCombatManager = AddDisposable(new MeleeCombatManager(meleeCombatManagerContext));
+
             // construction
             FieldConstructionProcessController.Context constructionProcessControllerContext =
                 new FieldConstructionProcessController.Context(_model, _factory);
             _constructionProcessController = AddDisposable(new FieldConstructionProcessController(constructionProcessControllerContext));
             
             // shooting
-            ShootingController.Context shootingControllerContext = new ShootingController.Context(_model, 
+            ShootingProcessManager.Context shootingControllerContext = new ShootingProcessManager.Context(_model, 
                 _hexMapReachableService, _factory, _context.BuffManager);
-            _shootingController = AddDisposable(new ShootingController(shootingControllerContext));
+            _shootingProcessManager = AddDisposable(new ShootingProcessManager(shootingControllerContext));
             
             // currency
             CurrencyController.Context currencyControllerContext = new CurrencyController.Context(
@@ -211,13 +229,13 @@ namespace Match.Field
             _mobsManager.OuterLogicUpdate(frameLength);
             _model.TowersManager.OuterLogicUpdate(frameLength);
             
-            _shootingController.OuterLogicUpdate(frameLength);
+            _shootingProcessManager.OuterLogicUpdate(frameLength);
         }
 
         public void OuterViewUpdate(float frameLength)
         {
             _mobsManager.OuterViewUpdate(frameLength);
-            _shootingController.OuterViewUpdate(frameLength);
+            _shootingProcessManager.OuterViewUpdate(frameLength);
         }
 
         private void LoadState(PlayerState playerState)
@@ -238,6 +256,8 @@ namespace Match.Field
         {
             return _stateLoader.SaveState();
         }
+
+        public Bounds GetFieldBounds() => _hexagonalFieldModel.GetBounds();
 
         public void Reset()
         {

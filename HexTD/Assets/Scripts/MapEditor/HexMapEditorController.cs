@@ -75,7 +75,7 @@ namespace MapEditor
         
         public void LmbClickHandle(Hex2d hex2d)
         {
-            HexModel hexModel = _hexGridModel.GetData(hex2d);
+            HexModel hexModel = _hexGridModel.GetHexModel(hex2d);
             if (hexModel == null)
             {
                 _hexSpawnerController.CreateHex(hex2d);
@@ -88,22 +88,28 @@ namespace MapEditor
 
         public void RmbClickHandle(Hex2d hex2d)
         {
-            HexModel hexModel = _hexGridModel.GetData(hex2d);
+            HexModel hexModel = _hexGridModel.GetHexModel(hex2d);
             if (hexModel == null)
                 return;
 
             _currentHexSetController.HandleRevokeInteractWithHex(hexModel);
         }
 
-        public void ApplyKeyboardInput(Hex2d hex)
+        public void ApplyKeyboardInput(Hex2d hex, bool isHexUnderMouse)
         {
             _hexSpawnerController.UpdateHexType();
             
             if(Input.GetKeyDown(KeyCode.R))
                 SwitchHexSetController();
             
-            if(Input.GetKeyDown(KeyCode.X))
+            if(isHexUnderMouse && Input.GetKeyDown(KeyCode.X))
                 _hexGridModel.RemoveHexFromHexGrid(hex);
+
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                var isHexBlocker = _hexGridModel.GetHexIsBlocker(hex);
+                _hexGridModel.SetHexIsBlocker(hex, !isHexBlocker);
+            }
             
             if (Input.GetKeyDown(KeyCode.P) && Input.GetKey(KeyCode.LeftControl)) 
                 _hexGridModel.Clear();

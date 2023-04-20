@@ -7,7 +7,7 @@ namespace Match.Field.Tower
     public interface ITowerContainer : ITypeTargetContainer, IShooterContainer
     {
         IReadOnlyDictionary<int, TowerController> Towers { get; }
-        TowerController GetTowerByPositionHash(int positionHash);
+        bool TryGetTowerInPositionHash(int positionHash, out TowerController towerInPosition);
     }
     
     public class TowerContainer : ITowerContainer
@@ -58,11 +58,21 @@ namespace Match.Field.Tower
 
             towerList.Remove(towerController);
         }
-        
-        //TODO: remove casting
-        public TowerController GetTowerByPositionHash(int positionHash)
+
+        public bool TryGetTowerInPositionHash(int positionHash, out TowerController towerInPosition)
         {
-            return (TowerController)_towersByPositions[positionHash][0];
+            towerInPosition = null;
+            
+            if (!_towersByPositions.TryGetValue(positionHash, out var towersList))
+                return false;
+
+            if (towersList.Count == 0)
+                return false;
+
+            //TODO: remove casting
+            towerInPosition = towersList[0] as TowerController;
+
+            return towerInPosition != null;
         }
 
         public void Clear()

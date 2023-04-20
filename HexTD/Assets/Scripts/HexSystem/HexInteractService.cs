@@ -1,29 +1,33 @@
-﻿using MapEditor;
+using System.Linq;
+using Lean.Touch;
+using MapEditor;
 using UnityEngine;
 
 namespace HexSystem
 {
     public class HexInteractService
     {
-        protected readonly Camera MainCamera;
+        protected readonly Camera MainCamera;   
 
         public HexInteractService(Camera mainCamera)
         {
             MainCamera = mainCamera;
         }
 
-        public bool TryClickHexTile(out Hex2d hitHex)
+        public bool TryClickHexTile(LeanFinger finger, out Hex2d hitHex)
         {
-            var ray = MainCamera.ScreenPointToRay(Input.mousePosition);
+            var ray = finger.GetRay();
 
-            if (Physics.Raycast(ray, out var hitInfo))
+            var raycasts = Physics.RaycastAll(ray);
+
+            var hexObject = raycasts
+                .Select(hit => hit.transform.GetComponentInParent<HexObject>())
+                .FirstOrDefault(hexObject => hexObject != null);
+            
+            if (hexObject != null)
             {
-                var hexObject = hitInfo.transform.GetComponent<HexObject>();
-                if (hexObject != null)
-                {
-                    hitHex = hexObject.HitHex;
-                    return true;
-                }
+                hitHex = hexObject.HitHex;
+                return true;
             }
 
             hitHex = new Hex2d();

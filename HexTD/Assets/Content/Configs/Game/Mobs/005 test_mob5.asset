@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b317ea3aaae2403cb08ca532736885c8, type: 3}
   m_Name: 005 test_mob5
   m_EditorClassIdentifier: 
-  view: {fileID: 923938435347180788, guid: 0d7ba6e1956084c3da0a62eb1918b02d, type: 3}
+  view: {fileID: 6270079088105836913, guid: 584ac41280df22545b364e6e9ac431d5, type: 3}
   icon: {fileID: 21300000, guid: 881798b77426a8f47b533dcc4767e9e5, type: 3}
   parameters:
     typeId: 5
@@ -24,5 +24,4 @@ MonoBehaviour:
     hasRangeDamage: 0
     attackRangeRadius: 0
     pathName: TestPath
-    rewardInSilver: 0
-    priceInSilver: 0
+    rewardInCoins: 0
