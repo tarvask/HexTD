@@ -7,9 +7,17 @@ namespace HexSystem
 {
 	public readonly struct Hex2d : IEquatable<Hex2d>
 	{
-		[JsonProperty("Q")]public readonly int Q;
-		[JsonProperty("R")]public readonly int R;
-		[JsonIgnore]public readonly int S;
+		/// <summary>
+		/// Like X
+		/// </summary>
+		[JsonProperty("Q")] public readonly int Q;
+
+		/// <summary>
+		/// Like Y
+		/// </summary>
+		[JsonProperty("R")] public readonly int R;
+
+		[JsonIgnore] public readonly int S;
 
 		public Hex2d(int q, int r)
 		{
@@ -93,50 +101,27 @@ namespace HexSystem
 			return new Hex2d(roundQ, roundR, roundS);
 		}
 
-		public static Hex2d operator +(Hex2d a, Hex2d b)
-		{
-			return new Hex2d(a.Q + b.Q, a.R + b.R);
-		}
+		public static Hex2d operator +(Hex2d a, Hex2d b) => new Hex2d(a.Q + b.Q, a.R + b.R);
 
-		public static Hex2d operator -(Hex2d a, Hex2d b)
-		{
-			return new Hex2d(a.Q - b.Q, a.R - b.R);
-		}
+		public static Hex2d operator -(Hex2d a, Hex2d b) => new Hex2d(a.Q - b.Q, a.R - b.R);
+		
+		public static Hex2d operator -(Hex2d a) => new Hex2d(-a.Q, -a.R);
 
-		public static FractionalHex operator *(Hex2d a, float f)
-		{
-			return new FractionalHex(a) * f;
-		}
+		public static FractionalHex operator *(Hex2d a, float f) => new FractionalHex(a) * f;
 
-		public static Hex2d operator *(Hex2d a, int value)
-		{
-			return new Hex2d(a.Q * value, a.R * value, a.S * value);
-		}
+		public static Hex2d operator *(Hex2d a, int value) => new Hex2d(a.Q * value, a.R * value, a.S * value);
 
-		public static Hex2d RotateClockwise(Hex2d hex)
-		{
-			return new Hex2d(-hex.S, -hex.Q, -hex.R);
-		}
+		public static Hex2d operator /(Hex2d a, int b) => new Hex2d(a.Q / b, a.R / b);
 
-		public static Hex2d Rotate180(Hex2d hex)
-		{
-			return RotateClockwise(RotateClockwise(RotateClockwise(hex)));
-		}
+		public static Hex2d RotateClockwise(Hex2d hex) => new Hex2d(-hex.S, -hex.Q, -hex.R);
 
-		public static Hex2d InvertVertical(Hex2d hex)
-		{
-			return new Hex2d(hex.S, hex.R, hex.Q);
-		}
+		public static Hex2d Rotate180(Hex2d hex) => RotateClockwise(RotateClockwise(RotateClockwise(hex)));
 
-		public static Hex2d InvertHorizontal(Hex2d hex)
-		{
-			return new Hex2d(-hex.S, -hex.R, -hex.R);
-		}
+		public static Hex2d InvertVertical(Hex2d hex) => new Hex2d(hex.S, hex.R, hex.Q);
 
-		public static Hex2d RotateСounterClockwise(Hex2d hex)
-		{
-			return new Hex2d(-hex.R, -hex.S, -hex.Q);
-		}
+		public static Hex2d InvertHorizontal(Hex2d hex) => new Hex2d(-hex.S, -hex.R, -hex.R);
+
+		public static Hex2d RotateСounterClockwise(Hex2d hex) => new Hex2d(-hex.R, -hex.S, -hex.Q);
 
 		public static IEnumerable<Hex2d> IterateLine(Hex2d from, Hex2d to)
 		{
