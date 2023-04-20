@@ -32,7 +32,7 @@ namespace Match.Field.Tower
                 id++;
             }
             
-            foreach (var towerAttack in _attacksConfig.Attacks)
+            foreach (var towerAttack in _attacksConfig.SplashAttacks)
             {
                 _cooldowns.Add(id, towerAttack.Cooldown);
                 id++;
