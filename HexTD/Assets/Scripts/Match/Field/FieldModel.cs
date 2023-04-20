@@ -16,6 +16,7 @@ namespace Match.Field
     {
         public struct Context
         {
+            public IHexPositionConversionService HexPositionConversionService { get; }
             public FieldHexTypesController FieldHexTypesController { get; }
             public TowersManager TowersManager { get; }
             public MobsManager MobsManager { get; }
@@ -24,7 +25,8 @@ namespace Match.Field
             public ReactiveCommand<MobController> MobSpawnedReactiveCommand { get; }
             public ReactiveProperty<bool> HasMobsOnFieldReactiveProperty { get; }
 
-            public Context(FieldHexTypesController fieldHexTypesController,
+            public Context(IHexPositionConversionService hexPositionConversionService,
+                FieldHexTypesController fieldHexTypesController,
                 TowersManager towersManager,
                 MobsManager mobsManager,
                 FieldFactory factory,
@@ -32,6 +34,7 @@ namespace Match.Field
                 ReactiveCommand<MobController> mobSpawnedReactiveCommand,
                 ReactiveProperty<bool> hasMobsOnFieldReactiveProperty)
             {
+                HexPositionConversionService = hexPositionConversionService;
                 FieldHexTypesController = fieldHexTypesController;
                 TowersManager = towersManager;
                 MobsManager = mobsManager;
@@ -68,6 +71,7 @@ namespace Match.Field
         public Dictionary<int, ProjectileController> Projectiles => _projectiles;
         public TargetContainer Targets => _targets;
         public ShooterContainer Shooters => _shooters;
+        public IHexPositionConversionService HexPositionConversionService => _context.HexPositionConversionService;
 
         public FieldModel(Context context)
         {

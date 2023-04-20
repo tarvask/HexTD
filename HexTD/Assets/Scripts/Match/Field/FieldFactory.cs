@@ -207,28 +207,32 @@ namespace Match.Field
         }
         
         public ProjectileController CreateProjectile(BaseAttackEffect attack, int attackIndex,
-            Vector3 spawnPosition, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
+            Vector3 spawnPosition, bool hasSplashDamage,
             int towerId, int targetId)
         {
             _lastProjectileId++;
 
             return CreateProjectileWithId(attack, attackIndex,
                 _lastProjectileId, spawnPosition, hasSplashDamage, 
-                splashDamageRadius, hasProgressiveSplash,
                 towerId, targetId);
         }
 
         public ProjectileController CreateProjectileWithId(BaseAttackEffect baseTowerAttack,
             int attackIndex, int projectileId, Vector3 spawnPosition, bool hasSplashDamage, 
-            float splashDamageRadius, bool hasProgressiveSplash, int towerId, int targetId)
+            int towerId, int targetId)
         {
             if (_lastProjectileId < projectileId)
                 _lastProjectileId = projectileId;
+
+            SplashShootType splashShootType = baseTowerAttack is BaseSplashAttack
+                ? ((BaseSplashAttack)baseTowerAttack).SplashShootType
+                : SplashShootType.ToTarget;
             
             ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttack.ProjectileView, spawnPosition);
             ProjectileController.Context projectileControllerContext = new ProjectileController.Context(projectileId,
-                baseTowerAttack, attackIndex, projectileInstance, baseTowerAttack.ProjectileSpeed, 
-                hasSplashDamage, splashDamageRadius, hasProgressiveSplash, towerId, targetId);
+                projectileInstance,
+                baseTowerAttack, attackIndex, splashShootType,
+                baseTowerAttack.ProjectileSpeed, hasSplashDamage, towerId, targetId);
             ProjectileController projectileController = new ProjectileController(projectileControllerContext);
 
             return projectileController;

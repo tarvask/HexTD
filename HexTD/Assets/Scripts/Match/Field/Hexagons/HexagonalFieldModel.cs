@@ -68,6 +68,11 @@ namespace Match.Field.Hexagons
             return (Hex2d)_layout.ToHex(position, isWorld).RoundToHex();
         }
 
+        public float GetRadiusFromRadiusInHex(int radius)
+        {
+            return radius * _layout.Size.x;
+        }
+
         public bool IsCloseToNewHex(float distanceToHex)
         {
             return distanceToHex < _layout.HexSize.y && distanceToHex < _layout.HexSize.x;

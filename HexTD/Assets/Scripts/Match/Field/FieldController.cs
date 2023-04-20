@@ -163,6 +163,7 @@ namespace Match.Field
             _mobsManager = AddDisposable(new MobsManager(mobsManagerContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
+                _hexagonalFieldModel,
                 _hexagonalFieldModel.CurrentFieldHexTypes,
                 towersManager,
                 _mobsManager,

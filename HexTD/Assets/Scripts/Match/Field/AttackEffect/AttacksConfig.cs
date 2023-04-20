@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Match.Field.Tower.TowerConfigs;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Match.Field.AttackEffect
@@ -11,7 +9,10 @@ namespace Match.Field.AttackEffect
 	{
 		[SerializeReference]
 		private List<BaseAttackEffect> attacks;
+		[SerializeReference]
+		private List<BaseSplashAttack> splashAttacks;
 
 		public List<BaseAttackEffect> Attacks => attacks;
+		public List<BaseSplashAttack> SplashAttacks => splashAttacks;
 	}
 }

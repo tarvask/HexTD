@@ -98,7 +98,6 @@ namespace Match.Field.Tower
             
             Task.Run(async () =>
             {
-                // milliseconds
                 await Task.Delay((int)(constructionTime * 1000));
                 _stableModel.SetState(TowerState.ToRelease);
             });
@@ -141,7 +140,7 @@ namespace Match.Field.Tower
 
         public bool TryFindTarget(TargetFinder targetFinder, TargetContainer targetContainer)
         {
-            if (!_shootModel.TryReleaseTowerAttack(false, out var towerAttack, out var attackIndex))
+            if (!_shootModel.TryGetTowerAttack(out var towerAttack))
                 return false;
 
             int targetId = targetFinder.GetTargetWithTacticInRange(
@@ -158,15 +157,17 @@ namespace Match.Field.Tower
 
         public ProjectileController CreateAndInitProjectile(FieldFactory factory)
         {
-            if (!_shootModel.TryReleaseTowerAttack(true, out var towerAttack, out int attackIndex))
+            if (!_shootModel.TryGetTowerAttack(out var towerAttack))
                 throw new Exception("Try to make attack but no ones ready yet!");
 
             ProjectileController projectile = factory.CreateProjectile(
                 towerAttack,
-                attackIndex,
+                _shootModel.ReadyTowerIndex,
                 Position,
-                _stableModel.HasSplashDamage, _stableModel.SplashDamageRadius, _stableModel.HasProgressiveSplashDamage,
+                _shootModel.IsSplashAttackReady,
                 _context.Id, _stableModel.TargetId);
+            
+            _shootModel.ReloadCurrentAttack();
 
             if (_context.TowerConfig.RegularParameters.ResetTargetEveryShot)
                 _stableModel.ResetTarget();
