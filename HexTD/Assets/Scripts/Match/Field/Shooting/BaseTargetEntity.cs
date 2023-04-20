@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Match.Field.Shooting
 {
-    public abstract class BaseTargetableEntity : BaseDisposable, ITargetable
+    public abstract class BaseTargetEntity : BaseDisposable, ITarget
     {
         public abstract int TargetId { get; }
         public abstract Hex2d HexPosition { get; }
@@ -18,12 +18,12 @@ namespace Match.Field.Shooting
 
         public abstract void Hurt(float damage);
 
-        public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITargetable>> buffs, IBuff<ITargetable> addedBuff)
+        public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITarget>> buffs, IBuff<ITarget> addedBuff)
         {
             addedBuff.ApplyBuff(this);
         }
 
-        public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<ITargetable>> buffs, IEnumerable<IBuff<ITargetable>> removedBuffs)
+        public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<ITarget>> buffs, IEnumerable<IBuff<ITarget>> removedBuffs)
         {
             foreach (var removedBuff in removedBuffs)
             {

@@ -2,9 +2,9 @@
 
 namespace Match.Field.Shooting
 {
-    public interface ITypeTargetContainer : IEnumerable<ITargetable>
+    public interface ITypeTargetContainer : IEnumerable<ITarget>
     {
         // targets by positions, it's convenient to use
-        IReadOnlyDictionary<int, List<ITargetable>> TargetsByPosition { get; }
+        IReadOnlyDictionary<int, List<ITarget>> TargetsByPosition { get; }
     }
 }

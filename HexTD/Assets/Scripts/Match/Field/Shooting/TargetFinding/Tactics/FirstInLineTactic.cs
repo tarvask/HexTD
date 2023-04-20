@@ -8,7 +8,7 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
     {
         public TargetFindingTacticType TacticType => TargetFindingTacticType.FirstInLine;
         
-        public int GetTargetWithTactic(IReadOnlyList<ITargetable> targets)
+        public int GetTargetWithTactic(IReadOnlyList<ITarget> targets)
         {
             float shorterPath = float.MaxValue;
             int mobWithLongestPathId = -1;

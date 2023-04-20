@@ -10,14 +10,14 @@ namespace Match.Field.AttackEffect
     {
         [SerializeField] private float baseDamage;
         
-        public override void ApplyAttackImpact(ITargetable targetController, float sqrDistance)
+        public override void ApplyAttackImpact(ITarget attackerController, float sqrDistance)
         {
             float withDistanceDamage = ApplySplashDamageDistribution(baseDamage, sqrDistance);
-            float damage = targetController.BaseReactiveModel.Damage.CopyValue(withDistanceDamage);
-            targetController.Hurt(damage);
+            float damage = attackerController.BaseReactiveModel.Damage.CopyValue(withDistanceDamage);
+            attackerController.Hurt(damage);
         }
 
-        public override void ApplyAttackEffect(ITargetable targetController, BuffManager buffManager)
+        public override void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager)
         {
             
         }

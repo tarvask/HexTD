@@ -21,7 +21,7 @@ namespace Match.Field.AttackEffect
         public float ProjectileSpeed => projectileSpeed;
         public ProjectileView ProjectileView => projectileView;
 
-        public abstract void ApplyAttackImpact(ITargetable targetController, float sqrDistance);
-        public abstract void ApplyAttackEffect(ITargetable targetController, BuffManager buffManager);
+        public abstract void ApplyAttackImpact(ITarget attackerController, float sqrDistance);
+        public abstract void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager);
     }
 }

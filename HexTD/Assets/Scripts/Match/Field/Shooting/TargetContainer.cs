@@ -15,7 +15,7 @@ namespace Match.Field.Shooting
             _targetsIterators.Add(EnumAttackTargetType.Tower, towers);
         }
 
-        public bool TryGetTargetByIdAndType(int targetId, EnumAttackTargetType attackTargetType, out ITargetable target)
+        public bool TryGetTargetByIdAndType(int targetId, EnumAttackTargetType attackTargetType, out ITarget target)
         {
             ITypeTargetContainer targetTypedIterator = _targetsIterators[attackTargetType];
 
@@ -32,12 +32,12 @@ namespace Match.Field.Shooting
             return false;
         }
 
-        public IReadOnlyDictionary<int, List<ITargetable>> GetTargetsByPosition(EnumAttackTargetType attackTargetType)
+        public IReadOnlyDictionary<int, List<ITarget>> GetTargetsByPosition(EnumAttackTargetType attackTargetType)
         {
             return _targetsIterators[attackTargetType].TargetsByPosition;
         }
 
-        public IEnumerable<ITargetable> IterateTargetsWithTypes(params EnumAttackTargetType[] attackTargetTypes)
+        public IEnumerable<ITarget> IterateTargetsWithTypes(params EnumAttackTargetType[] attackTargetTypes)
         {
             foreach (var attackTargetType in attackTargetTypes)
             {

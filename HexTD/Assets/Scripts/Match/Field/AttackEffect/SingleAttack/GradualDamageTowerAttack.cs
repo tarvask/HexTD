@@ -12,14 +12,14 @@ namespace Match.Field.AttackEffect
 		[SerializeField] private float damagePerDelay;
 		[SerializeField] private float delay;
 
-		public override void ApplyAttackImpact(ITargetable mobController, float sqrDistance)
+		public override void ApplyAttackImpact(ITarget attackerController, float sqrDistance)
 		{
 		}
 
-		public override void ApplyAttackEffect(ITargetable targetController, BuffManager buffManager)
+		public override void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager)
 		{
 			PoisonBuff poisonBuff = new PoisonBuff(damageCapacity, damagePerDelay, delay);
-			buffManager.AddBuff(targetController, poisonBuff);
+			buffManager.AddBuff(attackerController, poisonBuff);
 		}
 	}
 }

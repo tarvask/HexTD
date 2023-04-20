@@ -11,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace Match.Field.Tower
 {
-    public class TowerController : BaseTargetableEntity, IOuterLogicUpdatable, IShootable
+    public class TowerController : BaseTargetEntity, IOuterLogicUpdatable, IShooter
     {
         public struct Context
         {

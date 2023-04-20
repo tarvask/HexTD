@@ -8,15 +8,15 @@ namespace Match.Field.Mob
     public class MobsContainer : ITypeTargetContainer
     {
         private readonly Dictionary<int, MobController> _mobs;
-        private readonly Dictionary<int, List<ITargetable>> _mobsByPosition;
+        private readonly Dictionary<int, List<ITarget>> _mobsByPosition;
 
-        public IReadOnlyDictionary<int, List<ITargetable>> TargetsByPosition => _mobsByPosition;
+        public IReadOnlyDictionary<int, List<ITarget>> TargetsByPosition => _mobsByPosition;
         public IReadOnlyDictionary<int, MobController> Mobs => _mobs;
 
         public MobsContainer()
         {
             _mobs = new Dictionary<int, MobController>();
-            _mobsByPosition = new Dictionary<int, List<ITargetable>>();
+            _mobsByPosition = new Dictionary<int, List<ITarget>>();
         }
 
         public void AddMob(MobController mobController)
@@ -48,7 +48,7 @@ namespace Match.Field.Mob
             }
             else
             {
-                List<ITargetable> mobControllers = new List<ITargetable>();
+                List<ITarget> mobControllers = new List<ITarget>();
                 _mobsByPosition.Add(positionHash, mobControllers);
                 mobControllers.Add(mobController);
             }
@@ -68,7 +68,7 @@ namespace Match.Field.Mob
             _mobsByPosition.Clear();
         }
 
-        public IEnumerator<ITargetable> GetEnumerator()
+        public IEnumerator<ITarget> GetEnumerator()
         {
             foreach (var mobControllerPair in _mobs)
             {

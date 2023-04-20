@@ -9,7 +9,7 @@ namespace Match.Field.Shooting.SplashDamage
     {
         public static void GetTargetsWithSqrDistances(ProjectileController projectile,
             IHexPositionConversionService hexPositionConversionService,
-            IReadOnlyDictionary<int, List<ITargetable>> targetsByPosition, 
+            IReadOnlyDictionary<int, List<ITarget>> targetsByPosition, 
             List<TargetWithSqrDistancePair> targetWithDistances)
         {
             BaseSplashAttack splashAttack = projectile.BaseAttackEffect as BaseSplashAttack;

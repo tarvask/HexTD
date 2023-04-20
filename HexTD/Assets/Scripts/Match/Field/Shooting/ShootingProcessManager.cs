@@ -99,7 +99,7 @@ namespace Match.Field.Shooting
                     case SplashShootType.ToTarget:
                         if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectilePair.Value.TargetId, 
                                 projectilePair.Value.BaseAttackEffect.AttackTargetType,
-                                out ITargetable target))
+                                out ITarget target))
                             targetPosition = target.Position;
                         else
                             targetPosition = projectilePair.Value.CurrentTargetPosition;
@@ -185,26 +185,26 @@ namespace Match.Field.Shooting
             _endSplashingProjectiles.Clear();
         }
 
-        private bool Aim(IShootable tower)
+        private bool Aim(IShooter tower)
         {
             return tower.TryFindTarget(_targetFinder, _context.FieldModel.Targets);
         }
 
-        private void Shoot(IShootable tower)
+        private void Shoot(IShooter tower)
         {
             var projectileController = tower.CreateAndInitProjectile(_context.Factory);
             _context.FieldModel.AddProjectile(projectileController);
         }
 
-        private void HandleHitShootable(ProjectileController projectile, ITargetable hitTargetable, float sqrDistance)
+        private void HandleHitShootable(ProjectileController projectile, ITarget targeter, float sqrDistance)
         {
-            projectile.BaseAttackEffect.ApplyAttackImpact(hitTargetable, sqrDistance);
-            projectile.BaseAttackEffect.ApplyAttackEffect(hitTargetable, _context.BuffManager);
+            projectile.BaseAttackEffect.ApplyAttackImpact(targeter, sqrDistance);
+            projectile.BaseAttackEffect.ApplyAttackEffect(targeter, _context.BuffManager);
             
-            if (!_shootablesWithAttackingTowers.ContainsKey(hitTargetable.TargetId))
-                _shootablesWithAttackingTowers.Add(hitTargetable.TargetId, new List<int>());
+            if (!_shootablesWithAttackingTowers.ContainsKey(targeter.TargetId))
+                _shootablesWithAttackingTowers.Add(targeter.TargetId, new List<int>());
             
-            _shootablesWithAttackingTowers[hitTargetable.TargetId].Add(projectile.SpawnTowerId);
+            _shootablesWithAttackingTowers[targeter.TargetId].Add(projectile.SpawnTowerId);
         }
 
         private int ComputeIfSplashDamage(int towerId, float damage,
