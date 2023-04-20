@@ -70,7 +70,7 @@ namespace Match.Field.Hexagons
 
         public float GetRadiusFromRadiusInHex(int radius)
         {
-            return radius * _layout.Size.x;
+            return radius * _layout.HexSize.x;
         }
 
         public bool IsCloseToNewHex(float distanceToHex)
