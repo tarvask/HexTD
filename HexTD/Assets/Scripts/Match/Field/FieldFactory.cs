@@ -157,6 +157,14 @@ namespace Match.Field
             return towerView;
         }
 
+        public TowerView CreateTowerView(TowerConfigNew towerConfig)
+        {
+            TowerView towerView = Object.Instantiate(towerConfig.View, _buildingsRoot);
+            towerView.name = $"{towerConfig.RegularParameters.TowerName}";
+
+            return towerView;
+        }
+
         public CastleController CreateCastle()
         {
             CastleController.Context castleContext = new CastleController.Context(_context.CastleHealth,

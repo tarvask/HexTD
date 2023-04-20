@@ -7,6 +7,7 @@ using Match.Field.Castle;
 using Match.Field.Hand;
 using Match.Field.Mob;
 using Match.Field.State;
+using Match.Field.Tower;
 using Match.State;
 using Match.Wave;
 using Services;
@@ -87,6 +88,7 @@ namespace Match
         private readonly InputController _inputController;
         private readonly FieldClicksHandler _clicksHandler;
         private readonly FieldClicksDistributor _clicksDistributor;
+        private readonly TowerPlacer _towerPlacer;
         private readonly MatchStateSaver _stateSaver;
 
         private readonly ReactiveCommand<PlayerState> _enemyStateSyncedReactiveCommand;
@@ -120,6 +122,7 @@ namespace Match
             ReactiveCommand<int> ourGoldenCoinsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<int> enemyCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<int> ourCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
+            ReactiveCommand<bool> dragCardChangeStatusCommand = AddDisposable(new ReactiveCommand<bool>());
 
             ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_context.FieldConfig);
             _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
@@ -155,6 +158,7 @@ namespace Match
                waveNumberChangedReactiveCommand,
                ourGoldenCoinsCountChangedReactiveCommand,
                ourCrystalsCountChangedReactiveCommand,
+               dragCardChangeStatusCommand,
                _context.QuitMatchReactiveCommand,
                _context.NewWindowsManager);
            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
@@ -274,6 +278,14 @@ namespace Match
                     _windowsManager.TowerInfoWindowController);
             _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
 
+            TowerPlacer.Context towerPlacerContext =
+                new TowerPlacer.Context(
+                    ourField.FieldConstructionProcessController,
+                    _ourPlayerHandController, _configsRetriever,
+                    ourField.FieldModel, _context.MatchCommandsOur,
+                    dragCardChangeStatusCommand);
+            _towerPlacer = AddDisposable(new TowerPlacer(towerPlacerContext));
+
             // rules
             MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
                 _windowsManager.WinLoseWindowController,
@@ -344,7 +356,9 @@ namespace Match
             
             _inputController.OuterLogicUpdate(frameLength);
             _clicksDistributor.OuterLogicUpdate(frameLength);
-            
+            _towerPlacer.OuterLogicUpdate(frameLength);
+
+
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
             _buffManager.OuterLogicUpdate(frameLength);
 

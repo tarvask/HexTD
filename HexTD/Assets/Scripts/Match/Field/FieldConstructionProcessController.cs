@@ -103,5 +103,11 @@ namespace Match.Field
             _context.FieldModel.UpgradeTower(tower);
             _constructingTowers.Add(positionHash, tower);
         }
+
+        public TowerView SetTowerView(TowerConfigNew towerConfig)
+        {
+            TowerView towerInstance = _context.Factory.CreateTowerView(towerConfig);
+            return towerInstance;
+        }
     }
 }
