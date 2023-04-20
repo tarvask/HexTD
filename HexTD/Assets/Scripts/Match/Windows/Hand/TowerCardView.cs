@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using TMPro;
 using Tools;
 using UniRx;
@@ -15,6 +16,7 @@ namespace Match.Windows.Hand
         [SerializeField] private Button button;
         [SerializeField] private TMP_Text costText;
         [SerializeField] private TMP_Text towerNameText;
+        [SerializeField] private Transform _selectPosition;
         
         public Transform ReadyBgImage => readyBgImage;
         public Transform NotReadyBgImage => notReadyBgImage;
@@ -27,6 +29,10 @@ namespace Match.Windows.Hand
 
         private Vector3 _startPosition;
 
+        private float _animationTime = 0.5f;
+
+        private Tweener _animationTweener;
+
         public event Action<bool> OnDragEvent;
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -34,16 +40,24 @@ namespace Match.Windows.Hand
             if (!_isReady) return;
  
             _isDraged = true;
-            _startPosition = transform.position;
             OnDragEvent?.Invoke(_isDraged);
+
+            if (_animationTweener != null)
+            {
+                _animationTweener.Kill();
+                transform.position = _startPosition;
+            }
+            _startPosition = transform.position;
+
+            CardSelectAnimation();
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (_isDraged && _isReady)
-            {
-                transform.position = eventData.position;
-            }
+            //if (_isDraged && _isReady)
+            //{
+            //    transform.position = eventData.position;
+            //}
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -58,6 +72,11 @@ namespace Match.Windows.Hand
         public void SetTowerCardReadyState(bool isReady)
         {
             _isReady = isReady;
+        }
+
+        private void CardSelectAnimation()
+        {
+            _animationTweener = transform.DOMove(_selectPosition.position, _animationTime).SetEase(Ease.Linear);
         }
     }
 }
