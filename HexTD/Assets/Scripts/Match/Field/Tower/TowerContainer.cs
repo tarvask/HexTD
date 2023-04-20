@@ -13,15 +13,15 @@ namespace Match.Field.Tower
     public class TowerContainer : ITowerContainer
     {
         private readonly Dictionary<int, TowerController> _towers;
-        private readonly Dictionary<int, List<ITargetable>> _towersByPositions;
+        private readonly Dictionary<int, List<ITarget>> _towersByPositions;
 
-        public IReadOnlyDictionary<int, List<ITargetable>> TargetsByPosition => _towersByPositions;
+        public IReadOnlyDictionary<int, List<ITarget>> TargetsByPosition => _towersByPositions;
         public IReadOnlyDictionary<int, TowerController> Towers => _towers;
 
         public TowerContainer(int fieldHexGridSize)
         {
             _towers = new Dictionary<int, TowerController>(fieldHexGridSize);
-            _towersByPositions = new Dictionary<int, List<ITargetable>>(fieldHexGridSize);
+            _towersByPositions = new Dictionary<int, List<ITarget>>(fieldHexGridSize);
         }
 
         public void AddTower(TowerController tower)
@@ -39,7 +39,7 @@ namespace Match.Field.Tower
             }
             else
             {
-                List<ITargetable> mobControllers = new List<ITargetable>();
+                List<ITarget> mobControllers = new List<ITarget>();
                 _towersByPositions.Add(positionHash, mobControllers);
                 mobControllers.Add(towerController);
             }
@@ -81,7 +81,7 @@ namespace Match.Field.Tower
             _towersByPositions.Clear();
         }
 
-        public IEnumerator<ITargetable> GetEnumerator()
+        public IEnumerator<ITarget> GetEnumerator()
         {
             foreach (var mobControllerPair in _towers)
             {
@@ -89,7 +89,7 @@ namespace Match.Field.Tower
             }
         }
 
-        IEnumerator<IShootable> IEnumerable<IShootable>.GetEnumerator()
+        IEnumerator<IShooter> IEnumerable<IShooter>.GetEnumerator()
         {
             foreach (var mobControllerPair in _towers)
             {

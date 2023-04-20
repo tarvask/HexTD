@@ -12,15 +12,15 @@ namespace Match.Field.AttackEffect
         [SerializeField] private float healPerDelay;
         [SerializeField] private float delay;
 
-        public override void ApplyAttackImpact(ITargetable mobController, float sqrDistance)
+        public override void ApplyAttackImpact(ITarget attackerController, float sqrDistance)
         {
             
         }
 
-        public override void ApplyAttackEffect(ITargetable targetController, BuffManager buffManager)
+        public override void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager)
         {
             HealBuff healBuff = new HealBuff(healCapacity, healPerDelay, delay);
-            buffManager.AddBuff(targetController, healBuff);
+            buffManager.AddBuff(attackerController, healBuff);
         }
     }
 }

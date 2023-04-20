@@ -2,7 +2,7 @@
 
 namespace Match.Field.Shooting
 {
-    public interface IShooterContainer : IEnumerable<IShootable>
+    public interface IShooterContainer : IEnumerable<IShooter>
     {
     }
 }

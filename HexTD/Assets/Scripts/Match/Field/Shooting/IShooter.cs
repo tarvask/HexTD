@@ -2,7 +2,7 @@
 
 namespace Match.Field.Shooting
 {
-    public interface IShootable
+    public interface IShooter
     {
         bool IsAttackReady { get; }
         bool TryFindTarget(TargetFinder targetFinder, TargetContainer targetContainer);

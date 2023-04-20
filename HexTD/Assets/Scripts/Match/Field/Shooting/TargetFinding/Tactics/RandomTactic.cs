@@ -13,13 +13,13 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
         
         public TargetFindingTacticType TacticType => TargetFindingTacticType.Random;
 
-        public int GetTargetWithTactic(IReadOnlyList<ITargetable> targets)
+        public int GetTargetWithTactic(IReadOnlyList<ITarget> targets)
         {
             if (targets.Count == 0)
                 return -1;
             
-            var randomMobIndex = targets[Randomizer.GetRandomInRange(0, targets.Count)];
-            return randomMobIndex.TargetId;
+            var randomTarget = targets[Randomizer.GetRandomInRange(0, targets.Count)];
+            return randomTarget.TargetId;
         }
     }
 }

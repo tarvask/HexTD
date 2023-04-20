@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Match.Field.Shooting
 {
     //TODO: add mobs
-    public class ShooterContainer : IEnumerable<IShootable>
+    public class ShooterContainer : IEnumerable<IShooter>
     {
         private static EnumAttackerType[] _iteratesAttackerTypes = new[]
         {
@@ -20,7 +20,7 @@ namespace Match.Field.Shooting
             _targetsIterators.Add(EnumAttackerType.Tower, towers);
         }
 
-        public IEnumerator<IShootable> GetEnumerator()
+        public IEnumerator<IShooter> GetEnumerator()
         {
             foreach (var attackTargetType in _iteratesAttackerTypes)
             {
