@@ -99,16 +99,18 @@ namespace HexSystem
 
 		public void SetHexIsBlocker(Hex2d hex, bool isBlocker)
 		{
-			if (!_hexModels[hex.GetHashCode()].Data.ContainsKey(HexParamsNameConstants.IsBlockerParam))
+			int hexHashCode = hex.GetHashCode();
+			
+			if (!_hexModels[hexHashCode].Data.ContainsKey(HexParamsNameConstants.IsBlockerParam))
 			{
-				_hexModels[hex.GetHashCode()].Data.Add(HexParamsNameConstants.IsBlockerParam,isBlocker.ToString());
+				_hexModels[hexHashCode].Data.Add(HexParamsNameConstants.IsBlockerParam,isBlocker.ToString());
 			}
 			else
 			{
-				_hexModels[hex.GetHashCode()].Data[HexParamsNameConstants.IsBlockerParam] = isBlocker.ToString();
+				_hexModels[hexHashCode].Data[HexParamsNameConstants.IsBlockerParam] = isBlocker.ToString();
 			}
 
-			_hexObjects[hex.GetHashCode()].SetIsBlocker(isBlocker);
+			_hexObjects[hexHashCode].SetIsBlocker(isBlocker);
 		}
 	}
 }

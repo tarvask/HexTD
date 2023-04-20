@@ -60,7 +60,7 @@ namespace Match.Field.Hexagons
         public Vector3 GetBottomHexPosition(Hex2d hexPosition, bool isWorld = true)
         {
             FieldHex hex = _cachedLevelFieldHexes[hexPosition.GetHashCode()];
-            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, hex.HexModel.Height -2, isWorld);
+            return _layout.ToPlane(hex.HexModel.Q, hex.HexModel.R, (int)(hex.HexModel.Height - _layout.HexSize.y), isWorld);
         }
 
         public Hex2d ToHexFromWorldPosition(Vector3 position, bool isWorld = true)

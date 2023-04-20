@@ -20,6 +20,6 @@ namespace PathSystem
             }
         }
         
-        public bool GetHexIsRoad(Hex2d hex2d) => Paths.Values.Any(patchData => patchData.GetHexIsRoad(hex2d));
+        public bool GetHexIsRoad(Hex2d hex2d) => Paths.Values.Any(pathData => pathData.GetHexIsRoad(hex2d));
     }
 }
