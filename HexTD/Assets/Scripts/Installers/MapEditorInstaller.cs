@@ -1,4 +1,5 @@
-﻿using InputSystem;
+﻿using HexSystem;
+using InputSystem;
 using MapEditor;
 using MapEditor.CustomHex;
 using PathSystem;
@@ -11,7 +12,10 @@ namespace Installers
     {
         public override void InstallBindings()
         {
+            Hex2d editableAreaSize = new Hex2d(14, 10);
+            
             Container.Bind<EditorPointerInputHandler>().FromNew().AsSingle();
+            Container.BindInstance(editableAreaSize).WithId(HexMapEditorController.KeyEditableAreaSize).AsSingle();
             Container.Bind<HexMapEditorController>().FromNew().AsSingle();
             Container.Bind<HeightHexSetController>().FromNew().AsSingle();
             Container.Bind<RotationHexSetController>().FromNew().AsSingle();
