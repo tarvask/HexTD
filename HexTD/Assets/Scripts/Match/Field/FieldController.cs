@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BuffLogic;
 using HexSystem;
 using Match.Commands;
@@ -113,6 +114,9 @@ namespace Match.Field
         private readonly CurrencyController _currencyController;
         private readonly PlayerStateLoader _stateLoader;
         
+        private readonly HexObjectsContainer _hexObjectsContainer ;
+        private readonly FieldHighlightsController _fieldHighlightsController ;
+        
         public const float MoveLerpCoeff = 0.7f;
 
         public HexagonalFieldModel HexagonalFieldModel => _hexagonalFieldModel;
@@ -130,6 +134,11 @@ namespace Match.Field
             ReactiveCommand<MobController> removeMobReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<MobController> mobSpawnedReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<int> crystalCollectedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
+            
+            ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand = 
+                AddDisposable(new ReactiveCommand<IReadOnlyCollection<Hex2d>>());
+            ReactiveCommand removeAllHexesHighlightsReactiveCommand = 
+                AddDisposable(new ReactiveCommand());
 
             _hexagonalFieldModel = new HexagonalFieldModel(_context.FieldConfig.HexSettingsConfig,
                 _context.FieldRoot.position, _context.MatchInitDataParameters.Hexes);
@@ -140,6 +149,16 @@ namespace Match.Field
             
             TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
 
+            _hexObjectsContainer = new HexObjectsContainer();
+            
+            _fieldHighlightsController = AddDisposable(new FieldHighlightsController(
+                new FieldHighlightsController.Context(_hexObjectsContainer)));
+
+            AddDisposable(enableHexesHighlightReactiveCommand.Subscribe(hexes =>
+                _fieldHighlightsController.HighlightHexes(hexes)));
+            AddDisposable(removeAllHexesHighlightsReactiveCommand.Subscribe(hexes =>
+                _fieldHighlightsController.RemoveAllHighlights()));
+            
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
                 _context.HexFabric,
@@ -147,8 +166,12 @@ namespace Match.Field
                 _hexagonalFieldModel,
                 _context.FieldConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,
+                _hexMapReachableService,
+                _hexObjectsContainer,
                 castleReachedByMobReactiveCommand,
-                _context.CastleDestroyedReactiveCommand);
+                _context.CastleDestroyedReactiveCommand,
+                enableHexesHighlightReactiveCommand,
+                removeAllHexesHighlightsReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
             MobsByTowersBlocker.Context mobsByTowersBlockerContext = new MobsByTowersBlocker.Context(

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using HexSystem;
+using MapEditor;
 using Match.Field.AttackEffect;
 using Match.Field.Castle;
 using Match.Field.Hexagons;
@@ -25,17 +27,26 @@ namespace Match.Field
             public HexagonalFieldModel HexagonalFieldModel { get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
+            public HexMapReachableService HexMapReachableService { get; }
+            public HexObjectsContainer HexObjectsContainer { get; }
             
             public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
+            public ReactiveCommand<IReadOnlyCollection<Hex2d>> EnableHexesHighlightReactiveCommand { get; }
+            public ReactiveCommand RemoveAllHexesHighlightsReactiveCommand { get; }
 
             public Context(Transform fieldRoot,
                 HexFabric hexFabric,
                 PathContainer pathContainer,
                 HexagonalFieldModel hexagonalFieldModel,
                 int castleHealth, int towerRemovingDuration,
+                HexMapReachableService hexMapReachableService,
+                HexObjectsContainer hexObjectsContainer,
                 ReactiveCommand<int> reachCastleByMobReactiveCommand,
-                ReactiveCommand castleDestroyedReactiveCommand)
+                ReactiveCommand castleDestroyedReactiveCommand,
+                ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand ,
+                ReactiveCommand removeAllHexesHighlightsReactiveCommand
+                )
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
@@ -44,8 +55,12 @@ namespace Match.Field
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
+                HexMapReachableService = hexMapReachableService;
+                HexObjectsContainer = hexObjectsContainer;
                 ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
+                EnableHexesHighlightReactiveCommand = enableHexesHighlightReactiveCommand;
+                RemoveAllHexesHighlightsReactiveCommand = removeAllHexesHighlightsReactiveCommand;
             }
         }
 
@@ -138,7 +153,10 @@ namespace Match.Field
             TowerView towerView = CreateTowerView(towerConfig.RegularParameters.TowerName, 
                 towerId, towerConfig.View, position);
             TowerController.Context towerControllerContext = new TowerController.Context(towerId, targetId,
-                position, towerConfig, towerView, towerConfig.Icon, _context.TowerRemovingDuration);
+                position, towerConfig, towerView, towerConfig.Icon, _context.TowerRemovingDuration,
+                _context.HexMapReachableService,
+                _context.EnableHexesHighlightReactiveCommand,
+                _context.RemoveAllHexesHighlightsReactiveCommand);
             TowerController towerController = new TowerController(towerControllerContext);
 
             return towerController;
@@ -257,9 +275,10 @@ namespace Match.Field
 
         public void CreateHexTile(HexModel hexModel)
         {
-            Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition(
-                (Hex3d)hexModel);
-            _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
+            Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)hexModel);
+
+            var hexObject = _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
+            _context.HexObjectsContainer.HexObjects.Add(hexModel.GetHashCode(), hexObject);
         }
     }
 }

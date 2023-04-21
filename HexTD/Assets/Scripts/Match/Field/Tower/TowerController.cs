@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using HexSystem;
+using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.Shooting.TargetFinding;
 using Match.Field.State;
 using Match.Field.Tower.TowerConfigs;
 using Tools.Interfaces;
+using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -22,9 +25,17 @@ namespace Match.Field.Tower
             public TowerView View { get; }
             public Sprite Icon { get; }
             public int TowerRemovingDuration { get; }
+            public HexMapReachableService HexMapReachableService { get; }
+            
+            public ReactiveCommand<IReadOnlyCollection<Hex2d>> EnableHexesHighlightReactiveCommand { get; }
+            public ReactiveCommand RemoveAllHexesHighlightsReactiveCommand { get; }
 
             public Context(int id, int targetId, Hex2d position, TowerConfigNew towerConfig, 
-                TowerView view, Sprite icon, int towerRemovingDuration)
+                TowerView view, Sprite icon, int towerRemovingDuration,
+                HexMapReachableService hexMapReachableService,
+                ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand ,
+                ReactiveCommand removeAllHexesHighlightsReactiveCommand
+                )
             {
                 Id = id;
                 TargetId = targetId;
@@ -33,6 +44,9 @@ namespace Match.Field.Tower
                 Icon = icon;
                 Position = position;
                 TowerRemovingDuration = towerRemovingDuration;
+                HexMapReachableService = hexMapReachableService;
+                EnableHexesHighlightReactiveCommand = enableHexesHighlightReactiveCommand;
+                RemoveAllHexesHighlightsReactiveCommand = removeAllHexesHighlightsReactiveCommand;
             }
         }
 
@@ -215,12 +229,17 @@ namespace Match.Field.Tower
 
         public void ShowSelection()
         {
-            
+            var hexes= _context.HexMapReachableService.GetInRangeMapByTargetFinderType(
+                HexPosition,
+                _context.TowerConfig.AttacksConfig.Attacks[0].AttackRadiusInHex,
+                _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType);
+
+            _context.EnableHexesHighlightReactiveCommand.Execute(hexes);
         }
 
         public void HideSelection()
         {
-            
+            _context.RemoveAllHexesHighlightsReactiveCommand.Execute();
         }
 
         public void LoadState(in PlayerState.TowerState towerState)
