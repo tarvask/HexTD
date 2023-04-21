@@ -22,7 +22,7 @@ namespace Match
             public Canvas Canvas { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public PlayerHandController PlayerHandController { get; }
-            public WaveParams[] Waves { get; }
+            public WaveParametersStrict[] Waves { get; }
             
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
             public ReactiveCommand<HealthInfo> EnemyCastleHealthChangedReactiveCommand { get; }
@@ -40,7 +40,7 @@ namespace Match
             public Context(MatchUiViewsCollection uiViews, Canvas canvas,
                 ConfigsRetriever configsRetriever,
                 PlayerHandController playerHandController,
-                WaveParams[] waves,
+                WaveParametersStrict[] waves,
                 
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,

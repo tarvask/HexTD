@@ -29,7 +29,9 @@ namespace Editor
             //DrawCells();
             EditorGUILayout.Space();
             // coins
-            _config.CoinsCount = EditorGUILayout.IntField("Coins count", _config.CoinsCount);
+            //_config.CoinsCount = EditorGUILayout.IntField("Coins count", _config.CoinsCount);
+            // energy
+            _config.EnergyStartCount = EditorGUILayout.IntField("Energy start count", _config.EnergyStartCount);
 
             if (GUI.changed)
                 EditorUtility.SetDirty(target);
@@ -41,7 +43,7 @@ namespace Editor
 
             if (_config.Waves == null)
             {
-                _config.Waves = new WaveParams[0];
+                _config.Waves = new WaveParametersStrict[0];
                 _wavesExpandArray = new bool[0];
             }
 
@@ -53,14 +55,14 @@ namespace Editor
             if (_wavesArraySize != _config.Waves.Length)
             {
                 // create array with new size
-                WaveParams[] newArray = new WaveParams[_wavesArraySize];
+                WaveParametersStrict[] newArray = new WaveParametersStrict[_wavesArraySize];
                 // copy existing array as much as possible
                 for (int i = 0; i < _wavesArraySize; i++)
                 {
                     if (i < _config.Waves.Length)
                         newArray[i] = _config.Waves[i];
                     else
-                        newArray[i] = new WaveParams();
+                        newArray[i] = new WaveParametersStrict();
                 }
                 _config.Waves = newArray;
                 
@@ -74,18 +76,47 @@ namespace Editor
                 
             for (var waveIndex = 0; waveIndex < _config.Waves.Length; waveIndex++)
             {
-                WaveParams wave = _config.Waves[waveIndex];
+                WaveParametersStrict wave = _config.Waves[waveIndex];
                 _wavesExpandArray[waveIndex] = EditorGUILayout.Foldout(_wavesExpandArray[waveIndex], $"Wave {waveIndex}");
 
                 if (_wavesExpandArray[waveIndex])
                 {
-                    DrawSingleWave(ref wave);
+                    DrawSingleWaveStrict(ref wave);
                     _config.Waves[waveIndex] = wave;
                 }
             }
         }
+        
+        private void DrawSingleWaveStrict(ref WaveParametersStrict wave)
+        {
+            // size
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField("Wave size");
+                EditorGUILayout.LabelField($"{wave.Size}");
+            }
+            EditorGUILayout.EndHorizontal();
+            
+            // duration
+            EditorGUILayout.BeginHorizontal();
+            {
+                EditorGUILayout.LabelField("Wave duration in seconds");
+                EditorGUILayout.LabelField($"{wave.Duration}");
+            }
+            EditorGUILayout.EndHorizontal();
+            
+            float pauseBeforeWave = EditorGUILayout.FloatField("Pause before wave", wave.PauseBeforeWave);
+            EditorGUILayout.Space();
+            
+            // elements
+            WaveElementDelay[] waveElements = wave.Elements;
+            DrawWaveStrictElements(ref waveElements);
+            wave.CheckConsistency();
+            
+            wave = new WaveParametersStrict(wave.Size, wave.Duration, pauseBeforeWave, waveElements);
+        }
 
-        private void DrawSingleWave(ref WaveParams wave)
+        private void DrawSingleWaveWithChances(ref WaveParametersWithChances wave)
         {
             EditorGUILayout.BeginHorizontal();
             {
@@ -101,14 +132,14 @@ namespace Editor
             
             // elements
             WaveElementChance[] waveElements = wave.Elements;
-            DrawWaveElements(ref waveElements);
+            DrawWaveWithChancesElements(ref waveElements);
             wave.CheckConsistency();
             
-            wave = new WaveParams(wave.Size, duration, minSpawnPause, maxSpawnPause, 
+            wave = new WaveParametersWithChances(wave.Size, duration, minSpawnPause, maxSpawnPause, 
                 pauseBeforeWave, waveElements);
         }
 
-        private void DrawWaveElements(ref WaveElementChance[] waveElements)
+        private void DrawWaveWithChancesElements(ref WaveElementChance[] waveElements)
         {
             EditorGUILayout.LabelField("Wave elements");
             
@@ -145,6 +176,51 @@ namespace Editor
                             (byte) EditorGUILayout.IntField("Max count", waveElements[elementIndex].MaxCount,
                                 GUILayout.Width(TableCellWidth * 3), GUILayout.ExpandWidth(true));
                         waveElements[elementIndex] = new WaveElementChance(mobId, mobCount);
+                    }
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.Space();
+                }
+            }
+            EditorGUILayout.EndVertical();
+        }
+        
+        private void DrawWaveStrictElements(ref WaveElementDelay[] waveElements)
+        {
+            EditorGUILayout.LabelField("Wave elements");
+            
+            if (waveElements == null)
+                waveElements = new WaveElementDelay[0];
+                
+            // deal with array size
+            int waveElementsSize = EditorGUILayout.IntField("Size", waveElements.Length);
+            if (waveElementsSize != waveElements.Length)
+            {
+                // create array with new size
+                WaveElementDelay[] newArray = new WaveElementDelay[waveElementsSize];
+                // copy existing array as much as possible
+                for (int i = 0; i < waveElementsSize; i++)
+                {
+                    if (i < waveElements.Length)
+                    {
+                        newArray[i] = waveElements[i];
+                    }
+                }
+                waveElements = newArray;
+            }
+
+            // elements content
+            EditorGUILayout.BeginVertical();
+            {
+                for (int elementIndex = 0; elementIndex < waveElements.Length; elementIndex++)
+                {
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        byte mobId = (byte) EditorGUILayout.IntField("Mob id", waveElements[elementIndex].MobId,
+                            GUILayout.Width(TableCellWidth * 3), GUILayout.ExpandWidth(true));
+                        float mobDelay =
+                            (byte) EditorGUILayout.FloatField("Delay", waveElements[elementIndex].Delay,
+                                GUILayout.Width(TableCellWidth * 3), GUILayout.ExpandWidth(true));
+                        waveElements[elementIndex] = new WaveElementDelay(mobId, mobDelay);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.Space();

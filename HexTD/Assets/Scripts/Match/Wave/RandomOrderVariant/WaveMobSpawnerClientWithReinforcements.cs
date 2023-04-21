@@ -1,8 +1,8 @@
-namespace Match.Wave.WaveMobSpawnerImplementations
+namespace Match.Wave
 {
-    public class WaveMobSpawnerClient : WaveMobSpawnerBase
+    public class WaveMobSpawnerClientWithReinforcements : WaveMobSpawnerBaseWithReinforcements
     {
-        public WaveMobSpawnerClient(Context context) : base(context) { }
+        public WaveMobSpawnerClientWithReinforcements(Context context) : base(context) { }
 
         protected override void RoleSpecialConstructorActions()
         {

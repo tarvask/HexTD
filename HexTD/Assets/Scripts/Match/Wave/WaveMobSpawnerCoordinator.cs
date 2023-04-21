@@ -3,7 +3,6 @@ using Match.Commands;
 using Match.Field;
 using Match.Field.Mob;
 using Match.Wave.State;
-using Match.Wave.WaveMobSpawnerImplementations;
 using Services;
 using Tools;
 using Tools.Interfaces;
@@ -21,7 +20,7 @@ namespace Match.Wave
             public MatchCommands.IncomingCommands Player1IncomingCommands { get; }
             public MatchCommands.IncomingCommands Player2IncomingCommands { get; }
             public MatchCommonCommands.ServerCommands ServerCommands { get; }
-            public WaveParams[] Waves { get; }
+            public WaveParametersStrict[] Waves { get; }
             public bool IsMultiPlayer { get; }
             public IReadOnlyReactiveProperty<NetworkRoles> OurNetworkRoleReactiveProperty { get; }
 
@@ -43,7 +42,7 @@ namespace Match.Wave
                 MatchCommands.IncomingCommands player1IncomingCommands,
                 MatchCommands.IncomingCommands player2IncomingCommands,
                 MatchCommonCommands.ServerCommands serverCommands,
-                WaveParams[] waves,
+                WaveParametersStrict[] waves,
                 bool isMultiPlayer,
                 IReadOnlyReactiveProperty<NetworkRoles> ourNetworkRoleReactiveProperty,
 
@@ -85,9 +84,9 @@ namespace Match.Wave
         
         private readonly Context _context;
 
-        private readonly WaveMobSpawnerBase _serverImplementation;
-        private readonly WaveMobSpawnerBase _clientImplementation;
-        private WaveMobSpawnerBase _currentImplementation;
+        private readonly WaveMobSpawnerBaseNoReinforcements _serverImplementation;
+        private readonly WaveMobSpawnerBaseNoReinforcements _clientImplementation;
+        private WaveMobSpawnerBaseNoReinforcements _currentImplementation;
 
         public int CurrentWaveNumber => _currentImplementation.CurrentWaveNumber;
 
@@ -95,7 +94,7 @@ namespace Match.Wave
         {
             _context = context;
 
-            WaveMobSpawnerBase.Context waveMobSpawnerImplementationContext = new WaveMobSpawnerBase.Context(
+            WaveMobSpawnerBaseNoReinforcements.Context waveMobSpawnerImplementationContext = new WaveMobSpawnerBaseNoReinforcements.Context(
                 _context.ConfigsRetriever, _context.FieldConfig,
                 _context.IncomingGeneralGeneralCommands,
                 _context.Player1IncomingCommands, _context.Player2IncomingCommands, _context.ServerCommands,
@@ -109,8 +108,8 @@ namespace Match.Wave
                 _context.WaveNumberChangedReactiveCommand,
                 _context.SpawnPlayer1MobReactiveCommand, _context.SpawnPlayer2MobReactiveCommand,
                 _context.HasMobsOnEnemyField, _context.HasMobsOnOurField);
-            _serverImplementation = new WaveMobSpawnerServer(waveMobSpawnerImplementationContext);
-            _clientImplementation = new WaveMobSpawnerClient(waveMobSpawnerImplementationContext);
+            _serverImplementation = new WaveMobSpawnerServerNoReinforcements(waveMobSpawnerImplementationContext);
+            _clientImplementation = new WaveMobSpawnerClientNoReinforcements(waveMobSpawnerImplementationContext);
 
             // subscriptions
             _context.OurNetworkRoleReactiveProperty.Subscribe(UpdateRole);

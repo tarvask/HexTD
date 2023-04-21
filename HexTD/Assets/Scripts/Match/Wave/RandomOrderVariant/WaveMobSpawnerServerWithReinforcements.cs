@@ -2,17 +2,17 @@ using System.Collections.Generic;
 using Tools;
 using UnityEngine;
 
-namespace Match.Wave.WaveMobSpawnerImplementations
+namespace Match.Wave
 {
-    public class WaveMobSpawnerServer : WaveMobSpawnerBase
+    public class WaveMobSpawnerServerWithReinforcements : WaveMobSpawnerBaseWithReinforcements
     {
         private readonly List<WaveElementChance> _currentPlayer1Reinforcements;
         private readonly List<WaveElementChance> _currentPlayer2Reinforcements;
 
-        public WaveMobSpawnerServer(Context context) : base(context)
+        public WaveMobSpawnerServerWithReinforcements(Context context) : base(context)
         {
-            _currentPlayer1Reinforcements = new List<WaveElementChance>(MaxMobsInWave);
-            _currentPlayer2Reinforcements = new List<WaveElementChance>(MaxMobsInWave);
+            _currentPlayer1Reinforcements = new List<WaveElementChance>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            _currentPlayer2Reinforcements = new List<WaveElementChance>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }
         
         protected override void RoleSpecialConstructorActions()
@@ -31,19 +31,19 @@ namespace Match.Wave.WaveMobSpawnerImplementations
             // show last wave as many times as needed
             byte operatingWaveNumber = (byte)Mathf.Min(nextWaveNumber, _context.Waves.Length - 1);
             
-            List<WaveElementDelay> player1NextWaveElementsAndDelays = WaveBuilder.BuildWave(_context.Waves[operatingWaveNumber]);
+            List<WaveElementDelay> player1NextWaveElementsAndDelays = WaveBuilderInRandomOrder.BuildWave(_context.Waves[operatingWaveNumber]);
             List<WaveElementDelay> player2NextWaveElementsAndDelays = new List<WaveElementDelay>(player1NextWaveElementsAndDelays);
             
             List<WaveElementDelay> player1Reinforcement =
-                WaveBuilder.BuildReinforcement(_context.Waves[operatingWaveNumber], _currentPlayer1Reinforcements);
+                WaveBuilderInRandomOrder.BuildReinforcement(_context.Waves[operatingWaveNumber], _currentPlayer1Reinforcements);
             player1NextWaveElementsAndDelays =
-                WaveBuilder.AddReinforcementToWave(player1NextWaveElementsAndDelays, player1Reinforcement);
+                WaveBuilderInRandomOrder.AddReinforcementToWave(player1NextWaveElementsAndDelays, player1Reinforcement);
             _currentPlayer1Reinforcements.Clear();
 
             List<WaveElementDelay> player2Reinforcement =
-                WaveBuilder.BuildReinforcement(_context.Waves[operatingWaveNumber], _currentPlayer2Reinforcements);
+                WaveBuilderInRandomOrder.BuildReinforcement(_context.Waves[operatingWaveNumber], _currentPlayer2Reinforcements);
             player2NextWaveElementsAndDelays =
-                WaveBuilder.AddReinforcementToWave(player2NextWaveElementsAndDelays, player2Reinforcement);
+                WaveBuilderInRandomOrder.AddReinforcementToWave(player2NextWaveElementsAndDelays, player2Reinforcement);
             _currentPlayer2Reinforcements.Clear();
 
             BuiltWaveParams nextBuiltWaveParams = new BuiltWaveParams(

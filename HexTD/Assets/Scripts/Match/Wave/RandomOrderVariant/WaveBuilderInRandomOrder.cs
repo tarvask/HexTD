@@ -3,33 +3,33 @@ using Tools;
 
 namespace Match.Wave
 {
-    public static class WaveBuilder
+    public static class WaveBuilderInRandomOrder
     {
         private static List<byte> _waveElements;
         private static HashSet<byte> _randomIndexesOfReinforcements;
         private static List<byte> _randomIndexesShuffledList;
 
-        static WaveBuilder()
+        static WaveBuilderInRandomOrder()
         {
             _waveElements = new List<byte>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _randomIndexesOfReinforcements = new HashSet<byte>();
             _randomIndexesShuffledList = new List<byte>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }
         
-        public static List<WaveElementDelay> BuildWave(WaveParams waveParams)
+        public static List<WaveElementDelay> BuildWave(WaveParametersWithChances waveParametersWithChances)
         {
-            PrepareWaveElements(waveParams);
+            PrepareWaveElements(waveParametersWithChances);
             List<WaveElementDelay> mobsWithDelays = new List<WaveElementDelay>(_waveElements.Count);
 
             foreach (byte waveElement in _waveElements)
             {
-                mobsWithDelays.Add(new WaveElementDelay(waveElement, GetRandomWavePause(waveParams)));
+                mobsWithDelays.Add(new WaveElementDelay(waveElement, GetRandomWavePause(waveParametersWithChances)));
             }
 
             return mobsWithDelays;
         }
 
-        public static List<WaveElementDelay> BuildReinforcement(WaveParams waveParams,
+        public static List<WaveElementDelay> BuildReinforcement(WaveParametersWithChances waveParametersWithChances,
             List<WaveElementChance> reinforcementElements)
         {
             List<WaveElementDelay> mobsWithDelays = new List<WaveElementDelay>(reinforcementElements.Count);
@@ -38,7 +38,7 @@ namespace Match.Wave
             {
                 for (int i = 0; i < waveElement.MaxCount; i++)
                 {
-                    mobsWithDelays.Add(new WaveElementDelay(waveElement.MobId, GetRandomReinforcementPause(waveParams)));
+                    mobsWithDelays.Add(new WaveElementDelay(waveElement.MobId, GetRandomReinforcementPause(waveParametersWithChances)));
                 }
             }
 
@@ -70,7 +70,7 @@ namespace Match.Wave
             return mobsWithDelays;
         }
         
-        private static void PrepareWaveElements(WaveParams nextWave)
+        private static void PrepareWaveElements(WaveParametersWithChances nextWave)
         {
             _waveElements.Clear();
             
@@ -107,12 +107,12 @@ namespace Match.Wave
             }
         }
         
-        private static float GetRandomWavePause(WaveParams wave)
+        private static float GetRandomWavePause(WaveParametersWithChances wave)
         {
             return Randomizer.GetRandomInRange(wave.MinSpawnPause, wave.MaxSpawnPause);
         }
         
-        private static float GetRandomReinforcementPause(WaveParams wave)
+        private static float GetRandomReinforcementPause(WaveParametersWithChances wave)
         {
             return Randomizer.GetRandomInRange(wave.MinSpawnPause, wave.MaxSpawnPause);
         }

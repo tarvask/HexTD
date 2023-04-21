@@ -13,7 +13,7 @@ namespace Match.Windows
         {
             public MatchInfoPanelView View { get; }
             public Canvas Canvas { get; }
-            public WaveParams[] Waves { get; }
+            public WaveParametersStrict[] Waves { get; }
             
             public ReactiveCommand<HealthInfo> EnemyCastleHealthChangedReactiveCommand { get; }
             public ReactiveCommand<HealthInfo> OurCastleHealthChangedReactiveCommand { get; }
@@ -23,7 +23,7 @@ namespace Match.Windows
             public ReactiveCommand<int> OurGoldenCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand<int> OurCrystalsCountChangedReactiveCommand { get; }
 
-            public Context(MatchInfoPanelView view, Canvas canvas, WaveParams[] waves,
+            public Context(MatchInfoPanelView view, Canvas canvas, WaveParametersStrict[] waves,
                 
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,
                 ReactiveCommand<HealthInfo> ourCastleHealthChangedReactiveCommand,

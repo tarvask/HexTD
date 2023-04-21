@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Match.Wave
 {
     [Serializable]
-    public class WaveParams
+    public class WaveParametersWithChances
     {
         [SerializeField] private byte size;
         [SerializeField] private float duration;
@@ -39,12 +39,12 @@ namespace Match.Wave
             }
         }
 
-        public WaveParams()
+        public WaveParametersWithChances()
         {
             
         }
 
-        public WaveParams(byte sizeParam, float durationParam,
+        public WaveParametersWithChances(byte sizeParam, float durationParam,
             float minSpawnPauseParam, float maxSpawnPauseParam, 
             float pauseBeforeWaveParam,
             WaveElementChance[] elementsParam)
@@ -60,22 +60,22 @@ namespace Match.Wave
         public Hashtable ToNetwork()
         {
             Hashtable waveNetwork = new Hashtable();
-            waveNetwork[PhotonEventsConstants.SyncMatch.Wave.SizeParam] = size;
-            waveNetwork[PhotonEventsConstants.SyncMatch.Wave.DurationParam] = duration;
-            waveNetwork[PhotonEventsConstants.SyncMatch.Wave.SpawnPauseMinParam] = minSpawnPause;
-            waveNetwork[PhotonEventsConstants.SyncMatch.Wave.SpawnPauseMaxParam] = maxSpawnPause;
-            waveNetwork[PhotonEventsConstants.SyncMatch.Wave.PauseBeforeWaveParam] = pauseBeforeWave;
+            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.SizeParam] = size;
+            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.DurationParam] = duration;
+            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.SpawnPauseMinParam] = minSpawnPause;
+            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.SpawnPauseMaxParam] = maxSpawnPause;
+            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.PauseBeforeWaveParam] = pauseBeforeWave;
             byte[] mobsIdsBytes = new byte[elements.Length];
             byte[] mobsCountsBytes = new byte[elements.Length];
 
             for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
             {
                 mobsIdsBytes[elementIndex] = elements[elementIndex].MobId;
-                mobsCountsBytes[elementIndex] = elements[elementIndex].MobId;
+                mobsCountsBytes[elementIndex] = elements[elementIndex].MaxCount;
             }
 
-            waveNetwork[PhotonEventsConstants.SyncMatch.Wave.MobsIdsParam] = mobsIdsBytes;
-            waveNetwork[PhotonEventsConstants.SyncMatch.Wave.MobsCountsParam] = mobsCountsBytes;
+            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.MobsIdsParam] = mobsIdsBytes;
+            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.MobsCountsParam] = mobsCountsBytes;
 
             return waveNetwork;
         }

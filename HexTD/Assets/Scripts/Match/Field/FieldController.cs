@@ -193,7 +193,7 @@ namespace Match.Field
             
             // currency
             CurrencyController.Context currencyControllerContext = new CurrencyController.Context(
-                _context.MatchInitDataParameters.CoinsCount,
+                100,
                 5,
                  removeMobReactiveCommand, crystalCollectedReactiveCommand);
             _currencyController = AddDisposable(new CurrencyController(currencyControllerContext));

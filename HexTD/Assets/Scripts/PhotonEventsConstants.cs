@@ -16,20 +16,29 @@ public static class PhotonEventsConstants
         public const string MatchConfigPathFieldParam = "matchConfighPathField";
         
         public const string MatchStartCoinsParam = "coins";
+        public const string MatchStartEnergyParam = "energy";
         public const string MatchConfigRolesAndUsers = "rolesAndUsers";
         public const string MatchConfigHandTowersParam = "matchConfigHandTowers";
         public const string RandomSeed = "randomSeed";
 
-        public static class Wave
+        public static class WaveWithRandom
         {
             public const string SizeParam = "size";
             public const string DurationParam = "duration";
             public const string SpawnPauseMinParam = "spawnPauseMin";
             public const string SpawnPauseMaxParam = "spawnPauseMax";
-            public const string ArtifactsParam = "artifacts";
             public const string PauseBeforeWaveParam = "planningPause";
             public const string MobsIdsParam = "mobsIds";
             public const string MobsCountsParam = "mobsCounts";
+        }
+        
+        public static class WaveStrictOrder
+        {
+            public const string SizeParam = "size";
+            public const string DurationParam = "duration";
+            public const string PauseBeforeWaveParam = "planningPause";
+            public const string MobsIdsParam = "mobsIds";
+            public const string MobsDelaysParam = "mobsCounts";
         }
 
         public static class HexStateParam

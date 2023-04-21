@@ -6,7 +6,6 @@ using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
 using Match.Field.Hand;
-using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.State;
 using Match.State;
@@ -127,16 +126,16 @@ namespace Match
             ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_context.FieldConfig);
             _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
 
-            WaveParams[] waves =_context.MatchInitDataParameters.Waves;
-
             _ourPlayerHandController = new PlayerHandController(
                 _context.MatchInitDataParameters.PlayerHandParams.Towers,
+                _context.MatchInitDataParameters.EnergyStartCount,
                 _context.FieldConfig.EnergyRestoreDelay,
                 _context.FieldConfig.EnergyRestoreValue,
                 _context.FieldConfig.MaxEnergy);
             
             _enemyPlayerHandController = new PlayerHandController(
                 _context.MatchInitDataParameters.PlayerHandParams.Towers,
+                _context.MatchInitDataParameters.EnergyStartCount,
                 _context.FieldConfig.EnergyRestoreDelay,
                 _context.FieldConfig.EnergyRestoreValue,
                 _context.FieldConfig.MaxEnergy);
@@ -146,7 +145,7 @@ namespace Match
                _context.MatchView.MatchUiViews, _context.MatchView.Canvas,
                _configsRetriever,
                _ourPlayerHandController,
-               waves,
+               _context.MatchInitDataParameters.Waves,
                
                _context.IsConnectedReactiveProperty,
                enemyCastleHealthChangedReactiveCommand,
@@ -269,7 +268,7 @@ namespace Match
                 player1MatchCommands.Incoming,
                 player2MatchCommands.Incoming,
                 _context.MatchCommandsCommon.Server,
-                waves,
+                _context.MatchInitDataParameters.Waves,
                 _context.IsMultiPlayerGame,
                 _context.OurNetworkRoleReactiveProperty,
 

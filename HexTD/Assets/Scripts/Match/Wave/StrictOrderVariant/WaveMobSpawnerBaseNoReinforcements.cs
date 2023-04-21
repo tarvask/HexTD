@@ -9,9 +9,9 @@ using Tools;
 using Tools.Interfaces;
 using UniRx;
 
-namespace Match.Wave.WaveMobSpawnerImplementations
+namespace Match.Wave
 {
-    public abstract class WaveMobSpawnerBase : BaseDisposable, IOuterLogicUpdatable
+    public abstract class WaveMobSpawnerBaseNoReinforcements : BaseDisposable, IOuterLogicUpdatable
     {
         public struct Context
         {
@@ -21,7 +21,7 @@ namespace Match.Wave.WaveMobSpawnerImplementations
             public MatchCommands.IncomingCommands Player1IncomingCommands { get; }
             public MatchCommands.IncomingCommands Player2IncomingCommands { get; }
             public MatchCommonCommands.ServerCommands ServerCommands { get; }
-            public WaveParams[] Waves { get; }
+            public WaveParametersStrict[] Waves { get; }
             public bool IsMultiPlayer { get; }
 
             public ReactiveCommand<float> MatchStartedReactiveCommand { get; }
@@ -42,7 +42,7 @@ namespace Match.Wave.WaveMobSpawnerImplementations
                 MatchCommands.IncomingCommands player1IncomingCommands,
                 MatchCommands.IncomingCommands player2IncomingCommands,
                 MatchCommonCommands.ServerCommands serverCommands,
-                WaveParams[] waves,
+                WaveParametersStrict[] waves,
                 bool isMultiPlayer,
 
                 ReactiveCommand<float> matchStartedReactiveCommand,
@@ -78,8 +78,6 @@ namespace Match.Wave.WaveMobSpawnerImplementations
             }
         }
         
-        public const byte MaxMobsInWave = 100;
-        
         protected readonly Context _context;
         private int _currentWaveNumber;
         private WaveStateType _state;
@@ -91,7 +89,7 @@ namespace Match.Wave.WaveMobSpawnerImplementations
 
         public int CurrentWaveNumber => _currentWaveNumber;
 
-        protected WaveMobSpawnerBase(Context context)
+        protected WaveMobSpawnerBaseNoReinforcements(Context context)
         {
             _context = context;
             
