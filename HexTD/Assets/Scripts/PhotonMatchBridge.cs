@@ -161,7 +161,8 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         MatchInitDataParameters matchParameters = new MatchInitDataParameters(mapModel.HexModels.ToArray(), 
             mapModel.PathDatas.ToArray(),
             levelsConfig.Levels[levelIndexToPlay].Waves, 
-            levelsConfig.Levels[levelIndexToPlay].CoinsCount,
+            //levelsConfig.Levels[levelIndexToPlay].CoinsCount,
+            levelsConfig.Levels[levelIndexToPlay].EnergyStartCount,
             playerHand);
         
         _matchEngine = FindObjectOfType<TestMatchEngine>();
@@ -183,7 +184,8 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             {PhotonEventsConstants.SyncMatch.MatchConfigWavesCount, (byte)matchParameters.Waves.Length},
             {PhotonEventsConstants.SyncMatch.MatchConfigPathsCount, (byte)mapModel.PathDatas.Count},
             {PhotonEventsConstants.SyncMatch.MatchConfigFieldTypesParam, matchParameters.GetHexesTypes()},
-            {PhotonEventsConstants.SyncMatch.MatchStartCoinsParam, matchParameters.CoinsCount},
+            //{PhotonEventsConstants.SyncMatch.MatchStartCoinsParam, matchParameters.CoinsCount},
+            {PhotonEventsConstants.SyncMatch.MatchStartEnergyParam, matchParameters.EnergyStartCount},
             {PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam, matchParameters.PlayerHandParams.TowersNetwork},
             {PhotonEventsConstants.SyncMatch.RandomSeed, randomSeed}
         };

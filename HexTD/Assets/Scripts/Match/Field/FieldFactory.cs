@@ -163,16 +163,16 @@ namespace Match.Field
             return castle;
         }
 
-        public MobController CreateMob(MobConfig mobConfig,
+        public MobController CreateMob(MobSpawnParameters mobSpawnParameters,
             Vector3 spawnPosition)
         {
             _lastMobId++;
             _lastTargetId++;
 
-            return CreateMobWithId(mobConfig, _lastMobId, _lastTargetId, spawnPosition);
+            return CreateMobWithId(mobSpawnParameters, _lastMobId, _lastTargetId, spawnPosition);
         }
 
-        public MobController CreateMobWithId(MobConfig mobConfig, int mobId, int targetId,
+        public MobController CreateMobWithId(MobSpawnParameters mobSpawnParameters, int mobId, int targetId,
             Vector3 hexSpawnPosition)
         {
             if (_lastMobId < mobId)
@@ -181,13 +181,13 @@ namespace Match.Field
             if (_lastTargetId < targetId)
                 _lastTargetId = targetId;
 
-            if (!_context.PathContainer.TryGetPathData(mobConfig.Parameters.PathName, out PathData pathData))
-                throw new ArgumentException($"Unknown path name in mob's Parameters - in [{mobConfig.name}] prefab");
+            if (!_context.PathContainer.TryGetPathData(mobSpawnParameters.PathId, out PathData pathData))
+                throw new ArgumentException($"Unknown path name in mob's Parameters - in [{mobSpawnParameters.MobConfig.name}] prefab");
 
-            MobView mobView = CreateMobView($"{mobConfig.Parameters.PowerType}",
-                mobId, mobConfig.View, hexSpawnPosition);
+            MobView mobView = CreateMobView($"{mobSpawnParameters.MobConfig.Parameters.PowerType}",
+                mobId, mobSpawnParameters.MobConfig.View, hexSpawnPosition);
             MobController.Context mobControllerContext = new MobController.Context(mobId, targetId,
-                mobConfig.Parameters,
+                mobSpawnParameters.MobConfig.Parameters,
                 pathData.GetPathEnumerator(), 
                 _context.HexagonalFieldModel,
                 mobView);

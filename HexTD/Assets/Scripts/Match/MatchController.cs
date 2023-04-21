@@ -6,7 +6,6 @@ using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
 using Match.Field.Hand;
-using Match.Field.Hexagons;
 using Match.Field.Mob;
 using Match.Field.State;
 using Match.State;
@@ -111,8 +110,8 @@ namespace Match
             ReactiveCommand<float> artifactChoosingStartedReactiveCommand = AddDisposable(new ReactiveCommand<float>());
             ReactiveCommand<float> betweenWavesPlanningStartedReactiveCommand = AddDisposable(new ReactiveCommand<float>());
             ReactiveCommand<int> waveNumberChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
-            ReactiveCommand<MobConfig> spawnEnemyMobReactiveCommand = AddDisposable(new ReactiveCommand<MobConfig>());
-            ReactiveCommand<MobConfig> spawnOurMobReactiveCommand = AddDisposable(new ReactiveCommand<MobConfig>());
+            ReactiveCommand<MobSpawnParameters> spawnEnemyMobReactiveCommand = AddDisposable(new ReactiveCommand<MobSpawnParameters>());
+            ReactiveCommand<MobSpawnParameters> spawnOurMobReactiveCommand = AddDisposable(new ReactiveCommand<MobSpawnParameters>());
             ReactiveProperty<bool> hasMobsOnEnemyField = AddDisposable(new ReactiveProperty<bool>(false));
             ReactiveProperty<bool> hasMobsOnOurField = AddDisposable(new ReactiveProperty<bool>(false));
             ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand = AddDisposable(new ReactiveCommand<HealthInfo>());
@@ -127,16 +126,16 @@ namespace Match
             ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_context.FieldConfig);
             _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
 
-            WaveParams[] waves =_context.MatchInitDataParameters.Waves;
-
             _ourPlayerHandController = new PlayerHandController(
                 _context.MatchInitDataParameters.PlayerHandParams.Towers,
+                _context.MatchInitDataParameters.EnergyStartCount,
                 _context.FieldConfig.EnergyRestoreDelay,
                 _context.FieldConfig.EnergyRestoreValue,
                 _context.FieldConfig.MaxEnergy);
             
             _enemyPlayerHandController = new PlayerHandController(
                 _context.MatchInitDataParameters.PlayerHandParams.Towers,
+                _context.MatchInitDataParameters.EnergyStartCount,
                 _context.FieldConfig.EnergyRestoreDelay,
                 _context.FieldConfig.EnergyRestoreValue,
                 _context.FieldConfig.MaxEnergy);
@@ -146,7 +145,7 @@ namespace Match
                _context.MatchView.MatchUiViews, _context.MatchView.Canvas,
                _configsRetriever,
                _ourPlayerHandController,
-               waves,
+               _context.MatchInitDataParameters.Waves,
                
                _context.IsConnectedReactiveProperty,
                enemyCastleHealthChangedReactiveCommand,
@@ -175,8 +174,7 @@ namespace Match
                 _configsRetriever,
                 _buffManager,
                 
-                _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, 
-                clickReactiveCommand, _enemyStateSyncedReactiveCommand,
+                _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, _enemyStateSyncedReactiveCommand,
                 spawnEnemyMobReactiveCommand,
                 hasMobsOnEnemyField,
                 waveNumberChangedReactiveCommand,
@@ -194,7 +192,7 @@ namespace Match
                 _configsRetriever,
                 _buffManager,
                 
-                _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, clickReactiveCommand, _ourStateSyncedReactiveCommand,
+                _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, _ourStateSyncedReactiveCommand,
                 spawnOurMobReactiveCommand,
                 hasMobsOnOurField,
                 waveNumberChangedReactiveCommand,
@@ -205,7 +203,7 @@ namespace Match
                 ourCrystalsCountChangedReactiveCommand,
                 matchStartedReactiveCommand);
 
-            ReactiveCommand<MobConfig> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
+            ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
             MatchCommands player1MatchCommands, player2MatchCommands;
 
             FieldController ourField;
@@ -269,7 +267,7 @@ namespace Match
                 player1MatchCommands.Incoming,
                 player2MatchCommands.Incoming,
                 _context.MatchCommandsCommon.Server,
-                waves,
+                _context.MatchInitDataParameters.Waves,
                 _context.IsMultiPlayerGame,
                 _context.OurNetworkRoleReactiveProperty,
 

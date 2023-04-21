@@ -33,9 +33,8 @@ namespace Match.Field
             public MatchCommands MatchCommands { get; }
 
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
-            public ReactiveCommand<Hex2d> ClickReactiveCommand { get; }
             public ReactiveCommand<PlayerState> StateSyncedReactiveCommand { get; }
-            public ReactiveCommand<MobConfig> SpawnMobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
             public ReactiveProperty<bool> HasMobsOnField { get; }
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
             public ReactiveCommand WaveEndedReactiveCommand { get; }
@@ -55,9 +54,8 @@ namespace Match.Field
                 MatchCommands matchCommands,
                 
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
-                ReactiveCommand<Hex2d> clickReactiveCommand,
                 ReactiveCommand<PlayerState> stateSyncedReactiveCommand,
-                ReactiveCommand<MobConfig> spawnMobReactiveCommand,
+                ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand,
                 ReactiveProperty<bool> hasMobsOnField,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
                 ReactiveCommand waveEndedReactiveCommand,
@@ -78,7 +76,6 @@ namespace Match.Field
                 MatchCommands = matchCommands;
                 
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
-                ClickReactiveCommand = clickReactiveCommand;
                 StateSyncedReactiveCommand = stateSyncedReactiveCommand;
                 SpawnMobReactiveCommand = spawnMobReactiveCommand;
                 HasMobsOnField = hasMobsOnField;
@@ -193,7 +190,7 @@ namespace Match.Field
             
             // currency
             CurrencyController.Context currencyControllerContext = new CurrencyController.Context(
-                _context.MatchInitDataParameters.CoinsCount,
+                100,
                 5,
                  removeMobReactiveCommand, crystalCollectedReactiveCommand);
             _currencyController = AddDisposable(new CurrencyController(currencyControllerContext));
