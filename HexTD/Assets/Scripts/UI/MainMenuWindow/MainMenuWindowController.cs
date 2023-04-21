@@ -37,7 +37,7 @@ namespace UI.MainMenuWindow
 		private async UniTask TestLoad()
 		{
 			await Task.Delay(300);
-			View.TestShowLoaded();
+			//View.TestShowLoaded();
 		}
 
 		private void RunSinglePlayerBattle()
