@@ -15,6 +15,7 @@ namespace Match.Field.Mob
         [SerializeField] private float reloadTime;
         [SerializeField] private bool hasRangeDamage;
         [SerializeField] private float attackRangeRadius;
+        [SerializeField] private bool isBoss;
 
         [SerializeField] private string pathName;
 
@@ -29,6 +30,7 @@ namespace Match.Field.Mob
         public float ReloadTime => reloadTime;
         public bool HasRangeDamage => hasRangeDamage;
         public float AttackRangeRadius => attackRangeRadius;
+        public bool IsBoss => isBoss;
 
         public string PathName => pathName;
 

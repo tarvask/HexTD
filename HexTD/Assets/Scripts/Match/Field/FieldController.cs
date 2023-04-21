@@ -159,7 +159,8 @@ namespace Match.Field
                 _mobsByTowersBlocker,
                 attackTowerByMobReactiveCommand,
                 castleReachedByMobReactiveCommand,
-                removeMobReactiveCommand);
+                removeMobReactiveCommand,
+                _context.SpawnMobReactiveCommand);
             _mobsManager = AddDisposable(new MobsManager(mobsManagerContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
