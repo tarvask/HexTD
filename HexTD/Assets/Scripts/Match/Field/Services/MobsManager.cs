@@ -13,6 +13,7 @@ namespace Match.Field.Services
         public struct Context
         {
             public MobsByTowersBlocker MobsByTowersBlocker { get; }
+            public FieldConfig FieldConfig { get; }
             
             public ReactiveCommand<MobController> AttackTowerByMobReactiveCommand { get; }
             public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
@@ -21,12 +22,14 @@ namespace Match.Field.Services
 
             public Context(
                 MobsByTowersBlocker mobsByTowersBlocker,
+                 FieldConfig fieldConfig,
                 ReactiveCommand<MobController> attackTowerByMobReactiveCommand,
                 ReactiveCommand<int> reachCastleByMobReactiveCommand,
                 ReactiveCommand<MobController> removeMobReactiveCommand,
                 ReactiveCommand<MobConfig> spawnMobReactiveCommand)
             {
                 MobsByTowersBlocker = mobsByTowersBlocker;
+                FieldConfig = fieldConfig;
                 AttackTowerByMobReactiveCommand = attackTowerByMobReactiveCommand;
                 ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
@@ -187,13 +190,13 @@ namespace Match.Field.Services
 
         private void CheckForBossSpawn(MobConfig mobConfig)
         {
-            if (mobConfig.Parameters.IsBoss)
+            if (mobConfig.Parameters.IsBoss && _context.FieldConfig.RemoveMobsOnBossAppearing)
             {
-                RemoveAllMobsOnBossAppearing();
+                RemoveMobsOnBossAppearing();
             }
         }
 
-        private void RemoveAllMobsOnBossAppearing()
+        private void RemoveMobsOnBossAppearing()
         {
             foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {

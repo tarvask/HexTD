@@ -157,6 +157,7 @@ namespace Match.Field
 
             MobsManager.Context mobsManagerContext = new MobsManager.Context(
                 _mobsByTowersBlocker,
+                _context.FieldConfig,
                 attackTowerByMobReactiveCommand,
                 castleReachedByMobReactiveCommand,
                 removeMobReactiveCommand,
