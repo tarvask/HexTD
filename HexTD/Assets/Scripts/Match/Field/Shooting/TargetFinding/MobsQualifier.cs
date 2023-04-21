@@ -7,14 +7,14 @@ namespace Match.Field.Shooting.TargetFinding
 {
     public class MobsQualifier : BaseDisposable
     {
-        private readonly List<ITargetable> _qualifyingMobs;
+        private readonly List<ITarget> _qualifyingMobs;
 
         public MobsQualifier()
         {
-            _qualifyingMobs = new List<ITargetable>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            _qualifyingMobs = new List<ITarget>(WaveMobSpawnerCoordinator.MaxMobsInWave);
         }
         
-        public IReadOnlyList<ITargetable> GetMobsWithoutBuffs(IReadOnlyList<ITargetable> mobs, bool preferUnbuffed)//,
+        public IReadOnlyList<ITarget> GetMobsWithoutBuffs(IReadOnlyList<ITarget> mobs, bool preferUnbuffed)//,
             //List<AbstractBuffParameters> towerActiveBuffs)
         {
             //if (!preferUnbuffed || towerActiveBuffs == null || towerActiveBuffs.Count == 0)

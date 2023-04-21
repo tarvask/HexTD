@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Match.Field.Shooting
 {
-    public interface ITargetable : IBuffableValue<ITargetable>
+    public interface ITarget : IBuffableValue<ITarget>
     {
         int TargetId { get; }
         Hex2d HexPosition { get; }

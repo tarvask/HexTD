@@ -88,7 +88,7 @@ namespace MapEditor
         
         public void LmbClickHandle(Hex2d hex2d)
         {
-            if (!OnHexInHexRect(hex2d, _areaMin, _areaMax))
+            if (!IsHexInHexRect(hex2d, _areaMin, _areaMax))
             {
                 return;
             }
@@ -104,16 +104,13 @@ namespace MapEditor
             }
         }
 
-        private bool OnHexInHexRect(Hex2d hex, Hex2d min, Hex2d max)
+        private static bool IsHexInHexRect(Hex2d hex, Hex2d min, Hex2d max)
         {
             Hex2d size = max - min;
             Hex2d point = hex - min;
-//            Debug.Log($"{nameof(hex)}: {hex}");
-//            Debug.Log($"{nameof(size)}: {size}");
-//            Debug.Log($"{nameof(point)}: {point}");
 
-            if (point.Q >= -Mathf.FloorToInt(point.R / 2.0f)
-                && point.Q < size.Q - Mathf.FloorToInt(point.R / 2.0f)
+            if (point.Q >= -Mathf.FloorToInt(point.R * 0.5f)
+                && point.Q < size.Q - Mathf.FloorToInt(point.R * 0.5f)
                 && point.R >= 0
                 && point.R < size.R)
             {
@@ -136,10 +133,10 @@ namespace MapEditor
         {
             _hexSpawnerController.UpdateHexType();
             
-            if(Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(KeyCode.R))
                 SwitchHexSetController();
             
-            if(isHexUnderMouse && Input.GetKeyDown(KeyCode.X))
+            if (isHexUnderMouse && Input.GetKeyDown(KeyCode.X))
                 _hexGridModel.RemoveHexFromHexGrid(hex);
 
             if (Input.GetKeyDown(KeyCode.B))

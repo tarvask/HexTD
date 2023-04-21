@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 
 namespace Match.Field.Mob
 {
-    public class MobController : BaseTargetableEntity
+    public class MobController : BaseTargetEntity
     {
         public struct Context
         {
@@ -243,12 +243,12 @@ namespace Match.Field.Mob
                 Position.x, Position.y, _context.PathEnumerator.CurrentPointIndex, _reactiveModel.Health.Value);
         }
 
-        public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITargetable>> buffs, IBuff<ITargetable> addedBuff)
+        public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITarget>> buffs, IBuff<ITarget> addedBuff)
         {
             addedBuff.ApplyBuff(this);
         }
 
-        public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<ITargetable>> buffs, IEnumerable<IBuff<ITargetable>> removedBuffs)
+        public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<ITarget>> buffs, IEnumerable<IBuff<ITarget>> removedBuffs)
         {
             foreach (var removedBuff in removedBuffs)
             {

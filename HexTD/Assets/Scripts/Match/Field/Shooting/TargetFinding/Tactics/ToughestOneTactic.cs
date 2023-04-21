@@ -8,13 +8,13 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
     {
         public TargetFindingTacticType TacticType => TargetFindingTacticType.ToughestOne;
 
-        public int GetTargetWithTactic(IReadOnlyList<ITargetable> targets)
+        public int GetTargetWithTactic(IReadOnlyList<ITarget> targets)
         {
             float highestHealth = 0;
             int mobWithHighestHealthId = -1;
             float pathOfMobWithHighestHealth = 0;
 
-            foreach (ITargetable target in targets)
+            foreach (ITarget target in targets)
             {
                 MobController mobController = (MobController)target;
                 float healthDelta = target.BaseReactiveModel.Health.Value - highestHealth;
