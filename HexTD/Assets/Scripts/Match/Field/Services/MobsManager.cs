@@ -187,7 +187,19 @@ namespace Match.Field.Services
 
         private void CheckForBossSpawn(MobConfig mobConfig)
         {
+            if (mobConfig.Parameters.IsBoss)
+            {
+                RemoveAllMobsOnBossAppearing();
+            }
+        }
 
+        private void RemoveAllMobsOnBossAppearing()
+        {
+            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
+            {
+                if (mobPair.Value.IsBoss) continue;
+                _dyingMobs.Add(mobPair.Value);
+            }
         }
 
         public void Clear()
