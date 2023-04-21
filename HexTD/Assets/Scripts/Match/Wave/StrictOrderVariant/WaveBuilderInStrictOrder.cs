@@ -1,27 +1,22 @@
 using System.Collections.Generic;
-using Tools;
 
 namespace Match.Wave
 {
-    public class WaveBuilderInStrictOrder
+    public static class WaveBuilderInStrictOrder
     {
-        static WaveBuilderInStrictOrder()
-        {
-            
-        }
-        
-        public static List<WaveElementDelay> BuildWave(WaveParametersStrict waveParametersWithChances)
+        public static List<WaveElementDelayAndPath> BuildWave(WaveParametersStrict waveParametersWithChances)
         {
             //PrepareWaveElements(waveParametersWithChances);
-            List<WaveElementDelay> mobsWithDelays = new List<WaveElementDelay>(waveParametersWithChances.Elements.Length);
+            List<WaveElementDelayAndPath> mobsWithDelays = new List<WaveElementDelayAndPath>(waveParametersWithChances.Elements.Length);
             // delays have absolute values in wave settings, but we need relative values
             float lastDelay = 0;
 
-            foreach (WaveElementDelay waveElementWithDelay in waveParametersWithChances.Elements)
+            foreach (WaveElementDelayAndPath waveElementWithDelay in waveParametersWithChances.Elements)
             {
-                mobsWithDelays.Add(new WaveElementDelay(
+                mobsWithDelays.Add(new WaveElementDelayAndPath(
                     waveElementWithDelay.MobId,
-                    waveElementWithDelay.Delay - lastDelay));
+                    waveElementWithDelay.Delay - lastDelay,
+                    waveElementWithDelay.PathId));
                 lastDelay = waveElementWithDelay.Delay;
             }
 

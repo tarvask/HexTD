@@ -39,6 +39,7 @@ public static class PhotonEventsConstants
             public const string PauseBeforeWaveParam = "planningPause";
             public const string MobsIdsParam = "mobsIds";
             public const string MobsDelaysParam = "mobsCounts";
+            public const string MobsPathsParam = "mobsPaths";
         }
 
         public static class HexStateParam
@@ -98,6 +99,7 @@ public static class PhotonEventsConstants
             {
                 public const string MobIdParam = "modId";
                 public const string DelayParam = "delay";
+                public const string PathParam = "pathId";
             }
         }
 
@@ -166,6 +168,7 @@ public static class PhotonEventsConstants
                 public const string TypeIdParam = "typeId";
                 public const string PositionXParam = "xposition";
                 public const string PositionYParam = "yposition";
+                public const string PathIdParam = "path";
                 public const string NextWaypointParam = "waypoint";
                 public const string CurrentHealthParam = "curHealth";
             }
@@ -266,12 +269,13 @@ public static class PhotonEventsConstants
         public const byte ApplyEventId = 20;
 
         public const string DurationParam = "duration";
-        public const string ArtifactsParam = "artifacts";
         public const string PauseBeforeWaveParam = "planningPause";
         public const string Player1WaveMobsIds = "player1mobsIds";
         public const string Player1WaveMobsDelays = "player1mobsDelays";
+        public const string Player1WaveMobsPaths = "player1mobsPaths";
         public const string Player2WaveMobsIds = "player2mobsIds";
         public const string Player2WaveMobsDelays = "player2mobsDelays";
+        public const string Player2WaveMobsPaths = "player2mobsPaths";
         public const string RandomSeed = "randomSeed";
         public const string TimeParam = "timestamp";
     }

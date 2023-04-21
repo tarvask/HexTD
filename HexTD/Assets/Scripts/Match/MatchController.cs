@@ -110,8 +110,8 @@ namespace Match
             ReactiveCommand<float> artifactChoosingStartedReactiveCommand = AddDisposable(new ReactiveCommand<float>());
             ReactiveCommand<float> betweenWavesPlanningStartedReactiveCommand = AddDisposable(new ReactiveCommand<float>());
             ReactiveCommand<int> waveNumberChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
-            ReactiveCommand<MobConfig> spawnEnemyMobReactiveCommand = AddDisposable(new ReactiveCommand<MobConfig>());
-            ReactiveCommand<MobConfig> spawnOurMobReactiveCommand = AddDisposable(new ReactiveCommand<MobConfig>());
+            ReactiveCommand<MobSpawnParameters> spawnEnemyMobReactiveCommand = AddDisposable(new ReactiveCommand<MobSpawnParameters>());
+            ReactiveCommand<MobSpawnParameters> spawnOurMobReactiveCommand = AddDisposable(new ReactiveCommand<MobSpawnParameters>());
             ReactiveProperty<bool> hasMobsOnEnemyField = AddDisposable(new ReactiveProperty<bool>(false));
             ReactiveProperty<bool> hasMobsOnOurField = AddDisposable(new ReactiveProperty<bool>(false));
             ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand = AddDisposable(new ReactiveCommand<HealthInfo>());
@@ -174,8 +174,7 @@ namespace Match
                 _configsRetriever,
                 _buffManager,
                 
-                _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, 
-                clickReactiveCommand, _enemyStateSyncedReactiveCommand,
+                _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, _enemyStateSyncedReactiveCommand,
                 spawnEnemyMobReactiveCommand,
                 hasMobsOnEnemyField,
                 waveNumberChangedReactiveCommand,
@@ -193,7 +192,7 @@ namespace Match
                 _configsRetriever,
                 _buffManager,
                 
-                _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, clickReactiveCommand, _ourStateSyncedReactiveCommand,
+                _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, _ourStateSyncedReactiveCommand,
                 spawnOurMobReactiveCommand,
                 hasMobsOnOurField,
                 waveNumberChangedReactiveCommand,
@@ -204,7 +203,7 @@ namespace Match
                 ourCrystalsCountChangedReactiveCommand,
                 matchStartedReactiveCommand);
 
-            ReactiveCommand<MobConfig> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
+            ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
             MatchCommands player1MatchCommands, player2MatchCommands;
 
             FieldController ourField;

@@ -26,8 +26,8 @@ namespace Match.Wave
             // show last wave as many times as needed
             byte operatingWaveNumber = (byte)Mathf.Min(nextWaveNumber, _context.Waves.Length - 1);
             
-            List<WaveElementDelay> player1NextWaveElementsAndDelays = WaveBuilderInStrictOrder.BuildWave(_context.Waves[operatingWaveNumber]);
-            List<WaveElementDelay> player2NextWaveElementsAndDelays = new List<WaveElementDelay>(player1NextWaveElementsAndDelays);
+            List<WaveElementDelayAndPath> player1NextWaveElementsAndDelays = WaveBuilderInStrictOrder.BuildWave(_context.Waves[operatingWaveNumber]);
+            List<WaveElementDelayAndPath> player2NextWaveElementsAndDelays = new List<WaveElementDelayAndPath>(player1NextWaveElementsAndDelays);
 
             BuiltWaveParams nextBuiltWaveParams = new BuiltWaveParams(
                 player1NextWaveElementsAndDelays, player2NextWaveElementsAndDelays,

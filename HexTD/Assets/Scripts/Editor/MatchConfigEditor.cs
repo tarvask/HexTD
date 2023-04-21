@@ -109,7 +109,7 @@ namespace Editor
             EditorGUILayout.Space();
             
             // elements
-            WaveElementDelay[] waveElements = wave.Elements;
+            WaveElementDelayAndPath[] waveElements = wave.Elements;
             DrawWaveStrictElements(ref waveElements);
             wave.CheckConsistency();
             
@@ -184,19 +184,19 @@ namespace Editor
             EditorGUILayout.EndVertical();
         }
         
-        private void DrawWaveStrictElements(ref WaveElementDelay[] waveElements)
+        private void DrawWaveStrictElements(ref WaveElementDelayAndPath[] waveElements)
         {
             EditorGUILayout.LabelField("Wave elements");
             
             if (waveElements == null)
-                waveElements = new WaveElementDelay[0];
+                waveElements = new WaveElementDelayAndPath[0];
                 
             // deal with array size
             int waveElementsSize = EditorGUILayout.IntField("Size", waveElements.Length);
             if (waveElementsSize != waveElements.Length)
             {
                 // create array with new size
-                WaveElementDelay[] newArray = new WaveElementDelay[waveElementsSize];
+                WaveElementDelayAndPath[] newArray = new WaveElementDelayAndPath[waveElementsSize];
                 // copy existing array as much as possible
                 for (int i = 0; i < waveElementsSize; i++)
                 {
@@ -215,12 +215,20 @@ namespace Editor
                 {
                     EditorGUILayout.BeginHorizontal();
                     {
-                        byte mobId = (byte) EditorGUILayout.IntField("Mob id", waveElements[elementIndex].MobId,
-                            GUILayout.Width(TableCellWidth * 3), GUILayout.ExpandWidth(true));
+                        EditorGUILayout.LabelField("Mob id", GUILayout.Width(60));
+                        byte mobId = (byte) EditorGUILayout.IntField(waveElements[elementIndex].MobId,
+                            GUILayout.Width(TableCellWidth * 2), GUILayout.Width(60));
+                        
+                        EditorGUILayout.LabelField("Delay", GUILayout.Width(60));
                         float mobDelay =
-                            (byte) EditorGUILayout.FloatField("Delay", waveElements[elementIndex].Delay,
-                                GUILayout.Width(TableCellWidth * 3), GUILayout.ExpandWidth(true));
-                        waveElements[elementIndex] = new WaveElementDelay(mobId, mobDelay);
+                            (byte) EditorGUILayout.FloatField(waveElements[elementIndex].Delay,
+                                GUILayout.Width(TableCellWidth * 2), GUILayout.Width(60));
+                        
+                        EditorGUILayout.LabelField("Path id", GUILayout.Width(60));
+                        byte mobPathId = (byte) EditorGUILayout.IntField(waveElements[elementIndex].PathId,
+                            GUILayout.Width(TableCellWidth * 2), GUILayout.Width(60));
+                        mobPathId = mobPathId == 0 ? (byte)1 : mobPathId;
+                        waveElements[elementIndex] = new WaveElementDelayAndPath(mobId, mobDelay, mobPathId);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.Space();

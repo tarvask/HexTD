@@ -2,7 +2,6 @@ using System;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Mob;
-using Match.Wave.State;
 using Services;
 using Tools;
 using Tools.Interfaces;
@@ -30,8 +29,8 @@ namespace Match.Wave
             public ReactiveCommand<float> ArtifactChoosingStartedReactiveCommand { get; }
             public ReactiveCommand<float> BetweenWavesPlanningStartedReactiveCommand { get; }
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
-            public ReactiveCommand<MobConfig> SpawnPlayer1MobReactiveCommand { get; }
-            public ReactiveCommand<MobConfig> SpawnPlayer2MobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnPlayer1MobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnPlayer2MobReactiveCommand { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnEnemyField { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnOurField { get; }
 
@@ -52,8 +51,8 @@ namespace Match.Wave
                 ReactiveCommand<float> artifactChoosingStartedReactiveCommand,
                 ReactiveCommand<float> betweenWavesPlanningStartedReactiveCommand,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
-                ReactiveCommand<MobConfig> spawnPlayer1MobReactiveCommand,
-                ReactiveCommand<MobConfig> spawnPlayer2MobReactiveCommand,
+                ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand,
+                ReactiveCommand<MobSpawnParameters> spawnPlayer2MobReactiveCommand,
                 IReadOnlyReactiveProperty<bool> hasMobsOnEnemyField,
                 IReadOnlyReactiveProperty<bool> hasMobsOnOurField)
             {

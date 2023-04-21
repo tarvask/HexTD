@@ -52,12 +52,16 @@ namespace Match.Commands
                 float duration = (float)waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.DurationParam];
                 float pauseBeforeWave = (float)waveHashtable[PhotonEventsConstants.SyncMatch.WaveWithRandom.PauseBeforeWaveParam];
                 byte[] mobsIdsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsIdsParam];
-                byte[] mobsDelaysBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsDelaysParam];
-                WaveElementDelay[] waveElementChances = new WaveElementDelay [mobsIdsBytes.Length];
+                float[] mobsDelaysBytes = (float[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsDelaysParam];
+                byte[] mobsPathsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsPathsParam];
+                WaveElementDelayAndPath[] waveElementChances = new WaveElementDelayAndPath [mobsIdsBytes.Length];
 
                 for (int elementIndex = 0; elementIndex < mobsIdsBytes.Length; elementIndex++)
                     waveElementChances[elementIndex] =
-                        new WaveElementDelay(mobsIdsBytes[elementIndex], mobsDelaysBytes[elementIndex]);
+                        new WaveElementDelayAndPath(
+                            mobsIdsBytes[elementIndex],
+                            mobsDelaysBytes[elementIndex],
+                            mobsPathsBytes[elementIndex]);
                 
                 waves[currentWaveNumber] = new WaveParametersStrict(size, duration, pauseBeforeWave, waveElementChances);
             }

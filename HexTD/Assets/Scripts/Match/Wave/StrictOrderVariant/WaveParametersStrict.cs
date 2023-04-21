@@ -11,13 +11,13 @@ namespace Match.Wave
         [SerializeField] private float duration;
         [SerializeField] private float pauseBeforeWave;
 
-        [SerializeField] private WaveElementDelay[] elements;
+        [SerializeField] private WaveElementDelayAndPath[] elements;
         
         public byte Size => size;
         public float Duration => duration;
         public float PauseBeforeWave => pauseBeforeWave;
 
-        public WaveElementDelay[] Elements => elements;
+        public WaveElementDelayAndPath[] Elements => elements;
 
         public WaveParametersStrict()
         {
@@ -26,7 +26,7 @@ namespace Match.Wave
         
         public WaveParametersStrict(byte sizeParam, float durationParam,
             float pauseBeforeWaveParam,
-            WaveElementDelay[] elementsParam)
+            WaveElementDelayAndPath[] elementsParam)
         {
             size = sizeParam;
             duration = durationParam;
@@ -42,15 +42,18 @@ namespace Match.Wave
             waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.PauseBeforeWaveParam] = pauseBeforeWave;
             byte[] mobsIdsBytes = new byte[elements.Length];
             float[] mobsDelaysBytes = new float[elements.Length];
+            byte[] mobsPathsBytes = new byte[elements.Length];
 
             for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
             {
                 mobsIdsBytes[elementIndex] = elements[elementIndex].MobId;
                 mobsDelaysBytes[elementIndex] = elements[elementIndex].Delay;
+                mobsPathsBytes[elementIndex] = elements[elementIndex].PathId;
             }
 
             waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsIdsParam] = mobsIdsBytes;
             waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsDelaysParam] = mobsDelaysBytes;
+            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsPathsParam] = mobsPathsBytes;
 
             return waveNetwork;
         }
@@ -62,7 +65,7 @@ namespace Match.Wave
             byte totalMobsInWaveCount = (byte)elements.Length;
             float totalWaveDuration = 0;
 
-            foreach (WaveElementDelay waveElementDelay in elements)
+            foreach (WaveElementDelayAndPath waveElementDelay in elements)
                 totalWaveDuration += waveElementDelay.Delay;
 
             size = totalMobsInWaveCount;

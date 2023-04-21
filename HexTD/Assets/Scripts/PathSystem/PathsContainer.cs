@@ -27,6 +27,11 @@ namespace PathSystem
         {
             return Paths.TryGetValue(name, out pathData);
         }
+        
+        public bool TryGetPathData(byte pathId, out T pathData)
+        {
+            return Paths.TryGetValue(pathId.ToString(), out pathData);
+        }
 
         public IEnumerator<T> GetEnumerator()
         {

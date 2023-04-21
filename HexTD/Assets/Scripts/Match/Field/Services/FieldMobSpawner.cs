@@ -11,11 +11,11 @@ namespace Match.Field.Services
         {
             public FieldModel FieldModel { get; }
             public FieldFactory FieldFactory { get; }
-            public ReactiveCommand<MobConfig> SpawnMobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
 
             public Context(FieldModel fieldModel,
                 FieldFactory fieldFactory,
-                ReactiveCommand<MobConfig> spawnMobReactiveCommand)
+                ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand)
             {
                 FieldModel = fieldModel;
                 FieldFactory = fieldFactory;
@@ -32,9 +32,9 @@ namespace Match.Field.Services
             _context.SpawnMobReactiveCommand.Subscribe(Spawn);
         }
         
-        private void Spawn(MobConfig mobConfig)
+        private void Spawn(MobSpawnParameters mobSpawnParameters)
         {
-            _context.FieldModel.AddMob(_context.FieldFactory.CreateMob(mobConfig, Vector2.one * 10));
+            _context.FieldModel.AddMob(_context.FieldFactory.CreateMob(mobSpawnParameters, Vector2.one * 10));
         }
     }
 }

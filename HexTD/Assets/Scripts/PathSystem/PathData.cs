@@ -164,7 +164,7 @@ namespace PathSystem
             float pathLength = 0f;
             float diagonalLength = Mathf.Sqrt(hexSize.x * hexSize.x + hexSize.z * hexSize.z);
 
-            var curPoint = Points.First.Next;
+            var curPoint = Points.First?.Next;
             while (curPoint != null)
             {
                 var delta = curPoint.Value - curPoint.Previous.Value;

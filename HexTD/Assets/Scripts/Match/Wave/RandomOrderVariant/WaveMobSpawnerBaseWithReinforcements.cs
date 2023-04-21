@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Mob;
-using Match.Wave.State;
 using Services;
 using Tools;
 using Tools.Interfaces;
@@ -30,8 +29,8 @@ namespace Match.Wave
             public ReactiveCommand<float> ArtifactChoosingStartedReactiveCommand { get; }
             public ReactiveCommand<float> BetweenWavesPlanningStartedReactiveCommand { get; }
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
-            public ReactiveCommand<MobConfig> SpawnPlayer1MobReactiveCommand { get; }
-            public ReactiveCommand<MobConfig> SpawnPlayer2MobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnPlayer1MobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnPlayer2MobReactiveCommand { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnEnemyField { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnOurField { get; }
 
@@ -51,8 +50,8 @@ namespace Match.Wave
                 ReactiveCommand<float> artifactChoosingStartedReactiveCommand,
                 ReactiveCommand<float> betweenWavesPlanningStartedReactiveCommand,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
-                ReactiveCommand<MobConfig> spawnPlayer1MobReactiveCommand,
-                ReactiveCommand<MobConfig> spawnPlayer2MobReactiveCommand,
+                ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand,
+                ReactiveCommand<MobSpawnParameters> spawnPlayer2MobReactiveCommand,
                 IReadOnlyReactiveProperty<bool> hasMobsOnEnemyField,
                 IReadOnlyReactiveProperty<bool> hasMobsOnOurField)
             {
@@ -244,7 +243,7 @@ namespace Match.Wave
         }
         
         private bool UpdateCurrentWaves(Queue<WaveMobsQueue> currentWaves,
-            ReactiveCommand<MobConfig> spawnPlayerMobReactiveCommand, float frameLength, bool canSpawnForPlayer = true)
+            ReactiveCommand<MobSpawnParameters> spawnPlayerMobReactiveCommand, float frameLength, bool canSpawnForPlayer = true)
         {
             int activeWaveIndex = 0;
             bool callNextWave = false;
@@ -255,7 +254,7 @@ namespace Match.Wave
 
                 while (waveMobsQueue.NextMobReady && waveMobsQueue.HasMoreMobs)
                 {
-                    Spawn(waveMobsQueue.GetNextMobId(), spawnPlayerMobReactiveCommand, canSpawnForPlayer);
+                    Spawn(waveMobsQueue.GetNextElement(), spawnPlayerMobReactiveCommand, canSpawnForPlayer);
                 }
                 
                 // last spawning wave
@@ -283,8 +282,8 @@ namespace Match.Wave
             _currentWaveNumber = _currentWaveNumber + 1;
             _targetPauseDuration = builtWaveParams.PauseBeforeWave;
             
-            _currentPlayer1Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player1MobsAndDelays, builtWaveParams.Duration));
-            _currentPlayer2Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player2MobsAndDelays, builtWaveParams.Duration));
+            _currentPlayer1Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player1MobsWithDelaysAndPaths, builtWaveParams.Duration));
+            _currentPlayer2Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player2MobsWithDelaysAndPaths, builtWaveParams.Duration));
             
             // send +1 to avoid counting from 0
             _context.WaveNumberChangedReactiveCommand.Execute(_currentWaveNumber + 1);
@@ -293,10 +292,11 @@ namespace Match.Wave
             _context.BetweenWavesPlanningStartedReactiveCommand.Execute(_targetPauseDuration);
         }
         
-        private void Spawn(byte mobId, ReactiveCommand<MobConfig> spawnPlayerMobReactiveCommand, bool canSpawn)
+        private void Spawn(MobWithPath mobWithPath, ReactiveCommand<MobSpawnParameters> spawnPlayerMobReactiveCommand, bool canSpawn)
         {
             if (canSpawn)
-                spawnPlayerMobReactiveCommand.Execute(_context.ConfigsRetriever.GetMobById(mobId));
+                spawnPlayerMobReactiveCommand.Execute(
+                    new MobSpawnParameters(_context.ConfigsRetriever.GetMobById(mobWithPath.MobId), mobWithPath.PathId));
         }
 
         protected override void OnDispose()

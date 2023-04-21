@@ -1,6 +1,6 @@
 using ExitGames.Client.Photon;
 
-namespace Match.Wave.State
+namespace Match.Wave
 {
     public readonly struct WavesState
     {
@@ -86,19 +86,19 @@ namespace Match.Wave.State
 
         public readonly struct WaveState
         {
-            private readonly WaveElementDelay[] _waveElements;
+            private readonly WaveElementDelayAndPath[] _waveElements;
             private readonly int _targetWaveDuration;
             private readonly int _currentWaveDuration;
             private readonly int _targetSpawnPause;
             private readonly int _lastSpawnTime;
 
-            public WaveElementDelay[] WaveElements => _waveElements;
+            public WaveElementDelayAndPath[] WaveElements => _waveElements;
             public int TargetWaveDuration => _targetWaveDuration;
             public int CurrentWaveDuration => _currentWaveDuration;
             public int TargetSpawnPause => _targetSpawnPause;
             public int LastSpawnTime => _lastSpawnTime;
 
-            public WaveState(WaveElementDelay[] waveElements, int targetWaveDuration, int currentWaveDuration,
+            public WaveState(WaveElementDelayAndPath[] waveElements, int targetWaveDuration, int currentWaveDuration,
                 int targetSpawnPause, int lastSpawnTime)
             {
                 _waveElements = waveElements;
@@ -112,7 +112,7 @@ namespace Match.Wave.State
             {
                 Hashtable[] waveElementsHashtables = (Hashtable[])waveHashtable[PhotonEventsConstants.SyncState.WavesState.WaveState.WaveElementsParam];
             
-                WaveElementDelay[] waveElements = new WaveElementDelay[waveElementsHashtables.Length];
+                WaveElementDelayAndPath[] waveElements = new WaveElementDelayAndPath[waveElementsHashtables.Length];
 
                 for (int waveElementIndex = 0; waveElementIndex < waveElementsHashtables.Length; waveElementIndex++)
                     waveElements[waveElementIndex] = WaveElementFromHashtable(waveElementsHashtables[waveElementIndex]);
@@ -144,15 +144,16 @@ namespace Match.Wave.State
                 };
             }
 
-            private static WaveElementDelay WaveElementFromHashtable(Hashtable waveElementHashtable)
+            private static WaveElementDelayAndPath WaveElementFromHashtable(Hashtable waveElementHashtable)
             {
                 byte mobId = (byte)waveElementHashtable[PhotonEventsConstants.SyncState.WavesState.WaveElementState.MobIdParam];
                 int delay = (int)waveElementHashtable[PhotonEventsConstants.SyncState.WavesState.WaveElementState.DelayParam];
+                byte pathId = (byte)waveElementHashtable[PhotonEventsConstants.SyncState.WavesState.WaveElementState.PathParam];
                 
-                return new WaveElementDelay(mobId, delay * 0.001f);
+                return new WaveElementDelayAndPath(mobId, delay * 0.001f, pathId);
             }
             
-            private static Hashtable WaveElementToHashtable(WaveElementDelay waveElement)
+            private static Hashtable WaveElementToHashtable(WaveElementDelayAndPath waveElement)
             {
                 return new Hashtable
                 {
