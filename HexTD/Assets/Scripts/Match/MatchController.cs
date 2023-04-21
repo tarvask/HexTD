@@ -144,6 +144,7 @@ namespace Match
             WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
                _context.MatchView.MatchUiViews, _context.MatchView.Canvas,
                _configsRetriever,
+                _context.IsMultiPlayerGame,
                _ourPlayerHandController,
                _context.MatchInitDataParameters.Waves,
                
