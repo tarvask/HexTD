@@ -19,22 +19,32 @@ MonoBehaviour:
     elements:
     - mobId: 1
       delay: 0
+      pathId: 1
     - mobId: 2
       delay: 3
+      pathId: 1
     - mobId: 3
       delay: 5
+      pathId: 1
     - mobId: 4
       delay: 6
+      pathId: 1
     - mobId: 5
       delay: 7
+      pathId: 1
     - mobId: 6
       delay: 12
+      pathId: 1
     - mobId: 7
       delay: 13
+      pathId: 1
     - mobId: 8
       delay: 14
+      pathId: 1
     - mobId: 9
       delay: 15
+      pathId: 1
     - mobId: 10
       delay: 20
+      pathId: 1
   energyStartCount: 10
