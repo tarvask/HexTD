@@ -12,12 +12,17 @@ namespace UI.MainMenuWindow
 		//[SerializeField] private Image testImage;
 		[SerializeField] private Button singlePlayerBattleRunButton;
 		[SerializeField] private Button multiPlayerBattleRunButton;
+		[SerializeField] private Button shopButton;
 
 		public IObservable<Unit> SinglePlayerBattleRunClick => singlePlayerBattleRunButton
 			.OnClickAsObservable()
 			.WhereAppeared(this);
 
 		public IObservable<Unit> MultiPlayerBattleRunClick => multiPlayerBattleRunButton
+			.OnClickAsObservable()
+			.WhereAppeared(this);
+
+		public IObservable<Unit> ShopButtonClick => shopButton
 			.OnClickAsObservable()
 			.WhereAppeared(this);
 
