@@ -61,3 +61,11 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
+  - view: {fileID: 5822377405943102550, guid: 84a25058512b5094ebc7d4c13d24e21c, type: 3}
+    viewType: UI.ShopwWindow.ShopWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 84a25058512b5094ebc7d4c13d24e21c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
