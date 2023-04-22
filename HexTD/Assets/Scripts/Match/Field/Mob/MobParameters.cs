@@ -17,8 +17,6 @@ namespace Match.Field.Mob
         [SerializeField] private float attackRangeRadius;
         [SerializeField] private bool isBoss;
 
-        [SerializeField] private string pathName;
-
         [SerializeField] [Description("Reward for killed mob")]
         private int rewardInCoins;
 
@@ -31,8 +29,6 @@ namespace Match.Field.Mob
         public bool HasRangeDamage => hasRangeDamage;
         public float AttackRangeRadius => attackRangeRadius;
         public bool IsBoss => isBoss;
-
-        public string PathName => pathName;
 
         public int RewardInCoins => rewardInCoins;
     }

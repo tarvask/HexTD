@@ -13,23 +13,25 @@ namespace Match.Field.Services
         public struct Context
         {
             public MobsByTowersBlocker MobsByTowersBlocker { get; }
-            public FieldConfig FieldConfig { get; }
+            public bool RemoveMobsOnBossAppearing { get; }
             
             public ReactiveCommand<MobController> AttackTowerByMobReactiveCommand { get; }
             public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
-            public ReactiveCommand<MobConfig> SpawnMobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
 
             public Context(
                 MobsByTowersBlocker mobsByTowersBlocker,
-                 FieldConfig fieldConfig,
+                bool removeMobsOnBossAppearing,
+                
                 ReactiveCommand<MobController> attackTowerByMobReactiveCommand,
                 ReactiveCommand<int> reachCastleByMobReactiveCommand,
                 ReactiveCommand<MobController> removeMobReactiveCommand,
-                ReactiveCommand<MobConfig> spawnMobReactiveCommand)
+                ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand)
             {
                 MobsByTowersBlocker = mobsByTowersBlocker;
-                FieldConfig = fieldConfig;
+                RemoveMobsOnBossAppearing = removeMobsOnBossAppearing;
+                
                 AttackTowerByMobReactiveCommand = attackTowerByMobReactiveCommand;
                 ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
@@ -188,9 +190,9 @@ namespace Match.Field.Services
             _escapingMobs.Clear();
         }
 
-        private void CheckForBossSpawn(MobConfig mobConfig)
+        private void CheckForBossSpawn(MobSpawnParameters mobSpawnParameters)
         {
-            if (mobConfig.Parameters.IsBoss && _context.FieldConfig.RemoveMobsOnBossAppearing)
+            if (mobSpawnParameters.MobConfig.Parameters.IsBoss && _context.RemoveMobsOnBossAppearing)
             {
                 RemoveMobsOnBossAppearing();
             }

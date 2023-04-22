@@ -13,7 +13,8 @@ namespace Match.Windows
         {
             public MatchInfoPanelView View { get; }
             public Canvas Canvas { get; }
-            public WaveParams[] Waves { get; }
+            public readonly bool IsMultiPlayerGame { get; }
+            public WaveParametersStrict[] Waves { get; }
             
             public ReactiveCommand<HealthInfo> EnemyCastleHealthChangedReactiveCommand { get; }
             public ReactiveCommand<HealthInfo> OurCastleHealthChangedReactiveCommand { get; }
@@ -23,8 +24,9 @@ namespace Match.Windows
             public ReactiveCommand<int> OurGoldenCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand<int> OurCrystalsCountChangedReactiveCommand { get; }
 
-            public Context(MatchInfoPanelView view, Canvas canvas, WaveParams[] waves,
-                
+            public Context(MatchInfoPanelView view, Canvas canvas, 
+                bool isMultiPlayerGame,
+                WaveParametersStrict[] waves,
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,
                 ReactiveCommand<HealthInfo> ourCastleHealthChangedReactiveCommand,
                 ReactiveCommand<float> waveStartedReactiveCommand,
@@ -35,6 +37,7 @@ namespace Match.Windows
             {
                 View = view;
                 Canvas = canvas;
+                IsMultiPlayerGame = isMultiPlayerGame;
                 Waves = waves;
 
                 EnemyCastleHealthChangedReactiveCommand = enemyCastleHealthChangedReactiveCommand;
@@ -57,6 +60,8 @@ namespace Match.Windows
         public MatchInfoPanelController(Context context)
         {
             _context = context;
+            
+            _context.View.EnemyFieldImage.gameObject.SetActive(_context.IsMultiPlayerGame);
             
             MatchInfoRoundStartInfoPanelController.Context roundStartInfoPanelControllerContext =
                 new MatchInfoRoundStartInfoPanelController.Context(_context.View.RoundStartInfoPanel);

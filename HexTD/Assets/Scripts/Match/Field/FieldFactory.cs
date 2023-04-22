@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using HexSystem;
+using MapEditor;
 using Match.Field.AttackEffect;
 using Match.Field.Castle;
 using Match.Field.Hexagons;
@@ -25,17 +27,26 @@ namespace Match.Field
             public HexagonalFieldModel HexagonalFieldModel { get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
+            public HexMapReachableService HexMapReachableService { get; }
+            public HexObjectsContainer HexObjectsContainer { get; }
             
             public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
+            public ReactiveCommand<IReadOnlyCollection<Hex2d>> EnableHexesHighlightReactiveCommand { get; }
+            public ReactiveCommand RemoveAllHexesHighlightsReactiveCommand { get; }
 
             public Context(Transform fieldRoot,
                 HexFabric hexFabric,
                 PathContainer pathContainer,
                 HexagonalFieldModel hexagonalFieldModel,
                 int castleHealth, int towerRemovingDuration,
+                HexMapReachableService hexMapReachableService,
+                HexObjectsContainer hexObjectsContainer,
                 ReactiveCommand<int> reachCastleByMobReactiveCommand,
-                ReactiveCommand castleDestroyedReactiveCommand)
+                ReactiveCommand castleDestroyedReactiveCommand,
+                ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand ,
+                ReactiveCommand removeAllHexesHighlightsReactiveCommand
+                )
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
@@ -44,8 +55,12 @@ namespace Match.Field
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
+                HexMapReachableService = hexMapReachableService;
+                HexObjectsContainer = hexObjectsContainer;
                 ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
+                EnableHexesHighlightReactiveCommand = enableHexesHighlightReactiveCommand;
+                RemoveAllHexesHighlightsReactiveCommand = removeAllHexesHighlightsReactiveCommand;
             }
         }
 
@@ -138,7 +153,10 @@ namespace Match.Field
             TowerView towerView = CreateTowerView(towerConfig.RegularParameters.TowerName, 
                 towerId, towerConfig.View, position);
             TowerController.Context towerControllerContext = new TowerController.Context(towerId, targetId,
-                position, towerConfig, towerView, towerConfig.Icon, _context.TowerRemovingDuration);
+                position, towerConfig, towerView, towerConfig.Icon, _context.TowerRemovingDuration,
+                _context.HexMapReachableService,
+                _context.EnableHexesHighlightReactiveCommand,
+                _context.RemoveAllHexesHighlightsReactiveCommand);
             TowerController towerController = new TowerController(towerControllerContext);
 
             return towerController;
@@ -163,16 +181,16 @@ namespace Match.Field
             return castle;
         }
 
-        public MobController CreateMob(MobConfig mobConfig,
+        public MobController CreateMob(MobSpawnParameters mobSpawnParameters,
             Vector3 spawnPosition)
         {
             _lastMobId++;
             _lastTargetId++;
 
-            return CreateMobWithId(mobConfig, _lastMobId, _lastTargetId, spawnPosition);
+            return CreateMobWithId(mobSpawnParameters, _lastMobId, _lastTargetId, spawnPosition);
         }
 
-        public MobController CreateMobWithId(MobConfig mobConfig, int mobId, int targetId,
+        public MobController CreateMobWithId(MobSpawnParameters mobSpawnParameters, int mobId, int targetId,
             Vector3 hexSpawnPosition)
         {
             if (_lastMobId < mobId)
@@ -181,13 +199,13 @@ namespace Match.Field
             if (_lastTargetId < targetId)
                 _lastTargetId = targetId;
 
-            if (!_context.PathContainer.TryGetPathData(mobConfig.Parameters.PathName, out PathData pathData))
-                throw new ArgumentException($"Unknown path name in mob's Parameters - in [{mobConfig.name}] prefab");
+            if (!_context.PathContainer.TryGetPathData(mobSpawnParameters.PathId, out PathData pathData))
+                throw new ArgumentException($"Unknown path name in mob's Parameters - in [{mobSpawnParameters.MobConfig.name}] prefab");
 
-            MobView mobView = CreateMobView($"{mobConfig.Parameters.PowerType}",
-                mobId, mobConfig.View, hexSpawnPosition);
+            MobView mobView = CreateMobView($"{mobSpawnParameters.MobConfig.Parameters.PowerType}",
+                mobId, mobSpawnParameters.MobConfig.View, hexSpawnPosition);
             MobController.Context mobControllerContext = new MobController.Context(mobId, targetId,
-                mobConfig.Parameters,
+                mobSpawnParameters.MobConfig.Parameters,
                 pathData.GetPathEnumerator(), 
                 _context.HexagonalFieldModel,
                 mobView);
@@ -257,9 +275,10 @@ namespace Match.Field
 
         public void CreateHexTile(HexModel hexModel)
         {
-            Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition(
-                (Hex3d)hexModel);
-            _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
+            Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)hexModel);
+
+            var hexObject = _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
+            _context.HexObjectsContainer.HexObjects.Add(hexModel.GetHashCode(), hexObject);
         }
     }
 }

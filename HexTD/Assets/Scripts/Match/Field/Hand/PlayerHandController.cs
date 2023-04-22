@@ -21,10 +21,10 @@ namespace Match.Field.Hand
         public IReadOnlyReactiveCollection<TowerType> ReactiveTowers => _towers;
 
         public PlayerHandController(TowerType[] towers,
-            float energyRestoreDelay, int energyRestoreValue, int maxEnergy)
+            int energyStartCount, float energyRestoreDelay, int energyRestoreValue, int maxEnergy)
         {
             _towers = new ReactiveCollection<TowerType>(towers);
-            _energyCharger = AddDisposable(new EnergyCharger(energyRestoreDelay, energyRestoreValue, maxEnergy));
+            _energyCharger = AddDisposable(new EnergyCharger(energyStartCount, energyRestoreDelay, energyRestoreValue, maxEnergy));
             _chosenTowerType = TowerType.Undefined;
         }
 

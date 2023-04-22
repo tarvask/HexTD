@@ -76,8 +76,9 @@ namespace Match.Field.Services
                 ref readonly PlayerState.MobState mobState = ref playerState.Mobs.Mobs[mobIndex];
                 
                 MobConfig mobConfig = _context.ConfigsRetriever.GetMobById(mobState.TypeId);
+                MobSpawnParameters mobSpawnParameters = new MobSpawnParameters(mobConfig, mobState.PathId);
                 Vector2 mobPosition = new Vector2(mobState.PositionX, mobState.PositionY);
-                MobController mobController = _context.FieldFactory.CreateMobWithId(mobConfig,
+                MobController mobController = _context.FieldFactory.CreateMobWithId(mobSpawnParameters,
                     mobState.Id, mobState.TargetId,
                     mobPosition);
                 mobController.LoadState(mobState);

@@ -37,6 +37,8 @@ namespace HexSystem
                 hexInstance.SetIsBlocker(false);
             }
             
+            hexInstance.SetIsHighlighted(false);
+            
             return hexInstance;
         }
 

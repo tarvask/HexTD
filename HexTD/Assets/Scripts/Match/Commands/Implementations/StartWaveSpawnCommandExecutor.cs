@@ -46,21 +46,29 @@ namespace Match.Commands.Implementations
                 // player1
                 byte[] mobsIds = (byte[])commandParametersTable[PhotonEventsConstants.StartWaveSpawn.Player1WaveMobsIds];
                 float[] mobsDelays = (float[])commandParametersTable[PhotonEventsConstants.StartWaveSpawn.Player1WaveMobsDelays];
-                List<WaveElementDelay> player1MobsAndDelays = new List<WaveElementDelay>(mobsIds.Length);
+                byte[] mobsPaths = (byte[])commandParametersTable[PhotonEventsConstants.StartWaveSpawn.Player1WaveMobsPaths];
+                List<WaveElementDelayAndPath> player1MobsAndDelays = new List<WaveElementDelayAndPath>(mobsIds.Length);
 
                 for (int mobIndex = 0; mobIndex < mobsIds.Length; mobIndex++)
                 {
-                    player1MobsAndDelays.Add(new WaveElementDelay(mobsIds[mobIndex], mobsDelays[mobIndex]));
+                    player1MobsAndDelays.Add(new WaveElementDelayAndPath(
+                        mobsIds[mobIndex],
+                        mobsDelays[mobIndex],
+                        mobsPaths[mobIndex]));
                 }
                 
                 // player2
                 mobsIds = (byte[])commandParametersTable[PhotonEventsConstants.StartWaveSpawn.Player2WaveMobsIds];
                 mobsDelays = (float[])commandParametersTable[PhotonEventsConstants.StartWaveSpawn.Player2WaveMobsDelays];
-                List<WaveElementDelay> player2MobsAndDelays = new List<WaveElementDelay>(mobsIds.Length);
+                mobsPaths = (byte[])commandParametersTable[PhotonEventsConstants.StartWaveSpawn.Player2WaveMobsPaths];
+                List<WaveElementDelayAndPath> player2MobsAndDelays = new List<WaveElementDelayAndPath>(mobsIds.Length);
 
                 for (int mobIndex = 0; mobIndex < mobsIds.Length; mobIndex++)
                 {
-                    player2MobsAndDelays.Add(new WaveElementDelay(mobsIds[mobIndex], mobsDelays[mobIndex]));
+                    player2MobsAndDelays.Add(new WaveElementDelayAndPath(
+                        mobsIds[mobIndex],
+                        mobsDelays[mobIndex],
+                        mobsPaths[mobIndex]));
                 }
 
                 int randomSeed = (int)commandParametersTable[PhotonEventsConstants.StartWaveSpawn.RandomSeed];
