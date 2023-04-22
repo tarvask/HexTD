@@ -6,6 +6,7 @@ namespace Match.Field.Hand
 {
     public class EnergyCharger : BaseDisposable, IOuterLogicUpdatable
     {
+        private readonly int _energyStartCount;
         private readonly float _energyRestoreDelay;
         private readonly int _energyRestoreValue;
         private readonly int _maxEnergy;
@@ -14,12 +15,13 @@ namespace Match.Field.Hand
 
         public IReadOnlyReactiveProperty<int> CurrentEnergyCount => _currentEnergyCount;
 
-        public EnergyCharger(float energyRestoreDelay, int energyRestoreValue, int maxEnergy)
+        public EnergyCharger(int energyStartCount, float energyRestoreDelay, int energyRestoreValue, int maxEnergy)
         {
+            _energyStartCount = energyStartCount;
             _energyRestoreDelay = energyRestoreDelay;
             _energyRestoreValue = energyRestoreValue;
             _maxEnergy = maxEnergy;
-            _currentEnergyCount = AddDisposable(new IntReactiveProperty(0));
+            _currentEnergyCount = AddDisposable(new IntReactiveProperty(_energyStartCount));
             _energyRecoveryAccumulator = AddDisposable(new FloatReactiveProperty(0f));
         }
 

@@ -11,14 +11,16 @@ namespace Match
     {
         public FieldHex[] Hexes { get; }
         public PathData.SavePathData[] Paths { get; }
-        public WaveParams[] Waves { get; }
-        public int CoinsCount { get; }
+        public WaveParametersStrict[] Waves { get; }
+        //public int CoinsCount { get; }
+        public int EnergyStartCount { get; }
         public PlayerHandParams PlayerHandParams { get; }
         
         public MatchInitDataParameters(HexModel[] hexes,
             PathData.SavePathData[] paths,
-            WaveParams[] waves,
-            int coinsCount,
+            WaveParametersStrict[] waves,
+            //int coinsCount,
+            int energyStartCount,
             PlayerHandParams playerHandParams)
         {
             // fill cells from linear array
@@ -33,11 +35,12 @@ namespace Match
             Array.Copy(paths, Paths, paths.Length);
 
             // fill waves from linear array
-            Waves = new WaveParams[waves.Length];
+            Waves = new WaveParametersStrict[waves.Length];
             Array.Copy(waves, Waves, waves.Length);
             
             // currency and magic
-            CoinsCount = coinsCount;
+            //CoinsCount = coinsCount;
+            EnergyStartCount = energyStartCount;
             
             // hand
             PlayerHandParams = playerHandParams;

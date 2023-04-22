@@ -49,10 +49,14 @@ namespace Match.Commands
             {
                 {PhotonEventsConstants.StartWaveSpawn.DurationParam, builtWaveParams.Duration},
                 {PhotonEventsConstants.StartWaveSpawn.PauseBeforeWaveParam, builtWaveParams.PauseBeforeWave},
+                
                 {PhotonEventsConstants.StartWaveSpawn.Player1WaveMobsIds, builtWaveParams.Player1MobsIdsNetwork},
                 {PhotonEventsConstants.StartWaveSpawn.Player1WaveMobsDelays, builtWaveParams.Player1MobsDelaysNetwork},
+                {PhotonEventsConstants.StartWaveSpawn.Player1WaveMobsPaths, builtWaveParams.Player1MobsPathsNetwork},
+                
                 {PhotonEventsConstants.StartWaveSpawn.Player2WaveMobsIds, builtWaveParams.Player2MobsIdsNetwork},
                 {PhotonEventsConstants.StartWaveSpawn.Player2WaveMobsDelays, builtWaveParams.Player2MobsDelaysNetwork},
+                {PhotonEventsConstants.StartWaveSpawn.Player2WaveMobsPaths, builtWaveParams.Player2MobsPathsNetwork},
                 {PhotonEventsConstants.StartWaveSpawn.RandomSeed, randomSeed},
                 {PhotonEventsConstants.StartWaveSpawn.TimeParam, _context.TestMatchEngine.CurrentEngineFrameReactiveProperty.Value}
             };
