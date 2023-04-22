@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using WindowSystem.Controller;
 using Extensions;
 using Game;
+using UI.ShopwWindow;
 using UniRx;
 
 namespace UI.MainMenuWindow
@@ -26,6 +27,10 @@ namespace UI.MainMenuWindow
 
 			View.MultiPlayerBattleRunClick
 				.Subscribe(RunMultiPlayerBattle)
+				.AddTo(View);
+
+			View.ShopButtonClick
+				.Subscribe(ShowMarket)
 				.AddTo(View);
 		}
 
@@ -52,6 +57,11 @@ namespace UI.MainMenuWindow
 			WindowsManager.CloseAsync(this).Forget();
 
 			_gameController.RunBattle(true);
+		}
+
+		private void ShowMarket()
+		{
+			WindowsManager.OpenAsync<ShopWindowController>();
 		}
 	}
 }
