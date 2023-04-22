@@ -156,7 +156,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         int levelIndexToPlay = Mathf.Clamp(PlayerPrefs.GetInt("Level", 0), 0, levelsConfig.Levels.Length - 1);
 
         MapLoader loader = new MapLoader();
-        LevelMapModel mapModel = await loader.Load();
+        LevelMapModel mapModel = await loader.LoadDefaultMap();
 
         MatchInitDataParameters matchParameters = new MatchInitDataParameters(mapModel.HexModels.ToArray(), 
             mapModel.PathDatas.ToArray(),
