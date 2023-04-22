@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: TestLevel
   m_EditorClassIdentifier: 
   waves:
-  - size: 10
-    duration: 95
+  - size: 20
+    duration: 336
     pauseBeforeWave: 1
     elements:
     - mobId: 1
@@ -45,6 +45,36 @@ MonoBehaviour:
       delay: 15
       pathId: 1
     - mobId: 10
+      delay: 16
+      pathId: 1
+    - mobId: 1
+      delay: 19
+      pathId: 1
+    - mobId: 1
       delay: 20
+      pathId: 1
+    - mobId: 1
+      delay: 21
+      pathId: 1
+    - mobId: 1
+      delay: 22
+      pathId: 1
+    - mobId: 1
+      delay: 23
+      pathId: 1
+    - mobId: 2
+      delay: 26
+      pathId: 1
+    - mobId: 2
+      delay: 27
+      pathId: 1
+    - mobId: 3
+      delay: 28
+      pathId: 1
+    - mobId: 3
+      delay: 29
+      pathId: 1
+    - mobId: 3
+      delay: 30
       pathId: 1
   energyStartCount: 10

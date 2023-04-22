@@ -20,35 +20,34 @@ MonoBehaviour:
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
     placementType: 1
-    reachableAttackTargetFinderType: 1
-    targetFindingTacticType: 2
+    reachableAttackTargetFinderType: 3
+    targetFindingTacticType: 1
     raceType: 1
     epicDegree: 1
   towerLevelConfigs:
     keyData: 0000000002000000
     valueData:
-    - buildPrice: 6
-      refundPrice: 0
+    - buildPrice: 12
+      refundPrice: 3
       buildTime: 1
       healthPoint: 100
-    - buildPrice: 1
+    - buildPrice: 15
       refundPrice: 1
       buildTime: 1
       healthPoint: 120
   attacksConfig:
     attacks:
-    - rid: 8526326042669350912
+    - rid: 4883102068210663427
+    splashAttacks: []
   references:
     version: 2
     RefIds:
-    - rid: 8526326042669350912
-      type: {class: HealTowerAttack, ns: Match.Field.AttackEffect, asm: Assembly-CSharp}
+    - rid: 4883102068210663427
+      type: {class: SimpleTowerAttack, ns: Match.Field.AttackEffect, asm: Assembly-CSharp}
       data:
-        attackTargetType: 2
-        cooldown: 2
-        attackRadiusInHex: 3
-        projectileSpeed: 25
+        attackTargetType: 1
+        cooldown: 3
+        attackRadiusInHex: 4
+        projectileSpeed: 30
         projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
-        healCapacity: 10
-        healPerDelay: 1
-        delay: 0.1
+        baseDamage: 5
