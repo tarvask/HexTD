@@ -16,8 +16,9 @@ namespace Match.Field.Tower
         public bool IsSplashAttackReady => _readyTowerAttackId >= _attacksConfig.Attacks.Count;
         public bool IsReadyAttack => _readyTowerAttackId > -1;
 
-        public int ReadyTowerIndex => IsSplashAttackReady ? 
-            _readyTowerAttackId : _readyTowerAttackId - _attacksConfig.Attacks.Count;
+        public int ReadyTowerIndex => IsSplashAttackReady
+            ? _readyTowerAttackId - _attacksConfig.Attacks.Count
+            : _readyTowerAttackId;
 
         public EntityShootModel(AttacksConfig attacksConfig)
         {

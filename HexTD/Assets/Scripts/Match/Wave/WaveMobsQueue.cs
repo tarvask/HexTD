@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Match.Wave.State;
+using Match.Field.Mob;
 using Tools;
 using Tools.Interfaces;
 
@@ -7,7 +7,7 @@ namespace Match.Wave
 {
     public class WaveMobsQueue : BaseDisposable, IOuterLogicUpdatable
     {
-        private readonly Queue<WaveElementDelay> _waveElements;
+        private readonly Queue<WaveElementDelayAndPath> _waveElements;
         private readonly float _targetWaveDuration;
         
         private float _currentWaveDuration;
@@ -18,18 +18,18 @@ namespace Match.Wave
         public bool HasMoreMobs => _waveElements.Count > 0;
         public bool HasTimeLeft => _currentWaveDuration < _targetWaveDuration;
 
-        public WaveMobsQueue(List<WaveElementDelay> waveElements, float targetWaveDuration)
+        public WaveMobsQueue(List<WaveElementDelayAndPath> waveElements, float targetWaveDuration)
         {
-            _waveElements = new Queue<WaveElementDelay>(waveElements);
+            _waveElements = new Queue<WaveElementDelayAndPath>(waveElements);
             _targetWaveDuration = targetWaveDuration;
             _currentWaveDuration = 0;
             _targetSpawnPause = 0;
             _lastSpawnTime = 0;
         }
 
-        public WaveMobsQueue(WaveElementDelay[] waveElements, int targetWaveDuration)
+        public WaveMobsQueue(WaveElementDelayAndPath[] waveElements, int targetWaveDuration)
         {
-            _waveElements = new Queue<WaveElementDelay>(waveElements);
+            _waveElements = new Queue<WaveElementDelayAndPath>(waveElements);
             _targetWaveDuration = targetWaveDuration * 0.001f;
             _currentWaveDuration = 0;
             _targetSpawnPause = 0;
@@ -41,15 +41,15 @@ namespace Match.Wave
             _currentWaveDuration += frameLength;
         }
 
-        public byte GetNextMobId()
+        public MobWithPath GetNextElement()
         {
-            byte nextMobId = _waveElements.Dequeue().MobId;
+            WaveElementDelayAndPath nextElement = _waveElements.Dequeue();
             _lastSpawnTime = _currentWaveDuration;
             
             if (HasMoreMobs)
                 _targetSpawnPause = _waveElements.Peek().Delay;
 
-            return nextMobId;
+            return new MobWithPath(nextElement.MobId, nextElement.PathId);
         }
         
         public void LoadState(in WavesState.WaveState waveState)

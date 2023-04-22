@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 180d3828ff9324840932e97f70a9424f, type: 3}
   m_Name: FieldConfig
   m_EditorClassIdentifier: 
-  castleHealth: 5
+  castleHealth: 10
   energyRestoreDelay: 2
   energyRestoreValue: 2
   maxEnergy: 100000
   maxOverlappingWaves: 2
+  removeMobsOnBossAppearing: 1
   towerRemovingDuration: 1
   matchInfoShowDuration: 1
   waveInfoShowDuration: 1

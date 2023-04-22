@@ -6,10 +6,11 @@ namespace Match
     [CreateAssetMenu(menuName = "Configs/Match/Level Config")]
     public class MatchConfig : ScriptableObject
     {
-        [SerializeField] private WaveParams[] waves;
-        [SerializeField] private int coinsCount;
+        [SerializeField] private WaveParametersStrict[] waves;
+        //[SerializeField] private int coinsCount;
+        [SerializeField] private int energyStartCount;
 
-        public WaveParams[] Waves
+        public WaveParametersStrict[] Waves
         {
             get { return waves; }
 #if UNITY_EDITOR
@@ -17,11 +18,19 @@ namespace Match
 #endif
         }
 
-        public int CoinsCount
+//         public int CoinsCount
+//         {
+//             get { return coinsCount; }
+// #if UNITY_EDITOR
+//             set { coinsCount = value; }
+// #endif
+//         }
+
+        public int EnergyStartCount
         {
-            get { return coinsCount; }
+            get { return energyStartCount; }
 #if UNITY_EDITOR
-            set { coinsCount = value; }
+            set { energyStartCount = value; }
 #endif
         }
 
@@ -29,7 +38,7 @@ namespace Match
         [ContextMenu("Check Consistency")]
         private void CheckConsistency()
         {
-            foreach (WaveParams wave in waves)
+            foreach (WaveParametersStrict wave in waves)
                 wave.CheckConsistency();
         }
 #endif

@@ -58,6 +58,7 @@ namespace Match.Field.Mob
         private bool _hasReachedCastle;
         private bool _isEscaping;
         private bool _isInSafety;
+        private bool _isBoss;
 
         public int Id => _context.Id;
         public override int TargetId => _context.TargetId;
@@ -78,6 +79,7 @@ namespace Match.Field.Mob
         public bool HasReachedCastle => _hasReachedCastle;
         public bool IsEscaping => _isEscaping;
         public bool IsInSafety => _isInSafety;
+        public bool IsBoss => _context.Parameters.IsBoss;
         
         public bool CanMove => true;
 
@@ -240,7 +242,7 @@ namespace Match.Field.Mob
         public PlayerState.MobState GetMobState()
         {
             return new PlayerState.MobState(_context.Id, _context.TargetId, _context.Parameters.TypeId,
-                Position.x, Position.y, _context.PathEnumerator.CurrentPointIndex, _reactiveModel.Health.Value);
+                Position.x, Position.y, _pathIndex, _context.PathEnumerator.CurrentPointIndex, _reactiveModel.Health.Value);
         }
 
         public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITarget>> buffs, IBuff<ITarget> addedBuff)

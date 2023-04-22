@@ -13,21 +13,29 @@ namespace Match.Field.Services
         public struct Context
         {
             public MobsByTowersBlocker MobsByTowersBlocker { get; }
+            public bool RemoveMobsOnBossAppearing { get; }
             
             public ReactiveCommand<MobController> AttackTowerByMobReactiveCommand { get; }
             public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
 
             public Context(
                 MobsByTowersBlocker mobsByTowersBlocker,
+                bool removeMobsOnBossAppearing,
+                
                 ReactiveCommand<MobController> attackTowerByMobReactiveCommand,
                 ReactiveCommand<int> reachCastleByMobReactiveCommand,
-                ReactiveCommand<MobController> removeMobReactiveCommand)
+                ReactiveCommand<MobController> removeMobReactiveCommand,
+                ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand)
             {
                 MobsByTowersBlocker = mobsByTowersBlocker;
+                RemoveMobsOnBossAppearing = removeMobsOnBossAppearing;
+                
                 AttackTowerByMobReactiveCommand = attackTowerByMobReactiveCommand;
                 ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
+                SpawnMobReactiveCommand = spawnMobReactiveCommand;
             }
         }
 
@@ -51,6 +59,8 @@ namespace Match.Field.Services
             _deadBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _carrionBodies = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _escapingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+
+            _context.SpawnMobReactiveCommand.Subscribe(CheckForBossSpawn);
         }
 
         public void AddMob(MobController mobController)
@@ -178,6 +188,23 @@ namespace Match.Field.Services
             }
             
             _escapingMobs.Clear();
+        }
+
+        private void CheckForBossSpawn(MobSpawnParameters mobSpawnParameters)
+        {
+            if (mobSpawnParameters.MobConfig.Parameters.IsBoss && _context.RemoveMobsOnBossAppearing)
+            {
+                RemoveMobsOnBossAppearing();
+            }
+        }
+
+        private void RemoveMobsOnBossAppearing()
+        {
+            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
+            {
+                if (mobPair.Value.IsBoss) continue;
+                _dyingMobs.Add(mobPair.Value);
+            }
         }
 
         public void Clear()
