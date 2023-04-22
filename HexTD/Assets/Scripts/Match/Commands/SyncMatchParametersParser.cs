@@ -103,7 +103,7 @@ namespace Match.Commands
             for (byte pathIndex = 0; pathIndex < pathCount; pathIndex++)
             {
                 if (!parametersTable.TryGetValue(
-                        $"{PhotonEventsConstants.SyncMatch.MatchConfigPathsCount}{pathIndex}", out object pathHashtableObject))
+                        $"{PhotonEventsConstants.SyncMatch.MatchConfigPathFieldParam}{pathIndex}", out object pathHashtableObject))
                     break;
 
                 Hashtable pathHashtable = (Hashtable) pathHashtableObject;
@@ -122,7 +122,10 @@ namespace Match.Commands
             }
             
             // coins
-            int startCoins = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartCoinsParam];
+//            int startCoins = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartCoinsParam];
+
+            // energy start
+            int energyStart = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartEnergyParam];
 
             // hand
             // towers
@@ -136,7 +139,7 @@ namespace Match.Commands
 
             PlayerHandParams clientPlayerHand = new PlayerHandParams(towers);
             MatchInitDataParameters clientMatchParameters = new MatchInitDataParameters(
-                hexModels, paths, waves, startCoins, clientPlayerHand);
+                hexModels, paths, waves, energyStart, clientPlayerHand);
 
             // random seed
             int randomSeed = (int) parametersTable[PhotonEventsConstants.SyncMatch.RandomSeed];
