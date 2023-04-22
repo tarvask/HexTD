@@ -9,9 +9,10 @@ namespace UI.MainMenuWindow
 {
 	public class MainMenuWindowView : WindowViewBase
 	{
-		[SerializeField] private Image testImage;
+		//[SerializeField] private Image testImage;
 		[SerializeField] private Button singlePlayerBattleRunButton;
 		[SerializeField] private Button multiPlayerBattleRunButton;
+		[SerializeField] private Button shopButton;
 
 		public IObservable<Unit> SinglePlayerBattleRunClick => singlePlayerBattleRunButton
 			.OnClickAsObservable()
@@ -21,6 +22,10 @@ namespace UI.MainMenuWindow
 			.OnClickAsObservable()
 			.WhereAppeared(this);
 
-		public void TestShowLoaded() => testImage.color = Color.green;
+		public IObservable<Unit> ShopButtonClick => shopButton
+			.OnClickAsObservable()
+			.WhereAppeared(this);
+
+		//public void TestShowLoaded() => testImage.color = Color.green;
 	}
 }

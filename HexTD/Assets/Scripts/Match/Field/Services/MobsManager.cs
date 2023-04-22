@@ -12,11 +12,30 @@ namespace Match.Field.Services
     {
         public struct Context
         {
-            public ReactiveCommand<int> AttackCastleByMobReactiveCommand { get; }
+            public MobsByTowersBlocker MobsByTowersBlocker { get; }
+            public bool RemoveMobsOnBossAppearing { get; }
+            
+            public ReactiveCommand<MobController> AttackTowerByMobReactiveCommand { get; }
+            public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
+            public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
 
-            public Context(ReactiveCommand<int> attackCastleByMobReactiveCommand)
+            public Context(
+                MobsByTowersBlocker mobsByTowersBlocker,
+                bool removeMobsOnBossAppearing,
+                
+                ReactiveCommand<MobController> attackTowerByMobReactiveCommand,
+                ReactiveCommand<int> reachCastleByMobReactiveCommand,
+                ReactiveCommand<MobController> removeMobReactiveCommand,
+                ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand)
             {
-                AttackCastleByMobReactiveCommand = attackCastleByMobReactiveCommand;
+                MobsByTowersBlocker = mobsByTowersBlocker;
+                RemoveMobsOnBossAppearing = removeMobsOnBossAppearing;
+                
+                AttackTowerByMobReactiveCommand = attackTowerByMobReactiveCommand;
+                ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
+                RemoveMobReactiveCommand = removeMobReactiveCommand;
+                SpawnMobReactiveCommand = spawnMobReactiveCommand;
             }
         }
 
@@ -40,6 +59,8 @@ namespace Match.Field.Services
             _deadBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _carrionBodies = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _escapingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+
+            _context.SpawnMobReactiveCommand.Subscribe(CheckForBossSpawn);
         }
 
         public void AddMob(MobController mobController)
@@ -56,6 +77,7 @@ namespace Match.Field.Services
         {
             UpdateMobsHealth(frameLength);
             UpdateMobsLogicMoving(frameLength);
+            UpdateMobsAttacking(frameLength);
             UpdateMobsEscaping(frameLength);
         }
         
@@ -80,6 +102,7 @@ namespace Match.Field.Services
                 _deadBodies.Add(dyingMob.Id, dyingMob);
                 _mobsContainer.RemoveMob(dyingMob);
                 dyingMob.Die();
+                _context.RemoveMobReactiveCommand.Execute(dyingMob);
             }
 
             foreach (KeyValuePair<int, MobController> mobPair in _deadBodies)
@@ -102,7 +125,20 @@ namespace Match.Field.Services
 
         private void UpdateMobsLogicMoving(float frameLength)
         {
-            _mobsContainer.UpdateMobsLogicMoving(frameLength);
+            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
+            {
+                if (mobPair.Value.IsBlocked || mobPair.Value.HasReachedCastle)
+                    continue;
+            
+                // special treatment for attacking towers on the way
+                if (_context.MobsByTowersBlocker.TryGetBlockingTowerForMob(mobPair.Value, out int blockerId))
+                {
+                    mobPair.Value.Block(blockerId);
+                    continue;
+                }
+                
+                mobPair.Value.LogicMove(frameLength);
+            }
         }
         
         private void UpdateMobsVisualMoving(float frameLength)
@@ -110,6 +146,20 @@ namespace Match.Field.Services
             foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
                 mobPair.Value.VisualMove(frameLength);
+            }
+        }
+        
+        private void UpdateMobsAttacking(float frameLength)
+        {
+            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
+            {
+                if (!mobPair.Value.IsBlocked)
+                    continue;
+                
+                mobPair.Value.UpdateTimer(frameLength);
+                
+                if (mobPair.Value.IsReadyToAttack)
+                    _context.AttackTowerByMobReactiveCommand.Execute(mobPair.Value);
             }
         }
 
@@ -121,22 +171,40 @@ namespace Match.Field.Services
                     _escapingMobs.Add(mobPair.Value);
             }
 
-            foreach (MobController mob in _escapingMobs)
+            foreach (MobController escapingMob in _escapingMobs)
             {
-                if (!mob.IsEscaping)
+                if (!escapingMob.IsEscaping)
                 {
-                    _context.AttackCastleByMobReactiveCommand.Execute(1); // 1 means that 1 mob escaped
-                    mob.Escape();
+                    _context.ReachCastleByMobReactiveCommand.Execute(1); // 1 means that 1 mob escaped
+                    escapingMob.Escape();
+                    _context.RemoveMobReactiveCommand.Execute(escapingMob);
                 }
 
-                if (mob.IsEscaping && mob.IsInSafety)
+                if (escapingMob.IsEscaping && escapingMob.IsInSafety)
                 {
-                    RemoveMob(mob);
-                    mob.Dispose();
+                    RemoveMob(escapingMob);
+                    escapingMob.Dispose();
                 }
             }
             
             _escapingMobs.Clear();
+        }
+
+        private void CheckForBossSpawn(MobSpawnParameters mobSpawnParameters)
+        {
+            if (mobSpawnParameters.MobConfig.Parameters.IsBoss && _context.RemoveMobsOnBossAppearing)
+            {
+                RemoveMobsOnBossAppearing();
+            }
+        }
+
+        private void RemoveMobsOnBossAppearing()
+        {
+            foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
+            {
+                if (mobPair.Value.IsBoss) continue;
+                _dyingMobs.Add(mobPair.Value);
+            }
         }
 
         public void Clear()

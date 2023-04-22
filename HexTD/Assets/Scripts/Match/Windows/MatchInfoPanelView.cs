@@ -15,6 +15,7 @@ namespace Match.Windows
         [SerializeField] private TextMeshProUGUI ourCastleHealthText;
         [SerializeField] private Text ourGoldCoinsCountText;
         [SerializeField] private Text ourCrystalsCountText;
+        [SerializeField] private RawImage enemyFieldImage;
 
         [Space]
         [SerializeField] private MatchInfoRoundStartInfoPanelView roundStartInfoPanel;
@@ -30,6 +31,7 @@ namespace Match.Windows
         public TextMeshProUGUI OurCastleHealthText => ourCastleHealthText;
         public Text OurGoldCoinsCountText => ourGoldCoinsCountText;
         public Text OurCrystalsCountText => ourCrystalsCountText;
+        public RawImage EnemyFieldImage => enemyFieldImage;
 
         public MatchInfoRoundStartInfoPanelView RoundStartInfoPanel => roundStartInfoPanel;
 

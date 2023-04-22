@@ -4,13 +4,13 @@ namespace Match.Wave
 {
     public struct BuiltWaveParams
     {
-        private readonly List<WaveElementDelay> _player1MobsAndDelays;
-        private readonly List<WaveElementDelay> _player2MobsAndDelays;
+        private readonly List<WaveElementDelayAndPath> _player1MobsWithDelaysAndPaths;
+        private readonly List<WaveElementDelayAndPath> _player2MobsWithDelaysAndPaths;
         private readonly float _duration;
         private readonly float _pauseBeforeWave;
 
-        public List<WaveElementDelay> Player1MobsAndDelays => _player1MobsAndDelays;
-        public List<WaveElementDelay> Player2MobsAndDelays => _player2MobsAndDelays;
+        public List<WaveElementDelayAndPath> Player1MobsWithDelaysAndPaths => _player1MobsWithDelaysAndPaths;
+        public List<WaveElementDelayAndPath> Player2MobsWithDelaysAndPaths => _player2MobsWithDelaysAndPaths;
         public float Duration => _duration;
         public float PauseBeforeWave => _pauseBeforeWave;
         
@@ -19,11 +19,11 @@ namespace Match.Wave
         {
             get
             {
-                byte[] mobsIds = new byte[_player1MobsAndDelays.Count];
+                byte[] mobsIds = new byte[_player1MobsWithDelaysAndPaths.Count];
 
-                for (int mobIndex = 0; mobIndex < _player1MobsAndDelays.Count; mobIndex++)
+                for (int mobIndex = 0; mobIndex < _player1MobsWithDelaysAndPaths.Count; mobIndex++)
                 {
-                    mobsIds[mobIndex] = _player1MobsAndDelays[mobIndex].MobId;
+                    mobsIds[mobIndex] = _player1MobsWithDelaysAndPaths[mobIndex].MobId;
                 }
 
                 return mobsIds;
@@ -34,11 +34,11 @@ namespace Match.Wave
         {
             get
             {
-                byte[] mobsIds = new byte[_player2MobsAndDelays.Count];
+                byte[] mobsIds = new byte[_player2MobsWithDelaysAndPaths.Count];
 
-                for (int mobIndex = 0; mobIndex < _player2MobsAndDelays.Count; mobIndex++)
+                for (int mobIndex = 0; mobIndex < _player2MobsWithDelaysAndPaths.Count; mobIndex++)
                 {
-                    mobsIds[mobIndex] = _player2MobsAndDelays[mobIndex].MobId;
+                    mobsIds[mobIndex] = _player2MobsWithDelaysAndPaths[mobIndex].MobId;
                 }
 
                 return mobsIds;
@@ -49,11 +49,11 @@ namespace Match.Wave
         {
             get
             {
-                float[] mobsDelays = new float[_player1MobsAndDelays.Count];
+                float[] mobsDelays = new float[_player1MobsWithDelaysAndPaths.Count];
 
-                for (int mobIndex = 0; mobIndex < _player1MobsAndDelays.Count; mobIndex++)
+                for (int mobIndex = 0; mobIndex < _player1MobsWithDelaysAndPaths.Count; mobIndex++)
                 {
-                    mobsDelays[mobIndex] = _player1MobsAndDelays[mobIndex].Delay;
+                    mobsDelays[mobIndex] = _player1MobsWithDelaysAndPaths[mobIndex].Delay;
                 }
 
                 return mobsDelays;
@@ -64,24 +64,54 @@ namespace Match.Wave
         {
             get
             {
-                float[] mobsDelays = new float[_player2MobsAndDelays.Count];
+                float[] mobsDelays = new float[_player2MobsWithDelaysAndPaths.Count];
 
-                for (int mobIndex = 0; mobIndex < _player2MobsAndDelays.Count; mobIndex++)
+                for (int mobIndex = 0; mobIndex < _player2MobsWithDelaysAndPaths.Count; mobIndex++)
                 {
-                    mobsDelays[mobIndex] = _player2MobsAndDelays[mobIndex].Delay;
+                    mobsDelays[mobIndex] = _player2MobsWithDelaysAndPaths[mobIndex].Delay;
                 }
 
                 return mobsDelays;
             }
         }
+        
+        public byte[] Player1MobsPathsNetwork
+        {
+            get
+            {
+                byte[] mobsPaths = new byte[_player1MobsWithDelaysAndPaths.Count];
+
+                for (int mobIndex = 0; mobIndex < _player1MobsWithDelaysAndPaths.Count; mobIndex++)
+                {
+                    mobsPaths[mobIndex] = _player1MobsWithDelaysAndPaths[mobIndex].PathId;
+                }
+
+                return mobsPaths;
+            }
+        }
+        
+        public byte[] Player2MobsPathsNetwork
+        {
+            get
+            {
+                byte[] mobsPaths = new byte[_player2MobsWithDelaysAndPaths.Count];
+
+                for (int mobIndex = 0; mobIndex < _player2MobsWithDelaysAndPaths.Count; mobIndex++)
+                {
+                    mobsPaths[mobIndex] = _player2MobsWithDelaysAndPaths[mobIndex].PathId;
+                }
+
+                return mobsPaths;
+            }
+        }
 
         public BuiltWaveParams(
-            List<WaveElementDelay> player1MobsAndDelaysParam, List<WaveElementDelay> player2MobsAndDelaysParam,
+            List<WaveElementDelayAndPath> player1MobsWithDelaysAndPathsParam, List<WaveElementDelayAndPath> player2MobsWithDelaysAndPathsParam,
             float durationParam,
             float pauseBeforeWaveParam)
         {
-            _player1MobsAndDelays = player1MobsAndDelaysParam;
-            _player2MobsAndDelays = player2MobsAndDelaysParam;
+            _player1MobsWithDelaysAndPaths = player1MobsWithDelaysAndPathsParam;
+            _player2MobsWithDelaysAndPaths = player2MobsWithDelaysAndPathsParam;
             _duration = durationParam;
             _pauseBeforeWave = pauseBeforeWaveParam;
         }

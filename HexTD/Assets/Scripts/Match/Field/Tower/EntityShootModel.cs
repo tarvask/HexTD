@@ -13,7 +13,12 @@ namespace Match.Field.Tower
 
         private int _readyTowerAttackId;
 
+        public bool IsSplashAttackReady => _readyTowerAttackId >= _attacksConfig.Attacks.Count;
         public bool IsReadyAttack => _readyTowerAttackId > -1;
+
+        public int ReadyTowerIndex => IsSplashAttackReady
+            ? _readyTowerAttackId - _attacksConfig.Attacks.Count
+            : _readyTowerAttackId;
 
         public EntityShootModel(AttacksConfig attacksConfig)
         {
@@ -21,7 +26,14 @@ namespace Match.Field.Tower
             
             _cooldowns = new Dictionary<int, float>();
             int id = 0;
+            
             foreach (var towerAttack in _attacksConfig.Attacks)
+            {
+                _cooldowns.Add(id, towerAttack.Cooldown);
+                id++;
+            }
+            
+            foreach (var towerAttack in _attacksConfig.SplashAttacks)
             {
                 _cooldowns.Add(id, towerAttack.Cooldown);
                 id++;
@@ -40,25 +52,30 @@ namespace Match.Field.Tower
             }
         }
 
-        public bool TryReleaseTowerAttack(bool isReloadNeeded, out BaseAttackEffect towerAttack, out int attackindex)
+        public bool TryGetTowerAttack(out BaseAttackEffect towerAttack)
         {
             if (!IsReadyAttack)
             {
                 towerAttack = null;
-                attackindex = -1;
                 return false;
             }
 
-            attackindex = _readyTowerAttackId;
-            towerAttack = _attacksConfig.Attacks[_readyTowerAttackId];
-
-            if (isReloadNeeded)
-            {
-                _cooldowns[_readyTowerAttackId] = towerAttack.Cooldown;
-                _readyTowerAttackId = -1;
-            }
-            
+            towerAttack = GetReadyAttack();
             return true;
+        }
+
+        private BaseAttackEffect GetReadyAttack()
+        {
+            if(IsSplashAttackReady)
+                return _attacksConfig.SplashAttacks[_readyTowerAttackId - _attacksConfig.Attacks.Count];
+            else
+                return _attacksConfig.Attacks[ReadyTowerIndex];
+        }
+
+        public void ReloadCurrentAttack()
+        {
+            _cooldowns[_readyTowerAttackId] = GetReadyAttack().Cooldown;
+            _readyTowerAttackId = -1;
         }
 
         protected override void OnDispose()

@@ -21,8 +21,9 @@ namespace Match
             public MatchUiViewsCollection UiViews { get; }
             public Canvas Canvas { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
+            public readonly bool IsMultiPlayerGame { get; }
             public PlayerHandController PlayerHandController { get; }
-            public WaveParams[] Waves { get; }
+            public WaveParametersStrict[] Waves { get; }
             
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
             public ReactiveCommand<HealthInfo> EnemyCastleHealthChangedReactiveCommand { get; }
@@ -40,9 +41,10 @@ namespace Match
 
             public Context(MatchUiViewsCollection uiViews, Canvas canvas,
                 ConfigsRetriever configsRetriever,
+                bool isMultiPlayerGame,
                 PlayerHandController playerHandController,
-                WaveParams[] waves,
-
+                WaveParametersStrict[] waves,
+                
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,
                 ReactiveCommand<HealthInfo> ourCastleHealthChangedReactiveCommand,
@@ -60,6 +62,7 @@ namespace Match
                 UiViews = uiViews;
                 Canvas = canvas;
                 ConfigsRetriever = configsRetriever;
+                IsMultiPlayerGame = isMultiPlayerGame;
                 PlayerHandController = playerHandController;
                 Waves = waves;
 
@@ -133,6 +136,7 @@ namespace Match
             MatchInfoPanelController.Context matchInfoPanelControllerContext = new MatchInfoPanelController.Context(
                 _context.UiViews.MatchInfoPanelView,
                 _context.Canvas,
+                _context.IsMultiPlayerGame,
                 _context.Waves,
                 
                 _context.EnemyCastleHealthChangedReactiveCommand,

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: OurFieldCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -57,7 +57,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 100
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -136,7 +136,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ourFieldRoot: {fileID: 2325674174237508602}
   enemyFieldRoot: {fileID: 8159512944076551577}
-  mainCamera: {fileID: 963194227}
+  ourFieldCamera: {fileID: 963194227}
+  enemyFieldCamera: {fileID: 5045678047444839497}
   canvas: {fileID: 1459773889187978631}
   canvasFitter: {fileID: 3216175953465636960}
   fieldConfig: {fileID: 11400000, guid: 810dac60ce049b143bbecd717c66467e, type: 2}
@@ -151,94 +152,6 @@ MonoBehaviour:
     towerManipulationWindowView: {fileID: 4022231435327895793}
     towerInfoWindowView: {fileID: 1978950528191857014}
     mobInfoWindowView: {fileID: 3059190071441412242}
---- !u!1 &1342222274532795381
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5920473149331605813}
-  - component: {fileID: 1067356226391077809}
-  - component: {fileID: 3248965682306575909}
-  - component: {fileID: 799673638698263257}
-  m_Layer: 5
-  m_Name: EnemyFieldRawImage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &5920473149331605813
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1342222274532795381}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1803853322276734568}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0.29358423}
-  m_AnchoredPosition: {x: 200, y: 200}
-  m_SizeDelta: {x: 0, y: -0.000015258789}
-  m_Pivot: {x: 0.0000000037252903, y: 0.00000007264316}
---- !u!222 &1067356226391077809
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1342222274532795381}
-  m_CullTransparentMesh: 1
---- !u!114 &3248965682306575909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1342222274532795381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Texture: {fileID: 8400000, guid: b83ad7c33fe48a74da13432ffdb9b4cf, type: 2}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
---- !u!114 &799673638698263257
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1342222274532795381}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_AspectMode: 2
-  m_AspectRatio: 1.7777778
 --- !u!1 &2481966066536397335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1034,6 +947,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7383304108965505586, guid: bf3c1647da3ba4fafb96c470a3d275c0, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7578644813866034854, guid: bf3c1647da3ba4fafb96c470a3d275c0, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7578644813866034854, guid: bf3c1647da3ba4fafb96c470a3d275c0, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7743425669168408305, guid: bf3c1647da3ba4fafb96c470a3d275c0, type: 3}

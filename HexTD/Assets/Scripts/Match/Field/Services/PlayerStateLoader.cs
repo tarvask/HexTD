@@ -76,8 +76,9 @@ namespace Match.Field.Services
                 ref readonly PlayerState.MobState mobState = ref playerState.Mobs.Mobs[mobIndex];
                 
                 MobConfig mobConfig = _context.ConfigsRetriever.GetMobById(mobState.TypeId);
+                MobSpawnParameters mobSpawnParameters = new MobSpawnParameters(mobConfig, mobState.PathId);
                 Vector2 mobPosition = new Vector2(mobState.PositionX, mobState.PositionY);
-                MobController mobController = _context.FieldFactory.CreateMobWithId(mobConfig,
+                MobController mobController = _context.FieldFactory.CreateMobWithId(mobSpawnParameters,
                     mobState.Id, mobState.TargetId,
                     mobPosition);
                 mobController.LoadState(mobState);
@@ -96,14 +97,13 @@ namespace Match.Field.Services
                 TowerType towerType = _context.FieldModel.TowersManager.Towers[projectileState.TowerId].TowerType;
                 TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerType);
                 
-                
                 Vector3 projectilePosition = new Vector3(projectileState.PositionX, projectileState.PositionY);
                 ProjectileController projectileController = _context.FieldFactory.CreateProjectileWithId(
-                    towerConfig.AttacksConfig.Attacks[projectileState.Attackindex],
+                    towerConfig.AttacksConfig.Attacks[projectileState.AttackIndex],
                     projectileState.Id,
-                    projectileState.Attackindex,
+                    projectileState.AttackIndex,
                     projectilePosition,
-                    projectileState.HasSplash, projectileState.SplashRadius, projectileState.HasProgressiveSplash,
+                    projectileState.HasSplash,
                     projectileState.TowerId, projectileState.TargetId);
                 projectileController.LoadState(projectileState);
                 

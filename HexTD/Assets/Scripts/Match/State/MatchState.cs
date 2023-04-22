@@ -1,6 +1,6 @@
 using ExitGames.Client.Photon;
 using Match.Field.State;
-using Match.Wave.State;
+using Match.Wave;
 
 namespace Match.State
 {

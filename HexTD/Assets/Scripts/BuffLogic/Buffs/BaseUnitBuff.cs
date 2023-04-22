@@ -3,9 +3,9 @@ using Match.Field.Shooting;
 
 namespace BuffLogic
 {
-    public abstract class BaseUnitBuff : IBuff<ITargetable>
+    public abstract class BaseUnitBuff : IBuff<ITarget>
     {
-        protected ITargetable BuffableValue;
+        protected ITarget BuffableValue;
         private bool _isEndConditionDone;
 
         public int Priority => int.MaxValue;
@@ -17,13 +17,13 @@ namespace BuffLogic
             _isEndConditionDone = false;
         }
 
-        public ITargetable ApplyBuff(ITargetable value)
+        public ITarget ApplyBuff(ITarget value)
         {
             BuffableValue = value;
             return value;
         }
 
-        public ITargetable RevokeBuff(ITargetable value)
+        public ITarget RevokeBuff(ITarget value)
         {
             BuffableValue = null;
             return value;
@@ -39,7 +39,7 @@ namespace BuffLogic
             _isEndConditionDone = ConditionCheck();
         }
 
-        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff<ITargetable>;
+        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff<ITarget>;
         protected abstract void UpdateBuff();
         protected abstract bool ConditionCheck();
     }

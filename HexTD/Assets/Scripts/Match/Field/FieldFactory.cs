@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using HexSystem;
+using MapEditor;
 using Match.Field.AttackEffect;
 using Match.Field.Castle;
 using Match.Field.Hexagons;
@@ -25,19 +27,26 @@ namespace Match.Field
             public HexagonalFieldModel HexagonalFieldModel { get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
+            public HexMapReachableService HexMapReachableService { get; }
+            public HexObjectsContainer HexObjectsContainer { get; }
             
-            public ReactiveCommand<int> AttackCastleByMobReactiveCommand { get; }
+            public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
-            public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
+            public ReactiveCommand<IReadOnlyCollection<Hex2d>> EnableHexesHighlightReactiveCommand { get; }
+            public ReactiveCommand RemoveAllHexesHighlightsReactiveCommand { get; }
 
             public Context(Transform fieldRoot,
                 HexFabric hexFabric,
                 PathContainer pathContainer,
                 HexagonalFieldModel hexagonalFieldModel,
                 int castleHealth, int towerRemovingDuration,
-                ReactiveCommand<int> attackCastleByMobReactiveCommand,
+                HexMapReachableService hexMapReachableService,
+                HexObjectsContainer hexObjectsContainer,
+                ReactiveCommand<int> reachCastleByMobReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
-                ReactiveCommand<MobController> removeMobReactiveCommand)
+                ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand ,
+                ReactiveCommand removeAllHexesHighlightsReactiveCommand
+                )
             {
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
@@ -46,9 +55,12 @@ namespace Match.Field
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
-                AttackCastleByMobReactiveCommand = attackCastleByMobReactiveCommand;
+                HexMapReachableService = hexMapReachableService;
+                HexObjectsContainer = hexObjectsContainer;
+                ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
-                RemoveMobReactiveCommand = removeMobReactiveCommand;
+                EnableHexesHighlightReactiveCommand = enableHexesHighlightReactiveCommand;
+                RemoveAllHexesHighlightsReactiveCommand = removeAllHexesHighlightsReactiveCommand;
             }
         }
 
@@ -141,7 +153,10 @@ namespace Match.Field
             TowerView towerView = CreateTowerView(towerConfig.RegularParameters.TowerName, 
                 towerId, towerConfig.View, position);
             TowerController.Context towerControllerContext = new TowerController.Context(towerId, targetId,
-                position, towerConfig, towerView, towerConfig.Icon, _context.TowerRemovingDuration);
+                position, towerConfig, towerView, towerConfig.Icon, _context.TowerRemovingDuration,
+                _context.HexMapReachableService,
+                _context.EnableHexesHighlightReactiveCommand,
+                _context.RemoveAllHexesHighlightsReactiveCommand);
             TowerController towerController = new TowerController(towerControllerContext);
 
             return towerController;
@@ -151,7 +166,7 @@ namespace Match.Field
             Hex2d position)
         {
             TowerView towerView = Object.Instantiate(towerPrefab, _buildingsRoot);
-            towerView.transform.position = _context.HexagonalFieldModel.GetUpHexPosition(position);
+            towerView.transform.localPosition = _context.HexagonalFieldModel.GetHexPosition(position, false);
             towerView.name = $"{towerId}_{towerName}";
 
             return towerView;
@@ -168,22 +183,22 @@ namespace Match.Field
         public CastleController CreateCastle()
         {
             CastleController.Context castleContext = new CastleController.Context(_context.CastleHealth,
-                _context.AttackCastleByMobReactiveCommand, _context.CastleDestroyedReactiveCommand);
+                _context.ReachCastleByMobReactiveCommand, _context.CastleDestroyedReactiveCommand);
             CastleController castle = new CastleController(castleContext);
             
             return castle;
         }
 
-        public MobController CreateMob(MobConfig mobConfig,
+        public MobController CreateMob(MobSpawnParameters mobSpawnParameters,
             Vector3 spawnPosition)
         {
             _lastMobId++;
             _lastTargetId++;
 
-            return CreateMobWithId(mobConfig, _lastMobId, _lastTargetId, spawnPosition);
+            return CreateMobWithId(mobSpawnParameters, _lastMobId, _lastTargetId, spawnPosition);
         }
 
-        public MobController CreateMobWithId(MobConfig mobConfig, int mobId, int targetId,
+        public MobController CreateMobWithId(MobSpawnParameters mobSpawnParameters, int mobId, int targetId,
             Vector3 hexSpawnPosition)
         {
             if (_lastMobId < mobId)
@@ -192,16 +207,16 @@ namespace Match.Field
             if (_lastTargetId < targetId)
                 _lastTargetId = targetId;
 
-            if (!_context.PathContainer.TryGetPathData(mobConfig.Parameters.PathName, out PathData pathData))
-                throw new ArgumentException($"Unknown path name in mob's Parameters - in [{mobConfig.name}] prefab");
+            if (!_context.PathContainer.TryGetPathData(mobSpawnParameters.PathId, out PathData pathData))
+                throw new ArgumentException($"Unknown path name in mob's Parameters - in [{mobSpawnParameters.MobConfig.name}] prefab");
 
-            MobView mobView = CreateMobView($"{mobConfig.Parameters.PowerType}",
-                mobId, mobConfig.View, hexSpawnPosition);
+            MobView mobView = CreateMobView($"{mobSpawnParameters.MobConfig.Parameters.PowerType}",
+                mobId, mobSpawnParameters.MobConfig.View, hexSpawnPosition);
             MobController.Context mobControllerContext = new MobController.Context(mobId, targetId,
-                mobConfig.Parameters,
+                mobSpawnParameters.MobConfig.Parameters,
                 pathData.GetPathEnumerator(), 
                 _context.HexagonalFieldModel,
-                mobView, _context.RemoveMobReactiveCommand);
+                mobView);
             MobController mobController = new MobController(mobControllerContext);
 
             return mobController;
@@ -211,35 +226,39 @@ namespace Match.Field
             Vector3 spawnPosition)
         {
             MobView mobView = Object.Instantiate(mobPrefab, _mobsRoot);
-            mobView.transform.position = spawnPosition;
+            mobView.transform.localPosition = spawnPosition;
             mobView.name = $"{mobId}_{mobName}";
 
             return mobView;
         }
         
         public ProjectileController CreateProjectile(BaseAttackEffect attack, int attackIndex,
-            Vector3 spawnPosition, bool hasSplashDamage, float splashDamageRadius, bool hasProgressiveSplash,
+            Vector3 spawnPosition, bool hasSplashDamage,
             int towerId, int targetId)
         {
             _lastProjectileId++;
 
             return CreateProjectileWithId(attack, attackIndex,
                 _lastProjectileId, spawnPosition, hasSplashDamage, 
-                splashDamageRadius, hasProgressiveSplash,
                 towerId, targetId);
         }
 
         public ProjectileController CreateProjectileWithId(BaseAttackEffect baseTowerAttack,
             int attackIndex, int projectileId, Vector3 spawnPosition, bool hasSplashDamage, 
-            float splashDamageRadius, bool hasProgressiveSplash, int towerId, int targetId)
+            int towerId, int targetId)
         {
             if (_lastProjectileId < projectileId)
                 _lastProjectileId = projectileId;
+
+            SplashShootType splashShootType = baseTowerAttack is BaseSplashAttack
+                ? ((BaseSplashAttack)baseTowerAttack).SplashShootType
+                : SplashShootType.ToTarget;
             
             ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttack.ProjectileView, spawnPosition);
             ProjectileController.Context projectileControllerContext = new ProjectileController.Context(projectileId,
-                baseTowerAttack, attackIndex, projectileInstance, baseTowerAttack.ProjectileSpeed, 
-                hasSplashDamage, splashDamageRadius, hasProgressiveSplash, towerId, targetId);
+                projectileInstance,
+                baseTowerAttack, attackIndex, splashShootType,
+                baseTowerAttack.ProjectileSpeed, hasSplashDamage, towerId, targetId);
             ProjectileController projectileController = new ProjectileController(projectileControllerContext);
 
             return projectileController;
@@ -248,7 +267,7 @@ namespace Match.Field
         private ProjectileView CreateProjectileView(int projectileId, ProjectileView projectilePrefab, Vector3 spawnPosition)
         {
             ProjectileView projectileInstance = Object.Instantiate(projectilePrefab, _projectilesRoot);
-            projectileInstance.transform.position = spawnPosition;
+            projectileInstance.transform.localPosition = spawnPosition;
             projectileInstance.name = $"{projectileId}_bullet";
 
             return projectileInstance;
@@ -264,9 +283,10 @@ namespace Match.Field
 
         public void CreateHexTile(HexModel hexModel)
         {
-            Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition(
-                (Hex3d)hexModel);
-            _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
+            Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)hexModel);
+
+            var hexObject = _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
+            _context.HexObjectsContainer.HexObjects.Add(hexModel.GetHashCode(), hexObject);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using Keiwando.NFSO;
 using Newtonsoft.Json;
-using Unity.VisualScripting;
+using UnityEngine;
 
 namespace MapEditor
 {
@@ -57,6 +57,17 @@ namespace MapEditor
             {
                 await Task.Delay(100);
             }
+
+            return levelMapModel;
+        }
+        
+        public async UniTask<LevelMapModel> LoadDefaultMap()
+        {
+            LevelMapModel levelMapModel = null;
+            var levelAsset = Resources.Load<TextAsset>("LevelMap_new");
+            
+            levelMapModel = _serializer.Deserialize<LevelMapModel>(
+                new JsonTextReader(new StringReader(levelAsset.text)));
 
             return levelMapModel;
         }

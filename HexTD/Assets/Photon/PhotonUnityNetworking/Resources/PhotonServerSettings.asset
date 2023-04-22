@@ -20,7 +20,7 @@ MonoBehaviour:
     AppVersion: 
     UseNameServer: 0
     FixedRegion: 
-    Server: 127.0.0.1
+    Server: 46.148.234.242
     Port: 4530
     ProxyServer: 
     Protocol: 1

@@ -39,7 +39,7 @@ namespace Match.Commands
             
             // waves
             byte wavesCount = (byte)parametersTable[PhotonEventsConstants.SyncMatch.MatchConfigWavesCount];
-            WaveParams[] waves = new WaveParams[wavesCount];
+            WaveParametersStrict[] waves = new WaveParametersStrict[wavesCount];
             
             for (byte currentWaveNumber = 0; currentWaveNumber < wavesCount; currentWaveNumber++)
             {
@@ -48,20 +48,22 @@ namespace Match.Commands
                     break;
 
                 Hashtable waveHashtable = (Hashtable) waveObject;
-                byte size = (byte)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.SizeParam];
-                float duration = (float)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.DurationParam];
-                float spawnPauseMin = (float)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.SpawnPauseMinParam];
-                float spawnPauseMax = (float)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.SpawnPauseMaxParam];
-                float pauseBeforeWave = (float)waveHashtable[PhotonEventsConstants.SyncMatch.Wave.PauseBeforeWaveParam];
-                byte[] mobsIdsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.Wave.MobsIdsParam];
-                byte[] mobsCountsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.Wave.MobsCountsParam];
-                WaveElementChance[] waveElementChances = new WaveElementChance [mobsIdsBytes.Length];
+                byte size = (byte)waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.SizeParam];
+                float duration = (float)waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.DurationParam];
+                float pauseBeforeWave = (float)waveHashtable[PhotonEventsConstants.SyncMatch.WaveWithRandom.PauseBeforeWaveParam];
+                byte[] mobsIdsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsIdsParam];
+                float[] mobsDelaysBytes = (float[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsDelaysParam];
+                byte[] mobsPathsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsPathsParam];
+                WaveElementDelayAndPath[] waveElementChances = new WaveElementDelayAndPath [mobsIdsBytes.Length];
 
                 for (int elementIndex = 0; elementIndex < mobsIdsBytes.Length; elementIndex++)
                     waveElementChances[elementIndex] =
-                        new WaveElementChance(mobsIdsBytes[elementIndex], mobsCountsBytes[elementIndex]);
+                        new WaveElementDelayAndPath(
+                            mobsIdsBytes[elementIndex],
+                            mobsDelaysBytes[elementIndex],
+                            mobsPathsBytes[elementIndex]);
                 
-                waves[currentWaveNumber] = new WaveParams(size, duration, spawnPauseMin, spawnPauseMax, pauseBeforeWave, waveElementChances);
+                waves[currentWaveNumber] = new WaveParametersStrict(size, duration, pauseBeforeWave, waveElementChances);
             }
 
             // cells
@@ -101,7 +103,7 @@ namespace Match.Commands
             for (byte pathIndex = 0; pathIndex < pathCount; pathIndex++)
             {
                 if (!parametersTable.TryGetValue(
-                        $"{PhotonEventsConstants.SyncMatch.MatchConfigPathsCount}{pathIndex}", out object pathHashtableObject))
+                        $"{PhotonEventsConstants.SyncMatch.MatchConfigPathFieldParam}{pathIndex}", out object pathHashtableObject))
                     break;
 
                 Hashtable pathHashtable = (Hashtable) pathHashtableObject;
@@ -120,7 +122,10 @@ namespace Match.Commands
             }
             
             // coins
-            int startCoins = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartCoinsParam];
+//            int startCoins = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartCoinsParam];
+
+            // energy start
+            int energyStart = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartEnergyParam];
 
             // hand
             // towers
@@ -134,7 +139,7 @@ namespace Match.Commands
 
             PlayerHandParams clientPlayerHand = new PlayerHandParams(towers);
             MatchInitDataParameters clientMatchParameters = new MatchInitDataParameters(
-                hexModels, paths, waves, startCoins, clientPlayerHand);
+                hexModels, paths, waves, energyStart, clientPlayerHand);
 
             // random seed
             int randomSeed = (int) parametersTable[PhotonEventsConstants.SyncMatch.RandomSeed];

@@ -57,6 +57,8 @@ namespace Match.Field.Hexagons
             return types;
         }
 
+        public FieldHexType GetFieldHexType(Hex2d hex) => _currentFieldHexTypes[hex.GetHashCode()];
+
         public IEnumerator<KeyValuePair<int, FieldHexType>> GetEnumerator()
         {
             return _currentFieldHexTypes.GetEnumerator();

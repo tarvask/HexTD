@@ -15,7 +15,8 @@ namespace Match.Field
         [SerializeField] private int energyRestoreValue;
         [SerializeField] private int maxEnergy;
         [SerializeField] private byte maxOverlappingWaves;
-        
+        [SerializeField] private bool removeMobsOnBossAppearing;
+
         [Header("Delays and durations")]
         [SerializeField] [Description("In milliseconds")] private int towerRemovingDuration;
         [SerializeField] [Description("In seconds")] private float matchInfoShowDuration;
@@ -38,6 +39,7 @@ namespace Match.Field
         public int EnergyRestoreValue => energyRestoreValue;
         public int MaxEnergy => maxEnergy;
         public byte MaxOverlappingWaves => maxOverlappingWaves;
+        public bool RemoveMobsOnBossAppearing => removeMobsOnBossAppearing;
 
         // delays and duration
         public int TowerRemovingDuration => towerRemovingDuration;

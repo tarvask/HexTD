@@ -8,23 +8,15 @@ namespace Match.Field.Mob
     public class MobsContainer : ITypeTargetContainer
     {
         private readonly Dictionary<int, MobController> _mobs;
-        private readonly Dictionary<int, List<ITargetable>> _mobsByPosition;
+        private readonly Dictionary<int, List<ITarget>> _mobsByPosition;
 
-        public IReadOnlyDictionary<int, List<ITargetable>> TargetsByPosition => _mobsByPosition;
+        public IReadOnlyDictionary<int, List<ITarget>> TargetsByPosition => _mobsByPosition;
         public IReadOnlyDictionary<int, MobController> Mobs => _mobs;
 
         public MobsContainer()
         {
             _mobs = new Dictionary<int, MobController>();
-            _mobsByPosition = new Dictionary<int, List<ITargetable>>();
-        }
-
-        public void UpdateMobsLogicMoving(float frameLength)
-        {
-            foreach (KeyValuePair<int, MobController> mobPair in _mobs)
-            {
-                mobPair.Value.LogicMove(frameLength);
-            }
+            _mobsByPosition = new Dictionary<int, List<ITarget>>();
         }
 
         public void AddMob(MobController mobController)
@@ -32,6 +24,13 @@ namespace Match.Field.Mob
             _mobs.Add(mobController.Id, mobController);
             mobController.SubscribeOnHexPositionChange(HandleMobHexPositionUpdate);
             AddMobByPosition(mobController);
+        }
+
+        public void RemoveMob(MobController mobController)
+        {
+            _mobs.Remove(mobController.Id);
+            RemoveByPosition(mobController);
+            mobController.UnsubscribeOnHexPositionChange(HandleMobHexPositionUpdate);
         }
 
         private void HandleMobHexPositionUpdate(MobController mobController, Hex2d oldPosition)
@@ -49,17 +48,10 @@ namespace Match.Field.Mob
             }
             else
             {
-                List<ITargetable> mobControllers = new List<ITargetable>();
+                List<ITarget> mobControllers = new List<ITarget>();
                 _mobsByPosition.Add(positionHash, mobControllers);
                 mobControllers.Add(mobController);
             }
-        }
-
-        public void RemoveMob(MobController mobController)
-        {
-            _mobs.Remove(mobController.Id);
-            RemoveByPosition(mobController);
-            mobController.UnsubscribeOnHexPositionChange(HandleMobHexPositionUpdate);
         }
 
         private void RemoveByPosition(MobController mobController)
@@ -76,7 +68,7 @@ namespace Match.Field.Mob
             _mobsByPosition.Clear();
         }
 
-        public IEnumerator<ITargetable> GetEnumerator()
+        public IEnumerator<ITarget> GetEnumerator()
         {
             foreach (var mobControllerPair in _mobs)
             {

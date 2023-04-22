@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BuffLogic;
 using HexSystem;
 using Match.Commands;
@@ -33,9 +34,8 @@ namespace Match.Field
             public MatchCommands MatchCommands { get; }
 
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
-            public ReactiveCommand<Hex2d> ClickReactiveCommand { get; }
             public ReactiveCommand<PlayerState> StateSyncedReactiveCommand { get; }
-            public ReactiveCommand<MobConfig> SpawnMobReactiveCommand { get; }
+            public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
             public ReactiveProperty<bool> HasMobsOnField { get; }
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
             public ReactiveCommand WaveEndedReactiveCommand { get; }
@@ -55,9 +55,8 @@ namespace Match.Field
                 MatchCommands matchCommands,
                 
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
-                ReactiveCommand<Hex2d> clickReactiveCommand,
                 ReactiveCommand<PlayerState> stateSyncedReactiveCommand,
-                ReactiveCommand<MobConfig> spawnMobReactiveCommand,
+                ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand,
                 ReactiveProperty<bool> hasMobsOnField,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
                 ReactiveCommand waveEndedReactiveCommand,
@@ -78,7 +77,6 @@ namespace Match.Field
                 MatchCommands = matchCommands;
                 
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
-                ClickReactiveCommand = clickReactiveCommand;
                 StateSyncedReactiveCommand = stateSyncedReactiveCommand;
                 SpawnMobReactiveCommand = spawnMobReactiveCommand;
                 HasMobsOnField = hasMobsOnField;
@@ -102,15 +100,24 @@ namespace Match.Field
         private readonly PathContainer _pathContainer;
         
         private readonly FieldMobSpawner _fieldMobSpawner;
+        private readonly MobsByTowersBlocker _mobsByTowersBlocker;
+        private readonly MeleeCombatManager _meleeCombatManager;
         private readonly MobsManager _mobsManager;
+        
         private readonly FieldClicksHandler _clicksHandler;
         private readonly FieldClicksDistributor _clicksDistributor;
         private readonly FieldConstructionProcessController _constructionProcessController;
-        private readonly ShootingController _shootingController;
+        private readonly ShootingProcessManager _shootingProcessManager;
         private readonly CurrencyController _currencyController;
         private readonly PlayerStateLoader _stateLoader;
         
+        private readonly HexObjectsContainer _hexObjectsContainer ;
+        private readonly FieldHighlightsController _fieldHighlightsController ;
+        
         public const float MoveLerpCoeff = 0.7f;
+
+        public HexagonalFieldModel HexagonalFieldModel => _hexagonalFieldModel;
+        public PathContainer PathContainer => _pathContainer;
 
         public FieldConstructionProcessController FieldConstructionProcessController => _constructionProcessController;
         public FieldModel FieldModel => _model;
@@ -118,11 +125,17 @@ namespace Match.Field
         public FieldController(Context context)
         {
             _context = context;
-            
-            ReactiveCommand<int> castleAttackedByMobReactiveCommand = AddDisposable(new ReactiveCommand<int>());
+
+            ReactiveCommand<MobController> attackTowerByMobReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
+            ReactiveCommand<int> castleReachedByMobReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<MobController> removeMobReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<MobController> mobSpawnedReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<int> crystalCollectedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
+            
+            ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand = 
+                AddDisposable(new ReactiveCommand<IReadOnlyCollection<Hex2d>>());
+            ReactiveCommand removeAllHexesHighlightsReactiveCommand = 
+                AddDisposable(new ReactiveCommand());
 
             _hexagonalFieldModel = new HexagonalFieldModel(_context.FieldConfig.HexSettingsConfig,
                 _context.FieldRoot.position, _context.MatchInitDataParameters.Hexes);
@@ -133,6 +146,16 @@ namespace Match.Field
             
             TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
 
+            _hexObjectsContainer = new HexObjectsContainer();
+            
+            _fieldHighlightsController = AddDisposable(new FieldHighlightsController(
+                new FieldHighlightsController.Context(_hexObjectsContainer)));
+
+            AddDisposable(enableHexesHighlightReactiveCommand.Subscribe(hexes =>
+                _fieldHighlightsController.HighlightHexes(hexes)));
+            AddDisposable(removeAllHexesHighlightsReactiveCommand.Subscribe(hexes =>
+                _fieldHighlightsController.RemoveAllHighlights()));
+            
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
                 _context.HexFabric,
@@ -140,15 +163,29 @@ namespace Match.Field
                 _hexagonalFieldModel,
                 _context.FieldConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,
-                castleAttackedByMobReactiveCommand,
+                _hexMapReachableService,
+                _hexObjectsContainer,
+                castleReachedByMobReactiveCommand,
                 _context.CastleDestroyedReactiveCommand,
-                removeMobReactiveCommand);
+                enableHexesHighlightReactiveCommand,
+                removeAllHexesHighlightsReactiveCommand);
             _factory = AddDisposable(new FieldFactory(factoryContext));
             
-            MobsManager.Context mobMoverContext = new MobsManager.Context(castleAttackedByMobReactiveCommand);
-            _mobsManager = AddDisposable(new MobsManager(mobMoverContext));
+            MobsByTowersBlocker.Context mobsByTowersBlockerContext = new MobsByTowersBlocker.Context(
+                _hexagonalFieldModel.HexSize, towersManager, removeMobReactiveCommand);
+            _mobsByTowersBlocker = AddDisposable(new MobsByTowersBlocker(mobsByTowersBlockerContext));
+
+            MobsManager.Context mobsManagerContext = new MobsManager.Context(
+                _mobsByTowersBlocker,
+                _context.FieldConfig.RemoveMobsOnBossAppearing,
+                attackTowerByMobReactiveCommand,
+                castleReachedByMobReactiveCommand,
+                removeMobReactiveCommand,
+                _context.SpawnMobReactiveCommand);
+            _mobsManager = AddDisposable(new MobsManager(mobsManagerContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
+                _hexagonalFieldModel,
                 _hexagonalFieldModel.CurrentFieldHexTypes,
                 towersManager,
                 _mobsManager,
@@ -162,19 +199,23 @@ namespace Match.Field
                 _context.SpawnMobReactiveCommand);
             _fieldMobSpawner = AddDisposable(new FieldMobSpawner(mobSpawnerContext));
 
+            MeleeCombatManager.Context meleeCombatManagerContext =
+                new MeleeCombatManager.Context(_model, attackTowerByMobReactiveCommand);
+            _meleeCombatManager = AddDisposable(new MeleeCombatManager(meleeCombatManagerContext));
+
             // construction
             FieldConstructionProcessController.Context constructionProcessControllerContext =
                 new FieldConstructionProcessController.Context(_model, _factory);
             _constructionProcessController = AddDisposable(new FieldConstructionProcessController(constructionProcessControllerContext));
             
             // shooting
-            ShootingController.Context shootingControllerContext = new ShootingController.Context(_model, 
+            ShootingProcessManager.Context shootingControllerContext = new ShootingProcessManager.Context(_model, 
                 _hexMapReachableService, _factory, _context.BuffManager);
-            _shootingController = AddDisposable(new ShootingController(shootingControllerContext));
+            _shootingProcessManager = AddDisposable(new ShootingProcessManager(shootingControllerContext));
             
             // currency
             CurrencyController.Context currencyControllerContext = new CurrencyController.Context(
-                _context.MatchInitDataParameters.CoinsCount,
+                100,
                 5,
                  removeMobReactiveCommand, crystalCollectedReactiveCommand);
             _currencyController = AddDisposable(new CurrencyController(currencyControllerContext));
@@ -210,13 +251,13 @@ namespace Match.Field
             _mobsManager.OuterLogicUpdate(frameLength);
             _model.TowersManager.OuterLogicUpdate(frameLength);
             
-            _shootingController.OuterLogicUpdate(frameLength);
+            _shootingProcessManager.OuterLogicUpdate(frameLength);
         }
 
         public void OuterViewUpdate(float frameLength)
         {
             _mobsManager.OuterViewUpdate(frameLength);
-            _shootingController.OuterViewUpdate(frameLength);
+            _shootingProcessManager.OuterViewUpdate(frameLength);
         }
 
         private void LoadState(PlayerState playerState)
@@ -237,6 +278,8 @@ namespace Match.Field
         {
             return _stateLoader.SaveState();
         }
+
+        public Bounds GetFieldBounds() => _hexagonalFieldModel.GetBounds();
 
         public void Reset()
         {

@@ -12,6 +12,7 @@ namespace Match.Field.Tower
         [SerializeField] private string towerName;
         [SerializeField] private bool preferUnbuffedTargets;
         [SerializeField] private bool resetTargetEveryShot;
+        [SerializeField] private TowerPlacementType placementType;
         [SerializeField] private ReachableAttackTargetFinderType reachableAttackTargetFinderType;
         [SerializeField] private TargetFindingTacticType targetFindingTacticType;
         
@@ -23,6 +24,7 @@ namespace Match.Field.Tower
         public string TowerName => towerName;
         public RaceType RaceType => raceType;
         public byte EpicDegree => epicDegree;
+        public TowerPlacementType PlacementType => placementType;
         public ReachableAttackTargetFinderType ReachableAttackTargetFinderType => reachableAttackTargetFinderType;
         public TargetFindingTacticType TargetFindingTacticType => targetFindingTacticType;
         public bool PreferUnbuffedTargets => preferUnbuffedTargets;

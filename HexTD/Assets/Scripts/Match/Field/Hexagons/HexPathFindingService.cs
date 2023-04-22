@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using HexSystem;
+using UnityEngine;
 
 namespace Match.Field.Hexagons
 {
@@ -52,6 +53,8 @@ namespace Match.Field.Hexagons
 
         private int _cheapestFCost;
         private Hex2d _cheapestHex;
+
+        public Vector3 HexSize => _hexagonalFieldModel.HexSize;
 
         public HexPathFindingService(HexagonalFieldModel hexagonalFieldModel)
         {

@@ -12,35 +12,34 @@ namespace Match.Field.Shooting
         public struct Context
         {
             public int Id { get; }
+            public ProjectileView View { get; }
             public BaseAttackEffect BaseAttackEffect { get; }
             public int AttackIndex { get; }
-            public ProjectileView View { get; }
+            public SplashShootType SplashShootType { get; }
             public float Speed { get; }
             public int SpawnTowerId { get; }
             public int TargetId { get; }
             public bool HasSplashDamage { get; }
-            public float SplashDamageRadius { get; }
-            public bool HasProgressiveSplash { get; }
 
-            public Context(int id, BaseAttackEffect baseAttackEffect,
-                int attackIndex,
-                ProjectileView view, float speed, bool hasSplashDamage, float splashDamageRadius, 
-                bool hasProgressiveSplash, int spawnTowerId, int targetId)
+            public Context(int id, ProjectileView view, 
+                BaseAttackEffect baseAttackEffect, int attackIndex, SplashShootType splashShootType, 
+                float speed, bool hasSplashDamage, int spawnTowerId, int targetId)
             {
                 Id = id;
+                View = view;
                 BaseAttackEffect = baseAttackEffect;
                 AttackIndex = attackIndex;
-                View = view;
+                SplashShootType = splashShootType;
+
                 Speed = speed;
                 HasSplashDamage = hasSplashDamage;
-                SplashDamageRadius = splashDamageRadius;
-                HasProgressiveSplash = hasProgressiveSplash;
                 SpawnTowerId = spawnTowerId;
                 TargetId = targetId;
             }
         }
 
         private readonly Context _context;
+
         private Vector3 _currentPosition;
         private Vector3 _currentTargetPosition;
         private bool _hasReachedTarget;
@@ -49,10 +48,9 @@ namespace Match.Field.Shooting
         public BaseAttackEffect BaseAttackEffect => _context.BaseAttackEffect;
         public int Id => _context.Id;
         public int SpawnTowerId => _context.SpawnTowerId;
+        public SplashShootType SplashShootType => _context.SplashShootType;
         public int TargetId => _context.TargetId;
         public bool HasSplashDamage => _context.HasSplashDamage;
-        public float SplashDamageRadius => _context.SplashDamageRadius;
-        public bool HasProgressiveSplash => _context.HasProgressiveSplash;
         public Vector3 CurrentPosition => _currentPosition;
         public Vector3 CurrentTargetPosition => _currentTargetPosition;
         public bool HasReachedTarget => _hasReachedTarget;
@@ -99,9 +97,9 @@ namespace Match.Field.Shooting
             _hasPlayedSplash = true;
         }
 
-        public void ShowSplash()
+        public void ShowSplash(float damageRadius)
         {
-            _context.View.transform.localScale = Vector3.one * _context.SplashDamageRadius;
+            _context.View.transform.localScale = Vector3.one * damageRadius;
 
             Task.Run(async () =>
             {
@@ -119,7 +117,7 @@ namespace Match.Field.Shooting
         {
             return new PlayerState.ProjectileState(_context.Id, _context.SpawnTowerId, _context.TargetId,
                 _context.AttackIndex, CurrentPosition.x, CurrentPosition.y, _context.Speed,
-                _context.HasSplashDamage, _context.SplashDamageRadius, _context.HasProgressiveSplash);
+                _context.HasSplashDamage);
         }
     }
 }

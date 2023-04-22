@@ -1,17 +1,20 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using HexSystem;
+using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.Shooting.TargetFinding;
 using Match.Field.State;
 using Match.Field.Tower.TowerConfigs;
 using Tools.Interfaces;
+using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Match.Field.Tower
 {
-    public class TowerController : BaseTargetableEntity, IOuterLogicUpdatable, IShootable
+    public class TowerController : BaseTargetEntity, IOuterLogicUpdatable, IShooter
     {
         public struct Context
         {
@@ -22,9 +25,17 @@ namespace Match.Field.Tower
             public TowerView View { get; }
             public Sprite Icon { get; }
             public int TowerRemovingDuration { get; }
+            public HexMapReachableService HexMapReachableService { get; }
+            
+            public ReactiveCommand<IReadOnlyCollection<Hex2d>> EnableHexesHighlightReactiveCommand { get; }
+            public ReactiveCommand RemoveAllHexesHighlightsReactiveCommand { get; }
 
             public Context(int id, int targetId, Hex2d position, TowerConfigNew towerConfig, 
-                TowerView view, Sprite icon, int towerRemovingDuration)
+                TowerView view, Sprite icon, int towerRemovingDuration,
+                HexMapReachableService hexMapReachableService,
+                ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand ,
+                ReactiveCommand removeAllHexesHighlightsReactiveCommand
+                )
             {
                 Id = id;
                 TargetId = targetId;
@@ -33,6 +44,9 @@ namespace Match.Field.Tower
                 Icon = icon;
                 Position = position;
                 TowerRemovingDuration = towerRemovingDuration;
+                HexMapReachableService = hexMapReachableService;
+                EnableHexesHighlightReactiveCommand = enableHexesHighlightReactiveCommand;
+                RemoveAllHexesHighlightsReactiveCommand = removeAllHexesHighlightsReactiveCommand;
             }
         }
 
@@ -48,7 +62,7 @@ namespace Match.Field.Tower
 
         public int Id => _context.Id;
         public override Hex2d HexPosition => _context.Position;
-        public override Vector3 Position => _context.View.transform.position;
+        public override Vector3 Position => _context.View.transform.localPosition;
 
         public bool IsAttackReady => _shootModel.IsReadyAttack && CanShoot;
         public bool HasTarget => _stableModel.TargetId > 0;
@@ -77,7 +91,6 @@ namespace Match.Field.Tower
         public void OuterLogicUpdate(float frameLength)
         {
             _shootModel.OuterLogicUpdate(frameLength);
-            
         }
 
         // TODO: fix abilities' behaviour
@@ -99,7 +112,6 @@ namespace Match.Field.Tower
             
             Task.Run(async () =>
             {
-                // milliseconds
                 await Task.Delay((int)(constructionTime * 1000));
                 _stableModel.SetState(TowerState.ToRelease);
             });
@@ -142,7 +154,7 @@ namespace Match.Field.Tower
 
         public bool TryFindTarget(TargetFinder targetFinder, TargetContainer targetContainer)
         {
-            if (!_shootModel.TryReleaseTowerAttack(false, out var towerAttack, out var attackIndex))
+            if (!_shootModel.TryGetTowerAttack(out var towerAttack))
                 return false;
 
             int targetId = targetFinder.GetTargetWithTacticInRange(
@@ -159,15 +171,17 @@ namespace Match.Field.Tower
 
         public ProjectileController CreateAndInitProjectile(FieldFactory factory)
         {
-            if (!_shootModel.TryReleaseTowerAttack(true, out var towerAttack, out int attackIndex))
+            if (!_shootModel.TryGetTowerAttack(out var towerAttack))
                 throw new Exception("Try to make attack but no ones ready yet!");
 
             ProjectileController projectile = factory.CreateProjectile(
                 towerAttack,
-                attackIndex,
+                _shootModel.ReadyTowerIndex,
                 Position,
-                _stableModel.HasSplashDamage, _stableModel.SplashDamageRadius, _stableModel.HasProgressiveSplashDamage,
+                _shootModel.IsSplashAttackReady,
                 _context.Id, _stableModel.TargetId);
+            
+            _shootModel.ReloadCurrentAttack();
 
             if (_context.TowerConfig.RegularParameters.ResetTargetEveryShot)
                 _stableModel.ResetTarget();
@@ -215,12 +229,17 @@ namespace Match.Field.Tower
 
         public void ShowSelection()
         {
-            
+            var hexes= _context.HexMapReachableService.GetInRangeMapByTargetFinderType(
+                HexPosition,
+                _context.TowerConfig.AttacksConfig.Attacks[0].AttackRadiusInHex,
+                _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType);
+
+            _context.EnableHexesHighlightReactiveCommand.Execute(hexes);
         }
 
         public void HideSelection()
         {
-            
+            _context.RemoveAllHexesHighlightsReactiveCommand.Execute();
         }
 
         public void LoadState(in PlayerState.TowerState towerState)

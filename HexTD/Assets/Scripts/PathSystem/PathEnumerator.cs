@@ -9,18 +9,21 @@ namespace PathSystem
     public class PathEnumerator : IPathEnumerator
     {
         private readonly LinkedList<Hex2d> _points;
-
+        private readonly float _pathLength;
+        
         private byte _currentPointIndex;
         private LinkedListNode<Hex2d> _currentNode;
         
         public Hex2d Current => _currentNode?.Value ?? new Hex2d();
         object IEnumerator.Current => Current;
         public byte CurrentPointIndex => _currentPointIndex;
+        public float PathLength { get; }
 
-        public PathEnumerator(LinkedList<Hex2d> points)
+        public PathEnumerator(LinkedList<Hex2d> points, float pathLength)
         {
             _points = points;
-            
+            _pathLength = pathLength;
+
             Reset();
         }
             
