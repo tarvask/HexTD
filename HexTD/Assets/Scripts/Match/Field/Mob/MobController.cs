@@ -58,6 +58,7 @@ namespace Match.Field.Mob
         private bool _hasReachedCastle;
         private bool _isEscaping;
         private bool _isInSafety;
+        private bool _isBoss;
 
         public int Id => _context.Id;
         public override int TargetId => _context.TargetId;
@@ -78,6 +79,7 @@ namespace Match.Field.Mob
         public bool HasReachedCastle => _hasReachedCastle;
         public bool IsEscaping => _isEscaping;
         public bool IsInSafety => _isInSafety;
+        public bool IsBoss => _context.Parameters.IsBoss;
         
         public bool CanMove => true;
 

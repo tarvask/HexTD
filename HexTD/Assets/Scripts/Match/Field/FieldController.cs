@@ -177,9 +177,11 @@ namespace Match.Field
 
             MobsManager.Context mobsManagerContext = new MobsManager.Context(
                 _mobsByTowersBlocker,
+                _context.FieldConfig.RemoveMobsOnBossAppearing,
                 attackTowerByMobReactiveCommand,
                 castleReachedByMobReactiveCommand,
-                removeMobReactiveCommand);
+                removeMobReactiveCommand,
+                _context.SpawnMobReactiveCommand);
             _mobsManager = AddDisposable(new MobsManager(mobsManagerContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
