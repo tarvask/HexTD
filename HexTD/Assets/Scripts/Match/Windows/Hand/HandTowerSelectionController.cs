@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Extensions;
-using Match.Field;
 using Match.Field.Hand;
 using Match.Field.Tower;
 using Match.Field.Tower.TowerConfigs;
@@ -17,20 +16,23 @@ namespace Match.Windows.Hand
             public HandTowerSelectionView View { get; }
             public PlayerHandController PlayerHandController { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
+            public ReactiveCommand<bool> DragCardChangeStatusCommand { get; }
 
             public Context(HandTowerSelectionView view,
                 PlayerHandController playerHandController,
-                ConfigsRetriever configsRetriever)
+                ConfigsRetriever configsRetriever, ReactiveCommand<bool> dragCardChangeStatusCommand)
             {
                 View = view;
                 PlayerHandController = playerHandController;
                 ConfigsRetriever = configsRetriever;
+                DragCardChangeStatusCommand = dragCardChangeStatusCommand;
             }
         }
 
         private readonly Context _context;
         private readonly UiElementListPool<TowerCardView> _towerCardViews;
         private readonly Dictionary<TowerType, TowerCardView> _towerCards;
+        private readonly List<TowerCardController> _towerCardControllers = new List<TowerCardController>();
 
         public HandTowerSelectionController(Context context)
         {
@@ -57,7 +59,12 @@ namespace Match.Windows.Hand
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerType);
             TowerCardView towerCardView = _towerCardViews.GetElement();
             _towerCards.Add(towerType, towerCardView);
-            
+
+            TowerCardController.Context towerCardControllerContext = new TowerCardController.Context(
+                towerCardView, _context.PlayerHandController, _context.DragCardChangeStatusCommand, towerType);
+            TowerCardController towerCardController = new TowerCardController(towerCardControllerContext);
+            _towerCardControllers.Add(towerCardController);
+
             int price = towerConfig.TowerLevelConfigs[0].BuildPrice;
             towerCardView.CostText.text = price.ToString();
             towerCardView.TowerNameText.text = towerConfig.RegularParameters.TowerName + towerType.ToString();
@@ -80,6 +87,7 @@ namespace Match.Windows.Hand
         {
             towerCardView.ReadyBgImage.gameObject.SetActive(isReady);
             towerCardView.NotReadyBgImage.gameObject.SetActive(!isReady);
+            towerCardView.SetTowerCardReadyState(isReady);
         }
     }
 }

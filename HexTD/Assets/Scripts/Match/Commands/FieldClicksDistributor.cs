@@ -61,7 +61,7 @@ namespace Match.Commands
         {
             _context = context;
             
-            _context.MatchCommands.Incoming.ApplyBuildTower.Subscribe(ProcessBuild);
+            //_context.MatchCommands.Incoming.ApplyBuildTower.Subscribe(ProcessBuild);
             _context.MatchCommands.Incoming.ApplyUpgradeTower.Subscribe(ProcessUpgrade);
             _context.MatchCommands.Incoming.ApplySellTower.Subscribe(ProcessSell);
         }
@@ -81,7 +81,7 @@ namespace Match.Commands
             switch (_context.FieldModel.GetFieldHexType(clickedCell))
             {
                 case FieldHexType.Free:
-                    ProcessPreBuild(clickedCell);
+                    //ProcessPreBuild(clickedCell);
                     break;
                 
                 case FieldHexType.Tower:

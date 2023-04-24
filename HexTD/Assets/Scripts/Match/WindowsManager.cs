@@ -35,6 +35,7 @@ namespace Match
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
             public ReactiveCommand<int> OurGoldenCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand<int> OurCrystalsCoinsCountChangedReactiveCommand { get; }
+            public ReactiveCommand<bool> DragCardChangeStatusCommand { get; }
             public ReactiveCommand QuitMatchReactiveCommand { get; }
             public WindowSystem.IWindowsManager NewWindowsManager { get; }
 
@@ -54,6 +55,7 @@ namespace Match
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
                 ReactiveCommand<int> ourGoldenCoinsCountChangedReactiveCommand,
                 ReactiveCommand<int> ourCrystalsCoinsCountChangedReactiveCommand,
+                ReactiveCommand<bool> dragCardChangeStatusCommand,
                 ReactiveCommand quitMatchReactiveCommand,
                 WindowSystem.IWindowsManager newWindowsManager)
             {
@@ -76,6 +78,7 @@ namespace Match
                 OurCrystalsCoinsCountChangedReactiveCommand = ourCrystalsCoinsCountChangedReactiveCommand;
                 QuitMatchReactiveCommand = quitMatchReactiveCommand;
                 NewWindowsManager = newWindowsManager;
+                DragCardChangeStatusCommand = dragCardChangeStatusCommand;
             }
         }
 
@@ -121,9 +124,9 @@ namespace Match
             // tower selection hud from hand
             HandTowerSelectionController.Context handTowerSelectionControllerContext = new HandTowerSelectionController.Context(
                 _context.UiViews.HandTowerSelectionView, _context.PlayerHandController,
-                _context.ConfigsRetriever);
+                _context.ConfigsRetriever, _context.DragCardChangeStatusCommand);
             _handTowerSelectionController = new HandTowerSelectionController(handTowerSelectionControllerContext);
-            
+
             // wave start info
             WaveStartInfoWindowController.Context waveStartInfoWindowControllerContext = new WaveStartInfoWindowController.Context(
                 _context.UiViews.WaveStartInfoWindowView, OpenWindowsCountReactiveProperty);
