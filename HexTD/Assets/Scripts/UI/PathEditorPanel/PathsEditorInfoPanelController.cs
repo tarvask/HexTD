@@ -6,17 +6,15 @@ namespace UI.PathEditorPanel
 {
     public class PathsEditorInfoPanelController : BaseDisposable
     {
-        private const string PathDefaultName = "New Path";
-        
         private readonly UiElementListPool<PathEditInfoView> _pathsEditorViewPool;
-        private readonly Dictionary<string, PathPointListEditorViewController> _pathPointListEditorViewControllers;
+        private readonly List<PathPointListEditorViewController> _pathPointListEditorViewControllers;
         private readonly PathsEditorInfoPanelView _pathsEditorInfoPanelView;
         private readonly PathEditorController _pathEditorController;
 
         public PathsEditorInfoPanelController(PathsEditorInfoPanelView pathsEditorInfoPanelView,
             PathEditorController pathEditorController)
         {
-            _pathPointListEditorViewControllers = new Dictionary<string, PathPointListEditorViewController>();
+            _pathPointListEditorViewControllers = new List<PathPointListEditorViewController>(10);
             _pathsEditorInfoPanelView = pathsEditorInfoPanelView;
             _pathsEditorViewPool = new UiElementListPool<PathEditInfoView>(
                 _pathsEditorInfoPanelView.PathEditInfoPrefab,
@@ -30,59 +28,55 @@ namespace UI.PathEditorPanel
 
             foreach (var path in _pathEditorController)
             {
-                AddPathViewElement(path.Name);
+                AddPathViewElement(path.PathId);
             }
         }
 
         private void OnNewPathAdd()
         {
-            string pathEditorDataName = GeneratePathName();
-            _pathEditorController.AddPath(pathEditorDataName);
-            AddPathViewElement(pathEditorDataName);
+            byte pathEditorId = GenerateAvailablePathId();
+            _pathEditorController.AddPath(pathEditorId);
         }
 
-        private string GeneratePathName()
+        private byte GenerateAvailablePathId()
         {
-            string pathEditorDataName = PathDefaultName;
-            for (int i = _pathPointListEditorViewControllers.Count + 1;
-                 _pathPointListEditorViewControllers.ContainsKey(pathEditorDataName);
+            byte i;
+            for (i = (byte)(_pathPointListEditorViewControllers.Count + 1);
+                 _pathEditorController.TryGetPathData(i, out var _);
                  i++)
             {
-                pathEditorDataName = $"{PathDefaultName} {i}";
             }
 
-            return pathEditorDataName;
+            return i;
         }
 
-        private void AddPathViewElement(string name)
+        private void AddPathViewElement(byte pathId)
         {
-            if(_pathPointListEditorViewControllers.ContainsKey(name))
-                return;
-            
             var pathPointListEditorView = _pathsEditorViewPool.GetElement();
             var pathPointListEditorViewController = new PathPointListEditorViewController(
-                pathPointListEditorView, _pathEditorController, name);
-            _pathPointListEditorViewControllers.Add(name, pathPointListEditorViewController);
+                pathPointListEditorView, _pathEditorController, pathId);
+            _pathPointListEditorViewControllers.Add(pathPointListEditorViewController);
             
             pathPointListEditorView.DeletePathButton.onClick.RemoveAllListeners();
             pathPointListEditorView.DeletePathButton.onClick.AddListener(() => 
-                OnPathRemove(name, pathPointListEditorViewController.DisplayName));
+                PathRemove(pathPointListEditorViewController));
         }
         
-        private void PathRemove(string pathEditorDataName)
+        private void PathRemove(PathPointListEditorViewController pathPointListEditorViewController)
         {   
-            if(!_pathPointListEditorViewControllers
-                   .Remove(pathEditorDataName, out var pathPointListEditorViewController))
+            if(!_pathPointListEditorViewControllers.Remove(pathPointListEditorViewController))
                 return;
             
+            _pathEditorController.RemovePath(pathPointListEditorViewController.PathId);
             pathPointListEditorViewController.Dispose();
             _pathsEditorViewPool.RemoveElement(pathPointListEditorViewController.PathEditInfoView);
         }
 
-        private void OnPathRemove(string pathEditorDataKey, string pathEditorDataDisplayName)
+        private void PathRemove(byte pathId)
         {
-            PathRemove(pathEditorDataKey);
-            _pathEditorController.RemovePath(pathEditorDataDisplayName);
+            var pathPointListEditorViewController = _pathPointListEditorViewControllers.Find(contoller => contoller.PathId == pathId);
+            if(pathPointListEditorViewController != null)
+                PathRemove(pathPointListEditorViewController);
         }
     }
 }

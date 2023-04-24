@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HexSystem;
 using MapEditor;
 using UI.Tools;
@@ -13,51 +12,65 @@ namespace UI.PathEditorPanel
         private readonly PathEditorController _pathEditorController;
         private readonly UiElementListPool<PointEditorPanelView> _pointEditorPanelViews;
 
-        private string _name;
+        private byte _pathId;
 
         public PathEditInfoView PathEditInfoView => _pathEditInfoView;
-        public string DisplayName => _name;
+        public byte PathId => _pathId;
 
         public PathPointListEditorViewController(PathEditInfoView pathEditInfoView,
             PathEditorController pathEditorController,
-            string name)
+            byte pathId)
         {
             _pathEditInfoView = pathEditInfoView;
             _pointEditorPanelViews = AddDisposable(new UiElementListPool<PointEditorPanelView>(
                 pathEditInfoView.PointEditorPanelPrefab,
                 pathEditInfoView.PointsParent));
             _pathEditorController = pathEditorController;
-            _name = name;
+            _pathId = pathId;
             
             _pathEditInfoView.NameFieldText.onValueChanged.RemoveAllListeners();
             _pathEditInfoView.NameFieldText.onValueChanged
                 .AddListener(ChangePathDataName);
-            _pathEditInfoView.NameFieldText.text = _name;
+            _pathEditInfoView.NameFieldText.text = _pathId.ToString();
             
             _pathEditInfoView.SelectPathButton.onClick.RemoveAllListeners();
             _pathEditInfoView.SelectPathButton.onClick.AddListener(SetCurrentEditing);
 
             AddDisposable(_pathEditorController.SubscribeOnCurrentPathChange(UpdateSelectSignState));
-            AddDisposable(_pathEditorController.SubscribeOnPointsChange(name, UpdatePointsList));
+            AddDisposable(_pathEditorController.SubscribeOnPointsChange(_pathId, UpdatePointsList));
 
-            UpdatePointsList(_pathEditorController.GetPathEditorData(name));
+            UpdatePointsList(_pathEditorController.GetPathEditorData(_pathId));
         }
 
-        private void UpdateSelectSignState(string editingPathName)
+        private void UpdateSelectSignState(byte editingPathId)
         {
-            bool isActive = editingPathName.Equals(_name);
+            bool isActive = editingPathId.Equals(_pathId);
             _pathEditInfoView.SelectSignObject.SetActive(isActive);
         }
 
         private void SetCurrentEditing()
         {
-            _pathEditorController.SetEditingName(_name);
+            _pathEditorController.SetEditingName(_pathId);
         }
 
-        private void ChangePathDataName(string newPathName)
+        private void ChangePathDataName(string newPathIdString)
         {
-            _pathEditorController.ChangeName(_name, newPathName);
-            _name = newPathName;
+            if (!byte.TryParse(newPathIdString, out byte newPathId))
+            {
+                Debug.LogWarning("Input only id of path or be sure that id is in byte diapason!");
+                _pathEditInfoView.NameFieldText.text = _pathId.ToString();
+                return;
+            }
+
+            if (_pathEditorController.TryGetPathData(newPathId, out var pathEditorData))
+            {
+                Debug.LogWarning("Inputted id already exist!");               
+                _pathEditInfoView.NameFieldText.text = _pathId.ToString();
+                return;
+            }
+            
+            _pathEditorController.ChangeName(_pathId, newPathId);
+            _pathId = newPathId;
         }
 
         private void UpdatePointsList(IEnumerable<Hex2d> points)
@@ -75,7 +88,7 @@ namespace UI.PathEditorPanel
             element.PointPositionInfo.text = point.ToString();
             
             element.SelectPointButton.onClick.RemoveAllListeners();
-            element.SelectPointButton.onClick.AddListener(() => _pathEditorController.SetCurrentInsertNode(_name, point));
+            element.SelectPointButton.onClick.AddListener(() => _pathEditorController.SetCurrentInsertNode(_pathId, point));
             ((RectTransform)_pathEditInfoView.transform).sizeDelta += Vector2.up;
         }
     }

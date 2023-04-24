@@ -15,8 +15,8 @@ namespace PathSystem
         {
             foreach (var pathData in savePaths)
             {
-                var path = new PathData(hexPathFindingService, pathData.Name, pathData.Points);
-                Paths.Add(pathData.Name, path);
+                var path = new PathData(hexPathFindingService, pathData.PathId, pathData.Points);
+                Paths.Add(pathData.PathId, path);
             }
         }
         
