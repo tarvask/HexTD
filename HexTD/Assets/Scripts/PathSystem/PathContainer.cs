@@ -7,10 +7,6 @@ namespace PathSystem
 {
     public class PathContainer : PathsContainer<PathData>
     {
-        public PathContainer(List<PathData> paths) : base(paths)
-        {
-        }
-        
         public PathContainer(HexPathFindingService hexPathFindingService, PathData.SavePathData[] savePaths)
         {
             foreach (var pathData in savePaths)

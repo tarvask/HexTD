@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using HexSystem;
+﻿using HexSystem;
 using MapEditor;
+using PathSystem;
 using UI.Tools;
 using UnityEngine;
 
@@ -11,6 +11,7 @@ namespace UI.PathEditorPanel
         private readonly PathEditInfoView _pathEditInfoView;
         private readonly PathEditorController _pathEditorController;
         private readonly UiElementListPool<PointEditorPanelView> _pointEditorPanelViews;
+        private readonly IPathEnumerator _pathEnumerator;
 
         private byte _pathId;
 
@@ -27,10 +28,11 @@ namespace UI.PathEditorPanel
                 pathEditInfoView.PointsParent));
             _pathEditorController = pathEditorController;
             _pathId = pathId;
+
+            _pathEnumerator = pathEditorController.GetPathEditorData(_pathId).GetPathEnumerator();
             
-            _pathEditInfoView.NameFieldText.onValueChanged.RemoveAllListeners();
-            _pathEditInfoView.NameFieldText.onValueChanged
-                .AddListener(ChangePathDataName);
+            _pathEditInfoView.NameFieldText.onEndEdit.RemoveAllListeners();
+            _pathEditInfoView.NameFieldText.onEndEdit.AddListener(ChangePathDataName);
             _pathEditInfoView.NameFieldText.text = _pathId.ToString();
             
             _pathEditInfoView.SelectPathButton.onClick.RemoveAllListeners();
@@ -39,7 +41,7 @@ namespace UI.PathEditorPanel
             AddDisposable(_pathEditorController.SubscribeOnCurrentPathChange(UpdateSelectSignState));
             AddDisposable(_pathEditorController.SubscribeOnPointsChange(_pathId, UpdatePointsList));
 
-            UpdatePointsList(_pathEditorController.GetPathEditorData(_pathId));
+            UpdatePointsList();
         }
 
         private void UpdateSelectSignState(byte editingPathId)
@@ -73,15 +75,20 @@ namespace UI.PathEditorPanel
             _pathId = newPathId;
         }
 
-        private void UpdatePointsList(IEnumerable<Hex2d> points)
+        private void UpdatePointsList()
         {
             _pointEditorPanelViews.ClearList();
-            foreach (var point in points)
+            _pathEnumerator.Reset();
+            if(_pathEnumerator.IsEmpty)
+                return;
+            
+            AddPoint(_pathEnumerator.Current);
+            while (_pathEnumerator.MoveNext())
             {
-                AddPoint(point);
+                AddPoint(_pathEnumerator.Current);   
             }
         }
-        
+
         public void AddPoint(Hex2d point)
         {
             var element = _pointEditorPanelViews.GetElement();

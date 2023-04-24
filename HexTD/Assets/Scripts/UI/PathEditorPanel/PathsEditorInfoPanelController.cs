@@ -40,12 +40,8 @@ namespace UI.PathEditorPanel
 
         private byte GenerateAvailablePathId()
         {
-            byte i;
-            for (i = (byte)(_pathPointListEditorViewControllers.Count + 1);
-                 _pathEditorController.TryGetPathData(i, out var _);
-                 i++)
-            {
-            }
+            byte i = 1;
+            for (; _pathEditorController.TryGetPathData(i, out var _); i++) { }
 
             return i;
         }

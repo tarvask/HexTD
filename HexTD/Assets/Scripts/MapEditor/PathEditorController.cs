@@ -39,7 +39,7 @@ namespace MapEditor
             Hex2d pointStart = enumerator.Current;
             while(enumerator.MoveNext())
             {
-                Debug.DrawLine(_layout.ToPlane(pointStart), _layout.ToPlane(enumerator.Current));
+                Debug.DrawLine(_layout.ToPlane(pointStart), _layout.ToPlane(enumerator.Current), Color.black);
                 pointStart = enumerator.Current;
             }
         }
@@ -102,13 +102,13 @@ namespace MapEditor
 
         public void RmbClickHandle(Hex2d hex)
         {
-            if(_editingPathId.Value.Equals(String.Empty))
+            if(_editingPathId.Value.Equals(byte.MaxValue))
                 return;
             
             _pathsContainer[_editingPathId.Value]?.HandleRemoveCommand(hex);
         }
         
-        public IDisposable SubscribeOnPointsChange(byte pathId, Action<IEnumerable<Hex2d>> onPointsChange)
+        public IDisposable SubscribeOnPointsChange(byte pathId, Action onPointsChange)
         {
             return _pathsContainer[pathId].SubscribeOnPointsChange(onPointsChange);
         }
