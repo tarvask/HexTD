@@ -136,10 +136,6 @@ namespace Match.Field.Tower
             float newHealth = _reactiveModel.Health.Value + heal;
             newHealth = Mathf.Clamp(newHealth, 0, _reactiveModel.MaxHealth.Value);
             _reactiveModel.SetHealth(newHealth);
-            
-#if UNITY_EDITOR
-            Debug.Log(newHealth);
-#endif
         }
 
         public override void Hurt(float damage)
