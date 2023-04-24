@@ -62,11 +62,11 @@ namespace Match.Field.Tower
             {
                 var finger = LeanTouch.Fingers.First();
                 var ray = finger.GetRay(Camera.main);
-                var hits = Physics.RaycastAll(ray, 1000f);
+                var hits = Physics.RaycastAll(ray, float.MaxValue);
 
                 for (int i = 0; i < hits.Length; i++)
                 {
-                    if (hits[i].collider.TryGetComponent<HexObject>(out var hex) == true)
+                    if (hits[i].collider.transform.parent.TryGetComponent<HexObject>(out var hex) == true)
                     {
                         if (_context.FieldModel.GetFieldHexType(hex.HitHex) == FieldHexType.Free)
                         {
