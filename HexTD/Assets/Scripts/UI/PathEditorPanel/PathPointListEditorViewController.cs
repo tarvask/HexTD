@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using HexSystem;
 using MapEditor;
 using UI.Tools;
+using UnityEngine;
 
 namespace UI.PathEditorPanel
 {
@@ -74,7 +75,8 @@ namespace UI.PathEditorPanel
             element.PointPositionInfo.text = point.ToString();
             
             element.SelectPointButton.onClick.RemoveAllListeners();
-            element.SelectPointButton.onClick.AddListener(() => _pathEditorController.SetCurrentInsertNode(point));
+            element.SelectPointButton.onClick.AddListener(() => _pathEditorController.SetCurrentInsertNode(_name, point));
+            ((RectTransform)_pathEditInfoView.transform).sizeDelta += Vector2.up;
         }
     }
 }

@@ -55,6 +55,15 @@ namespace PathSystem
             Paths.Add(newName, pathData);
         }
 
+        public void GetNames(List<string> names)
+        {
+            names.Clear();
+            foreach (var path in Paths)
+            {
+                names.Add(path.Key);
+            }
+        }
+
         public string GetFirstName()
         {
             if(Paths.Keys.Count < 1)

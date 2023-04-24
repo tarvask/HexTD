@@ -16,6 +16,7 @@ namespace MapEditor
         private readonly ReactiveCommand<string> _onPathRemove;
         private readonly ReactiveProperty<string> _editingPathName;
         private readonly Layout _layout;
+        private readonly List<string> _names;
 
         public PathEditorController(Layout layout, EditorPathContainer editorPathContainer)
         {
@@ -24,6 +25,8 @@ namespace MapEditor
             _onPathRemove = new ReactiveCommand<string>();
             _editingPathName = new ReactiveProperty<string>("");
             _layout = layout;
+
+            _names = new List<string>(10);
         }
 
         public void DrawPath()
@@ -56,6 +59,12 @@ namespace MapEditor
             _pathsContainer[_editingPathName.Value].SetCurrentInsertNode(point);
         }
 
+        public void SetCurrentInsertNode(string name, Hex2d point)
+        {
+            SetEditingName(name);
+            SetCurrentInsertNode(point);
+        }
+
         public void AddPath(string name)
         {
             if(!_pathsContainer.TryAddPath(name))
@@ -70,7 +79,6 @@ namespace MapEditor
             _pathsContainer.AddPath(savePathData);
             _onPathAdd.Execute(savePathData.Name);
             SetEditingName(savePathData.Name);
-            _editingPathName.Value = _pathsContainer.GetFirstName();
         }
 
         public void RemovePath(string name)
@@ -124,6 +132,15 @@ namespace MapEditor
             return _pathsContainer[name];
         }
 
+        public void Clear()
+        {
+            _pathsContainer.GetNames(_names);
+            foreach (var name in _names)
+            {
+                RemovePath(name);
+            }
+        }
+        
         public IEnumerator<PathEditorData> GetEnumerator()
         {
             return _pathsContainer.GetEnumerator();

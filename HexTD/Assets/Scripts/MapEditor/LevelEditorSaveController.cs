@@ -72,7 +72,7 @@ namespace MapEditor
 				_hexGridModel.CreateHex(hexModel);
 			}
 			
-			_pathContainer.Clear();
+			_pathEditorController.Clear();
 			foreach (var path in levelMapModel.PathDatas)
 			{
 				_pathEditorController.AddPath(path);
