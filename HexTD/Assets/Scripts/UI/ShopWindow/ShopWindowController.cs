@@ -1,9 +1,10 @@
 using Cysharp.Threading.Tasks;
 using Extensions;
+using UI.ShopwWindow;
 using UniRx;
 using WindowSystem.Controller;
 
-namespace UI.ShopwWindow
+namespace UI.ShopWindow
 {
     public class ShopWindowController : LoadableWindowController<ShopWindowView>
     {

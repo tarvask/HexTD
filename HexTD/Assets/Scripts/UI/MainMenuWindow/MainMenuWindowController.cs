@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using WindowSystem.Controller;
 using Extensions;
 using Game;
+using UI.ShopWindow;
 using UI.ShopwWindow;
 using UniRx;
 
