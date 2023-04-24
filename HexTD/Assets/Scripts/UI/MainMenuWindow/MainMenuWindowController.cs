@@ -47,14 +47,14 @@ namespace UI.MainMenuWindow
 
 		private void RunSinglePlayerBattle()
 		{
-			WindowsManager.CloseAsync(this).Forget();
+			CloseWindows();
 
 			_gameController.RunBattle(false);
 		}
 
 		private void RunMultiPlayerBattle()
 		{
-			WindowsManager.CloseAsync(this).Forget();
+			CloseWindows();
 
 			_gameController.RunBattle(true);
 		}
@@ -62,6 +62,16 @@ namespace UI.MainMenuWindow
 		private void ShowMarket()
 		{
 			WindowsManager.OpenAsync<ShopWindowController>();
+		}
+
+		private void CloseWindows()
+        {
+			WindowsManager.CloseAsync(this).Forget();
+
+			if (WindowsManager.IsOpen<ShopWindowController>())
+			{
+				WindowsManager.CloseAsync(WindowsManager.GetOpened<ShopWindowController>()).Forget();
+			}
 		}
 	}
 }
