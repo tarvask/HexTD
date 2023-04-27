@@ -36,7 +36,6 @@ namespace Match
             public IReadOnlyReactiveProperty<NetworkRoles> OurNetworkRoleReactiveProperty { get; }
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
             public ReactiveCommand RollbackStateReactiveCommand { get; }
-            public Action OnMatchEndAction { get; }
             public bool IsMultiPlayerGame { get; }
             public WindowSystem.IWindowsManager NewWindowsManager { get; }
 
@@ -51,7 +50,6 @@ namespace Match
                 IReadOnlyReactiveProperty<NetworkRoles> ourNetworkRoleReactiveProperty,
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand rollbackStateReactiveCommand,
-                Action onMatchEndAction,
                 bool isMultiPlayerGame,
                 WindowSystem.IWindowsManager newWindowsManager)
             {
@@ -68,7 +66,6 @@ namespace Match
                 OurNetworkRoleReactiveProperty = ourNetworkRoleReactiveProperty;
                 IsConnectedReactiveProperty = isConnectedReactiveProperty;
                 RollbackStateReactiveCommand = rollbackStateReactiveCommand;
-                OnMatchEndAction = onMatchEndAction;
                 IsMultiPlayerGame = isMultiPlayerGame;
                 NewWindowsManager = newWindowsManager;
             }
@@ -351,10 +348,6 @@ namespace Match
                 waveStartedReactiveCommand);
             _stateSaver = AddDisposable(new MatchStateSaver(stateSaverContext));
 
-            // subscribe photon actions
-            enemyCastleDestroyedReactiveCommand.Subscribe((u) => _context.OnMatchEndAction());
-            ourCastleDestroyedReactiveCommand.Subscribe((u) => _context.OnMatchEndAction());
-
             _context.MatchCommandsCommon.IncomingGeneral.RequestSyncState.Subscribe(SendState);
             _context.MatchCommandsCommon.IncomingGeneral.ApplySyncState.Subscribe(SyncState);
 
@@ -409,7 +402,6 @@ namespace Match
             _ourClicksDistributor.OuterLogicUpdate(frameLength);
             _ourTowerPlacer.OuterLogicUpdate(frameLength);
 
-
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
             _buffManager.OuterLogicUpdate(frameLength);
 
@@ -421,6 +413,8 @@ namespace Match
             
             if (_context.IsMultiPlayerGame)
                 _player2FieldController.OuterLogicUpdate(frameLength);
+
+            _rulesController.OuterLogicUpdate(frameLength);
         }
 
         public void OuterViewUpdate(float frameLength)

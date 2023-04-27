@@ -8,9 +8,11 @@ namespace Match.Windows
         [SerializeField] private Button closeButton;
         [SerializeField] private GameObject winGroup;
         [SerializeField] private GameObject loseGroup;
+        [SerializeField] private GameObject drawGroup;
 
         public Button CloseButton => closeButton;
         public GameObject WinGroup => winGroup;
         public GameObject LoseGroup => loseGroup;
+        public GameObject DrawGroup => drawGroup;
     }
 }
