@@ -52,5 +52,12 @@ namespace Match.Windows.Hand
         {
             _context.View.OnDragEvent -= OnDrag;
         }
+
+        protected override void OnDispose()
+        {
+            base.OnDispose();
+            
+            Object.Destroy(_context.View);
+        }
     }
 }

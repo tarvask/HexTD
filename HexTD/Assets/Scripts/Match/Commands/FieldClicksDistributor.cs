@@ -55,7 +55,7 @@ namespace Match.Commands
                 PlaceForTowerSelectedCommand = placeForTowerSelectedCommand;
             }
         }
-
+        
         private readonly Context _context;
 
         public FieldClicksDistributor(Context context)
@@ -106,9 +106,10 @@ namespace Match.Commands
             if (!_context.TowerPlacer.CanTowerBePlacedToHex(towerConfig, clickedHex))
                 return;
 
-            if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >= towerConfig.TowerLevelConfigs[0].BuildPrice)
+            if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >=
+                towerConfig.TowerLevelConfigs[TowerConfigNew.FirstTowerLevel].BuildPrice)
                 _context.MatchCommands.Outgoing.RequestBuildTower.Fire(clickedHex, 
-                    new TowerShortParams(_context.PlayerHandController.ChosenTowerType, 1));
+                    new TowerShortParams(_context.PlayerHandController.ChosenTowerType, TowerConfigNew.FirstTowerLevel));
         }
 
         private void ProcessBuild(Hex2d position, TowerShortParams towerShortParams)
@@ -118,7 +119,7 @@ namespace Match.Commands
                 return;
             
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[0].BuildPrice);
+            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[TowerConfigNew.FirstTowerLevel].BuildPrice);
             _context.ConstructionProcessController.SetTowerBuilding(towerConfig, position);
         }
 
@@ -144,7 +145,9 @@ namespace Match.Commands
                 _context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value,
                 () =>
                 {
-                    if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >= towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice)
+                    // check if we can pay for the next level 
+                    if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >=
+                        towerConfig.TowerLevelConfigs[towerShortParams.NextLevel].BuildPrice)
                         _context.MatchCommands.Outgoing.RequestUpgradeTower.Fire(clickedHex, towerShortParams);
                 },
                 () =>
@@ -176,7 +179,7 @@ namespace Match.Commands
                 return;
 
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice);
+            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[towerShortParams.NextLevel].BuildPrice);
             _context.ConstructionProcessController.SetTowerUpgrading(towerInstance);
         }
 
