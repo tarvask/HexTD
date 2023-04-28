@@ -3,9 +3,9 @@
     // -----------------Realtime Public EU---------------------------------------
     {
       "Region": "EU",
-      "IpAddress": "46.148.234.242",
+      "IpAddress": "74.235.82.34",
       "IpAddressIPv6": "::1",
-      "Hostname": "Fibonacci"
+      "Hostname": "Garibaldi"
     }
   ]
 }
