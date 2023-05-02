@@ -107,7 +107,7 @@ namespace Match.Commands
                     break;
 
                 Hashtable pathHashtable = (Hashtable) pathHashtableObject;
-                string name = (string)pathHashtable[PhotonEventsConstants.SyncMatch.PathData.Name];
+                byte name = (byte)pathHashtable[PhotonEventsConstants.SyncMatch.PathData.Name];
                 byte pathSize = (byte)pathHashtable[PhotonEventsConstants.SyncMatch.PathData.PointLength];
 
                 List<Hex2d> points = new List<Hex2d>();

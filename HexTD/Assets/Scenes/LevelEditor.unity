@@ -252,6 +252,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6394172693007249900, guid: 285568a645745ef4eae22270bcd0162f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6394172693235594234, guid: 285568a645745ef4eae22270bcd0162f, type: 3}
       propertyPath: m_Name
       value: PathEditorInfoPanel

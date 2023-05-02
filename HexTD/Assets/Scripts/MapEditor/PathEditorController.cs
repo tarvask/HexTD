@@ -12,118 +12,142 @@ namespace MapEditor
     public class PathEditorController : IPointerInputListener, IEnumerable<PathEditorData>
     {
         private readonly EditorPathContainer _pathsContainer;
-        private readonly ReactiveCommand<string> _onPathAdd;
-        private readonly ReactiveCommand<string> _onPathRemove;
-        private readonly ReactiveProperty<string> _editingPathName;
+        private readonly ReactiveCommand<byte> _onPathAdd;
+        private readonly ReactiveCommand<byte> _onPathRemove;
+        private readonly ReactiveProperty<byte> _editingPathId;
         private readonly Layout _layout;
+        
+        private readonly List<byte> _pathIds;
 
         public PathEditorController(Layout layout, EditorPathContainer editorPathContainer)
         {
             _pathsContainer = editorPathContainer;
-            _onPathAdd = new ReactiveCommand<string>();
-            _onPathRemove = new ReactiveCommand<string>();
-            _editingPathName = new ReactiveProperty<string>("");
+            _onPathAdd = new ReactiveCommand<byte>();
+            _onPathRemove = new ReactiveCommand<byte>();
+            _editingPathId = new ReactiveProperty<byte>(0);
             _layout = layout;
+
+            _pathIds = new List<byte>(10);
         }
 
         public void DrawPath()
         {
-            if(!_pathsContainer.TryGetPathData(_editingPathName.Value, out var pathData))
+            if(!_pathsContainer.TryGetPathData(_editingPathId.Value, out var pathData))
                 return;
 
             using var enumerator = pathData.GetEnumerator();
             Hex2d pointStart = enumerator.Current;
             while(enumerator.MoveNext())
             {
-                Debug.DrawLine(_layout.ToPlane(pointStart), _layout.ToPlane(enumerator.Current));
+                Debug.DrawLine(_layout.ToPlane(pointStart), _layout.ToPlane(enumerator.Current), Color.black);
                 pointStart = enumerator.Current;
             }
         }
 
-        public void SetEditingName(string newEditingPathName)
+        public void SetEditingName(byte newEditingPathId)
         {
-            _editingPathName.Value = newEditingPathName;
+            _editingPathId.Value = newEditingPathId;
         }
 
-        public void ChangeName(string oldName, string newEditingPathName)
+        public void ChangeName(byte oldPathId, byte newEditingPathId)
         {
-            _pathsContainer.ChangeName(oldName, newEditingPathName);
-            _editingPathName.Value = newEditingPathName;
+            _pathsContainer.ChangeName(oldPathId, newEditingPathId);
+            _editingPathId.Value = newEditingPathId;
         }
 
         public void SetCurrentInsertNode(Hex2d point)
         {
-            _pathsContainer[_editingPathName.Value].SetCurrentInsertNode(point);
+            _pathsContainer[_editingPathId.Value].SetCurrentInsertNode(point);
         }
 
-        public void AddPath(string name)
+        public void SetCurrentInsertNode(byte pathId, Hex2d point)
         {
-            if(!_pathsContainer.TryAddPath(name))
+            SetEditingName(pathId);
+            SetCurrentInsertNode(point);
+        }
+
+        public void AddPath(byte pathId)
+        {
+            if(!_pathsContainer.TryAddPath(pathId))
                 return;
 
-            SetEditingName(name);
-            _onPathAdd.Execute(name);
+            SetEditingName(pathId);
+            _onPathAdd.Execute(pathId);
         }
 
         public void AddPath(PathData.SavePathData savePathData)
         {
             _pathsContainer.AddPath(savePathData);
-            _onPathAdd.Execute(savePathData.Name);
-            SetEditingName(savePathData.Name);
-            _editingPathName.Value = _pathsContainer.GetFirstName();
+            _onPathAdd.Execute(savePathData.PathId);
+            SetEditingName(savePathData.PathId);
         }
 
-        public void RemovePath(string name)
+        public void RemovePath(byte pathId)
         {
-            if(!_pathsContainer.TryRemove(name))
+            if(!_pathsContainer.TryRemove(pathId))
                 return;
 
-            _onPathRemove.Execute(name);
-            if (_editingPathName.Value.Equals(name))
-                _editingPathName.Value = _pathsContainer.GetLastName();
+            _onPathRemove.Execute(pathId);
+            if (_editingPathId.Value.Equals(pathId))
+                _editingPathId.Value = _pathsContainer.GetLastName();
         }
         
         public void LmbClickHandle(Hex2d hex)
         {
-            if(_editingPathName.Value.Equals(String.Empty))
+            if(_editingPathId.Value.Equals(byte.MaxValue))
                 return;
             
-            _pathsContainer[_editingPathName.Value]?.HandleAddCommand(hex);
+            _pathsContainer[_editingPathId.Value]?.HandleAddCommand(hex);
         }
 
         public void RmbClickHandle(Hex2d hex)
         {
-            if(_editingPathName.Value.Equals(String.Empty))
+            if(_editingPathId.Value.Equals(byte.MaxValue))
                 return;
             
-            _pathsContainer[_editingPathName.Value]?.HandleRemoveCommand(hex);
+            _pathsContainer[_editingPathId.Value]?.HandleRemoveCommand(hex);
         }
         
-        public IDisposable SubscribeOnPointsChange(string name, Action<IEnumerable<Hex2d>> onPointsChange)
+        public IDisposable SubscribeOnPointsChange(byte pathId, Action onPointsChange)
         {
-            return _pathsContainer[name].SubscribeOnPointsChange(onPointsChange);
+            return _pathsContainer[pathId].SubscribeOnPointsChange(onPointsChange);
         }
         
-        public IDisposable SubscribeOnPathAdd(Action<string> onPathAdd)
+        public IDisposable SubscribeOnPathAdd(Action<byte> onPathAdd)
         {
             return _onPathAdd.Subscribe(onPathAdd);
         }
         
-        public IDisposable SubscribeOnPathRemove(Action<string> onPathRemove)
+        public IDisposable SubscribeOnPathRemove(Action<byte> onPathRemove)
         {
             return _onPathRemove.Subscribe(onPathRemove);
         }
         
-        public IDisposable SubscribeOnCurrentPathChange(Action<string> onCurrentPathChange)
+        public IDisposable SubscribeOnCurrentPathChange(Action<byte> onCurrentPathChange)
         {
-            return _editingPathName.Subscribe(onCurrentPathChange);
+            return _editingPathId.Subscribe(onCurrentPathChange);
         }
 
-        public PathEditorData GetPathEditorData(string name)
+        public PathEditorData GetPathEditorData(byte pathId)
         {
-            return _pathsContainer[name];
+            return _pathsContainer[pathId];
         }
 
+        public bool TryGetPathData(byte pathId, out PathEditorData pathEditorData)
+        {
+            return _pathsContainer.TryGetPathData(pathId, out pathEditorData);
+        }
+        
+
+        public void Clear()
+        {
+            _pathsContainer.GetNames(_pathIds);
+            foreach (var pathId in _pathIds)
+            {
+                RemovePath(pathId);
+            }
+        }
+        
         public IEnumerator<PathEditorData> GetEnumerator()
         {
             return _pathsContainer.GetEnumerator();

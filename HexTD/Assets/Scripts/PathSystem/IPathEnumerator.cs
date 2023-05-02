@@ -8,6 +8,7 @@ namespace PathSystem
     {
         byte CurrentPointIndex { get; }
         float PathLength { get; }
+        bool IsEmpty { get; }
 
         void MoveTo(int pointIndex);
     }

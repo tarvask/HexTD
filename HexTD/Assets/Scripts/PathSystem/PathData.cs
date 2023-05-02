@@ -12,28 +12,28 @@ namespace PathSystem
     {
         public struct SavePathData
         {
-            [JsonProperty("Name")] public string Name;
+            [JsonProperty("PathId")] public byte PathId;
             [JsonProperty("Points")] public LinkedList<Hex2d> Points;
             
             [JsonConstructor]
-            public SavePathData([JsonProperty("Name")] string name,
+            public SavePathData([JsonProperty("PathId")] byte pathId,
                 [JsonProperty("Points")] LinkedList<Hex2d> points)
             {
-                Name = name;
+                PathId = pathId;
                 Points = new LinkedList<Hex2d>(points);
             }
             
-            public SavePathData(string name,
+            public SavePathData(byte pathId,
                 List<Hex2d> points)
             {
-                Name = name;
+                PathId = pathId;
                 Points = new LinkedList<Hex2d>(points);
             }
             
             public Hashtable ToNetwork()
             {
                 Hashtable hexNetwork = new Hashtable{
-                    {PhotonEventsConstants.SyncMatch.PathData.Name, Name},
+                    {PhotonEventsConstants.SyncMatch.PathData.Name, PathId},
                     {PhotonEventsConstants.SyncMatch.PathData.PointLength, (byte)Points.Count}
                 };
 
@@ -51,21 +51,21 @@ namespace PathSystem
             }
         }
 
-        public string Name { get; protected set; }
+        public byte PathId { get; protected set; }
 
         protected readonly float PathLength;
         protected readonly LinkedList<Hex2d> Points;
 
-        public PathData(string name, IEnumerable<Hex2d> points)
+        public PathData(byte pathId, IEnumerable<Hex2d> points)
         {
-            Name = name;
+            PathId = pathId;
             Points = new LinkedList<Hex2d>(points);
             PathLength = CalcPathLength(Vector3.one);
         }
 
-        public PathData(HexPathFindingService hexPathFindingService, string name, IEnumerable<Hex2d> points)
+        public PathData(HexPathFindingService hexPathFindingService, byte pathId, IEnumerable<Hex2d> points)
         {
-            Name = name;
+            PathId = pathId;
             Points = new LinkedList<Hex2d>();
 
             List<Hex2d> middlePath = new List<Hex2d>();
@@ -139,7 +139,7 @@ namespace PathSystem
 
         public SavePathData GetSavePathData()
         {
-            return new SavePathData(Name, Points);
+            return new SavePathData(PathId, Points);
         }
         
         public IPathEnumerator GetPathEnumerator()
