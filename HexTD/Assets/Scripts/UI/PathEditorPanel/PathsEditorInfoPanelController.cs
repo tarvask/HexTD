@@ -70,7 +70,7 @@ namespace UI.PathEditorPanel
 
         private void PathRemove(byte pathId)
         {
-            var pathPointListEditorViewController = _pathPointListEditorViewControllers.Find(contoller => contoller.PathId == pathId);
+            var pathPointListEditorViewController = _pathPointListEditorViewControllers.Find(controller => controller.PathId == pathId);
             if(pathPointListEditorViewController != null)
                 PathRemove(pathPointListEditorViewController);
         }
