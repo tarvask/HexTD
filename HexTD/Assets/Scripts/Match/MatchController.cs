@@ -36,7 +36,6 @@ namespace Match
             public IReadOnlyReactiveProperty<NetworkRoles> OurNetworkRoleReactiveProperty { get; }
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
             public ReactiveCommand RollbackStateReactiveCommand { get; }
-            public Action OnMatchEndAction { get; }
             public bool IsMultiPlayerGame { get; }
             public WindowSystem.IWindowsManager NewWindowsManager { get; }
 
@@ -51,7 +50,6 @@ namespace Match
                 IReadOnlyReactiveProperty<NetworkRoles> ourNetworkRoleReactiveProperty,
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand rollbackStateReactiveCommand,
-                Action onMatchEndAction,
                 bool isMultiPlayerGame,
                 WindowSystem.IWindowsManager newWindowsManager)
             {
@@ -68,7 +66,6 @@ namespace Match
                 OurNetworkRoleReactiveProperty = ourNetworkRoleReactiveProperty;
                 IsConnectedReactiveProperty = isConnectedReactiveProperty;
                 RollbackStateReactiveCommand = rollbackStateReactiveCommand;
-                OnMatchEndAction = onMatchEndAction;
                 IsMultiPlayerGame = isMultiPlayerGame;
                 NewWindowsManager = newWindowsManager;
             }
@@ -89,8 +86,9 @@ namespace Match
         private readonly MatchRulesController _rulesController;
         private readonly InputController _inputController;
         private readonly FieldClicksHandler _clicksHandler;
-        private readonly FieldClicksDistributor _clicksDistributor;
-        private readonly TowerPlacer _towerPlacer;
+        private readonly FieldClicksDistributor _ourClicksDistributor;
+        private readonly FieldClicksDistributor _enemyClicksDistributor;
+        private readonly TowerPlacer _ourTowerPlacer;
         private readonly MatchStateSaver _stateSaver;
 
         private readonly ReactiveCommand<PlayerState> _enemyStateSyncedReactiveCommand;
@@ -125,6 +123,7 @@ namespace Match
             ReactiveCommand<int> enemyCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<int> ourCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<bool> dragCardChangeStatusCommand = AddDisposable(new ReactiveCommand<bool>());
+            ReactiveCommand<Hex2d> placeForOurTowerSelectedCommand = AddDisposable(new ReactiveCommand<Hex2d>());
 
             ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_context.FieldConfig);
             _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
@@ -211,7 +210,7 @@ namespace Match
             ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
             MatchCommands player1MatchCommands, player2MatchCommands;
 
-            FieldController ourField;
+            FieldController ourField, enemyField;
 
             if (_context.OurGameRoleReactiveProperty.Value == ProcessRoles.Player1)
             {
@@ -222,6 +221,7 @@ namespace Match
                 spawnPlayer2MobReactiveCommand = spawnEnemyMobReactiveCommand;
                 player2MatchCommands = _context.MatchCommandsEnemy;
                 ourField = _player1FieldController;
+                enemyField = _player2FieldController;
             }
             else
             {
@@ -232,14 +232,15 @@ namespace Match
                 spawnPlayer2MobReactiveCommand = spawnOurMobReactiveCommand;
                 player2MatchCommands = _context.MatchCommandsOur;
                 ourField = _player2FieldController;
+                enemyField = _player1FieldController;
             }
 
             {
                 {
-                    var player1FieldBounds = _player1FieldController.GetFieldBounds();
-                    DebugDrawingTools.DrawBounds(player1FieldBounds, Color.white, 5.0f);
+                    var ourFieldBounds = ourField.GetFieldBounds();
+                    DebugDrawingTools.DrawBounds(ourFieldBounds, Color.white, 5.0f);
 
-                    if (_context.MatchView.OurFieldCamera.TryGetFocusTransforms(player1FieldBounds, out var pos,
+                    if (_context.MatchView.OurFieldCamera.TryGetFocusTransforms(ourFieldBounds, out var pos,
                             out var rot))
                     {
                         _context.MatchView.OurFieldCamera.transform.position = pos;
@@ -250,10 +251,10 @@ namespace Match
                     }
                 }
                 {
-                    var player2FieldBounds = _player2FieldController.GetFieldBounds();
-                    DebugDrawingTools.DrawBounds(player2FieldBounds, Color.white, 5.0f);
+                    var enemyFieldBounds = enemyField.GetFieldBounds();
+                    DebugDrawingTools.DrawBounds(enemyFieldBounds, Color.white, 5.0f);
 
-                    if (_context.MatchView.EnemyFieldCamera.TryGetFocusTransforms(player2FieldBounds, out var pos,
+                    if (_context.MatchView.EnemyFieldCamera.TryGetFocusTransforms(enemyFieldBounds, out var pos,
                             out var rot))
                     {
                         _context.MatchView.EnemyFieldCamera.transform.position = pos;
@@ -263,6 +264,7 @@ namespace Match
             }
 
             ourField.InitPlayerHand(_ourPlayerHandController);
+            enemyField.InitPlayerHand(_enemyPlayerHandController);
             
             // wave mob spawner
             WaveMobSpawnerCoordinator.Context waveMobSpawnerContext = new WaveMobSpawnerCoordinator.Context(
@@ -299,25 +301,39 @@ namespace Match
                 clickReactiveCommand);
             _clicksHandler = AddDisposable(new FieldClicksHandler(clicksHandlerContext));
 
-            FieldClicksDistributor.Context clicksDistributorContext =
+            TowerPlacer.Context ourTowerPlacerContext =
+                new TowerPlacer.Context(
+                    ourField.FieldConstructionProcessController,
+                    _ourPlayerHandController,
+                    _configsRetriever,
+                    ourField.HexagonalFieldModel,
+                    ourField.PathContainer,
+                    
+                    dragCardChangeStatusCommand,
+                    placeForOurTowerSelectedCommand);
+            _ourTowerPlacer = AddDisposable(new TowerPlacer(ourTowerPlacerContext));
+            
+            FieldClicksDistributor.Context ourClicksDistributorContext =
                 new FieldClicksDistributor.Context(
                     ourField.FieldModel, _clicksHandler, _configsRetriever,
                     ourField.FieldConstructionProcessController,
-                    _ourPlayerHandController, _context.MatchCommandsOur,
+                    _ourPlayerHandController, _ourTowerPlacer, _context.MatchCommandsOur,
                     _windowsManager.TowerManipulationWindowController,
                     _windowsManager.TowerInfoWindowController,
-                    ourField.HexagonalFieldModel,
-                    ourField.PathContainer
+                    placeForOurTowerSelectedCommand
                 );
-            _clicksDistributor = AddDisposable(new FieldClicksDistributor(clicksDistributorContext));
+            _ourClicksDistributor = AddDisposable(new FieldClicksDistributor(ourClicksDistributorContext));
 
-            TowerPlacer.Context towerPlacerContext =
-                new TowerPlacer.Context(
-                    ourField.FieldConstructionProcessController,
-                    _ourPlayerHandController, _configsRetriever,
-                    ourField.FieldModel, _context.MatchCommandsOur,
-                    dragCardChangeStatusCommand);
-            _towerPlacer = AddDisposable(new TowerPlacer(towerPlacerContext));
+            FieldClicksDistributor.Context enemyClicksDistributorContext =
+                new FieldClicksDistributor.Context(
+                    enemyField.FieldModel, null, _configsRetriever,
+                    enemyField.FieldConstructionProcessController,
+                    _enemyPlayerHandController, null, _context.MatchCommandsEnemy,
+                    _windowsManager.TowerManipulationWindowController,
+                    _windowsManager.TowerInfoWindowController,
+                    placeForOurTowerSelectedCommand
+                );
+            _enemyClicksDistributor = AddDisposable(new FieldClicksDistributor(enemyClicksDistributorContext));
 
             // rules
             MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
@@ -331,10 +347,6 @@ namespace Match
                 _player1FieldController, _player2FieldController, _waveMobSpawnerCoordinator,
                 waveStartedReactiveCommand);
             _stateSaver = AddDisposable(new MatchStateSaver(stateSaverContext));
-
-            // subscribe photon actions
-            enemyCastleDestroyedReactiveCommand.Subscribe((u) => _context.OnMatchEndAction());
-            ourCastleDestroyedReactiveCommand.Subscribe((u) => _context.OnMatchEndAction());
 
             _context.MatchCommandsCommon.IncomingGeneral.RequestSyncState.Subscribe(SendState);
             _context.MatchCommandsCommon.IncomingGeneral.ApplySyncState.Subscribe(SyncState);
@@ -387,9 +399,8 @@ namespace Match
             if (!_rulesController.IsMatchRunning)
                 return;
             
-            _clicksDistributor.OuterLogicUpdate(frameLength);
-            _towerPlacer.OuterLogicUpdate(frameLength);
-
+            _ourClicksDistributor.OuterLogicUpdate(frameLength);
+            _ourTowerPlacer.OuterLogicUpdate(frameLength);
 
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
             _buffManager.OuterLogicUpdate(frameLength);
@@ -402,6 +413,8 @@ namespace Match
             
             if (_context.IsMultiPlayerGame)
                 _player2FieldController.OuterLogicUpdate(frameLength);
+
+            _rulesController.OuterLogicUpdate(frameLength);
         }
 
         public void OuterViewUpdate(float frameLength)

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using Extensions;
 using Match.Field.Hand;
 using Match.Field.Tower;
 using Match.Field.Tower.TowerConfigs;
 using Services;
 using UI.Tools;
 using UniRx;
+using BaseDisposable = Tools.BaseDisposable;
 
 namespace Match.Windows.Hand
 {
@@ -65,7 +65,7 @@ namespace Match.Windows.Hand
             TowerCardController towerCardController = new TowerCardController(towerCardControllerContext);
             _towerCardControllers.Add(towerCardController);
 
-            int price = towerConfig.TowerLevelConfigs[0].BuildPrice;
+            int price = towerConfig.TowerLevelConfigs[TowerConfigNew.FirstTowerLevel].BuildPrice;
             towerCardView.CostText.text = price.ToString();
             towerCardView.TowerNameText.text = towerConfig.RegularParameters.TowerName + towerType.ToString();
             
@@ -88,6 +88,20 @@ namespace Match.Windows.Hand
             towerCardView.ReadyBgImage.gameObject.SetActive(isReady);
             towerCardView.NotReadyBgImage.gameObject.SetActive(!isReady);
             towerCardView.SetTowerCardReadyState(isReady);
+        }
+
+        protected override void OnDispose()
+        {
+            base.OnDispose();
+
+            foreach (TowerCardController towerCardController in _towerCardControllers)
+            {
+                towerCardController.Dispose();
+            }
+            
+            _towerCardViews.ClearList();
+            _towerCards.Clear();
+            _towerCardControllers.Clear();
         }
     }
 }

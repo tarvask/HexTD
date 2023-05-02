@@ -56,8 +56,7 @@ namespace Match.Field.Tower
         private readonly TowerReactiveModel _reactiveModel;
         // effects that are applied to mobs after shot (firing, icing, slowing)
         
-        private TowerLevelConfig CurrentLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level - 1];
-        private TowerLevelConfig NextLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level];
+        private TowerLevelConfig CurrentLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level];
         public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
 
         public int Id => _context.Id;
@@ -136,10 +135,6 @@ namespace Match.Field.Tower
             float newHealth = _reactiveModel.Health.Value + heal;
             newHealth = Mathf.Clamp(newHealth, 0, _reactiveModel.MaxHealth.Value);
             _reactiveModel.SetHealth(newHealth);
-            
-#if UNITY_EDITOR
-            Debug.Log(newHealth);
-#endif
         }
 
         public override void Hurt(float damage)
@@ -211,7 +206,7 @@ namespace Match.Field.Tower
             // }
             //
             // return Mathf.CeilToInt(sellPrice * 0.5f);
-            return towerLevels[towerLevel - 1].RefundPrice;
+            return towerLevels[towerLevel].RefundPrice;
         }
 
         public void SetRemoving()

@@ -25,6 +25,8 @@ namespace Match
         
         private readonly Context _context;
         private bool _isMatchRunning;
+        private bool _isEnemyCastleDestroyed, _isOurCastleDestroyed;
+        private MatchResultType _matchResult;
 
         public bool IsMatchRunning => _isMatchRunning;
 
@@ -36,18 +38,35 @@ namespace Match
             _context.OurCastleDestroyedReactiveCommand.Subscribe(OnOurCastleDestroyedEventHandler);
 
             _isMatchRunning = true;
+            _matchResult = MatchResultType.Undefined;
+        }
+
+        public void OuterLogicUpdate(float frameLength)
+        {
+            if (_isEnemyCastleDestroyed || _isOurCastleDestroyed)
+            {
+                if (!_isOurCastleDestroyed)
+                    _matchResult = MatchResultType.Win;
+                else if (!_isEnemyCastleDestroyed)
+                    _matchResult = MatchResultType.Lose;
+                else
+                    _matchResult = MatchResultType.Draw;
+            }
+
+            _isMatchRunning = _matchResult == MatchResultType.Undefined;
+            
+            if (!_isMatchRunning)
+                _context.WinLoseWindowController.ShowWindow(_matchResult);
         }
 
         private void OnEnemyCastleDestroyedEventHandler(Unit unit)
         {
-            _isMatchRunning = false;
-            _context.WinLoseWindowController.ShowWindow(true);
+            _isEnemyCastleDestroyed = true;
         }
 
         private void OnOurCastleDestroyedEventHandler(Unit unit)
         {
-            _isMatchRunning = false;
-            _context.WinLoseWindowController.ShowWindow(false);
+            _isOurCastleDestroyed = true;
         }
     }
 }

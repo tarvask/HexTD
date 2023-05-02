@@ -66,7 +66,10 @@ namespace Match.Wave
             float totalWaveDuration = 0;
 
             foreach (WaveElementDelayAndPath waveElementDelay in elements)
-                totalWaveDuration += waveElementDelay.Delay;
+            {
+                if (waveElementDelay.Delay > totalWaveDuration)
+                    totalWaveDuration = waveElementDelay.Delay;
+            }
 
             size = totalMobsInWaveCount;
             duration = totalWaveDuration;

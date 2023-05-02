@@ -11,6 +11,7 @@ namespace Match.Field.Tower
 
         public TowerType TowerType => towerType;
         public int Level => level;
+        public int NextLevel => level + 1;
 
         public TowerShortParams(TowerType type, int lvl)
         {

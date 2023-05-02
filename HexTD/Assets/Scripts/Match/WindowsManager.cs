@@ -21,7 +21,7 @@ namespace Match
             public MatchUiViewsCollection UiViews { get; }
             public Canvas Canvas { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
-            public readonly bool IsMultiPlayerGame { get; }
+            public bool IsMultiPlayerGame { get; }
             public PlayerHandController PlayerHandController { get; }
             public WaveParametersStrict[] Waves { get; }
             

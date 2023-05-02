@@ -21,6 +21,7 @@ namespace Match
         private ServerCommandsProcessor _serverCommandsProcessor;
         private ReactiveCommand _rollbackStateReactiveCommand;
         private Action _onQuitGameAction;
+        private Action _onMatchEndAction;
         
         private float _currentEngineFrameTimestamp;
         private bool _isInited;
@@ -74,7 +75,7 @@ namespace Match
                 CurrentEngineFrameReactiveProperty, quitMatchReactiveCommand, syncFrameCounterCommand,
                 currentProcessGameRoleReactiveProperty, currentProcessNetworkRoleReactiveProperty, isConnectedReactiveProperty,
                 _rollbackStateReactiveCommand,
-                onMatchEndAction, isMultiPlayerGame,
+                isMultiPlayerGame,
                 _newWindowsManager);
             _matchController = new MatchController(matchControllerContext);
 
@@ -93,6 +94,7 @@ namespace Match
             quitMatchReactiveCommand.Subscribe((Unit unit) => QuitMatch());
             syncFrameCounterCommand.Subscribe(SyncFrameCounter);
             _onQuitGameAction = onQuitGameAction;
+            _onMatchEndAction = onMatchEndAction;
 
             CurrentEngineFrameReactiveProperty.Value = 0;
             _currentEngineFrameTimestamp = Time.time;
@@ -132,6 +134,7 @@ namespace Match
         private void QuitMatch()
         {
             _matchController.Dispose();
+            _onMatchEndAction();
             _onQuitGameAction();
         }
 

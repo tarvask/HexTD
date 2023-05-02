@@ -25,16 +25,16 @@ MonoBehaviour:
     raceType: 1
     epicDegree: 1
   towerLevelConfigs:
-    keyData: 0000000002000000
+    keyData: 0200000001000000
     valueData:
-    - buildPrice: 12
-      refundPrice: 3
-      buildTime: 1
-      healthPoint: 100
     - buildPrice: 15
       refundPrice: 1
       buildTime: 1
       healthPoint: 120
+    - buildPrice: 12
+      refundPrice: 3
+      buildTime: 1
+      healthPoint: 100
   attacksConfig:
     attacks:
     - rid: 4883102068210663427

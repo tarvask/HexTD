@@ -19,24 +19,26 @@ MonoBehaviour:
     towerName: TestTower
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
+    placementType: 0
     reachableAttackTargetFinderType: 1
     targetFindingTacticType: 2
     raceType: 1
     epicDegree: 1
   towerLevelConfigs:
-    keyData: 0000000002000000
+    keyData: 0200000001000000
     valueData:
-    - buildPrice: 6
-      refundPrice: 0
-      buildTime: 1
-      healthPoint: 100
     - buildPrice: 1
       refundPrice: 1
       buildTime: 1
       healthPoint: 120
+    - buildPrice: 6
+      refundPrice: 2
+      buildTime: 1
+      healthPoint: 100
   attacksConfig:
     attacks:
     - rid: 8526326042669350912
+    splashAttacks: []
   references:
     version: 2
     RefIds:
