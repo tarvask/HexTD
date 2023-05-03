@@ -1,4 +1,4 @@
-﻿using UI.InfoPanel;
+﻿using UI.EditorInfoPanel;
 using UI.PathEditorPanel;
 using UnityEngine;
 

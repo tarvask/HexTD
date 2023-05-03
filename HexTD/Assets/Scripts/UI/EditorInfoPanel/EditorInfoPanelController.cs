@@ -1,6 +1,6 @@
 using UI.Tools;
 
-namespace UI.InfoPanel
+namespace UI.EditorInfoPanel
 {
     public class EditorInfoPanelController : BaseDisposable
     {
