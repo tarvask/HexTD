@@ -103,6 +103,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 7696017781656111541, guid: d04f6a3ea9ed6c845a976e2b7eb9272e, type: 3}
+      propertyPath: m_FadeMode
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d04f6a3ea9ed6c845a976e2b7eb9272e, type: 3}
 --- !u!1 &8315517317717828691 stripped
@@ -124,15 +128,3 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -4999625424320853954, guid: 69d6f9dbb9824e3448f49ca7fa9e01d5, type: 3}
---- !u!114 &4018188321887320154
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8315517317717828691}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 412a0c95fe4f44fdaa929cd502a04cba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

@@ -31,7 +31,7 @@ namespace InputSystem
             SwitchEditMode(DefaultEditMode);
         }
 
-        private void SwitchEditMode(EditMode editMode = EditMode.Undefined)
+        public void SwitchEditMode(EditMode editMode = EditMode.Undefined)
         {
             if (editMode == EditMode.Undefined)
                 editMode = GetNextEditMode(_currentEditMode);
@@ -83,9 +83,6 @@ namespace InputSystem
         public void KeyboardInputHandle(Hex2d hex, bool isHexUnderMouse)
         {
             _hexMapController.ApplyKeyboardInput(hex, isHexUnderMouse);
-            
-            if(Input.GetKeyDown(KeyCode.Space))
-                SwitchEditMode();
         }
     }
 }
