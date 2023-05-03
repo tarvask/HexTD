@@ -86,6 +86,11 @@ namespace HexSystem
 			_hexModels.Clear();
 		}
 
+		public bool HasHex(Hex2d hex)
+		{
+			return _hexModels.ContainsKey(hex.GetHashCode());
+		}
+
 		public bool GetHexIsBlocker(Hex2d hex)
 		{
 			if (!_hexModels[hex.GetHashCode()].Data

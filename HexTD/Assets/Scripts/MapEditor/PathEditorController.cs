@@ -24,7 +24,7 @@ namespace MapEditor
             _pathsContainer = editorPathContainer;
             _onPathAdd = new ReactiveCommand<byte>();
             _onPathRemove = new ReactiveCommand<byte>();
-            _editingPathId = new ReactiveProperty<byte>(0);
+            _editingPathId = new ReactiveProperty<byte>(byte.MaxValue);
             _layout = layout;
 
             _pathIds = new List<byte>(10);
