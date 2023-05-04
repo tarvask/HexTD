@@ -33,7 +33,7 @@ namespace Match.Field.Shooting.TargetFinding
         }
 
         public int GetTargetWithTacticInRange(IReadOnlyDictionary<int, List<ITarget>> targetsByPosition, 
-            ReachableAttackTargetFinderType reachableAttackTargetFinderType,
+            AttackRangeType attackRangeType,
             TargetFindingTacticType tacticType,
             Hex2d towerPosition, int attackRadius, bool preferUnbuffed)
         {
@@ -41,7 +41,7 @@ namespace Match.Field.Shooting.TargetFinding
                 throw new ArgumentException("Unknown or undefined tactic type");
 
             var mobsInRange = _mobsInRangeDefiner.GetTargetsInRange(
-                reachableAttackTargetFinderType,
+                attackRangeType,
                 targetsByPosition, towerPosition, attackRadius);
             return tactic.GetTargetWithTactic(
                 _mobsQualifier.GetMobsWithoutBuffs(mobsInRange, preferUnbuffed));

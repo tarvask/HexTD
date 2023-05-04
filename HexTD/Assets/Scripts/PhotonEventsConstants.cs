@@ -171,6 +171,7 @@ public static class PhotonEventsConstants
                 public const string PathIdParam = "path";
                 public const string NextWaypointParam = "waypoint";
                 public const string CurrentHealthParam = "curHealth";
+                public const string BlockerIdParam = "blockerid";
             }
                 
             // projectiles

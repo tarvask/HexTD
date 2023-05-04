@@ -10,7 +10,7 @@ namespace Match.Field.AttackEffect
 	{
 		[SerializeField] private float damageCapacity;
 		[SerializeField] private float damagePerDelay;
-		[SerializeField] private float delay;
+		[SerializeField] private float damageDelay;
 
 		public override void ApplyAttackImpact(ITarget attackerController, float sqrDistance)
 		{
@@ -18,7 +18,7 @@ namespace Match.Field.AttackEffect
 
 		public override void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager)
 		{
-			PoisonBuff poisonBuff = new PoisonBuff(damageCapacity, damagePerDelay, delay);
+			PoisonBuff poisonBuff = new PoisonBuff(damageCapacity, damagePerDelay, damageDelay);
 			buffManager.AddBuff(attackerController, poisonBuff);
 		}
 	}

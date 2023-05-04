@@ -210,7 +210,7 @@ namespace Match.Field
             if (!_context.PathContainer.TryGetPathData(mobSpawnParameters.PathId, out PathData pathData))
                 throw new ArgumentException($"Unknown path name in mob's Parameters - in [{mobSpawnParameters.MobConfig.name}] prefab");
 
-            MobView mobView = CreateMobView($"{mobSpawnParameters.MobConfig.Parameters.PowerType}",
+            MobView mobView = CreateMobView($"{mobId}",
                 mobId, mobSpawnParameters.MobConfig.View, hexSpawnPosition);
             MobController.Context mobControllerContext = new MobController.Context(mobId, targetId,
                 mobSpawnParameters.MobConfig.Parameters,

@@ -10,7 +10,7 @@ namespace Match.Field.AttackEffect
     {
         [SerializeField] private float healCapacity;
         [SerializeField] private float healPerDelay;
-        [SerializeField] private float delay;
+        [SerializeField] private float healDelay;
 
         public override void ApplyAttackImpact(ITarget attackerController, float sqrDistance)
         {
@@ -19,7 +19,7 @@ namespace Match.Field.AttackEffect
 
         public override void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager)
         {
-            HealBuff healBuff = new HealBuff(healCapacity, healPerDelay, delay);
+            HealBuff healBuff = new HealBuff(healCapacity, healPerDelay, healDelay);
             buffManager.AddBuff(attackerController, healBuff);
         }
     }

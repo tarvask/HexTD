@@ -86,7 +86,7 @@ namespace Match.Field.Tower
                 return false;
 
             var isRoad = _context.PathContainer.GetHexIsRoad(clickedHex);
-            switch (towerConfig.RegularParameters.PlacementType)
+            switch (towerConfig.RegularParameters.AllowedPositions)
             {
                 case TowerPlacementType.Anywhere:
                     return true;

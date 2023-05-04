@@ -13,7 +13,7 @@ namespace Match.Field.Hexagons
         private readonly HexagonalFieldModel _hexagonalFieldModel;
         
         // Attack type / position / attack radius
-        private readonly Dictionary<ReachableAttackTargetFinderType, Dictionary<int,Dictionary<int,IReadOnlyCollection<Hex2d>>>>
+        private readonly Dictionary<AttackRangeType, Dictionary<int,Dictionary<int,IReadOnlyCollection<Hex2d>>>>
             _cachedAreas = new ();
 
         public HexMapReachableService(HexagonalFieldModel hexagonalFieldModel)
@@ -25,13 +25,13 @@ namespace Match.Field.Hexagons
         public IReadOnlyCollection<Hex2d> GetInRangeMapByTargetFinderType(
             Hex2d position,
             int attackRadius,
-            ReachableAttackTargetFinderType reachableAttackTargetFinderType)
+            AttackRangeType attackRangeType)
         {
             var positionHashCode = position.GetHashCode();
             var positionHexModel = _hexagonalFieldModel[positionHashCode];
             
             {
-                if (_cachedAreas.TryGetValue(reachableAttackTargetFinderType, out var x))
+                if (_cachedAreas.TryGetValue(attackRangeType, out var x))
                 {
                     if (x.TryGetValue(positionHashCode, out var y))
                     {
@@ -46,7 +46,7 @@ namespace Match.Field.Hexagons
             List<Hex2d> hexesInRadius = Hex2d.IterateSpiralRing(
                     position,
                     attackRadius +
-                    (reachableAttackTargetFinderType == ReachableAttackTargetFinderType.HeightDependant
+                    (attackRangeType == AttackRangeType.HeightDependant
                         ? positionHexModel.Height
                         : 0))
                 .ToList();
@@ -63,18 +63,18 @@ namespace Match.Field.Hexagons
 //            }
 
             IReadOnlyCollection<Hex2d> res;
-            switch (reachableAttackTargetFinderType)
+            switch (attackRangeType)
             {
-                case ReachableAttackTargetFinderType.Simple:
+                case AttackRangeType.Simple:
                     res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, attackRadius, SimpleCondition);
                     break;
-                case ReachableAttackTargetFinderType.HeightDependant:
+                case AttackRangeType.HeightDependant:
                     res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, attackRadius, HeightDependantCondition);
                     break;
-                case ReachableAttackTargetFinderType.Catapult:
+                case AttackRangeType.Catapult:
                     res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, attackRadius, CatapultCondition);
                     break;
-                case ReachableAttackTargetFinderType.Horizontal:
+                case AttackRangeType.Horizontal:
                     res = GetConditionalInRangeMap(hexesInRadius, obstacles, position, attackRadius, HorizontalCondition);
                     break;
                 default:
@@ -83,10 +83,10 @@ namespace Match.Field.Hexagons
             }
 
             {
-                if (!_cachedAreas.TryGetValue(reachableAttackTargetFinderType, out var x))
+                if (!_cachedAreas.TryGetValue(attackRangeType, out var x))
                 {
                     x = new Dictionary<int, Dictionary<int, IReadOnlyCollection<Hex2d>>>();
-                    _cachedAreas.Add(reachableAttackTargetFinderType, x);
+                    _cachedAreas.Add(attackRangeType, x);
                 }
 
                 if (!x.TryGetValue(positionHashCode, out var y))

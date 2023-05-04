@@ -46,12 +46,12 @@ namespace Match.Field.Tower
             Rect pricePropertyRect = position;
             pricePropertyRect.height = PropertyHeight; 
             pricePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 5;
-            DrawProperty(pricePropertyRect, TowerLevelRegularParams.FieldNames.Price, $"{data.Price}");
+            DrawProperty(pricePropertyRect, TowerLevelRegularParams.FieldNames.Price, $"{data.EnergyCost}");
             
             Rect refundPricePropertyRect = position;
             refundPricePropertyRect.height = PropertyHeight; 
             pricePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 6;
-            DrawProperty(refundPricePropertyRect, TowerLevelRegularParams.FieldNames.RefundPrice, $"{data.RefundPrice}");
+            DrawProperty(refundPricePropertyRect, TowerLevelRegularParams.FieldNames.RefundPrice, $"{data.EnergyRefund}");
             
             Rect buildingTimePropertyRect = position;
             buildingTimePropertyRect.height = PropertyHeight; 

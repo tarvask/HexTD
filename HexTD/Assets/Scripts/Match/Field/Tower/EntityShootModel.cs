@@ -29,13 +29,13 @@ namespace Match.Field.Tower
             
             foreach (var towerAttack in _attacksConfig.Attacks)
             {
-                _cooldowns.Add(id, towerAttack.Cooldown);
+                _cooldowns.Add(id, towerAttack.CooldownAndDelay);
                 id++;
             }
             
             foreach (var towerAttack in _attacksConfig.SplashAttacks)
             {
-                _cooldowns.Add(id, towerAttack.Cooldown);
+                _cooldowns.Add(id, towerAttack.CooldownAndDelay);
                 id++;
             }
         }
@@ -66,7 +66,7 @@ namespace Match.Field.Tower
 
         private BaseAttackEffect GetReadyAttack()
         {
-            if(IsSplashAttackReady)
+            if (IsSplashAttackReady)
                 return _attacksConfig.SplashAttacks[_readyTowerAttackId - _attacksConfig.Attacks.Count];
             else
                 return _attacksConfig.Attacks[ReadyTowerIndex];
@@ -74,7 +74,7 @@ namespace Match.Field.Tower
 
         public void ReloadCurrentAttack()
         {
-            _cooldowns[_readyTowerAttackId] = GetReadyAttack().Cooldown;
+            _cooldowns[_readyTowerAttackId] = GetReadyAttack().CooldownAndDelay;
             _readyTowerAttackId = -1;
         }
 

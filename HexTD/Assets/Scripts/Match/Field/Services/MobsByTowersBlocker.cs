@@ -25,8 +25,7 @@ namespace Match.Field.Services
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
             }
         }
-
-        private const byte MobsBlockedByTowerMaxCount = 6;
+        
         private readonly Context _context;
         private readonly float _singleHexSizeSqr;
         
@@ -59,7 +58,7 @@ namespace Match.Field.Services
             if (!_mobsByTowers.TryGetValue(possibleBlocker.Id, out var blockedMobs))
                 throw new ArgumentException($"Tried to block mob tower with id={possibleBlocker.Id} that is not is in registry");
 
-            if (blockedMobs.Count < MobsBlockedByTowerMaxCount)
+            if (blockedMobs.Count < possibleBlocker.MaxEnemyBlocked)
             {
                 blockedMobs.Add(mob);
                 possibleBlockerId = possibleBlocker.Id;
@@ -83,7 +82,7 @@ namespace Match.Field.Services
 
         private void AddTower(TowerController tower)
         {
-            _mobsByTowers.Add(tower.Id, new List<MobController>(MobsBlockedByTowerMaxCount));
+            _mobsByTowers.Add(tower.Id, new List<MobController>(tower.MaxEnemyBlocked));
         }
 
         private void RemoveTower(TowerController tower)

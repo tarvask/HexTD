@@ -72,7 +72,7 @@ namespace Match.Field.Mob
         public Hex2d CurrentTargetHexPosition => _currentTargetHexPosition;
         public int BlockerId => _blockerId;
         
-        public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.ReloadTime;
+        public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.Cooldown + _context.Parameters.Delay;
         public int RewardInCoins => _context.Parameters.RewardInCoins;
         public bool IsCarrion => _isCarrion;
         public bool IsBlocked => _isBlocked;
@@ -242,7 +242,8 @@ namespace Match.Field.Mob
         public PlayerState.MobState GetMobState()
         {
             return new PlayerState.MobState(_context.Id, _context.TargetId, _context.Parameters.TypeId,
-                Position.x, Position.y, _pathIndex, _context.PathEnumerator.CurrentPointIndex, _reactiveModel.Health.Value);
+                Position.x, Position.y, _pathIndex, _context.PathEnumerator.CurrentPointIndex,
+                _reactiveModel.Health.Value, _blockerId);
         }
 
         public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITarget>> buffs, IBuff<ITarget> addedBuff)

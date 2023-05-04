@@ -292,6 +292,7 @@ namespace Match.Field.State
             private readonly byte _pathId;
             private readonly byte _nextWaypoint;
             private readonly float _currentHealth;
+            private readonly int _blockerId;
 
             public int Id => _id;
             public int TargetId => _targetId;
@@ -301,10 +302,12 @@ namespace Match.Field.State
             public byte PathId => _pathId;
             public byte NextWaypoint => _nextWaypoint;
             public float CurrentHealth => _currentHealth;
+            public int BlockerId => _blockerId;
 
             public MobState(int id, int targetId, byte typeId, float xPosition, float yPosition,
                 byte pathId, byte nextWaypoint,
-                float currentHealth)
+                float currentHealth,
+                int blockerId)
             {
                 _id = id;
                 _targetId = targetId;
@@ -314,6 +317,7 @@ namespace Match.Field.State
                 _pathId = pathId;
                 _nextWaypoint = nextWaypoint;
                 _currentHealth = currentHealth;
+                _blockerId = blockerId;
             }
 
             public static MobState MobFromHashtable(Hashtable mobHashtable)
@@ -326,8 +330,9 @@ namespace Match.Field.State
                 byte pathId = (byte)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.PathIdParam];
                 byte nextWaypoint = (byte)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.NextWaypointParam];
                 float currentHealth = (float)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.CurrentHealthParam];
+                int blockerId = (int)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.BlockerIdParam];
                 
-                return new MobState(id, targetId, typeId, xPosition, yPosition, pathId, nextWaypoint, currentHealth);
+                return new MobState(id, targetId, typeId, xPosition, yPosition, pathId, nextWaypoint, currentHealth, blockerId);
             }
 
             public static Hashtable MobToHashtable(in MobState mobState)
@@ -342,6 +347,7 @@ namespace Match.Field.State
                     {PhotonEventsConstants.SyncState.PlayerState.Mobs.PathIdParam, mobState.PathId},
                     {PhotonEventsConstants.SyncState.PlayerState.Mobs.NextWaypointParam, mobState.NextWaypoint},
                     {PhotonEventsConstants.SyncState.PlayerState.Mobs.CurrentHealthParam, mobState.CurrentHealth},
+                    {PhotonEventsConstants.SyncState.PlayerState.Mobs.BlockerIdParam, mobState.BlockerId},
                 };
             }
         }

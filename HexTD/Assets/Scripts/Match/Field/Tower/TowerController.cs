@@ -71,6 +71,7 @@ namespace Match.Field.Tower
         public bool IsReadyToRelease => _stableModel.IsReadyToRelease;
         public bool IsReadyToDispose => _stableModel.IsReadyToDispose;
         public TowerType TowerType => _context.TowerConfig.RegularParameters.TowerType;
+        public byte MaxEnemyBlocked => _context.TowerConfig.RegularParameters.MaxEnemyBlocked;
         public Sprite Icon => _context.Icon;
 
         public TowerController(Context context)
@@ -154,7 +155,7 @@ namespace Match.Field.Tower
 
             int targetId = targetFinder.GetTargetWithTacticInRange(
                 targetContainer.GetTargetsByPosition(towerAttack.AttackTargetType),
-                    _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType,
+                    towerAttack.AttackRangeType,
                     _context.TowerConfig.RegularParameters.TargetFindingTacticType, 
                     HexPosition, towerAttack.AttackRadiusInHex,
                     _context.TowerConfig.RegularParameters.PreferUnbuffedTargets);
@@ -227,7 +228,7 @@ namespace Match.Field.Tower
             var hexes= _context.HexMapReachableService.GetInRangeMapByTargetFinderType(
                 HexPosition,
                 _context.TowerConfig.AttacksConfig.Attacks[0].AttackRadiusInHex,
-                _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType);
+                _context.TowerConfig.AttacksConfig.Attacks[0].AttackRangeType);
 
             _context.EnableHexesHighlightReactiveCommand.Execute(hexes);
         }

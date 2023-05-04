@@ -1,6 +1,6 @@
 ﻿namespace Match.Field.Tower
 {
-    public enum ReachableAttackTargetFinderType
+    public enum AttackRangeType
     {
         Undefined = 0,
         
