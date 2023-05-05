@@ -4,9 +4,9 @@ using Tools;
 
 namespace Match.Field.Shooting.TargetFinding.Tactics
 {
-    public class ToughestOneTactic : BaseDisposable, ITargetFindingTactic
+    public class HighestHealthTactic : BaseDisposable, ITargetFindingTactic
     {
-        public TargetFindingTacticType TacticType => TargetFindingTacticType.ToughestOne;
+        public TargetFindingTacticType TacticType => TargetFindingTacticType.HighestHealth;
 
         public int GetTargetWithTactic(IReadOnlyList<ITarget> targets)
         {
@@ -16,13 +16,14 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
 
             foreach (ITarget target in targets)
             {
+                float healthPart = target.BaseReactiveModel.Health.Value / target.BaseReactiveModel.MaxHealth.Value;
+                float healthDelta = healthPart - highestHealth;
                 MobController mobController = (MobController)target;
-                float healthDelta = target.BaseReactiveModel.Health.Value - highestHealth;
 
                 if (healthDelta > 0
                     || healthDelta == 0 && mobController.PathLength > pathOfMobWithHighestHealth)
                 {
-                    highestHealth = target.BaseReactiveModel.Health.Value;
+                    highestHealth = healthPart;
                     pathOfMobWithHighestHealth = mobController.PathLength;
                     mobWithHighestHealthId = target.TargetId;
                 }

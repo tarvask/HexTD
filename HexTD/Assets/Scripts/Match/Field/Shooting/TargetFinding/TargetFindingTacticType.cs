@@ -5,6 +5,8 @@ namespace Match.Field.Shooting.TargetFinding
         //Undefined = 0,
         FirstInLine = 1,
         Random = 2,
-        ToughestOne = 3,
+        HighestHealth = 3,
+        LowestHealth = 4,
+        LowestHealthTower = 5,
     }
 }

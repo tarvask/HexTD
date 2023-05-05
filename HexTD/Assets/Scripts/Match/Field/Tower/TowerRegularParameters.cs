@@ -17,14 +17,12 @@ namespace Match.Field.Tower
         [SerializeField] private TargetFindingTacticType targetFindingTacticType;
         [SerializeField] private byte maxEnemyBlocked;
         
-        [Header("Out of using")]
-        [SerializeField] private RaceType raceType;
-        [SerializeField] private byte epicDegree;
+        // out of using
+        private RaceType raceType;
         
         public TowerType TowerType => towerType;
         public string TowerName => towerName;
         public RaceType RaceType => raceType;
-        public byte EpicDegree => epicDegree;
         public bool PreferUnbuffedTargets => preferUnbuffedTargets;
         public bool ResetTargetEveryShot => resetTargetEveryShot;
         public TowerPlacementType AllowedPositions => allowedPositions;
@@ -36,7 +34,6 @@ namespace Match.Field.Tower
             public static string TowerType => nameof(towerType);
             public static string TowerName => nameof(towerName);
             public static string RaceType => nameof(raceType);
-            public static string EpicDegree => nameof(epicDegree);
             public static string TargetFindingTacticType => nameof(targetFindingTacticType);
             public static string PreferUnbuffedTargets => nameof(preferUnbuffedTargets);
             public static string ResetTargetEveryShot => nameof(resetTargetEveryShot);

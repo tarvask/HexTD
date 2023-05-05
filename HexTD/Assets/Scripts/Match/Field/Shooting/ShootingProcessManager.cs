@@ -41,7 +41,7 @@ namespace Match.Field.Shooting
         private readonly List<ProjectileController> _hittingProjectiles;
         private readonly List<ProjectileController> _endSplashingProjectiles;
         private readonly Dictionary<int, List<int>> _shootablesWithAttackingTowers;
-        private List<TargetWithSqrDistancePair> _targetsWithSqrDistances;
+        private readonly List<TargetWithSqrDistancePair> _targetsWithSqrDistances;
 
         public ShootingProcessManager(Context context)
         {

@@ -33,29 +33,24 @@ namespace Match.Field.Tower
             reloadTimePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 2;
             DrawProperty(reloadTimePropertyRect, TowerRegularParameters.FieldNames.RaceType, $"{data.RaceType}");
             
-            Rect attackRadiusPropertyRect = position;
-            attackRadiusPropertyRect.height = PropertyHeight;
-            attackRadiusPropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 3;
-            DrawProperty(attackRadiusPropertyRect, TowerRegularParameters.FieldNames.EpicDegree, $"{data.EpicDegree}");
-            
             Rect pricePropertyRect = position;
             pricePropertyRect.height = PropertyHeight; 
-            pricePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 4;
+            pricePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 3;
             DrawProperty(pricePropertyRect, TowerRegularParameters.FieldNames.TargetFindingTacticType, $"{data.TargetFindingTacticType}");
             
             Rect preferUnbuffedTargetsPropertyRect = position;
             preferUnbuffedTargetsPropertyRect.height = PropertyHeight; 
-            preferUnbuffedTargetsPropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 5;
+            preferUnbuffedTargetsPropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 4;
             DrawProperty(preferUnbuffedTargetsPropertyRect, TowerRegularParameters.FieldNames.PreferUnbuffedTargets, $"{data.PreferUnbuffedTargets}");
             
             Rect buildingTimePropertyRect = position;
             buildingTimePropertyRect.height = PropertyHeight; 
-            buildingTimePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 6;
+            buildingTimePropertyRect.y = position.y + ReferenceHeight + PropertyHeight * 5;
             DrawProperty(buildingTimePropertyRect, TowerRegularParameters.FieldNames.ResetTargetEveryShot, $"{data.ResetTargetEveryShot}");
             
             Rect maxEnemyBlockedRect = position;
             maxEnemyBlockedRect.height = PropertyHeight; 
-            maxEnemyBlockedRect.y = position.y + ReferenceHeight + PropertyHeight * 7;
+            maxEnemyBlockedRect.y = position.y + ReferenceHeight + PropertyHeight * 6;
             DrawProperty(buildingTimePropertyRect, TowerRegularParameters.FieldNames.MaxEnemyBlocked, $"{data.MaxEnemyBlocked}");
         }
 #endif

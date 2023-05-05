@@ -22,13 +22,17 @@ namespace Match.Field.Shooting.TargetFinding
 
             ITargetFindingTactic firstInLineTactic = AddDisposable(new FirstInLineTactic());
             ITargetFindingTactic randomTactic = AddDisposable(new RandomTactic());
-            ITargetFindingTactic theToughestOneTactic = AddDisposable(new ToughestOneTactic());
+            ITargetFindingTactic highestHealthTactic = AddDisposable(new HighestHealthTactic());
+            ITargetFindingTactic lowestHealthTactic = AddDisposable(new LowestHealthTactic());
+            ITargetFindingTactic lowestHealthTowerTactic = AddDisposable(new LowestHealthTowerTactic());
 
             _tactics = new Dictionary<byte, ITargetFindingTactic>()
             {
                 {(byte)firstInLineTactic.TacticType, firstInLineTactic},
                 {(byte)randomTactic.TacticType, randomTactic},
-                {(byte)theToughestOneTactic.TacticType, theToughestOneTactic}
+                {(byte)highestHealthTactic.TacticType, highestHealthTactic},
+                {(byte)lowestHealthTactic.TacticType, lowestHealthTactic},
+                {(byte)lowestHealthTowerTactic.TacticType, lowestHealthTowerTactic},
             };
         }
 
@@ -45,7 +49,6 @@ namespace Match.Field.Shooting.TargetFinding
                 targetsByPosition, towerPosition, attackRadius);
             return tactic.GetTargetWithTactic(
                 _mobsQualifier.GetMobsWithoutBuffs(mobsInRange, preferUnbuffed));
-            
         }
     }
 }
