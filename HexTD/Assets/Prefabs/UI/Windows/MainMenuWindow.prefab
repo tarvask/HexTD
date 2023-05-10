@@ -2346,6 +2346,7 @@ MonoBehaviour:
   singlePlayerBattleRunButton: {fileID: 3579595363352694016}
   multiPlayerBattleRunButton: {fileID: 5385567418084902588}
   shopButton: {fileID: 2111241884016321361}
+  inventoryButton: {fileID: 5705485247906988391}
 --- !u!222 &1709345368935309160
 CanvasRenderer:
   m_ObjectHideFlags: 0

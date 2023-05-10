@@ -13,6 +13,7 @@ namespace UI.MainMenuWindow
 		[SerializeField] private Button singlePlayerBattleRunButton;
 		[SerializeField] private Button multiPlayerBattleRunButton;
 		[SerializeField] private Button shopButton;
+		[SerializeField] private Button inventoryButton;
 
 		public IObservable<Unit> SinglePlayerBattleRunClick => singlePlayerBattleRunButton
 			.OnClickAsObservable()
@@ -23,6 +24,10 @@ namespace UI.MainMenuWindow
 			.WhereAppeared(this);
 
 		public IObservable<Unit> ShopButtonClick => shopButton
+			.OnClickAsObservable()
+			.WhereAppeared(this);
+
+		public IObservable<Unit> InventoryButtonClick => inventoryButton
 			.OnClickAsObservable()
 			.WhereAppeared(this);
 
