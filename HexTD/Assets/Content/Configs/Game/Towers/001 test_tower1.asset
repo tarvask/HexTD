@@ -19,11 +19,9 @@ MonoBehaviour:
     towerName: TestTower
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
-    placementType: 0
-    reachableAttackTargetFinderType: 1
+    allowedPositions: 0
     targetFindingTacticType: 2
-    raceType: 1
-    epicDegree: 1
+    maxEnemyBlocked: 0
   towerLevelConfigs:
     keyData: 0200000001000000
     valueData:
@@ -37,17 +35,16 @@ MonoBehaviour:
       healthPoint: 100
   attacksConfig:
     attacks:
-    - rid: 4883102004828962816
+    - attackTargetType: 1
+      attackRangeType: 1
+      baseDamage: 5
+      delay: 0
+      cooldown: 3
+      attackRadiusInHex: 4
+      projectileSpeed: 35
+      projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
+      serializableBuffs: []
     splashAttacks: []
   references:
     version: 2
-    RefIds:
-    - rid: 4883102004828962816
-      type: {class: SimpleTowerAttack, ns: Match.Field.AttackEffect, asm: Assembly-CSharp}
-      data:
-        attackTargetType: 1
-        cooldown: 2
-        attackRadiusInHex: 4
-        projectileSpeed: 15
-        projectileView: {fileID: 1455519004008089238, guid: 498ecc4ea3025d94d9840ac734c90ec0, type: 3}
-        baseDamage: 7
+    RefIds: []

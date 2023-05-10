@@ -11,11 +11,11 @@ namespace Match.Field.AttackEffect
 		[SerializeField] private float duration;
 		[SerializeField] private float percentageValue;
 
-		public override void ApplyAttackImpact(ITarget attackerController, float sqrDistance)
+		public void ApplyAttackImpact(ITarget attackerController, float sqrDistance)
 		{
 		}
 
-		public override void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager)
+		public void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager)
 		{
 			DivideFloatValueBuff speedBuff = new DivideFloatValueBuff(percentageValue);
 			speedBuff.AddCondition(new TimerBuffCondition(duration));

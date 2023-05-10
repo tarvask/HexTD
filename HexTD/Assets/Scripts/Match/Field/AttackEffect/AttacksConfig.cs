@@ -7,9 +7,9 @@ namespace Match.Field.AttackEffect
 	[Serializable]
 	public class AttacksConfig 
 	{
-		[SerializeReference]
+		[SerializeField]
 		private List<BaseAttackEffect> attacks;
-		[SerializeReference]
+		[SerializeField]
 		private List<BaseSplashAttack> splashAttacks;
 
 		public List<BaseAttackEffect> Attacks => attacks;
