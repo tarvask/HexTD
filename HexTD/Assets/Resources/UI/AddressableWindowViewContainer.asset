@@ -69,3 +69,11 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
+  - view: {fileID: 3509632573043374970, guid: 0efca6871ee0f8e4781ab722069ce729, type: 3}
+    viewType: UI.InventoryWindow.InventoryWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 0efca6871ee0f8e4781ab722069ce729
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
