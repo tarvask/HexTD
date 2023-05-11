@@ -7,29 +7,25 @@ namespace Match.Wave
     [Serializable]
     public class WaveParametersStrict
     {
-        [SerializeField] private byte size;
-        [SerializeField] private float duration;
         [SerializeField] private float pauseBeforeWave;
-
-        [SerializeField] private WaveElementDelayAndPath[] elements;
+        [SerializeField] private WaveElementDelay[] elements;
+        private float _duration;
         
-        public byte Size => size;
-        public float Duration => duration;
+        public float Duration => _duration;
         public float PauseBeforeWave => pauseBeforeWave;
 
-        public WaveElementDelayAndPath[] Elements => elements;
+        public WaveElementDelay[] Elements => elements;
 
         public WaveParametersStrict()
         {
             
         }
         
-        public WaveParametersStrict(byte sizeParam, float durationParam,
+        public WaveParametersStrict(float durationParam,
             float pauseBeforeWaveParam,
-            WaveElementDelayAndPath[] elementsParam)
+            WaveElementDelay[] elementsParam)
         {
-            size = sizeParam;
-            duration = durationParam;
+            _duration = durationParam;
             pauseBeforeWave = pauseBeforeWaveParam;
             elements = elementsParam;
         }
@@ -37,23 +33,19 @@ namespace Match.Wave
         public Hashtable ToNetwork()
         {
             Hashtable waveNetwork = new Hashtable();
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.SizeParam] = size;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.DurationParam] = duration;
+            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.DurationParam] = _duration;
             waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.PauseBeforeWaveParam] = pauseBeforeWave;
             byte[] mobsIdsBytes = new byte[elements.Length];
             float[] mobsDelaysBytes = new float[elements.Length];
-            byte[] mobsPathsBytes = new byte[elements.Length];
 
             for (int elementIndex = 0; elementIndex < elements.Length; elementIndex++)
             {
                 mobsIdsBytes[elementIndex] = elements[elementIndex].MobId;
                 mobsDelaysBytes[elementIndex] = elements[elementIndex].Delay;
-                mobsPathsBytes[elementIndex] = elements[elementIndex].PathId;
             }
 
             waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsIdsParam] = mobsIdsBytes;
             waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsDelaysParam] = mobsDelaysBytes;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsPathsParam] = mobsPathsBytes;
 
             return waveNetwork;
         }
@@ -62,17 +54,15 @@ namespace Match.Wave
         [ContextMenu("Check Consistency", true)]
         public void CheckConsistency()
         {
-            byte totalMobsInWaveCount = (byte)elements.Length;
             float totalWaveDuration = 0;
 
-            foreach (WaveElementDelayAndPath waveElementDelay in elements)
+            foreach (WaveElementDelay waveElementDelay in elements)
             {
                 if (waveElementDelay.Delay > totalWaveDuration)
                     totalWaveDuration = waveElementDelay.Delay;
             }
-
-            size = totalMobsInWaveCount;
-            duration = totalWaveDuration;
+            
+            _duration = totalWaveDuration;
         }
 #endif
     }

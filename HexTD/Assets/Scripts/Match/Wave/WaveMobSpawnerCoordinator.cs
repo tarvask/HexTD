@@ -19,7 +19,7 @@ namespace Match.Wave
             public MatchCommands.IncomingCommands Player1IncomingCommands { get; }
             public MatchCommands.IncomingCommands Player2IncomingCommands { get; }
             public MatchCommonCommands.ServerCommands ServerCommands { get; }
-            public WaveParametersStrict[] Waves { get; }
+            public WaveWithDelayAndPath[] Waves { get; }
             public bool IsMultiPlayer { get; }
             public IReadOnlyReactiveProperty<NetworkRoles> OurNetworkRoleReactiveProperty { get; }
 
@@ -41,7 +41,7 @@ namespace Match.Wave
                 MatchCommands.IncomingCommands player1IncomingCommands,
                 MatchCommands.IncomingCommands player2IncomingCommands,
                 MatchCommonCommands.ServerCommands serverCommands,
-                WaveParametersStrict[] waves,
+                WaveWithDelayAndPath[] waves,
                 bool isMultiPlayer,
                 IReadOnlyReactiveProperty<NetworkRoles> ourNetworkRoleReactiveProperty,
 
@@ -102,11 +102,9 @@ namespace Match.Wave
                 
                 _context.MatchStartedReactiveCommand,
                 _context.WaveStartedReactiveCommand, _context.WaveEndedReactiveCommand,
-                _context.ArtifactChoosingStartedReactiveCommand,
                 _context.BetweenWavesPlanningStartedReactiveCommand,
                 _context.WaveNumberChangedReactiveCommand,
-                _context.SpawnPlayer1MobReactiveCommand, _context.SpawnPlayer2MobReactiveCommand,
-                _context.HasMobsOnEnemyField, _context.HasMobsOnOurField);
+                _context.SpawnPlayer1MobReactiveCommand, _context.SpawnPlayer2MobReactiveCommand);
             _serverImplementation = new WaveMobSpawnerServerNoReinforcements(waveMobSpawnerImplementationContext);
             _clientImplementation = new WaveMobSpawnerClientNoReinforcements(waveMobSpawnerImplementationContext);
 

@@ -23,7 +23,7 @@ namespace Match
             public ConfigsRetriever ConfigsRetriever { get; }
             public bool IsMultiPlayerGame { get; }
             public PlayerHandController PlayerHandController { get; }
-            public WaveParametersStrict[] Waves { get; }
+            public WaveWithDelayAndPath[] Waves { get; }
             
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
             public ReactiveCommand<HealthInfo> EnemyCastleHealthChangedReactiveCommand { get; }
@@ -43,7 +43,7 @@ namespace Match
                 ConfigsRetriever configsRetriever,
                 bool isMultiPlayerGame,
                 PlayerHandController playerHandController,
-                WaveParametersStrict[] waves,
+                WaveWithDelayAndPath[] waves,
                 
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,

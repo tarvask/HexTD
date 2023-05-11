@@ -1,4 +1,6 @@
+using System;
 using Match.Wave;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace Match
@@ -6,28 +8,41 @@ namespace Match
     [CreateAssetMenu(menuName = "Configs/Match/Level Config")]
     public class MatchConfig : ScriptableObject
     {
-        [SerializeField] private WaveParametersStrictConfig[] waves;
+        [SerializeField] private PathWithWaves[] pathsWithWaves;
         //[SerializeField] private int coinsCount;
         [SerializeField] private int energyStartCount;
 
-        public WaveParametersStrictConfig[] WavesConfigs
+        public PathWithWaves[] WavesConfigs
         {
-            get { return waves; }
+            get { return pathsWithWaves; }
 #if UNITY_EDITOR
-            set { waves = value; }
+            set { pathsWithWaves = value; }
 #endif
         }
         
-        public WaveParametersStrict[] Waves
+        public WaveWithDelayAndPath[] Waves
         {
             get
             {
-                WaveParametersStrict[] wavesArray = new WaveParametersStrict[waves.Length];
+                int wavesTotalCount = 0;
+                
+                foreach (PathWithWaves path in pathsWithWaves)
+                    wavesTotalCount += path.Waves.Length;
+                
+                WaveWithDelayAndPath[] wavesArray = new WaveWithDelayAndPath[wavesTotalCount];
+                int waveIndex = 0;
 
-                for (int waveIndex = 0; waveIndex < waves.Length; waveIndex++)
+                foreach (PathWithWaves path in pathsWithWaves)
                 {
-                    wavesArray[waveIndex] = waves[waveIndex].WaveParameters;
+                    foreach (WaveWithDelay waveWithDelay in path.Waves)
+                    {
+                        wavesArray[waveIndex++] = new WaveWithDelayAndPath(waveWithDelay.WaveConfig.WaveParameters,
+                            waveWithDelay.WaveDelay,
+                            path.PathId);
+                    }
                 }
+                
+                Array.Sort(wavesArray, WaveWithDelayAndPathComparer);
                 
                 return wavesArray;
             }
@@ -49,12 +64,27 @@ namespace Match
 #endif
         }
 
+        private static int WaveWithDelayAndPathComparer(WaveWithDelayAndPath wave1, WaveWithDelayAndPath wave2)
+        {
+            int result = wave1.WaveDelay.CompareTo(wave2.WaveDelay);
+            
+            if (result != 0)
+                return result;
+
+            result = wave1.PathId.CompareTo(wave2.PathId);
+
+            return result;
+        }
+
 #if UNITY_EDITOR
         [ContextMenu("Check Consistency")]
         private void CheckConsistency()
         {
-            foreach (WaveParametersStrictConfig wave in waves)
-                wave.WaveParameters.CheckConsistency();
+            foreach (PathWithWaves path in pathsWithWaves)
+            {
+                foreach (WaveWithDelay wave in path.Waves)
+                    wave.WaveConfig.WaveParameters.CheckConsistency();
+            }
         }
 #endif
     }

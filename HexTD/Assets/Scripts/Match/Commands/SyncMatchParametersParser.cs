@@ -39,7 +39,7 @@ namespace Match.Commands
             
             // waves
             byte wavesCount = (byte)parametersTable[PhotonEventsConstants.SyncMatch.MatchConfigWavesCount];
-            WaveParametersStrict[] waves = new WaveParametersStrict[wavesCount];
+            WaveWithDelayAndPath[] waves = new WaveWithDelayAndPath[wavesCount];
             
             for (byte currentWaveNumber = 0; currentWaveNumber < wavesCount; currentWaveNumber++)
             {
@@ -48,22 +48,22 @@ namespace Match.Commands
                     break;
 
                 Hashtable waveHashtable = (Hashtable) waveObject;
-                byte size = (byte)waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.SizeParam];
+                float waveDelay = (float)waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.WaveDelayParam];
+                byte pathId = (byte)waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.PathIdParam];
                 float duration = (float)waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.DurationParam];
-                float pauseBeforeWave = (float)waveHashtable[PhotonEventsConstants.SyncMatch.WaveWithRandom.PauseBeforeWaveParam];
+                float pauseBeforeWave = (float)waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.PauseBeforeWaveParam];
                 byte[] mobsIdsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsIdsParam];
                 float[] mobsDelaysBytes = (float[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsDelaysParam];
-                byte[] mobsPathsBytes = (byte[])waveHashtable[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsPathsParam];
-                WaveElementDelayAndPath[] waveElementChances = new WaveElementDelayAndPath [mobsIdsBytes.Length];
+                WaveElementDelay[] waveElementChances = new WaveElementDelay[mobsIdsBytes.Length];
 
                 for (int elementIndex = 0; elementIndex < mobsIdsBytes.Length; elementIndex++)
                     waveElementChances[elementIndex] =
-                        new WaveElementDelayAndPath(
+                        new WaveElementDelay(
                             mobsIdsBytes[elementIndex],
-                            mobsDelaysBytes[elementIndex],
-                            mobsPathsBytes[elementIndex]);
+                            mobsDelaysBytes[elementIndex]);
                 
-                waves[currentWaveNumber] = new WaveParametersStrict(size, duration, pauseBeforeWave, waveElementChances);
+                WaveParametersStrict waveParameters = new WaveParametersStrict(duration, pauseBeforeWave, waveElementChances);
+                waves[currentWaveNumber] = new WaveWithDelayAndPath(waveParameters, waveDelay, pathId);
             }
 
             // cells

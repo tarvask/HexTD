@@ -11,14 +11,14 @@ namespace Match
     {
         public FieldHex[] Hexes { get; }
         public PathData.SavePathData[] Paths { get; }
-        public WaveParametersStrict[] Waves { get; }
+        public WaveWithDelayAndPath[] Waves { get; }
         //public int CoinsCount { get; }
         public int EnergyStartCount { get; }
         public PlayerHandParams PlayerHandParams { get; }
         
         public MatchInitDataParameters(HexModel[] hexes,
             PathData.SavePathData[] paths,
-            WaveParametersStrict[] waves,
+            WaveWithDelayAndPath[] waves,
             //int coinsCount,
             int energyStartCount,
             PlayerHandParams playerHandParams)
@@ -35,7 +35,7 @@ namespace Match
             Array.Copy(paths, Paths, paths.Length);
 
             // fill waves from linear array
-            Waves = new WaveParametersStrict[waves.Length];
+            Waves = new WaveWithDelayAndPath[waves.Length];
             Array.Copy(waves, Waves, waves.Length);
             
             // currency and magic

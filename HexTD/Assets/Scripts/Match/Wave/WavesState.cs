@@ -8,6 +8,7 @@ namespace Match.Wave
         private readonly WaveStateType _state;
         private readonly int _targetPauseDuration;
         private readonly int _currentPauseDuration;
+        private readonly int _spawnTimer;
         private readonly WaveState[] _player1Waves;
         private readonly WaveState[] _player2Waves;
 
@@ -15,17 +16,19 @@ namespace Match.Wave
         public WaveStateType State => _state;
         public int TargetPauseDuration => _targetPauseDuration;
         public int CurrentPauseDuration => _currentPauseDuration;
+        public int SpawnTimer => _spawnTimer;
         public WaveState[] Player1Waves => _player1Waves;
         public WaveState[] Player2Waves => _player2Waves;
 
         public WavesState(int currentWaveNumber, WaveStateType state,
-            int targetPauseDuration, int currentPauseDuration,
+            int targetPauseDuration, int currentPauseDuration, int spawnTimer,
             ref WaveState[] player1Waves, ref WaveState[] player2Waves)
         {
             _currentWaveNumber = currentWaveNumber;
             _state = state;
             _targetPauseDuration = targetPauseDuration;
             _currentPauseDuration = currentPauseDuration;
+            _spawnTimer = spawnTimer;
             _player1Waves = player1Waves;
             _player2Waves = player2Waves;
         }
@@ -36,6 +39,7 @@ namespace Match.Wave
             WaveStateType state = (WaveStateType)(byte)wavesStateHashtable[PhotonEventsConstants.SyncState.WavesState.StateParam];
             int targetPauseDuration = (int)wavesStateHashtable[PhotonEventsConstants.SyncState.WavesState.TargetPauseDurationParam];
             int currentPauseDuration = (int)wavesStateHashtable[PhotonEventsConstants.SyncState.WavesState.CurrentPauseDurationParam];
+            int spawnTimer = (int)wavesStateHashtable[PhotonEventsConstants.SyncState.WavesState.SpawnTimerParam];
             
             // player 1 waves
             Hashtable[] player1WavesHashtables = (Hashtable[])wavesStateHashtable[PhotonEventsConstants.SyncState.WavesState.Player1WavesParam];
@@ -53,7 +57,7 @@ namespace Match.Wave
             for (int waveIndex = 0; waveIndex < player2WavesHashtables.Length; waveIndex++)
                 player2WavesStates[waveIndex] = WaveState.WaveFromHashtable(player2WavesHashtables[waveIndex]);
 
-            return new WavesState(currentWaveNumber, state, targetPauseDuration, currentPauseDuration,
+            return new WavesState(currentWaveNumber, state, targetPauseDuration, currentPauseDuration, spawnTimer,
                 ref player1WavesStates, ref player2WavesStates);
         }
 
@@ -79,6 +83,7 @@ namespace Match.Wave
                 {PhotonEventsConstants.SyncState.WavesState.StateParam, wavesState.State},
                 {PhotonEventsConstants.SyncState.WavesState.TargetPauseDurationParam, wavesState.TargetPauseDuration},
                 {PhotonEventsConstants.SyncState.WavesState.CurrentPauseDurationParam, wavesState.CurrentPauseDuration},
+                {PhotonEventsConstants.SyncState.WavesState.SpawnTimerParam, wavesState.SpawnTimer},
                 {PhotonEventsConstants.SyncState.WavesState.Player1WavesParam, player1WavesHashtables},
                 {PhotonEventsConstants.SyncState.WavesState.Player2WavesParam, player2WavesHashtables},
             };

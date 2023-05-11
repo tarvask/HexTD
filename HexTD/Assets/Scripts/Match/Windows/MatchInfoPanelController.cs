@@ -13,8 +13,8 @@ namespace Match.Windows
         {
             public MatchInfoPanelView View { get; }
             public Canvas Canvas { get; }
-            public readonly bool IsMultiPlayerGame { get; }
-            public WaveParametersStrict[] Waves { get; }
+            public bool IsMultiPlayerGame { get; }
+            public WaveWithDelayAndPath[] Waves { get; }
             
             public ReactiveCommand<HealthInfo> EnemyCastleHealthChangedReactiveCommand { get; }
             public ReactiveCommand<HealthInfo> OurCastleHealthChangedReactiveCommand { get; }
@@ -26,7 +26,8 @@ namespace Match.Windows
 
             public Context(MatchInfoPanelView view, Canvas canvas, 
                 bool isMultiPlayerGame,
-                WaveParametersStrict[] waves,
+                WaveWithDelayAndPath[] waves,
+                
                 ReactiveCommand<HealthInfo> enemyCastleHealthChangedReactiveCommand,
                 ReactiveCommand<HealthInfo> ourCastleHealthChangedReactiveCommand,
                 ReactiveCommand<float> waveStartedReactiveCommand,
@@ -96,7 +97,7 @@ namespace Match.Windows
 
         private void OnBetweenWavesPlanningStartedEventHandler(float planningDuration)
         {
-            _currentTimer = _context.Waves[Mathf.Min(_waveNumber - 1, _context.Waves.Length - 1)].PauseBeforeWave;
+            _currentTimer = _context.Waves[Mathf.Min(_waveNumber - 1, _context.Waves.Length - 1)].WaveParameters.PauseBeforeWave;
             _context.View.CurrentRoundWithTimer.gameObject.SetActive(false);
             _context.View.NextRoundStartWithTimer.gameObject.SetActive(true);
         }
@@ -104,7 +105,7 @@ namespace Match.Windows
         private void OnWaveStartedEventHandler(float waveInfoDuration)
         {
             _waveSpawningInProcess = true;
-            _currentTimer = _context.Waves[Mathf.Min(_waveNumber, _context.Waves.Length - 1)].Duration;
+            _currentTimer = _context.Waves[Mathf.Min(_waveNumber, _context.Waves.Length - 1)].WaveParameters.Duration;
             _context.View.CurrentRoundWithTimer.gameObject.SetActive(true);
             _context.View.NextRoundStartWithTimer.gameObject.SetActive(false);
             

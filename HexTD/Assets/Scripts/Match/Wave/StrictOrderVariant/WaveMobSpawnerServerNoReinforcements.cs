@@ -31,8 +31,8 @@ namespace Match.Wave
 
             BuiltWaveParams nextBuiltWaveParams = new BuiltWaveParams(
                 player1NextWaveElementsAndDelays, player2NextWaveElementsAndDelays,
-                _context.Waves[operatingWaveNumber].Duration,
-                _context.Waves[operatingWaveNumber].PauseBeforeWave);
+                _context.Waves[operatingWaveNumber].WaveParameters.Duration,
+                _context.Waves[operatingWaveNumber].WaveParameters.PauseBeforeWave);
             
             _context.ServerCommands.StartWaveSpawn.Fire(nextBuiltWaveParams, newRandomSeed);
             StartWave(nextBuiltWaveParams, newRandomSeed);

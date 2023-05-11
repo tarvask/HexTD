@@ -7,9 +7,8 @@ namespace Match.Wave
 {
     public class WaveMobsQueue : BaseDisposable, IOuterLogicUpdatable
     {
-        private readonly Queue<WaveElementDelayAndPath> _waveElements;
-        private readonly float _targetWaveDuration;
-        
+        private Queue<WaveElementDelayAndPath> _waveElements;
+        private float _targetWaveDuration;
         private float _currentWaveDuration;
         private float _targetSpawnPause;
         private float _lastSpawnTime;
@@ -54,6 +53,8 @@ namespace Match.Wave
         
         public void LoadState(in WavesState.WaveState waveState)
         {
+            _waveElements = new Queue<WaveElementDelayAndPath>(waveState.WaveElements);
+            _targetWaveDuration = waveState.TargetWaveDuration * 0.001f;
             _currentWaveDuration = waveState.CurrentWaveDuration * 0.001f;
             _targetSpawnPause = waveState.TargetSpawnPause * 0.001f;
             _lastSpawnTime = waveState.LastSpawnTime * 0.001f;

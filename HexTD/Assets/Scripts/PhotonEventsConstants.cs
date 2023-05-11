@@ -34,12 +34,12 @@ public static class PhotonEventsConstants
         
         public static class WaveStrictOrder
         {
-            public const string SizeParam = "size";
             public const string DurationParam = "duration";
             public const string PauseBeforeWaveParam = "planningPause";
+            public const string WaveDelayParam = "waveDelay";
+            public const string PathIdParam = "pathid";
             public const string MobsIdsParam = "mobsIds";
             public const string MobsDelaysParam = "mobsCounts";
-            public const string MobsPathsParam = "mobsPaths";
         }
 
         public static class HexStateParam
@@ -83,6 +83,7 @@ public static class PhotonEventsConstants
             public const string StateParam = "state";
             public const string TargetPauseDurationParam = "targetPause";
             public const string CurrentPauseDurationParam = "currentPause";
+            public const string SpawnTimerParam = "spawnTimer";
             public const string Player1WavesParam = "player1Waves";
             public const string Player2WavesParam = "player2Waves";
 
