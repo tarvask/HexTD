@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Match.Field.AttackEffect
 {
     [Serializable]
-    public abstract class BaseSplashAttack : BaseAttackEffect
+    public class BaseSplashAttack : BaseAttackEffect
     {
         [Space]
         [Header("Splash Data")]
