@@ -204,9 +204,9 @@ namespace Match.Field.Services
             {
                 if (mobPair.Value.IsBoss) continue;
                 
-                // add only alive mobs, because dead will be added anyway
+                // hurt alive mobs to death
                 if (mobPair.Value.Health.Value > 0)
-                    _dyingMobs.Add(mobPair.Value);
+                    mobPair.Value.Hurt(mobPair.Value.Health.Value);
             }
         }
 
