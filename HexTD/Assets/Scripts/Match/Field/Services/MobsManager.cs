@@ -203,7 +203,10 @@ namespace Match.Field.Services
             foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
                 if (mobPair.Value.IsBoss) continue;
-                _dyingMobs.Add(mobPair.Value);
+                
+                // add only alive mobs, because dead will be added anyway
+                if (mobPair.Value.Health.Value > 0)
+                    _dyingMobs.Add(mobPair.Value);
             }
         }
 
