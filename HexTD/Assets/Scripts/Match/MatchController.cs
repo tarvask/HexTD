@@ -131,16 +131,16 @@ namespace Match
             _ourPlayerHandController = new PlayerHandController(
                 _context.MatchInitDataParameters.PlayerHandParams.Towers,
                 _context.MatchInitDataParameters.EnergyStartCount,
-                _context.FieldConfig.EnergyRestoreDelay,
-                _context.FieldConfig.EnergyRestoreValue,
-                _context.FieldConfig.MaxEnergy);
+                _context.MatchInitDataParameters.EnergyRestoreDelay,
+                _context.MatchInitDataParameters.EnergyRestoreValue,
+                _context.MatchInitDataParameters.EnergyMaxCount);
             
             _enemyPlayerHandController = new PlayerHandController(
                 _context.MatchInitDataParameters.PlayerHandParams.Towers,
                 _context.MatchInitDataParameters.EnergyStartCount,
-                _context.FieldConfig.EnergyRestoreDelay,
-                _context.FieldConfig.EnergyRestoreValue,
-                _context.FieldConfig.MaxEnergy);
+                _context.MatchInitDataParameters.EnergyRestoreDelay,
+                _context.MatchInitDataParameters.EnergyRestoreValue,
+                _context.MatchInitDataParameters.EnergyMaxCount);
             
             // windows
             WindowsManager.Context windowsControllerContext = new WindowsManager.Context(

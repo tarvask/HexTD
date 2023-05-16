@@ -1,6 +1,5 @@
 using System;
 using Match.Wave;
-using Sirenix.Utilities;
 using UnityEngine;
 
 namespace Match
@@ -10,7 +9,10 @@ namespace Match
     {
         [SerializeField] private PathWithWaves[] pathsWithWaves;
         //[SerializeField] private int coinsCount;
-        [SerializeField] private int energyStartCount;
+        [SerializeField] private int initialEnergy;
+        [SerializeField] private float energyRecoveryTime;
+        public const int EnergyRestoreValue = 1;
+        public const int MaxEnergy = 100000;
 
         public PathWithWaves[] WavesConfigs
         {
@@ -56,11 +58,19 @@ namespace Match
 // #endif
 //         }
 
+        public float EnergyRestoreDelay
+        {
+            get { return energyRecoveryTime; }
+#if UNITY_EDITOR
+            set { energyRecoveryTime = value; }
+#endif
+        }
+
         public int EnergyStartCount
         {
-            get { return energyStartCount; }
+            get { return initialEnergy; }
 #if UNITY_EDITOR
-            set { energyStartCount = value; }
+            set { initialEnergy = value; }
 #endif
         }
 

@@ -68,6 +68,7 @@ namespace Match.Wave
             }
         }
         
+        private const byte MaxOverlappingWaves = 6;
         protected readonly Context _context;
         private int _currentWaveNumber;
         private WaveStateType _state;
@@ -86,8 +87,8 @@ namespace Match.Wave
             
             RoleSpecialConstructorActions();
             _currentWaveNumber = -1;
-            _currentPlayer1Waves = new Queue<WaveMobsQueue>(_context.FieldConfig.MaxOverlappingWaves);
-            _currentPlayer2Waves = new Queue<WaveMobsQueue>(_context.FieldConfig.MaxOverlappingWaves);
+            _currentPlayer1Waves = new Queue<WaveMobsQueue>(MaxOverlappingWaves);
+            _currentPlayer2Waves = new Queue<WaveMobsQueue>(MaxOverlappingWaves);
             SetState(WaveStateType.Loading);
             _context.MatchStartedReactiveCommand.Execute(_context.FieldConfig.MatchInfoShowDuration);
         }

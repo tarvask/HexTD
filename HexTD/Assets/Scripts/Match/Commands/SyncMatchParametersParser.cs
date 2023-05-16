@@ -126,6 +126,15 @@ namespace Match.Commands
 
             // energy start
             int energyStart = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchStartEnergyParam];
+            
+            // energy max
+            int energyMax = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchMaxEnergyParam];
+            
+            // energy restore delay
+            int energyRestoreDelay = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchRestoreEnergyDelay];
+            
+            // energy restore value
+            int energyRestoreValue = (int)parametersTable[PhotonEventsConstants.SyncMatch.MatchRestoreEnergyValue];
 
             // hand
             // towers
@@ -139,7 +148,7 @@ namespace Match.Commands
 
             PlayerHandParams clientPlayerHand = new PlayerHandParams(towers);
             MatchInitDataParameters clientMatchParameters = new MatchInitDataParameters(
-                hexModels, paths, waves, energyStart, clientPlayerHand);
+                hexModels, paths, waves, energyStart, energyMax, energyRestoreDelay, energyRestoreValue, clientPlayerHand);
 
             // random seed
             int randomSeed = (int) parametersTable[PhotonEventsConstants.SyncMatch.RandomSeed];

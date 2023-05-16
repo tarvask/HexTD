@@ -163,6 +163,9 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             levelsConfig.Levels[levelIndexToPlay].Waves, 
             //levelsConfig.Levels[levelIndexToPlay].CoinsCount,
             levelsConfig.Levels[levelIndexToPlay].EnergyStartCount,
+            MatchConfig.MaxEnergy,
+            levelsConfig.Levels[levelIndexToPlay].EnergyRestoreDelay,
+            MatchConfig.EnergyRestoreValue,
             playerHand);
         
         _matchEngine = FindObjectOfType<TestMatchEngine>();
@@ -186,6 +189,9 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             {PhotonEventsConstants.SyncMatch.MatchConfigFieldTypesParam, matchParameters.GetHexesTypes()},
             //{PhotonEventsConstants.SyncMatch.MatchStartCoinsParam, matchParameters.CoinsCount},
             {PhotonEventsConstants.SyncMatch.MatchStartEnergyParam, matchParameters.EnergyStartCount},
+            {PhotonEventsConstants.SyncMatch.MatchMaxEnergyParam, matchParameters.EnergyMaxCount},
+            {PhotonEventsConstants.SyncMatch.MatchRestoreEnergyDelay, matchParameters.EnergyRestoreDelay},
+            {PhotonEventsConstants.SyncMatch.MatchRestoreEnergyValue, matchParameters.EnergyRestoreValue},
             {PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam, matchParameters.PlayerHandParams.TowersNetwork},
             {PhotonEventsConstants.SyncMatch.RandomSeed, randomSeed}
         };

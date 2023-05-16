@@ -16,7 +16,10 @@ public static class PhotonEventsConstants
         public const string MatchConfigPathFieldParam = "matchConfighPathField";
         
         public const string MatchStartCoinsParam = "coins";
-        public const string MatchStartEnergyParam = "energy";
+        public const string MatchStartEnergyParam = "energyStart";
+        public const string MatchMaxEnergyParam = "energyMax";
+        public const string MatchRestoreEnergyDelay = "restoreDelay";
+        public const string MatchRestoreEnergyValue = "restoreValue";
         public const string MatchConfigRolesAndUsers = "rolesAndUsers";
         public const string MatchConfigHandTowersParam = "matchConfigHandTowers";
         public const string RandomSeed = "randomSeed";

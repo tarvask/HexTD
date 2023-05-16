@@ -14,6 +14,9 @@ namespace Match
         public WaveWithDelayAndPath[] Waves { get; }
         //public int CoinsCount { get; }
         public int EnergyStartCount { get; }
+        public int EnergyMaxCount { get; }
+        public float EnergyRestoreDelay { get; }
+        public int EnergyRestoreValue { get; }
         public PlayerHandParams PlayerHandParams { get; }
         
         public MatchInitDataParameters(HexModel[] hexes,
@@ -21,6 +24,9 @@ namespace Match
             WaveWithDelayAndPath[] waves,
             //int coinsCount,
             int energyStartCount,
+            int energyMaxCount,
+            float energyRestoreDelay,
+            int energyRestoreValue,
             PlayerHandParams playerHandParams)
         {
             // fill cells from linear array
@@ -41,6 +47,9 @@ namespace Match
             // currency and magic
             //CoinsCount = coinsCount;
             EnergyStartCount = energyStartCount;
+            EnergyMaxCount = energyMaxCount;
+            EnergyRestoreDelay = energyRestoreDelay;
+            EnergyRestoreValue = energyRestoreValue;
             
             // hand
             PlayerHandParams = playerHandParams;

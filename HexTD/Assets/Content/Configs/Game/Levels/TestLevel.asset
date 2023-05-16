@@ -25,4 +25,5 @@ MonoBehaviour:
     waves:
     - waveDelay: 9
       waveConfig: {fileID: 11400000, guid: 293f794c17045459681580f668484ab5, type: 2}
-  energyStartCount: 10
+  initialEnergy: 10
+  energyRecoveryTime: 2
