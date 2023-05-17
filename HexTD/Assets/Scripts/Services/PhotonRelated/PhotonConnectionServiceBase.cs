@@ -9,7 +9,7 @@ namespace Services.PhotonRelated
     public class PhotonConnectionServiceBase : IDisposable, IConnectionCallbacks, IMatchmakingCallbacks,
         IInRoomCallbacks, ILobbyCallbacks, IWebRpcCallback, IErrorInfoCallback
     {
-        public PhotonConnectionServiceBase()
+        protected PhotonConnectionServiceBase()
         {
             PhotonNetwork.AddCallbackTarget(this);
         }
