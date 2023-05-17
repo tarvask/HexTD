@@ -14,7 +14,7 @@
     public class MultiFloatValueBuff : BaseValueBuff<float>
     {
         //buffValue - percentage
-        public MultiFloatValueBuff(float buffValue) : base(1f + buffValue/100, EBuffConditionCollectionType.Once, 0)
+        public MultiFloatValueBuff(float buffValue) : base(buffValue/100, EBuffConditionCollectionType.Once, 0)
         {
         }
 

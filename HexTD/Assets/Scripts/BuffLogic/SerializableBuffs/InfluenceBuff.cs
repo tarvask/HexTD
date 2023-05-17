@@ -13,12 +13,12 @@ namespace BuffLogic.SerializableBuffs
             Undefined = 0,
         
             Add = 1,
-            Less = 2,
+            //Less = 2,
             Multiply = 3,
-            Divide = 4
+            //Divide = 4
         }
         
-        [SerializeField] private InfluenceType influenceType = InfluenceType.Divide;
+        [SerializeField] private InfluenceType influenceType = InfluenceType.Multiply;
         [SerializeField] private EntityBuffableValueType entityBuffableValueType;
         [SerializeField] private float buffValue;
         [SerializeField] private float duration;
@@ -39,12 +39,8 @@ namespace BuffLogic.SerializableBuffs
             {
                 case InfluenceType.Add:
                     return new AddFloatValueBuff(buffValue);
-                case InfluenceType.Less:
-                    return new AddFloatValueBuff(-buffValue);
                 case InfluenceType.Multiply:
                     return new MultiFloatValueBuff(buffValue);
-                case InfluenceType.Divide:
-                    return new DivideFloatValueBuff(buffValue);
             }
 
             throw new Exception("Buff with unknown influence type!");
