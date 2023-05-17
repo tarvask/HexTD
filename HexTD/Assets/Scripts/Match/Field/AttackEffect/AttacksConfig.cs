@@ -8,11 +8,11 @@ namespace Match.Field.AttackEffect
 	public class AttacksConfig 
 	{
 		[SerializeField]
-		private List<BaseAttackEffect> attacks;
+		private List<BaseSingleAttack> attacks;
 		[SerializeField]
 		private List<BaseSplashAttack> splashAttacks;
 
-		public List<BaseAttackEffect> Attacks => attacks;
+		public List<BaseSingleAttack> Attacks => attacks;
 		public List<BaseSplashAttack> SplashAttacks => splashAttacks;
 	}
 }

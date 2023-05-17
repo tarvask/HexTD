@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HexSystem;
+using Match.Field.AttackEffect;
 using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.Shooting.TargetFinding;
@@ -153,11 +154,14 @@ namespace Match.Field.Tower
             if (!_shootModel.TryGetTowerAttack(out var towerAttack))
                 return false;
 
+            if (_shootModel.IsSplashAttackReady)
+                return true;
+            
             int targetId = targetFinder.GetTargetWithTacticInRange(
                 targetContainer.GetTargetsByPosition(towerAttack.AttackTargetType),
                     towerAttack.AttackRangeType,
                     _context.TowerConfig.RegularParameters.TargetFindingTacticType, 
-                    HexPosition, towerAttack.AttackRadiusInHex,
+                    HexPosition, ((BaseSingleAttack)towerAttack).AttackRadiusInHex,
                     _context.TowerConfig.RegularParameters.PreferUnbuffedTargets);
                             
             _stableModel.SetTarget(targetId);
@@ -227,7 +231,7 @@ namespace Match.Field.Tower
         {
             var hexes= _context.HexMapReachableService.GetInRangeMapByTargetFinderType(
                 HexPosition,
-                _context.TowerConfig.AttacksConfig.Attacks[0].AttackRadiusInHex,
+                ((BaseSingleAttack)_context.TowerConfig.AttacksConfig.Attacks[0]).AttackRadiusInHex,
                 _context.TowerConfig.AttacksConfig.Attacks[0].AttackRangeType);
 
             _context.EnableHexesHighlightReactiveCommand.Execute(hexes);

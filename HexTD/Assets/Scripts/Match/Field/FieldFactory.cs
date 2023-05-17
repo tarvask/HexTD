@@ -251,7 +251,7 @@ namespace Match.Field
                 _lastProjectileId = projectileId;
 
             SplashShootType splashShootType = baseTowerAttack is BaseSplashAttack
-                ? ((BaseSplashAttack)baseTowerAttack).SplashShootType
+                ? SplashShootType.UnderSelf
                 : SplashShootType.ToTarget;
             
             ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttack.ProjectileView, spawnPosition);

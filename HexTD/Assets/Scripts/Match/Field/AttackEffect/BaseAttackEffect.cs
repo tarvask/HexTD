@@ -17,15 +17,15 @@ namespace Match.Field.AttackEffect
         [SerializeField] private float baseDamage;
         [SerializeField] private float delay;
         [SerializeField] private float cooldown;
-        [SerializeField] private int attackRadiusInHex;
         [SerializeField] private float projectileSpeed;
         [SerializeField] private ProjectileView projectileView;
+        
+        [Header("Buffs data")]
         [SerializeReference] private List<BaseSerializableBuff> serializableBuffs;
 
         public EnumAttackTargetType AttackTargetType => attackTargetType;
         public AttackRangeType AttackRangeType => attackRangeType;
         public float CooldownAndDelay => cooldown + delay;
-        public int AttackRadiusInHex => attackRadiusInHex;
         public float ProjectileSpeed => projectileSpeed;
         public ProjectileView ProjectileView => projectileView;
 
