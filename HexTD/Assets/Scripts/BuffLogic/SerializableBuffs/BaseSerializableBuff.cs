@@ -12,12 +12,13 @@ namespace BuffLogic.SerializableBuffs
         
         public abstract void ApplyBuff(ITarget target, BuffManager buffManager, VfxManager vfxManager);
 
-        protected void ApplyVfx(ITarget target, VfxManager vfxManager)
+        protected void ApplyVfx(IBuff buff, ITarget target, VfxManager vfxManager)
         {
             if(vfxPrefab == null)
                 return;
             
             vfxManager.AddVfx(target, vfxPrefab);
+            buff.SubscribeOnEnd(() => vfxManager.ReleaseVfx(target));
         }
     }
 }

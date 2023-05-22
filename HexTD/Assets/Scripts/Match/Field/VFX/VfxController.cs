@@ -33,6 +33,8 @@ namespace Match.Field.VFX
                 vfxController.Play();
                 vfxController.gameObject.SetActive(true);
             }
+            
+            _vfxObjectContainer.Transform.gameObject.SetActive(true);
         }
 
         public void Stop()
@@ -54,6 +56,8 @@ namespace Match.Field.VFX
                 vfxController.Stop();
                 vfxController.gameObject.SetActive(false);
             }
+            
+            _vfxObjectContainer.Transform.gameObject.SetActive(false);
         }
 
         public void SetPosition(Vector3 position)

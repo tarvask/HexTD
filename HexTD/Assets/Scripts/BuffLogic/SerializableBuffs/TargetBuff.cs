@@ -25,7 +25,7 @@ namespace BuffLogic.SerializableBuffs
         {
             BaseUnitBuff unitBuff = GetTypedBuff();
             buffManager.AddBuff(target, unitBuff);
-            ApplyVfx(target, vfxManager);
+            ApplyVfx(unitBuff, target, vfxManager);
         }
 
         private BaseUnitBuff GetTypedBuff()

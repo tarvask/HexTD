@@ -10,6 +10,7 @@ namespace Match.Field.VFX
         private readonly List<Animator> _animators;
         private readonly List<BaseVfxSubController> _vfxControllers;
 
+        public Transform Transform => _containerTransform;
         public IEnumerable<ParticleSystem> ParticleSystems => _particleSystems;
         public IEnumerable<Animator> Animators => _animators;
         public IEnumerable<BaseVfxSubController> VfxControllers => _vfxControllers;

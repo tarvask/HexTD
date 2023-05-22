@@ -34,9 +34,7 @@ namespace BuffLogic.SerializableBuffs
                 return;
             
             buffManager.AddBuff(buffableValue, buff);
-            ApplyVfx(target, vfxManager);
-            
-            buff.SubscribeOnEnd(() => vfxManager.ReleaseVfx(target));
+            ApplyVfx(buff, target, vfxManager);
         }
 
         private BaseValueBuff<float> GetTypedBuff()

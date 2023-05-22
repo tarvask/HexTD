@@ -9,6 +9,7 @@ namespace Match.Field.VFX
         [SerializeField] private List<Animator> animators;
         [SerializeField] private List<BaseVfxSubController> vfxControllers;
 
+        public Transform Transform => transform;
         public IEnumerable<ParticleSystem> ParticleSystems => particleSystems;
         public IEnumerable<Animator> Animators => animators;
         public IEnumerable<BaseVfxSubController> VfxControllers => vfxControllers;

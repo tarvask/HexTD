@@ -29,8 +29,7 @@ namespace Match.Field.VFX
                 _vfxObjectPools.Add(vfxPrefab, targetVfxObjectPool);
             }
 
-            var vfxController = targetVfxObjectPool.GetFreeController(target);
-            vfxController.Play();
+            targetVfxObjectPool.InitFreeController(target);
         }
 
         public void ReleaseVfx(ITarget target)

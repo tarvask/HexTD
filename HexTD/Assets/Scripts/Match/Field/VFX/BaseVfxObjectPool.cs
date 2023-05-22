@@ -29,14 +29,17 @@ namespace Match.Field.VFX
             _pooledVfxControllers = new Stack<VfxController>(3);
         }
 
-        public VfxController GetFreeController(TKey key)
+        public void InitFreeController(TKey key)
         {
+            if(_activeVfxControllers.ContainsKey(key))
+                return;
+            
             if (_pooledVfxControllers.Count == 0)
                 PooledNewVfxObject();
 
             VfxController vfxController = _pooledVfxControllers.Pop();
             _activeVfxControllers.Add(key, vfxController);
-            return vfxController;
+            vfxController.Play();
         }
 
         public void ReleaseVfx(TKey key)

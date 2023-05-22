@@ -6,6 +6,7 @@ namespace Match.Field.VFX
 {
     public interface IVfxObjectContainer : IDisposable
     {
+        public Transform Transform { get; }
         public IEnumerable<ParticleSystem> ParticleSystems { get; }
         public IEnumerable<Animator> Animators { get; }
         public IEnumerable<BaseVfxSubController> VfxControllers { get; }
