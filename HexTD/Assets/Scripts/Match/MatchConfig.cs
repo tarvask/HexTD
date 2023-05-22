@@ -12,7 +12,8 @@ namespace Match
         [SerializeField] private int initialEnergy;
         [SerializeField] private float energyRecoveryTime;
         public const int EnergyRestoreValue = 1;
-        public const int MaxEnergy = 100000;
+        public const int EnergyMaxCount = 100000;
+        [SerializeField] private TextAsset levelMap;
 
         public PathWithWaves[] WavesConfigs
         {
@@ -58,6 +59,14 @@ namespace Match
 // #endif
 //         }
 
+        public int EnergyStartCount
+        {
+            get { return initialEnergy; }
+#if UNITY_EDITOR
+            set { initialEnergy = value; }
+#endif
+        }
+
         public float EnergyRestoreDelay
         {
             get { return energyRecoveryTime; }
@@ -66,11 +75,11 @@ namespace Match
 #endif
         }
 
-        public int EnergyStartCount
+        public TextAsset LevelMap
         {
-            get { return initialEnergy; }
+            get { return levelMap; }
 #if UNITY_EDITOR
-            set { initialEnergy = value; }
+            set { levelMap = value; }
 #endif
         }
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using BuffLogic;
 using HexSystem;
+using MapEditor;
 using Match.Commands;
 using Match.Field.Castle;
 using Match.Field.Currency;
@@ -26,12 +27,10 @@ namespace Match.Field
         {
             public Transform FieldRoot { get; }
             public HexFabric HexFabric { get; }
-            public MatchInitDataParameters MatchInitDataParameters { get; }
             public FieldConfig FieldConfig { get; }
+            public LevelMapModel LevelMapModel { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public BuffManager BuffManager { get; }
-            
-            public MatchCommands MatchCommands { get; }
 
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             public ReactiveCommand<PlayerState> StateSyncedReactiveCommand { get; }
@@ -48,11 +47,9 @@ namespace Match.Field
             public Context(
                 Transform fieldRoot,
                 HexFabric hexFabric,
-                MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
+                FieldConfig fieldConfig, LevelMapModel levelMapModel,
                 ConfigsRetriever configsRetriever,
                 BuffManager buffManager,
-                
-                MatchCommands matchCommands,
                 
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
                 ReactiveCommand<PlayerState> stateSyncedReactiveCommand,
@@ -69,12 +66,10 @@ namespace Match.Field
                 FieldRoot = fieldRoot;
                 HexFabric = hexFabric;
                 
-                MatchInitDataParameters = matchInitDataParameters;
                 FieldConfig = fieldConfig;
+                LevelMapModel = levelMapModel;
                 ConfigsRetriever = configsRetriever;
                 BuffManager = buffManager;
-
-                MatchCommands = matchCommands;
                 
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
                 StateSyncedReactiveCommand = stateSyncedReactiveCommand;
@@ -138,11 +133,11 @@ namespace Match.Field
                 AddDisposable(new ReactiveCommand());
 
             _hexagonalFieldModel = new HexagonalFieldModel(_context.FieldConfig.HexSettingsConfig,
-                _context.FieldRoot.position, _context.MatchInitDataParameters.Hexes);
+                _context.FieldRoot.position, _context.LevelMapModel.GetFieldHexes());
             _hexMapReachableService = new HexMapReachableService(_hexagonalFieldModel);
             
             _pathFindingService = new HexPathFindingService(_hexagonalFieldModel);
-            _pathContainer = new PathContainer(_pathFindingService, _context.MatchInitDataParameters.Paths);
+            _pathContainer = new PathContainer(_pathFindingService, _context.LevelMapModel.PathDatas);
             
             TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
 

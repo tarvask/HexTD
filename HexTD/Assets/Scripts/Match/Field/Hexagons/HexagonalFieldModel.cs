@@ -26,7 +26,7 @@ namespace Match.Field.Hexagons
         
         public FieldHexType GetHexTypeByPosition(Hex2d position) => CurrentFieldHexTypes[position.GetHashCode()];
 
-        public HexagonalFieldModel(HexSettingsConfig hexSettingsConfig, Vector3 rootPosition, FieldHex[] fieldHexes)
+        public HexagonalFieldModel(HexSettingsConfig hexSettingsConfig, Vector3 rootPosition, List<FieldHex> fieldHexes)
         {
             _layout = new Layout(hexSettingsConfig.HexSize, rootPosition, hexSettingsConfig.IsFlat);
             _cachedLevelFieldHexes = new Dictionary<int, FieldHex>();

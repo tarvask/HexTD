@@ -1,7 +1,7 @@
-using System;
 using BuffLogic;
 using Extensions;
 using HexSystem;
+using MapEditor;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Castle;
@@ -128,19 +128,23 @@ namespace Match
             ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_context.FieldConfig);
             _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
 
+            MatchConfig matchConfig = _configsRetriever.GetLevelById(_context.MatchInitDataParameters.LevelId);
+            MapLoader loader = new MapLoader();
+            LevelMapModel mapModel = loader.LoadMapFromAsset(matchConfig.LevelMap);
+
             _ourPlayerHandController = new PlayerHandController(
                 _context.MatchInitDataParameters.PlayerHandParams.Towers,
-                _context.MatchInitDataParameters.EnergyStartCount,
-                _context.MatchInitDataParameters.EnergyRestoreDelay,
-                _context.MatchInitDataParameters.EnergyRestoreValue,
-                _context.MatchInitDataParameters.EnergyMaxCount);
+                matchConfig.EnergyStartCount,
+                matchConfig.EnergyRestoreDelay,
+                MatchConfig.EnergyRestoreValue,
+                MatchConfig.EnergyMaxCount);
             
             _enemyPlayerHandController = new PlayerHandController(
                 _context.MatchInitDataParameters.PlayerHandParams.Towers,
-                _context.MatchInitDataParameters.EnergyStartCount,
-                _context.MatchInitDataParameters.EnergyRestoreDelay,
-                _context.MatchInitDataParameters.EnergyRestoreValue,
-                _context.MatchInitDataParameters.EnergyMaxCount);
+                matchConfig.EnergyStartCount,
+                matchConfig.EnergyRestoreDelay,
+                MatchConfig.EnergyRestoreValue,
+                MatchConfig.EnergyMaxCount);
             
             // windows
             WindowsManager.Context windowsControllerContext = new WindowsManager.Context(
@@ -148,7 +152,7 @@ namespace Match
                _configsRetriever,
                 _context.IsMultiPlayerGame,
                _ourPlayerHandController,
-               _context.MatchInitDataParameters.Waves,
+               matchConfig.Waves,
                
                _context.IsConnectedReactiveProperty,
                enemyCastleHealthChangedReactiveCommand,
@@ -174,11 +178,11 @@ namespace Match
            FieldController.Context enemyFieldContext = new FieldController.Context(
                 _context.MatchView.EnemyFieldRoot,
                 hexFabric,
-                _context.MatchInitDataParameters, _context.FieldConfig,
+                _context.FieldConfig, mapModel,
                 _configsRetriever,
                 _buffManager,
                 
-                _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, _enemyStateSyncedReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty, _enemyStateSyncedReactiveCommand,
                 spawnEnemyMobReactiveCommand,
                 hasMobsOnEnemyField,
                 waveNumberChangedReactiveCommand,
@@ -192,11 +196,11 @@ namespace Match
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
                 hexFabric,
-                _context.MatchInitDataParameters, _context.FieldConfig,
+                _context.FieldConfig, mapModel,
                 _configsRetriever,
                 _buffManager,
                 
-                _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, _ourStateSyncedReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty, _ourStateSyncedReactiveCommand,
                 spawnOurMobReactiveCommand,
                 hasMobsOnOurField,
                 waveNumberChangedReactiveCommand,
@@ -243,11 +247,9 @@ namespace Match
                     if (_context.MatchView.OurFieldCamera.TryGetFocusTransforms(ourFieldBounds, out var pos,
                             out var rot))
                     {
-                        _context.MatchView.OurFieldCamera.transform.position = pos;
-                        _context.MatchView.OurFieldCamera.transform.rotation = rot;
-
-                        _context.MatchView.OurFieldCamera.transform.position -=
-                            _context.MatchView.OurFieldCamera.transform.up * 5.0f;
+                        _context.MatchView.OurFieldCamera.transform.SetPositionAndRotation(
+                            pos - _context.MatchView.OurFieldCamera.transform.up * 5.0f,
+                            rot);
                     }
                 }
                 {
@@ -257,8 +259,9 @@ namespace Match
                     if (_context.MatchView.EnemyFieldCamera.TryGetFocusTransforms(enemyFieldBounds, out var pos,
                             out var rot))
                     {
-                        _context.MatchView.EnemyFieldCamera.transform.position = pos;
-                        _context.MatchView.EnemyFieldCamera.transform.rotation = rot;
+                        _context.MatchView.EnemyFieldCamera.transform.SetPositionAndRotation(
+                            pos,
+                            rot);
                     }
                 }
             }
@@ -274,7 +277,7 @@ namespace Match
                 player1MatchCommands.Incoming,
                 player2MatchCommands.Incoming,
                 _context.MatchCommandsCommon.Server,
-                _context.MatchInitDataParameters.Waves,
+                matchConfig.Waves,
                 _context.IsMultiPlayerGame,
                 _context.OurNetworkRoleReactiveProperty,
 

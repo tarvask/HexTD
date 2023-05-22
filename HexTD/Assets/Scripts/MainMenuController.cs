@@ -101,11 +101,11 @@ public class MainMenuController : BaseDisposable
         {
             PlayerPrefs.SetInt("Level", levelIndex);
                 
-            levelNameSelectedReactiveCommand.Execute(_context.View.LevelsConfig.Levels[levelIndex].name);
+            levelNameSelectedReactiveCommand.Execute(_context.View.LevelsConfig.Levels[(byte)levelIndex].name);
             _chooseLevelPanelController.Hide();
         });
             
-        int currentLevelIndex = Mathf.Clamp(PlayerPrefs.GetInt("Level", 0), 0, _context.View.LevelsConfig.Levels.Length - 1);
+        byte currentLevelIndex = (byte)Mathf.Clamp(PlayerPrefs.GetInt("Level", 0), 0, _context.View.LevelsConfig.Levels.Count - 1);
         levelIndexSelectedReactiveCommand.Execute(currentLevelIndex);
             
         SceneManager.sceneUnloaded += (scene) => ShowMainMenu();

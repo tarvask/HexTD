@@ -29,6 +29,9 @@ namespace Match.Field
         [Header("Mobs")]
         [SerializeField] private MobsConfig mobsConfig;
 
+        [Header("Levels")]
+        [SerializeField] private MatchesConfig levelsConfig;
+
         public int CastleHealth => castleHealth;
         public bool RemoveMobsOnBossAppearing => removeMobsOnBossAppearing;
 
@@ -48,5 +51,8 @@ namespace Match.Field
         
         // mobs
         public MobsConfig MobsConfig => mobsConfig;
+        
+        // levels
+        public MatchesConfig LevelsConfig => levelsConfig;
     }
 }

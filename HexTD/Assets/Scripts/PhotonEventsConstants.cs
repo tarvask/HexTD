@@ -6,6 +6,8 @@ public static class PhotonEventsConstants
     {
         public const byte SyncMatchConfigOnStartEventId = 0;
 
+        public const string MatchConfigLevelIdParam = "levelId";
+
         public const string MatchConfigWavesCount = "wavesCount";
         public const string MatchConfigWaveParam = "wave";
         

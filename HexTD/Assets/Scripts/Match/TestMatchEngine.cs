@@ -45,7 +45,7 @@ namespace Match
             Application.targetFrameRate = 60;
         }
 
-        public void Init(MatchInitDataParameters matchShortParameters, IEventBus eventBus,
+        public void Init(MatchInitDataParameters matchInitDataParameters, IEventBus eventBus,
             IReadOnlyReactiveProperty<ProcessRoles> currentProcessGameRoleReactiveProperty,
             IReadOnlyReactiveProperty<NetworkRoles> currentProcessNetworkRoleReactiveProperty,
             IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
@@ -70,7 +70,7 @@ namespace Match
             _rollbackStateReactiveCommand = new ReactiveCommand();
             
             MatchView matchView = Instantiate(matchPrefab, Vector3.zero, Quaternion.identity, transform);
-            MatchController.Context matchControllerContext = new MatchController.Context(matchView, matchShortParameters, matchView.FieldConfig,
+            MatchController.Context matchControllerContext = new MatchController.Context(matchView, matchInitDataParameters, matchView.FieldConfig,
                 matchCommandsEnemy, matchCommandsOur, matchCommonCommands,
                 CurrentEngineFrameReactiveProperty, quitMatchReactiveCommand, syncFrameCounterCommand,
                 currentProcessGameRoleReactiveProperty, currentProcessNetworkRoleReactiveProperty, isConnectedReactiveProperty,

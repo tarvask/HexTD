@@ -1,6 +1,6 @@
 namespace Match.Field.Tower
 {
-    public enum TowerType
+    public enum TowerType : byte
     {
         Undefined = 0,
         _001 = 1,

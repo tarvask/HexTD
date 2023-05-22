@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: MatchConfig
   m_EditorClassIdentifier: 
   levels:
-  - {fileID: 11400000, guid: 10ea635a97cdd1a4e981b75971e65190, type: 2}
+    keyData: 01
+    valueData:
+    - {fileID: 11400000, guid: 10ea635a97cdd1a4e981b75971e65190, type: 2}
