@@ -1,8 +1,12 @@
-﻿using Tools.PriorityTools;
+﻿using System;
+using Tools.PriorityTools;
 
 namespace BuffLogic
 {
-    public interface IBuff { }
+    public interface IBuff : IDisposable
+    {
+        void SubscribeOnEnd(Action onEnd);
+    }
     
     public interface IBuff<T> : IPrioritizatedModule, IBuff
     {

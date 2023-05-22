@@ -52,7 +52,8 @@ MonoBehaviour:
     - rid: 8806733234106269707
       type: {class: InfluenceBuff, ns: BuffLogic.SerializableBuffs, asm: Assembly-CSharp}
       data:
+        vfxPrefab: {fileID: 1999974194633833540, guid: 8d6b78e24d868714cb6b59ee953e36b8, type: 3}
         influenceType: 3
         entityBuffableValueType: 3
-        buffValue: 0.03
+        buffValue: 30
         duration: 1

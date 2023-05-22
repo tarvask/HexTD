@@ -39,7 +39,7 @@ namespace BuffLogic
 
                     var nextNode = valueNode.Next;
                     _removedBuffs.Add(valueNode.Value);
-
+                    
                     ValueList.Remove(valueNode);
                     valueNode = nextNode;
                 }
@@ -50,6 +50,8 @@ namespace BuffLogic
             if (wasUpdated)
                 _buffableValueTarget.UpdateRemoveBuffs(this, _removedBuffs);
 
+            foreach (var removedBuff in _removedBuffs)
+                removedBuff.Dispose();
         }
 
         private void TryToUpdateBuff(IBuff<TValue> buff)

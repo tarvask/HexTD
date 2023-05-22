@@ -11,6 +11,7 @@ using Match.Field.Services;
 using Match.Field.Shooting;
 using Match.Field.State;
 using Match.Field.Tower;
+using Match.Field.VFX;
 using PathSystem;
 using Services;
 using Tools;
@@ -30,6 +31,7 @@ namespace Match.Field
             public FieldConfig FieldConfig { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public BuffManager BuffManager { get; }
+            public VfxManager VfxManager { get; }
             
             public MatchCommands MatchCommands { get; }
 
@@ -51,6 +53,7 @@ namespace Match.Field
                 MatchInitDataParameters matchInitDataParameters, FieldConfig fieldConfig,
                 ConfigsRetriever configsRetriever,
                 BuffManager buffManager,
+                VfxManager vfxManager,
                 
                 MatchCommands matchCommands,
                 
@@ -73,6 +76,7 @@ namespace Match.Field
                 FieldConfig = fieldConfig;
                 ConfigsRetriever = configsRetriever;
                 BuffManager = buffManager;
+                VfxManager = vfxManager;
 
                 MatchCommands = matchCommands;
                 
@@ -187,6 +191,7 @@ namespace Match.Field
             FieldModel.Context fieldModelContext = new FieldModel.Context(
                 _hexagonalFieldModel,
                 _hexagonalFieldModel.CurrentFieldHexTypes,
+                _context.VfxManager,
                 towersManager,
                 _mobsManager,
                 _factory,
@@ -210,7 +215,7 @@ namespace Match.Field
             
             // shooting
             ShootingProcessManager.Context shootingControllerContext = new ShootingProcessManager.Context(_model, 
-                _hexMapReachableService, _factory, _context.BuffManager);
+                _hexMapReachableService, _factory, _context.BuffManager, _context.VfxManager);
             _shootingProcessManager = AddDisposable(new ShootingProcessManager(shootingControllerContext));
             
             // currency

@@ -40,7 +40,7 @@ MonoBehaviour:
       attackRangeType: 4
       baseDamage: 4
       delay: 0
-      cooldown: 2
+      cooldown: 3
       projectileSpeed: 35
       projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
       serializableBuffs:
@@ -52,7 +52,8 @@ MonoBehaviour:
     - rid: 8806733234106269709
       type: {class: InfluenceBuff, ns: BuffLogic.SerializableBuffs, asm: Assembly-CSharp}
       data:
+        vfxPrefab: {fileID: 1999974194633833540, guid: 8d6b78e24d868714cb6b59ee953e36b8, type: 3}
         influenceType: 3
         entityBuffableValueType: 3
-        buffValue: 0.03
-        duration: 2
+        buffValue: 30
+        duration: 1

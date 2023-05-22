@@ -1,5 +1,6 @@
 ﻿using System;
 using Match.Field.Shooting;
+using Match.Field.VFX;
 using UnityEngine;
 
 namespace BuffLogic.SerializableBuffs
@@ -22,15 +23,20 @@ namespace BuffLogic.SerializableBuffs
         [SerializeField] private EntityBuffableValueType entityBuffableValueType;
         [SerializeField] private float buffValue;
         [SerializeField] private float duration;
-        
-        public override void ApplyBuff(ITarget target, BuffManager buffManager)
+
+        public override void ApplyBuff(ITarget target, BuffManager buffManager, VfxManager vfxManager)
         {
             BaseValueBuff<float> buff = GetTypedBuff();
             buff.AddCondition(new TimerBuffCondition(duration));
             
-            if(target.BaseReactiveModel.TryGetBuffableValue(entityBuffableValueType,
+            if(!target.BaseReactiveModel.TryGetBuffableValue(entityBuffableValueType,
                    out var buffableValue))
-                buffManager.AddBuff(buffableValue, buff);
+                return;
+            
+            buffManager.AddBuff(buffableValue, buff);
+            ApplyVfx(target, vfxManager);
+            
+            buff.SubscribeOnEnd(() => vfxManager.ReleaseVfx(target));
         }
 
         private BaseValueBuff<float> GetTypedBuff()

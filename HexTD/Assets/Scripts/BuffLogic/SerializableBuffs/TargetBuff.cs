@@ -1,5 +1,6 @@
 ﻿using System;
 using Match.Field.Shooting;
+using Match.Field.VFX;
 using UnityEngine;
 
 namespace BuffLogic.SerializableBuffs
@@ -20,10 +21,11 @@ namespace BuffLogic.SerializableBuffs
         [SerializeField] private float impactPerDelay;
         [SerializeField] private float delay;
         
-        public override void ApplyBuff(ITarget target, BuffManager buffManager)
+        public override void ApplyBuff(ITarget target, BuffManager buffManager, VfxManager vfxManager)
         {
             BaseUnitBuff unitBuff = GetTypedBuff();
             buffManager.AddBuff(target, unitBuff);
+            ApplyVfx(target, vfxManager);
         }
 
         private BaseUnitBuff GetTypedBuff()

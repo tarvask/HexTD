@@ -9,6 +9,7 @@ using Match.Field.Hand;
 using Match.Field.Mob;
 using Match.Field.State;
 using Match.Field.Tower;
+using Match.Field.VFX;
 using Match.State;
 using Match.Wave;
 using Services;
@@ -79,6 +80,7 @@ namespace Match
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
         private readonly BuffManager _buffManager;
+        private readonly VfxManager _vfxManager;
         private readonly FieldController _player1FieldController;
         private readonly FieldController _player2FieldController;
         private readonly FieldFactory _fieldFactory;
@@ -166,6 +168,7 @@ namespace Match
            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
            _buffManager = new BuffManager();
+           _vfxManager = new VfxManager();
 
            // fields
            var hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig);
@@ -177,6 +180,7 @@ namespace Match
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 _buffManager,
+                _vfxManager,
                 
                 _context.MatchCommandsEnemy, _context.CurrentEngineFrameReactiveProperty, _enemyStateSyncedReactiveCommand,
                 spawnEnemyMobReactiveCommand,
@@ -195,6 +199,7 @@ namespace Match
                 _context.MatchInitDataParameters, _context.FieldConfig,
                 _configsRetriever,
                 _buffManager,
+                _vfxManager,
                 
                 _context.MatchCommandsOur, _context.CurrentEngineFrameReactiveProperty, _ourStateSyncedReactiveCommand,
                 spawnOurMobReactiveCommand,
@@ -407,6 +412,7 @@ namespace Match
 
             _ourPlayerHandController.OuterLogicUpdate(frameLength);
             _windowsManager.OuterLogicUpdate(frameLength);
+            _vfxManager.OuterLogicUpdate(frameLength);
             
             // the order is important due to calls to Random inside
             _player1FieldController.OuterLogicUpdate(frameLength);
