@@ -45,13 +45,13 @@ namespace Match.Windows.MainMenu
 
         private void FillItems()
         {
-            _levelsItems = new List<ChooseLevelItemController>(_context.LevelsConfig.Levels.Length);
+            _levelsItems = new List<ChooseLevelItemController>(_context.LevelsConfig.Levels.Count);
             
-            for (int levelIndex = 0; levelIndex < _context.LevelsConfig.Levels.Length; levelIndex++)
+            foreach(var levelPair in _context.LevelsConfig.Levels)
             {
                 ChooseLevelItemView chooseLevelItemView = Object.Instantiate(_context.View.LevelItemPrefab, _context.View.LevelItemsRoot);
                 ChooseLevelItemController.Context chooseLevelItemContext = new ChooseLevelItemController.Context(
-                    chooseLevelItemView, _context.LevelsConfig.Levels[levelIndex].name, levelIndex, _context.LevelIndexSelectedReactiveCommand);
+                    chooseLevelItemView, levelPair.Value.name, levelPair.Key, _context.LevelIndexSelectedReactiveCommand);
                 ChooseLevelItemController chooseLevelItem = AddDisposable(new ChooseLevelItemController(chooseLevelItemContext));
                 
                 _levelsItems.Add(chooseLevelItem);

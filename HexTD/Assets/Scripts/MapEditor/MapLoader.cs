@@ -71,5 +71,13 @@ namespace MapEditor
 
             return levelMapModel;
         }
+        
+        public LevelMapModel LoadMapFromAsset(TextAsset mapAsset)
+        {
+            LevelMapModel levelMapModel = _serializer.Deserialize<LevelMapModel>(
+                new JsonTextReader(new StringReader(mapAsset.text)));
+
+            return levelMapModel;
+        }
     }
 }
