@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   simpleHexObject: {fileID: 2843427230044144718, guid: 209d45949411164459c0a95bdb0f06c1, type: 3}
   bridgeHexObject: {fileID: 7008967563772727906, guid: 08f7f7bf444f98341bf3feca9c3881ff, type: 3}
+  stonePropsHexObject: {fileID: 8178014620764492173, guid: 0b69c3347d3b649fba5710c2b140e51f, type: 3}
+  bushPropsHexObject: {fileID: 8178014620764492173, guid: ca992cf95372f45c988477bb50f089d9, type: 3}
+  treePropsHexObject: {fileID: 8178014620764492173, guid: 5524af12024e540e4a9b4ba5cdcbf9c7, type: 3}
+  grassPropsHexObject: {fileID: 8178014620764492173, guid: aa4ccc29e553d4affb86787a7ae7e635, type: 3}
+  mushroomSinglePropsHexObject: {fileID: 8178014620764492173, guid: baa5878c4736e4b6486ffe19e3d31295, type: 3}
+  mushroomClusterPropsHexObject: {fileID: 8178014620764492173, guid: 73705f49ce0fa4ab7924a38f6148a542, type: 3}

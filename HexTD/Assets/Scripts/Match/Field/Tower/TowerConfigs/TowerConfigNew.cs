@@ -8,6 +8,8 @@ namespace Match.Field.Tower.TowerConfigs
 	[CreateAssetMenu(fileName = "TowerConfigNew", menuName = "Configs/Match/TowerConfigNew")]
 	public class TowerConfigNew : ScriptableObject
 	{
+		public const int FirstTowerLevel = 1;
+		
 		[SerializeField] private Sprite icon;
 		[SerializeField] private TowerView view;
 		[SerializeField] private TowerRegularParameters regularParameters;

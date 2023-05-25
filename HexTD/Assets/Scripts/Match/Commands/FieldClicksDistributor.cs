@@ -1,15 +1,13 @@
-using System;
 using HexSystem;
 using Match.Field;
 using Match.Field.Hand;
-using Match.Field.Hexagons;
 using Match.Field.Tower;
 using Match.Field.Tower.TowerConfigs;
 using Match.Windows.Tower;
-using PathSystem;
 using Services;
 using Tools;
 using Tools.Interfaces;
+using UniRx;
 
 namespace Match.Commands
 {
@@ -22,58 +20,66 @@ namespace Match.Commands
             public ConfigsRetriever ConfigsRetriever { get; }
             public FieldConstructionProcessController ConstructionProcessController { get; }
             public PlayerHandController PlayerHandController { get; }
+            public TowerPlacer TowerPlacer { get; }
             public MatchCommands MatchCommands { get; }
             
             public TowerManipulationWindowController TowerManipulationWindowController { get; }
             public TowerInfoWindowController TowerInfoWindowController { get; }
             
-            public HexagonalFieldModel HexagonalFieldModel { get; }
-            public PathContainer PathContainer { get; }
+            public ReactiveCommand<Hex2d> PlaceForTowerSelectedCommand { get; }
 
             public Context(
                 FieldModel fieldModel, FieldClicksHandler clicksHandler, 
                 ConfigsRetriever configsRetriever,
                 FieldConstructionProcessController constructionProcessController,
                 PlayerHandController playerHandController,
+                TowerPlacer towerPlacer,
                 MatchCommands matchCommands,
+
                 TowerManipulationWindowController towerManipulationWindowController,
                 TowerInfoWindowController towerInfoWindowController,
-                HexagonalFieldModel hexagonalFieldModel,
-                PathContainer pathContainer)
+                
+                ReactiveCommand<Hex2d> placeForTowerSelectedCommand)
             {
                 FieldModel = fieldModel;
                 ClicksHandler = clicksHandler;
                 ConfigsRetriever = configsRetriever;
                 ConstructionProcessController = constructionProcessController;
                 PlayerHandController = playerHandController;
+                TowerPlacer = towerPlacer;
                 MatchCommands = matchCommands;
                 
                 TowerManipulationWindowController = towerManipulationWindowController;
                 TowerInfoWindowController = towerInfoWindowController;
-                HexagonalFieldModel = hexagonalFieldModel;
-                PathContainer = pathContainer;
+
+                PlaceForTowerSelectedCommand = placeForTowerSelectedCommand;
             }
         }
-
+        
         private readonly Context _context;
 
         public FieldClicksDistributor(Context context)
         {
             _context = context;
             
-            //_context.MatchCommands.Incoming.ApplyBuildTower.Subscribe(ProcessBuild);
+            _context.MatchCommands.Incoming.ApplyBuildTower.Subscribe(ProcessBuild);
             _context.MatchCommands.Incoming.ApplyUpgradeTower.Subscribe(ProcessUpgrade);
             _context.MatchCommands.Incoming.ApplySellTower.Subscribe(ProcessSell);
+
+            _context.PlaceForTowerSelectedCommand.Subscribe(ProcessPreBuild);
         }
         
         public void OuterLogicUpdate(float frameLength)
         {
-            if (_context.ClicksHandler.ClickedCellsCount > 0)
+            if (_context.ClicksHandler?.ClickedCellsCount > 0)
             {
                 Hex2d clickedCell = _context.ClicksHandler.GetClickedCell();
 
                 DistributeClick(clickedCell);
+                return;
             }
+            
+            _context.TowerPlacer?.OuterLogicUpdate(frameLength);
         }
 
         private void DistributeClick(Hex2d clickedCell)
@@ -92,45 +98,18 @@ namespace Match.Commands
 
         private void ProcessPreBuild(Hex2d clickedHex)
         {
-            if(!_context.PlayerHandController.IsTowerChoice)
+            if (!_context.PlayerHandController.IsTowerChoice)
                 return;
             
-            if(_context.HexagonalFieldModel.CurrentFieldHexTypes.GetFieldHexType(clickedHex) != FieldHexType.Free)
-                return;
-            
-            TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(
-                _context.PlayerHandController.ChosenTowerType);
+            TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(_context.PlayerHandController.ChosenTowerType);
 
-            var isBlocker = _context.HexagonalFieldModel.GetHexIsBlocker(clickedHex);
-            if (isBlocker)
-            {
+            if (!_context.TowerPlacer.CanTowerBePlacedToHex(towerConfig, clickedHex))
                 return;
-            }
-            
-            var isRoad = _context.PathContainer.GetHexIsRoad(clickedHex);
-            switch (towerConfig.RegularParameters.PlacementType)
-            {
-                case TowerPlacementType.Anywhere:
-                    break;
-                case TowerPlacementType.NotRoad:
-                    if (isRoad)
-                    {
-                        return;
-                    }
-                    break;
-                case TowerPlacementType.OnRoad:
-                    if (!isRoad)
-                    {
-                        return;
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
 
-            if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >= towerConfig.TowerLevelConfigs[0].BuildPrice)
+            if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >=
+                towerConfig.TowerLevelConfigs[TowerConfigNew.FirstTowerLevel].BuildPrice)
                 _context.MatchCommands.Outgoing.RequestBuildTower.Fire(clickedHex, 
-                    new TowerShortParams(_context.PlayerHandController.ChosenTowerType, 1));
+                    new TowerShortParams(_context.PlayerHandController.ChosenTowerType, TowerConfigNew.FirstTowerLevel));
         }
 
         private void ProcessBuild(Hex2d position, TowerShortParams towerShortParams)
@@ -140,7 +119,7 @@ namespace Match.Commands
                 return;
             
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[0].BuildPrice);
+            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[TowerConfigNew.FirstTowerLevel].BuildPrice);
             _context.ConstructionProcessController.SetTowerBuilding(towerConfig, position);
         }
 
@@ -166,7 +145,9 @@ namespace Match.Commands
                 _context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value,
                 () =>
                 {
-                    if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >= towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice)
+                    // check if we can pay for the next level 
+                    if (_context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value >=
+                        towerConfig.TowerLevelConfigs[towerShortParams.NextLevel].BuildPrice)
                         _context.MatchCommands.Outgoing.RequestUpgradeTower.Fire(clickedHex, towerShortParams);
                 },
                 () =>
@@ -198,7 +179,7 @@ namespace Match.Commands
                 return;
 
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
-            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[towerShortParams.Level].BuildPrice);
+            _context.PlayerHandController.UseChosenTower(towerConfig.TowerLevelConfigs[towerShortParams.NextLevel].BuildPrice);
             _context.ConstructionProcessController.SetTowerUpgrading(towerInstance);
         }
 

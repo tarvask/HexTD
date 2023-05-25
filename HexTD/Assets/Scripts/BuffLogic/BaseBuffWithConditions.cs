@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace BuffLogic
 {
@@ -6,6 +7,7 @@ namespace BuffLogic
     {
         private readonly ABuffConditionsCollection _buffConditionsCollection;
 
+        private Action _onEnd;
         private int _priority;
         
         public int Priority => _priority;
@@ -57,6 +59,17 @@ namespace BuffLogic
                     Debug.LogError("Unknown type of BuffConditionsCollection");
                     return new BuffConditionOnceCollection();
             }
+        }
+
+        public void SubscribeOnEnd(Action onEnd)
+        {
+            _onEnd += onEnd;
+        }
+
+        public void Dispose()
+        {
+            _buffConditionsCollection?.Dispose();
+            _onEnd.Invoke();
         }
     }
 }

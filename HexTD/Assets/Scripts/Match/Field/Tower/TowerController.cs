@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HexSystem;
+using Match.Field.AttackEffect;
 using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.Shooting.TargetFinding;
@@ -56,8 +57,7 @@ namespace Match.Field.Tower
         private readonly TowerReactiveModel _reactiveModel;
         // effects that are applied to mobs after shot (firing, icing, slowing)
         
-        private TowerLevelConfig CurrentLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level - 1];
-        private TowerLevelConfig NextLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level];
+        private TowerLevelConfig CurrentLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level];
         public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
 
         public int Id => _context.Id;
@@ -72,6 +72,7 @@ namespace Match.Field.Tower
         public bool IsReadyToRelease => _stableModel.IsReadyToRelease;
         public bool IsReadyToDispose => _stableModel.IsReadyToDispose;
         public TowerType TowerType => _context.TowerConfig.RegularParameters.TowerType;
+        public byte MaxEnemyBlocked => _context.TowerConfig.RegularParameters.MaxEnemyBlocked;
         public Sprite Icon => _context.Icon;
 
         public TowerController(Context context)
@@ -136,10 +137,6 @@ namespace Match.Field.Tower
             float newHealth = _reactiveModel.Health.Value + heal;
             newHealth = Mathf.Clamp(newHealth, 0, _reactiveModel.MaxHealth.Value);
             _reactiveModel.SetHealth(newHealth);
-            
-#if UNITY_EDITOR
-            Debug.Log(newHealth);
-#endif
         }
 
         public override void Hurt(float damage)
@@ -157,11 +154,14 @@ namespace Match.Field.Tower
             if (!_shootModel.TryGetTowerAttack(out var towerAttack))
                 return false;
 
+            if (_shootModel.IsSplashAttackReady)
+                return true;
+            
             int targetId = targetFinder.GetTargetWithTacticInRange(
                 targetContainer.GetTargetsByPosition(towerAttack.AttackTargetType),
-                    _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType,
+                    towerAttack.AttackRangeType,
                     _context.TowerConfig.RegularParameters.TargetFindingTacticType, 
-                    HexPosition, towerAttack.AttackRadiusInHex,
+                    HexPosition, ((BaseSingleAttack)towerAttack).AttackRadiusInHex,
                     _context.TowerConfig.RegularParameters.PreferUnbuffedTargets);
                             
             _stableModel.SetTarget(targetId);
@@ -211,7 +211,7 @@ namespace Match.Field.Tower
             // }
             //
             // return Mathf.CeilToInt(sellPrice * 0.5f);
-            return towerLevels[towerLevel - 1].RefundPrice;
+            return towerLevels[towerLevel].RefundPrice;
         }
 
         public void SetRemoving()
@@ -231,8 +231,8 @@ namespace Match.Field.Tower
         {
             var hexes= _context.HexMapReachableService.GetInRangeMapByTargetFinderType(
                 HexPosition,
-                _context.TowerConfig.AttacksConfig.Attacks[0].AttackRadiusInHex,
-                _context.TowerConfig.RegularParameters.ReachableAttackTargetFinderType);
+                ((BaseSingleAttack)_context.TowerConfig.AttacksConfig.Attacks[0]).AttackRadiusInHex,
+                _context.TowerConfig.AttacksConfig.Attacks[0].AttackRangeType);
 
             _context.EnableHexesHighlightReactiveCommand.Execute(hexes);
         }

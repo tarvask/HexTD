@@ -29,10 +29,11 @@ namespace Match.Windows
             _context.View.CloseButton.onClick.AddListener(() => _context.QuitMatchEndedReactiveCommand.Execute());
         }
         
-        public void ShowWindow(bool isOurWin)
+        public void ShowWindow(MatchResultType matchResult)
         {
-            _context.View.WinGroup.SetActive(isOurWin);
-            _context.View.LoseGroup.SetActive(!isOurWin);
+            _context.View.WinGroup.SetActive(matchResult == MatchResultType.Win);
+            _context.View.LoseGroup.SetActive(matchResult == MatchResultType.Lose);
+            _context.View.DrawGroup.SetActive(matchResult == MatchResultType.Draw);
             
             base.ShowWindow();
         }

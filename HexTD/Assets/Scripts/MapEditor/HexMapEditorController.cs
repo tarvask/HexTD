@@ -104,22 +104,6 @@ namespace MapEditor
             }
         }
 
-        private static bool IsHexInHexRect(Hex2d hex, Hex2d min, Hex2d max)
-        {
-            Hex2d size = max - min;
-            Hex2d point = hex - min;
-
-            if (point.Q >= -Mathf.FloorToInt(point.R * 0.5f)
-                && point.Q < size.Q - Mathf.FloorToInt(point.R * 0.5f)
-                && point.R >= 0
-                && point.R < size.R)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         public void RmbClickHandle(Hex2d hex2d)
         {
             HexModel hexModel = _hexGridModel.GetHexModel(hex2d);
@@ -141,12 +125,31 @@ namespace MapEditor
 
             if (Input.GetKeyDown(KeyCode.B))
             {
-                var isHexBlocker = _hexGridModel.GetHexIsBlocker(hex);
-                _hexGridModel.SetHexIsBlocker(hex, !isHexBlocker);
+                if (_hexGridModel.HasHex(hex))
+                {
+                    var isHexBlocker = _hexGridModel.GetHexIsBlocker(hex);
+                    _hexGridModel.SetHexIsBlocker(hex, !isHexBlocker);
+                }
             }
             
             if (Input.GetKeyDown(KeyCode.P) && Input.GetKey(KeyCode.LeftControl)) 
                 _hexGridModel.Clear();
+        }
+        
+        private static bool IsHexInHexRect(Hex2d hex, Hex2d min, Hex2d max)
+        {
+            Hex2d size = max - min;
+            Hex2d point = hex - min;
+
+            if (point.Q >= -Mathf.FloorToInt(point.R * 0.5f)
+                && point.Q < size.Q - Mathf.FloorToInt(point.R * 0.5f)
+                && point.R >= 0
+                && point.R < size.R)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

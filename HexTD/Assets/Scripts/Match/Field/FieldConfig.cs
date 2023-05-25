@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using Configs;
 using Match.Field.Mob;
-using Match.Field.Tower;
 using Match.Field.Tower.TowerConfigs;
 using UnityEngine;
 
@@ -11,10 +10,6 @@ namespace Match.Field
     public class FieldConfig : ScriptableObject
     {
         [SerializeField] private int castleHealth;
-        [SerializeField] private float energyRestoreDelay;
-        [SerializeField] private int energyRestoreValue;
-        [SerializeField] private int maxEnergy;
-        [SerializeField] private byte maxOverlappingWaves;
         [SerializeField] private bool removeMobsOnBossAppearing;
 
         [Header("Delays and durations")]
@@ -34,11 +29,10 @@ namespace Match.Field
         [Header("Mobs")]
         [SerializeField] private MobsConfig mobsConfig;
 
+        [Header("Levels")]
+        [SerializeField] private MatchesConfig levelsConfig;
+
         public int CastleHealth => castleHealth;
-        public float EnergyRestoreDelay => energyRestoreDelay;
-        public int EnergyRestoreValue => energyRestoreValue;
-        public int MaxEnergy => maxEnergy;
-        public byte MaxOverlappingWaves => maxOverlappingWaves;
         public bool RemoveMobsOnBossAppearing => removeMobsOnBossAppearing;
 
         // delays and duration
@@ -57,5 +51,8 @@ namespace Match.Field
         
         // mobs
         public MobsConfig MobsConfig => mobsConfig;
+        
+        // levels
+        public MatchesConfig LevelsConfig => levelsConfig;
     }
 }

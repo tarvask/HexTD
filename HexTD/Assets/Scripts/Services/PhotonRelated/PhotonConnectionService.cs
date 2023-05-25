@@ -4,16 +4,16 @@ using UnityEngine;
 
 namespace Services.PhotonRelated
 {
-	public class PhotonConnectionService: PhotonConnectionServiceBase
+	public class PhotonConnectionService : PhotonConnectionServiceBase
 	{
         /// <summary>Used as PhotonNetwork.GameVersion.</summary>
-        public byte Version = 1;
+        private readonly byte _version = 1;
 
 		/// <summary>Max number of players allowed in room. Once full, a new room will be created by the next connection attemping to join.</summary>
 		[Tooltip("The max number of players allowed in room. Once full, a new room will be created by the next connection attemping to join.")]
-		public byte MaxPlayers = 2;
+        private readonly byte _maxPlayers = 2;
 
-        public int playerTTL = -1;
+        private readonly int _playerTTL = -1;
 
         public bool IsConnectedToRoom { get; private set; }= false;
 
@@ -23,7 +23,7 @@ namespace Services.PhotonRelated
 
             
             PhotonNetwork.ConnectUsingSettings();
-            PhotonNetwork.GameVersion = this.Version + "." + SceneManagerHelper.ActiveSceneBuildIndex;
+            PhotonNetwork.GameVersion = this._version + "." + SceneManagerHelper.ActiveSceneBuildIndex;
 
             return this;
         }
@@ -37,7 +37,7 @@ namespace Services.PhotonRelated
         {
             Debug.Log("OnConnectedToMaster() was called by PUN. This client is now connected to Master Server in region [" + PhotonNetwork.CloudRegion +
                 "] and can join a room. Calling: PhotonNetwork.JoinRandomRoom();");
-            PhotonNetwork.JoinRandomRoom();
+            PhotonNetwork.JoinLobby();
         }
 
         public override void OnJoinedLobby()
@@ -48,13 +48,27 @@ namespace Services.PhotonRelated
 
         public override void OnJoinRandomFailed(short returnCode, string message)
         {
-            Debug.Log("OnJoinRandomFailed() was called by PUN. No random room available in region [" + PhotonNetwork.CloudRegion + "], so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = 4}, null);");
+            Debug.Log($"OnJoinRandomFailed() was called by PUN. No random room available in region [" + PhotonNetwork.CloudRegion + "]," +
+                      "so we create one. Calling: PhotonNetwork.CreateRoom(null, new RoomOptions() {maxPlayers = {" + _maxPlayers + "}}, null);");
 
-            RoomOptions roomOptions = new RoomOptions() { MaxPlayers = this.MaxPlayers };
-            if (playerTTL >= 0)
-                roomOptions.PlayerTtl = playerTTL;
+            RoomOptions roomOptions = new RoomOptions() { MaxPlayers = this._maxPlayers };
+            if (_playerTTL >= 0)
+                roomOptions.PlayerTtl = _playerTTL;
+            
+            roomOptions.IsOpen = true; // to let others join till its open to join
+            roomOptions.IsVisible = true; // to list room created room in lobby for callback function
 
             PhotonNetwork.CreateRoom(null, roomOptions, null);
+        }
+        
+        public override void OnCreatedRoom()
+        {
+            Debug.Log("OnCreatedRoom()");
+        }
+        
+        public override void OnCreateRoomFailed(short returnCode, string message)
+        {
+            Debug.Log("OnCreateRoomFailed() with code" + returnCode + ", " + message);
         }
         
         public override void OnJoinedRoom()

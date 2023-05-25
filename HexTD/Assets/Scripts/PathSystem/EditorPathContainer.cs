@@ -10,16 +10,16 @@ namespace PathSystem
         {
         }
 
-        public bool TryAddPath(string name)
+        public bool TryAddPath(byte pathId)
         {
-            var path = new PathEditorData(name);
-            return Paths.TryAdd(name, path);
+            var path = new PathEditorData(pathId);
+            return Paths.TryAdd(pathId, path);
         }
 
         public void AddPath(PathData.SavePathData pathData)
         {
             var pathEditor = new PathEditorData(pathData);
-            Paths.Add(pathData.Name, pathEditor);
+            Paths.Add(pathData.PathId, pathEditor);
         }
 
         public List<PathData.SavePathData> GetPathsForSave()
@@ -38,9 +38,9 @@ namespace PathSystem
             Paths.Clear();
         }
 
-        public bool TryRemove(string name)
+        public bool TryRemove(byte pathId)
         {
-            bool result = Paths.Remove(name, out var pathEditorData);
+            bool result = Paths.Remove(pathId, out var pathEditorData);
             
             if (result)
                 pathEditorData.Dispose();
@@ -48,25 +48,35 @@ namespace PathSystem
             return result;
         }
 
-        public void ChangeName(string oldName, string newName)
+        public void ChangeName(byte oldPathId, byte newPathId)
         {
-            Paths.Remove(oldName, out var pathData);
-            pathData.SetName(newName);
-            Paths.Add(newName, pathData);
+            Paths.Remove(oldPathId, out var pathData);
+            pathData.SetPathId(newPathId);
+            Paths.Add(newPathId, pathData);
         }
 
-        public string GetFirstName()
+        public void GetNames(List<byte> pathIds)
+        {
+            pathIds.Clear();
+            foreach (var path in Paths)
+            {
+                pathIds.Add(path.Key);
+            }
+        }
+
+        public byte GetFirstName()
         {
             if(Paths.Keys.Count < 1)
-                return String.Empty;
+                return Byte.MaxValue;
             
             return Paths.Keys.Last();
         }
 
-        public string GetLastName()
+        public byte GetLastName()
         {
             if(Paths.Keys.Count < 1)
-                return String.Empty;
+                return Byte.MaxValue;
+
             
             return Paths.Keys.Last();
         }

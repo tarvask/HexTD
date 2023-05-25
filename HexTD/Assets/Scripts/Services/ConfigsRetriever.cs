@@ -1,4 +1,5 @@
 using MapEditor;
+using Match;
 using Match.Field;
 using Match.Field.Mob;
 using Match.Field.Tower;
@@ -25,6 +26,9 @@ namespace Services
         {
             _context = context;
 
+            MatchesConfigRetriever.Context levelConfigRetrieverContext =
+                new MatchesConfigRetriever.Context(_context.FieldConfig.LevelsConfig);
+            _levelConfigRetriever = AddDisposable(new MatchesConfigRetriever(levelConfigRetrieverContext));
             FieldConfigCellsRetriever.Context fieldConfigCellsRetrieverContext =
                 new FieldConfigCellsRetriever.Context(_context.FieldConfig);
             _fieldConfigCellsRetriever = AddDisposable(new FieldConfigCellsRetriever(fieldConfigCellsRetrieverContext));
@@ -37,6 +41,8 @@ namespace Services
         }
 
         private readonly Context _context;
+
+        private readonly MatchesConfigRetriever _levelConfigRetriever;
         private readonly FieldConfigCellsRetriever _fieldConfigCellsRetriever;
         private readonly TowerConfigRetriever _towerConfigRetriever;
         private readonly MobConfigRetriever _mobConfigRetriever;
@@ -54,6 +60,11 @@ namespace Services
         public MobConfig GetMobById(byte mobId)
         {
             return _mobConfigRetriever.GetMobById(mobId);
+        }
+
+        public MatchConfig GetLevelById(byte levelId)
+        {
+            return _levelConfigRetriever.GetLevelById(levelId);
         }
     }
 }

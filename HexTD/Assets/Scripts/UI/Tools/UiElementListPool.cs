@@ -17,9 +17,9 @@ namespace UI.Tools
             }
             else
             {
-                foreach (GameObject child in rootTransform)
+                foreach (Transform child in rootTransform)
                 {
-                    Object.Destroy(child);
+                    Object.Destroy(child.gameObject);
                 }
             }
 

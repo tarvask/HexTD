@@ -18,22 +18,22 @@ namespace Match.Field.Tower
         }
 
         private readonly Context _context;
-        private readonly Dictionary<int, TowerConfigNew> _towersByIds;
+        private readonly Dictionary<byte, TowerConfigNew> _towersByIds;
         
         public TowerConfigRetriever(Context context)
         {
             _context = context;
-            _towersByIds = new Dictionary<int, TowerConfigNew>(_context.TowersConfig.Towers.Count);
+            _towersByIds = new Dictionary<byte, TowerConfigNew>(_context.TowersConfig.Towers.Count);
 
             foreach (TowerConfigNew towerConfig in _context.TowersConfig.Towers)
             {
-                _towersByIds.Add((int)towerConfig.RegularParameters.TowerType, towerConfig);
+                _towersByIds.Add((byte)towerConfig.RegularParameters.TowerType, towerConfig);
             }
         }
         
         public TowerConfigNew GetTowerByType(TowerType towerType)
         {
-            if (_towersByIds.TryGetValue((int) towerType, out TowerConfigNew towerConfig))
+            if (_towersByIds.TryGetValue((byte)towerType, out TowerConfigNew towerConfig))
                 return towerConfig;
             
             throw new ArgumentException("Unknown or undefined tower type");

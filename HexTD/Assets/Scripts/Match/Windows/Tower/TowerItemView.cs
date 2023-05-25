@@ -26,12 +26,12 @@ namespace Match.Windows.Tower
 
         public void Init(TowerConfigNew config, Action onBuyButtonClickAction)
         {
-            Init(config, config.TowerLevelConfigs[0].BuildPrice, onBuyButtonClickAction);
+            Init(config, config.TowerLevelConfigs[TowerConfigNew.FirstTowerLevel].BuildPrice, onBuyButtonClickAction);
         }
 
         public void Init(TowerConfigNew config, int price, Action onBuyButtonClickAction)
         {
-            _towerShortParams = new TowerShortParams(config.RegularParameters.TowerType, 1);
+            _towerShortParams = new TowerShortParams(config.RegularParameters.TowerType, TowerConfigNew.FirstTowerLevel);
             _towerPriceInCoins = price;
             
             towerNameLabel.text = config.RegularParameters.TowerName;

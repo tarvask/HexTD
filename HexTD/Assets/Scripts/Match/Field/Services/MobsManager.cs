@@ -71,6 +71,7 @@ namespace Match.Field.Services
         public void RemoveMob(MobController mobController)
         {
             _mobsContainer.RemoveMob(mobController);
+            _context.RemoveMobReactiveCommand.Execute(mobController);
         }
         
         public void OuterLogicUpdate(float frameLength)
@@ -203,7 +204,10 @@ namespace Match.Field.Services
             foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
                 if (mobPair.Value.IsBoss) continue;
-                _dyingMobs.Add(mobPair.Value);
+                
+                // hurt alive mobs to death
+                if (mobPair.Value.Health.Value > 0)
+                    mobPair.Value.Hurt(mobPair.Value.Health.Value);
             }
         }
 

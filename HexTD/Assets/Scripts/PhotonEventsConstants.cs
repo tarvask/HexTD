@@ -6,6 +6,8 @@ public static class PhotonEventsConstants
     {
         public const byte SyncMatchConfigOnStartEventId = 0;
 
+        public const string MatchConfigLevelIdParam = "levelId";
+
         public const string MatchConfigWavesCount = "wavesCount";
         public const string MatchConfigWaveParam = "wave";
         
@@ -16,7 +18,10 @@ public static class PhotonEventsConstants
         public const string MatchConfigPathFieldParam = "matchConfighPathField";
         
         public const string MatchStartCoinsParam = "coins";
-        public const string MatchStartEnergyParam = "energy";
+        public const string MatchStartEnergyParam = "energyStart";
+        public const string MatchMaxEnergyParam = "energyMax";
+        public const string MatchRestoreEnergyDelay = "restoreDelay";
+        public const string MatchRestoreEnergyValue = "restoreValue";
         public const string MatchConfigRolesAndUsers = "rolesAndUsers";
         public const string MatchConfigHandTowersParam = "matchConfigHandTowers";
         public const string RandomSeed = "randomSeed";
@@ -34,12 +39,12 @@ public static class PhotonEventsConstants
         
         public static class WaveStrictOrder
         {
-            public const string SizeParam = "size";
             public const string DurationParam = "duration";
             public const string PauseBeforeWaveParam = "planningPause";
+            public const string WaveDelayParam = "waveDelay";
+            public const string PathIdParam = "pathid";
             public const string MobsIdsParam = "mobsIds";
             public const string MobsDelaysParam = "mobsCounts";
-            public const string MobsPathsParam = "mobsPaths";
         }
 
         public static class HexStateParam
@@ -83,6 +88,7 @@ public static class PhotonEventsConstants
             public const string StateParam = "state";
             public const string TargetPauseDurationParam = "targetPause";
             public const string CurrentPauseDurationParam = "currentPause";
+            public const string SpawnTimerParam = "spawnTimer";
             public const string Player1WavesParam = "player1Waves";
             public const string Player2WavesParam = "player2Waves";
 
@@ -171,6 +177,7 @@ public static class PhotonEventsConstants
                 public const string PathIdParam = "path";
                 public const string NextWaypointParam = "waypoint";
                 public const string CurrentHealthParam = "curHealth";
+                public const string BlockerIdParam = "blockerid";
             }
                 
             // projectiles

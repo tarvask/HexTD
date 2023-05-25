@@ -21,6 +21,7 @@ namespace Match
         private ServerCommandsProcessor _serverCommandsProcessor;
         private ReactiveCommand _rollbackStateReactiveCommand;
         private Action _onQuitGameAction;
+        private Action _onMatchEndAction;
         
         private float _currentEngineFrameTimestamp;
         private bool _isInited;
@@ -44,7 +45,7 @@ namespace Match
             Application.targetFrameRate = 60;
         }
 
-        public void Init(MatchInitDataParameters matchShortParameters, IEventBus eventBus,
+        public void Init(MatchInitDataParameters matchInitDataParameters, IEventBus eventBus,
             IReadOnlyReactiveProperty<ProcessRoles> currentProcessGameRoleReactiveProperty,
             IReadOnlyReactiveProperty<NetworkRoles> currentProcessNetworkRoleReactiveProperty,
             IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
@@ -69,12 +70,12 @@ namespace Match
             _rollbackStateReactiveCommand = new ReactiveCommand();
             
             MatchView matchView = Instantiate(matchPrefab, Vector3.zero, Quaternion.identity, transform);
-            MatchController.Context matchControllerContext = new MatchController.Context(matchView, matchShortParameters, matchView.FieldConfig,
+            MatchController.Context matchControllerContext = new MatchController.Context(matchView, matchInitDataParameters, matchView.FieldConfig,
                 matchCommandsEnemy, matchCommandsOur, matchCommonCommands,
                 CurrentEngineFrameReactiveProperty, quitMatchReactiveCommand, syncFrameCounterCommand,
                 currentProcessGameRoleReactiveProperty, currentProcessNetworkRoleReactiveProperty, isConnectedReactiveProperty,
                 _rollbackStateReactiveCommand,
-                onMatchEndAction, isMultiPlayerGame,
+                isMultiPlayerGame,
                 _newWindowsManager);
             _matchController = new MatchController(matchControllerContext);
 
@@ -93,6 +94,7 @@ namespace Match
             quitMatchReactiveCommand.Subscribe((Unit unit) => QuitMatch());
             syncFrameCounterCommand.Subscribe(SyncFrameCounter);
             _onQuitGameAction = onQuitGameAction;
+            _onMatchEndAction = onMatchEndAction;
 
             CurrentEngineFrameReactiveProperty.Value = 0;
             _currentEngineFrameTimestamp = Time.time;
@@ -132,6 +134,7 @@ namespace Match
         private void QuitMatch()
         {
             _matchController.Dispose();
+            _onMatchEndAction();
             _onQuitGameAction();
         }
 

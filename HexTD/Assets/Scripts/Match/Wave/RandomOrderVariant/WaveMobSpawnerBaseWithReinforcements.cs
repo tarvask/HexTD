@@ -26,7 +26,6 @@ namespace Match.Wave
             public ReactiveCommand<float> MatchStartedReactiveCommand { get; }
             public ReactiveCommand<float> WaveStartedReactiveCommand { get; }
             public ReactiveCommand WaveEndedReactiveCommand { get; }
-            public ReactiveCommand<float> ArtifactChoosingStartedReactiveCommand { get; }
             public ReactiveCommand<float> BetweenWavesPlanningStartedReactiveCommand { get; }
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
             public ReactiveCommand<MobSpawnParameters> SpawnPlayer1MobReactiveCommand { get; }
@@ -47,7 +46,6 @@ namespace Match.Wave
                 ReactiveCommand<float> matchStartedReactiveCommand,
                 ReactiveCommand<float> waveStartedReactiveCommand,
                 ReactiveCommand waveEndedReactiveCommand,
-                ReactiveCommand<float> artifactChoosingStartedReactiveCommand,
                 ReactiveCommand<float> betweenWavesPlanningStartedReactiveCommand,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
                 ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand,
@@ -67,7 +65,6 @@ namespace Match.Wave
                 MatchStartedReactiveCommand = matchStartedReactiveCommand;
                 WaveStartedReactiveCommand = waveStartedReactiveCommand;
                 WaveEndedReactiveCommand = waveEndedReactiveCommand;
-                ArtifactChoosingStartedReactiveCommand = artifactChoosingStartedReactiveCommand;
                 BetweenWavesPlanningStartedReactiveCommand = betweenWavesPlanningStartedReactiveCommand;
                 WaveNumberChangedReactiveCommand = waveNumberChangedReactiveCommand;
                 SpawnPlayer1MobReactiveCommand = spawnPlayer1MobReactiveCommand;
@@ -76,7 +73,8 @@ namespace Match.Wave
                 HasMobsOnOurField = hasMobsOnOurField;
             }
         }
-        
+
+        private const byte MaxOverlappingWaves = 2;
         protected readonly Context _context;
         private int _currentWaveNumber;
         private WaveStateType _state;
@@ -94,8 +92,8 @@ namespace Match.Wave
             
             RoleSpecialConstructorActions();
             _currentWaveNumber = -1;
-            _currentPlayer1Waves = new Queue<WaveMobsQueue>(_context.FieldConfig.MaxOverlappingWaves);
-            _currentPlayer2Waves = new Queue<WaveMobsQueue>(_context.FieldConfig.MaxOverlappingWaves);
+            _currentPlayer1Waves = new Queue<WaveMobsQueue>(MaxOverlappingWaves);
+            _currentPlayer2Waves = new Queue<WaveMobsQueue>(MaxOverlappingWaves);
             SetState(WaveStateType.Loading);
             _context.MatchStartedReactiveCommand.Execute(_context.FieldConfig.MatchInfoShowDuration);
         }
@@ -160,7 +158,7 @@ namespace Match.Wave
             
             return new WavesState(_currentWaveNumber, _state,
                 // convert from float to int in milliseconds
-                (int)(_targetPauseDuration * 1000), (int) (_currentPauseDuration * 1000),
+                (int)(_targetPauseDuration * 1000), (int) (_currentPauseDuration * 1000), 0,
                 ref player1Waves, ref player2Waves);
         }
 
@@ -173,9 +171,6 @@ namespace Match.Wave
                     break;
                 case WaveStateType.BetweenWavesTechnicalPause:
                     UpdateInTechnicalPause(frameLength);
-                    break;
-                case WaveStateType.ArtifactChoosing:
-                    UpdateInArtifactChoosing(frameLength);
                     break;
                 case WaveStateType.BetweenWavesPlanning:
                     UpdateInBetweenWavesPlanning(frameLength);
@@ -212,17 +207,6 @@ namespace Match.Wave
             {
                 SetState(WaveStateType.Spawning);
                 _context.WaveStartedReactiveCommand.Execute(_context.FieldConfig.WaveInfoShowDuration);
-                _currentPauseDuration = 0;
-            }
-        }
-
-        private void UpdateInArtifactChoosing(float frameLength)
-        {
-            _currentPauseDuration += frameLength;
-
-            if (_currentPauseDuration >= _context.FieldConfig.TargetArtifactChoosingDuration)
-            {
-                SetState(WaveStateType.BetweenWavesPlanning);
                 _currentPauseDuration = 0;
             }
         }

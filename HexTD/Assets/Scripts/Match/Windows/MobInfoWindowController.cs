@@ -35,12 +35,11 @@ namespace Match.Windows
             _onCloseWindowClickAction = onCloseWindowClickedHandler;
 
             _context.View.MobNameText.text = $"";
-            _context.View.MobPowerText.text = $"{mobParameters.PowerType}";
             _context.View.MobIcon.sprite = mobIcon;
             
             _context.View.MobHealthText.text = $"{mobParameters.HealthPoints}";;
             _context.View.MobAttackPowerText.text = $"{mobParameters.AttackPower}";
-            _context.View.MobAttackRateText.text = $"{(1f / mobParameters.ReloadTime):F2} / sec";
+            _context.View.MobAttackRateText.text = $"{(1f / (mobParameters.Cooldown + mobParameters.Delay)):F2} / sec";
             _context.View.MobSpeedText.text = $"{mobParameters.Speed}";
 
             base.ShowWindow();

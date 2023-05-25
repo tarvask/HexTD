@@ -20,19 +20,16 @@ namespace Match.Wave
             public MatchCommands.IncomingCommands Player1IncomingCommands { get; }
             public MatchCommands.IncomingCommands Player2IncomingCommands { get; }
             public MatchCommonCommands.ServerCommands ServerCommands { get; }
-            public WaveParametersStrict[] Waves { get; }
+            public WaveWithDelayAndPath[] Waves { get; }
             public bool IsMultiPlayer { get; }
 
             public ReactiveCommand<float> MatchStartedReactiveCommand { get; }
             public ReactiveCommand<float> WaveStartedReactiveCommand { get; }
             public ReactiveCommand WaveEndedReactiveCommand { get; }
-            public ReactiveCommand<float> ArtifactChoosingStartedReactiveCommand { get; }
             public ReactiveCommand<float> BetweenWavesPlanningStartedReactiveCommand { get; }
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
             public ReactiveCommand<MobSpawnParameters> SpawnPlayer1MobReactiveCommand { get; }
             public ReactiveCommand<MobSpawnParameters> SpawnPlayer2MobReactiveCommand { get; }
-            public IReadOnlyReactiveProperty<bool> HasMobsOnEnemyField { get; }
-            public IReadOnlyReactiveProperty<bool> HasMobsOnOurField { get; }
 
             public Context(
                 ConfigsRetriever configsRetriever,
@@ -41,19 +38,16 @@ namespace Match.Wave
                 MatchCommands.IncomingCommands player1IncomingCommands,
                 MatchCommands.IncomingCommands player2IncomingCommands,
                 MatchCommonCommands.ServerCommands serverCommands,
-                WaveParametersStrict[] waves,
+                WaveWithDelayAndPath[] waves,
                 bool isMultiPlayer,
 
                 ReactiveCommand<float> matchStartedReactiveCommand,
                 ReactiveCommand<float> waveStartedReactiveCommand,
                 ReactiveCommand waveEndedReactiveCommand,
-                ReactiveCommand<float> artifactChoosingStartedReactiveCommand,
                 ReactiveCommand<float> betweenWavesPlanningStartedReactiveCommand,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
                 ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand,
-                ReactiveCommand<MobSpawnParameters> spawnPlayer2MobReactiveCommand,
-                IReadOnlyReactiveProperty<bool> hasMobsOnEnemyField,
-                IReadOnlyReactiveProperty<bool> hasMobsOnOurField)
+                ReactiveCommand<MobSpawnParameters> spawnPlayer2MobReactiveCommand)
             {
                 ConfigsRetriever = configsRetriever;
                 FieldConfig = fieldConfig;
@@ -67,21 +61,20 @@ namespace Match.Wave
                 MatchStartedReactiveCommand = matchStartedReactiveCommand;
                 WaveStartedReactiveCommand = waveStartedReactiveCommand;
                 WaveEndedReactiveCommand = waveEndedReactiveCommand;
-                ArtifactChoosingStartedReactiveCommand = artifactChoosingStartedReactiveCommand;
                 BetweenWavesPlanningStartedReactiveCommand = betweenWavesPlanningStartedReactiveCommand;
                 WaveNumberChangedReactiveCommand = waveNumberChangedReactiveCommand;
                 SpawnPlayer1MobReactiveCommand = spawnPlayer1MobReactiveCommand;
                 SpawnPlayer2MobReactiveCommand = spawnPlayer2MobReactiveCommand;
-                HasMobsOnEnemyField = hasMobsOnEnemyField;
-                HasMobsOnOurField = hasMobsOnOurField;
             }
         }
         
+        private const byte MaxOverlappingWaves = 6;
         protected readonly Context _context;
         private int _currentWaveNumber;
         private WaveStateType _state;
         private float _targetPauseDuration;
         private float _currentPauseDuration;
+        private float _spawnTimer;
 
         private readonly Queue<WaveMobsQueue> _currentPlayer1Waves;
         private readonly Queue<WaveMobsQueue> _currentPlayer2Waves;
@@ -94,8 +87,8 @@ namespace Match.Wave
             
             RoleSpecialConstructorActions();
             _currentWaveNumber = -1;
-            _currentPlayer1Waves = new Queue<WaveMobsQueue>(_context.FieldConfig.MaxOverlappingWaves);
-            _currentPlayer2Waves = new Queue<WaveMobsQueue>(_context.FieldConfig.MaxOverlappingWaves);
+            _currentPlayer1Waves = new Queue<WaveMobsQueue>(MaxOverlappingWaves);
+            _currentPlayer2Waves = new Queue<WaveMobsQueue>(MaxOverlappingWaves);
             SetState(WaveStateType.Loading);
             _context.MatchStartedReactiveCommand.Execute(_context.FieldConfig.MatchInfoShowDuration);
         }
@@ -114,6 +107,7 @@ namespace Match.Wave
             // convert from int in milliseconds to float
             _targetPauseDuration = wavesState.TargetPauseDuration * 0.001f;
             _currentPauseDuration = wavesState.CurrentPauseDuration * 0.001f;
+            _spawnTimer = wavesState.SpawnTimer * 0.001f;
 
             // player 1 waves
             foreach (WaveMobsQueue mobsQueue in _currentPlayer1Waves)
@@ -160,7 +154,9 @@ namespace Match.Wave
             
             return new WavesState(_currentWaveNumber, _state,
                 // convert from float to int in milliseconds
-                (int)(_targetPauseDuration * 1000), (int) (_currentPauseDuration * 1000),
+                (int)(_targetPauseDuration * 1000),
+                (int) (_currentPauseDuration * 1000),
+                (int)(_spawnTimer * 1000),
                 ref player1Waves, ref player2Waves);
         }
 
@@ -169,13 +165,10 @@ namespace Match.Wave
             switch (_state)
             {
                 case WaveStateType.Loading:
-                    UpdateInLoading();
+                    UpdateInLoading(frameLength);
                     break;
                 case WaveStateType.BetweenWavesTechnicalPause:
                     UpdateInTechnicalPause(frameLength);
-                    break;
-                case WaveStateType.ArtifactChoosing:
-                    UpdateInArtifactChoosing(frameLength);
                     break;
                 case WaveStateType.BetweenWavesPlanning:
                     UpdateInBetweenWavesPlanning(frameLength);
@@ -188,9 +181,15 @@ namespace Match.Wave
             }
         }
 
-        private void UpdateInLoading()
+        private void UpdateInLoading(float frameLength)
         {
-            NextWave();
+            _spawnTimer += frameLength;
+            
+            if (IsTimeForNextWave(_spawnTimer, _currentWaveNumber))
+            {
+                NextWave();
+                _currentPauseDuration = 0;
+            }
         }
 
         private void UpdateInTechnicalPause(float frameLength)
@@ -216,38 +215,26 @@ namespace Match.Wave
             }
         }
 
-        private void UpdateInArtifactChoosing(float frameLength)
-        {
-            _currentPauseDuration += frameLength;
-
-            if (_currentPauseDuration >= _context.FieldConfig.TargetArtifactChoosingDuration)
-            {
-                SetState(WaveStateType.BetweenWavesPlanning);
-                _currentPauseDuration = 0;
-            }
-        }
-
         private void UpdateInSpawning(float frameLength)
         {
+            _spawnTimer += frameLength;
+            
             if (_currentPlayer1Waves.Count == 0 && _currentPlayer2Waves.Count == 0)
                 return;
 
-            bool callNextWave = UpdateCurrentWaves(_currentPlayer1Waves, _context.SpawnPlayer1MobReactiveCommand, frameLength);
-            callNextWave &= UpdateCurrentWaves(_currentPlayer2Waves, _context.SpawnPlayer2MobReactiveCommand, frameLength, _context.IsMultiPlayer);
+            UpdateCurrentWaves(_currentPlayer1Waves, _context.SpawnPlayer1MobReactiveCommand, frameLength);
+            UpdateCurrentWaves(_currentPlayer2Waves, _context.SpawnPlayer2MobReactiveCommand, frameLength, _context.IsMultiPlayer);
             
-            if (callNextWave)
+            if (IsTimeForNextWave(_spawnTimer, _currentWaveNumber))
             {
                 _context.WaveEndedReactiveCommand.Execute();
                 SetState(WaveStateType.BetweenWavesTechnicalPause);
             }
         }
         
-        private bool UpdateCurrentWaves(Queue<WaveMobsQueue> currentWaves,
+        private void UpdateCurrentWaves(Queue<WaveMobsQueue> currentWaves,
             ReactiveCommand<MobSpawnParameters> spawnPlayerMobReactiveCommand, float frameLength, bool canSpawnForPlayer = true)
         {
-            int activeWaveIndex = 0;
-            bool callNextWave = false;
-            
             foreach (WaveMobsQueue waveMobsQueue in currentWaves)
             {
                 waveMobsQueue.OuterLogicUpdate(frameLength);
@@ -256,21 +243,7 @@ namespace Match.Wave
                 {
                     Spawn(waveMobsQueue.GetNextElement(), spawnPlayerMobReactiveCommand, canSpawnForPlayer);
                 }
-                
-                // last spawning wave
-                // time ended or all mobs spawned and killed
-                if (activeWaveIndex == currentWaves.Count - 1
-                    && (!waveMobsQueue.HasTimeLeft
-                        ||
-                        !waveMobsQueue.HasMoreMobs && !_context.HasMobsOnEnemyField.Value && !_context.HasMobsOnOurField.Value))
-                {
-                    callNextWave = true;
-                }
-
-                activeWaveIndex++;
             }
-            
-            return callNextWave;
         }
 
         protected abstract void NextWave();
@@ -279,7 +252,7 @@ namespace Match.Wave
         protected void StartWave(BuiltWaveParams builtWaveParams, int randomSeed)
         {
             Randomizer.InitState(randomSeed);
-            _currentWaveNumber = _currentWaveNumber + 1;
+            _currentWaveNumber += 1;
             _targetPauseDuration = builtWaveParams.PauseBeforeWave;
             
             _currentPlayer1Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player1MobsWithDelaysAndPaths, builtWaveParams.Duration));
@@ -297,6 +270,15 @@ namespace Match.Wave
             if (canSpawn)
                 spawnPlayerMobReactiveCommand.Execute(new MobSpawnParameters(
                     _context.ConfigsRetriever.GetMobById(mobWithPath.MobId), mobWithPath.PathId));
+        }
+
+        private bool IsTimeForNextWave(float spawnTimer, int currentWaveNumber)
+        {
+            // no more new waves
+            if (currentWaveNumber + 1 > _context.Waves.Length - 1)
+                return false;
+
+            return _context.Waves[currentWaveNumber + 1].WaveDelay <= spawnTimer;
         }
 
         protected override void OnDispose()

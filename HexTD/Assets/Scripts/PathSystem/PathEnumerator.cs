@@ -17,7 +17,8 @@ namespace PathSystem
         public Hex2d Current => _currentNode?.Value ?? new Hex2d();
         object IEnumerator.Current => Current;
         public byte CurrentPointIndex => _currentPointIndex;
-        public float PathLength { get; }
+        public float PathLength => _pathLength;
+        public bool IsEmpty => _points.First == null;
 
         public PathEnumerator(LinkedList<Hex2d> points, float pathLength)
         {

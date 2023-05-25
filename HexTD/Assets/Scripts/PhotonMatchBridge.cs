@@ -153,16 +153,18 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             
         PlayerHandParams playerHand = LoadPlayerHand();
 
-        int levelIndexToPlay = Mathf.Clamp(PlayerPrefs.GetInt("Level", 0), 0, levelsConfig.Levels.Length - 1);
+        byte levelIdToPlay = (byte)Mathf.Clamp(PlayerPrefs.GetInt("Level", 1), 1, byte.MaxValue);
 
-        MapLoader loader = new MapLoader();
-        LevelMapModel mapModel = await loader.LoadDefaultMap();
-
-        MatchInitDataParameters matchParameters = new MatchInitDataParameters(mapModel.HexModels.ToArray(), 
-            mapModel.PathDatas.ToArray(),
-            levelsConfig.Levels[levelIndexToPlay].Waves, 
+        MatchInitDataParameters matchParameters = new MatchInitDataParameters(
+            levelIdToPlay,
+            // mapModel.HexModels.ToArray(),
+            // mapModel.PathDatas.ToArray(),
+            // levelsConfig.Levels[levelIdToPlay].Waves, 
             //levelsConfig.Levels[levelIndexToPlay].CoinsCount,
-            levelsConfig.Levels[levelIndexToPlay].EnergyStartCount,
+            // levelsConfig.Levels[levelIdToPlay].EnergyStartCount,
+            // MatchConfig.EnergyMaxCount,
+            // levelsConfig.Levels[levelIdToPlay].EnergyRestoreDelay,
+            // MatchConfig.EnergyRestoreValue,
             playerHand);
         
         _matchEngine = FindObjectOfType<TestMatchEngine>();
@@ -181,28 +183,33 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         Hashtable roomProperties = new Hashtable
         {
             {PhotonEventsConstants.SyncMatch.MatchConfigRolesAndUsers, _networkMatchStatus.RolesAndUserIdsNetwork},
-            {PhotonEventsConstants.SyncMatch.MatchConfigWavesCount, (byte)matchParameters.Waves.Length},
-            {PhotonEventsConstants.SyncMatch.MatchConfigPathsCount, (byte)mapModel.PathDatas.Count},
-            {PhotonEventsConstants.SyncMatch.MatchConfigFieldTypesParam, matchParameters.GetHexesTypes()},
+            {PhotonEventsConstants.SyncMatch.MatchConfigLevelIdParam, matchParameters.LevelId},
+            // {PhotonEventsConstants.SyncMatch.MatchConfigWavesCount, (byte)matchParameters.Waves.Length},
+            //{PhotonEventsConstants.SyncMatch.MatchConfigPathsCount, (byte)mapModel.PathDatas.Count},
+            //{PhotonEventsConstants.SyncMatch.MatchConfigFieldTypesParam, matchParameters.GetHexesTypes()},
             //{PhotonEventsConstants.SyncMatch.MatchStartCoinsParam, matchParameters.CoinsCount},
-            {PhotonEventsConstants.SyncMatch.MatchStartEnergyParam, matchParameters.EnergyStartCount},
+            // {PhotonEventsConstants.SyncMatch.MatchStartEnergyParam, matchParameters.EnergyStartCount},
+            // {PhotonEventsConstants.SyncMatch.MatchMaxEnergyParam, matchParameters.EnergyMaxCount},
+            // {PhotonEventsConstants.SyncMatch.MatchRestoreEnergyDelay, matchParameters.EnergyRestoreDelay},
+            // {PhotonEventsConstants.SyncMatch.MatchRestoreEnergyValue, matchParameters.EnergyRestoreValue},
             {PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam, matchParameters.PlayerHandParams.TowersNetwork},
             {PhotonEventsConstants.SyncMatch.RandomSeed, randomSeed}
         };
 
-        for (int waveIndex = 0; waveIndex < matchParameters.Waves.Length; waveIndex++)
-            roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigWaveParam}{waveIndex}"] =
-                matchParameters.Waves[waveIndex].ToNetwork();
+        // for (int waveIndex = 0; waveIndex < matchParameters.Waves.Length; waveIndex++)
+        //     roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigWaveParam}{waveIndex}"] =
+        //         matchParameters.Waves[waveIndex].ToNetwork();
 
-        var hexModels = mapModel.HexModels.ToArray();
-        for (int hexIndex = 0; hexIndex < hexModels.Length; hexIndex++)
-            roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigHexFieldParam}{hexIndex}"] =
-                hexModels[hexIndex].ToNetwork();
+        // var hexModels = mapModel.HexModels.ToArray();
+        // Hashtable hexesModelTable = new Hashtable(hexModels.Length);
+        // for (int hexIndex = 0; hexIndex < hexModels.Length; hexIndex++)
+        //     hexesModelTable[$"{hexIndex}"] = hexModels[hexIndex].ToNetwork();
+        // roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigHexFieldParam}"] = hexesModelTable;
         
-        var paths = mapModel.PathDatas.ToArray();
-        for (int pathIndex = 0; pathIndex < paths.Length; pathIndex++)
-            roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigPathFieldParam}{pathIndex}"] =
-                paths[pathIndex].ToNetwork();
+        // var paths = mapModel.PathDatas.ToArray();
+        // for (int pathIndex = 0; pathIndex < paths.Length; pathIndex++)
+        //     roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigPathFieldParam}{pathIndex}"] =
+        //         paths[pathIndex].ToNetwork();
 
         _eventBus.RaiseEvent(PhotonEventsConstants.SyncMatch.SyncMatchConfigOnStartEventId, roomProperties);
             

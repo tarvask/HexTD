@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Match.Wave
 {
-    public struct BuiltWaveParams
+    public readonly struct BuiltWaveParams
     {
         private readonly List<WaveElementDelayAndPath> _player1MobsWithDelaysAndPaths;
         private readonly List<WaveElementDelayAndPath> _player2MobsWithDelaysAndPaths;

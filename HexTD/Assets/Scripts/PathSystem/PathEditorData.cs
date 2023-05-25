@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using HexSystem;
 using Newtonsoft.Json;
 using UniRx;
@@ -9,25 +8,24 @@ namespace PathSystem
 {
     public class PathEditorData : PathData, IDisposable
     {
-        [JsonIgnore] private readonly ReactiveCommand<IEnumerable<Hex2d>> _onPointsChangeReactiveCommand;
+        [JsonIgnore] private readonly ReactiveCommand _onPointsChangeReactiveCommand;
         [JsonIgnore] private LinkedListNode<Hex2d> _currentInsertNode;
 
-        [JsonIgnore] public List<Hex2d> PointsList => Points.ToList();
-
-        public PathEditorData([JsonProperty("Name")] string name,
-            [JsonProperty("Points")] LinkedList<Hex2d> points) : base(name, points)
+        public PathEditorData([JsonProperty("Name")] byte pathId,
+            [JsonProperty("Points")] LinkedList<Hex2d> points) : base(pathId, points)
         {
+            _onPointsChangeReactiveCommand = new ReactiveCommand();
         }
 
-        public PathEditorData(string name) : base(name, new List<Hex2d>())
+        public PathEditorData(byte pathId) : base(pathId, new List<Hex2d>())
         {
-            _onPointsChangeReactiveCommand = new ReactiveCommand<IEnumerable<Hex2d>>();
+            _onPointsChangeReactiveCommand = new ReactiveCommand();
             Reset();
         }
 
-        public PathEditorData(SavePathData pathData) : base(pathData.Name, pathData.Points)
+        public PathEditorData(SavePathData pathData) : base(pathData.PathId, pathData.Points)
         {
-            _onPointsChangeReactiveCommand = new ReactiveCommand<IEnumerable<Hex2d>>();
+            _onPointsChangeReactiveCommand = new ReactiveCommand();
             Reset();
         }
 
@@ -47,15 +45,14 @@ namespace PathSystem
         {
             if (_currentInsertNode == null)
             {
-                Points.AddFirst(newPoint);
-                _currentInsertNode = Points.Last;
+                _currentInsertNode = Points.AddFirst(newPoint);
             }
             else
             {
                 _currentInsertNode = Points.AddAfter(_currentInsertNode, newPoint);
             }
             
-            _onPointsChangeReactiveCommand.Execute(this);
+            _onPointsChangeReactiveCommand.Execute();
         }
 
         private void RemovePoint(LinkedListNode<Hex2d> removingNode)
@@ -66,7 +63,7 @@ namespace PathSystem
 
             Points.Remove(removingNode);
             _currentInsertNode = prevNode;
-            _onPointsChangeReactiveCommand.Execute(this);
+            _onPointsChangeReactiveCommand.Execute();
         }
 
         private void Reset()
@@ -78,7 +75,7 @@ namespace PathSystem
         {
             var inputHexNode = Points.Find(inputHex);
             bool isHexInPath = inputHexNode != null;
-            
+         
             if (!isHexInPath)
                 AddPoint(inputHex);
             else
@@ -90,20 +87,20 @@ namespace PathSystem
             var inputHexNode = Points.Find(inputHex);
             bool isHexInPath = inputHexNode != null;
             
-            if(isHexInPath)
+            if(isHexInPath) 
                 RemovePoint(inputHexNode);
             else
                 Reset();
         }
 
-        public void SetName(string name)
+        public void SetPathId(byte pathId)
         {
-            Name = name;
+            PathId = pathId;
         }
 
-        public IDisposable SubscribeOnPointsChange(Action<IEnumerable<Hex2d>> onPointsChange)
+        public IDisposable SubscribeOnPointsChange(Action onPointsChange)
         {
-            return _onPointsChangeReactiveCommand.Subscribe(onPointsChange);
+            return _onPointsChangeReactiveCommand.Subscribe(_ => onPointsChange.Invoke());
         }
 
         public void Dispose()

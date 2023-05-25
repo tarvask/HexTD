@@ -1,5 +1,6 @@
 ﻿using Configs;
-using UI.InfoPanel;
+using UI.EditorInfoPanel;
+using UI.EditorModeSwitchPanel;
 using UI.PathEditorPanel;
 using UnityEngine;
 using Zenject;
@@ -12,6 +13,7 @@ namespace Installers
         [Space]
         [SerializeField] private PathsEditorInfoPanelView pathsEditorInfoPanelView;
         [SerializeField] private EditorInfoPanelView editorInfoPanelView;
+        [SerializeField] private EditorModeSwitchPanelView editorModeSwitchPanelView;
         
         public override void InstallBindings()
         {
@@ -22,6 +24,9 @@ namespace Installers
 
             Container.Bind<EditorInfoPanelView>().FromInstance(editorInfoPanelView).AsSingle();
             Container.Bind<EditorInfoPanelController>().FromNew().AsSingle().NonLazy();
+
+            Container.Bind<EditorModeSwitchPanelView>().FromInstance(editorModeSwitchPanelView).AsSingle();
+            Container.Bind<EditorModeSwitchPanelController>().FromNew().AsSingle().NonLazy();
         }
     }
 }

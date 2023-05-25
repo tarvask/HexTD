@@ -50,6 +50,19 @@ namespace HexSystem
                     return _hexagonPrefabConfig.SimpleHexObject;
                 case HexTypeNameConstants.BridgeType:
                     return _hexagonPrefabConfig.BridgeHexObject;
+                // props
+                case HexTypeNameConstants.StonePropsType:
+                    return _hexagonPrefabConfig.StonePropsHexObject;
+                case HexTypeNameConstants.BushPropsType:
+                    return _hexagonPrefabConfig.BushPropsHexObject;
+                case HexTypeNameConstants.TreePropsType:
+                    return _hexagonPrefabConfig.TreePropsHexObject;
+                case HexTypeNameConstants.GrassPropsType:
+                    return _hexagonPrefabConfig.GrassPropsHexObject;
+                case HexTypeNameConstants.MushroomSinglePropsType:
+                    return _hexagonPrefabConfig.MushroomSinglePropsHexObject;
+                case HexTypeNameConstants.MushroomClusterPropsType:
+                    return _hexagonPrefabConfig.MushroomClusterPropsHexObject;
             }
 
             return _hexagonPrefabConfig.SimpleHexObject;

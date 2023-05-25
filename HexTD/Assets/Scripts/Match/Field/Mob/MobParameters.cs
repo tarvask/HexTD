@@ -8,26 +8,26 @@ namespace Match.Field.Mob
     public class MobParameters
     {
         [SerializeField] private byte typeId;
-        [SerializeField] private PowerType powerType;
         [SerializeField] private int healthPoints;
         [SerializeField] private float speed;
         [SerializeField] private int attackPower;
-        [SerializeField] private float reloadTime;
-        [SerializeField] private bool hasRangeDamage;
-        [SerializeField] private float attackRangeRadius;
+        [SerializeField] private float delay;
+        [SerializeField] private float cooldown;
+        //[SerializeField] private bool hasRangeDamage;
+        //[SerializeField] private float attackRangeRadius;
         [SerializeField] private bool isBoss;
 
         [SerializeField] [Description("Reward for killed mob")]
         private int rewardInCoins;
 
         public byte TypeId => typeId;
-        public PowerType PowerType => powerType;
         public int HealthPoints => healthPoints;
         public float Speed => speed;
         public int AttackPower => attackPower;
-        public float ReloadTime => reloadTime;
-        public bool HasRangeDamage => hasRangeDamage;
-        public float AttackRangeRadius => attackRangeRadius;
+        public float Delay => delay;
+        public float Cooldown => cooldown;
+        //public bool HasRangeDamage => hasRangeDamage;
+        //public float AttackRangeRadius => attackRangeRadius;
         public bool IsBoss => isBoss;
 
         public int RewardInCoins => rewardInCoins;
