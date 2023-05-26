@@ -16,12 +16,10 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 881798b77426a8f47b533dcc4767e9e5, type: 3}
   parameters:
     typeId: 1
-    powerType: 1
     healthPoints: 10
     speed: 0.1
     attackPower: 10
-    reloadTime: 1
-    hasRangeDamage: 0
-    attackRangeRadius: 0
-    pathName: TestPath
+    delay: 0.2
+    cooldown: 1
+    isBoss: 0
     rewardInCoins: 0

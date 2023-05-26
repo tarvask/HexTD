@@ -15,7 +15,7 @@ MonoBehaviour:
   pathsWithWaves:
   - pathId: 1
     waves:
-    - waveDelay: 0
+    - waveDelay: 5
       waveConfig: {fileID: 11400000, guid: 9729750e3da98684fbd27fc7123b3cb5, type: 2}
   initialEnergy: 10
   energyRecoveryTime: 2
