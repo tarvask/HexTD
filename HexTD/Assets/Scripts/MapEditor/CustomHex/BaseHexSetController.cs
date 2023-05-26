@@ -5,12 +5,12 @@ namespace MapEditor.CustomHex
     public abstract class BaseHexSetController
     {
         protected readonly Layout Layout;
-        protected readonly HexGridModel HexGridModel;
+        protected readonly EditorHexesModel EditorHexesModel;
 
-        public BaseHexSetController(HexGridModel hexGridModel,
+        public BaseHexSetController(EditorHexesModel editorHexesModel,
             Layout layout)
         {
-            HexGridModel = hexGridModel;
+            EditorHexesModel = editorHexesModel;
             Layout = layout;
         }
 

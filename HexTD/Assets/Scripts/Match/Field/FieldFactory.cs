@@ -22,13 +22,16 @@ namespace Match.Field
         public struct Context
         {
             public Transform FieldRoot { get; }
-            public HexFabric HexFabric { get; }
+            public HexObjectFabric HexObjectFabric { get; }
+            public PropsObjectFabric PropsObjectFabric { get; }
             public PathContainer PathContainer { get; }
             public HexagonalFieldModel HexagonalFieldModel { get; }
+            public IReadOnlyList<PropsModel> PropsModels{ get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
             public HexMapReachableService HexMapReachableService { get; }
             public HexObjectsContainer HexObjectsContainer { get; }
+            public PropsObjectsContainer PropsObjectsContainer { get; }
             
             public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
@@ -36,12 +39,15 @@ namespace Match.Field
             public ReactiveCommand RemoveAllHexesHighlightsReactiveCommand { get; }
 
             public Context(Transform fieldRoot,
-                HexFabric hexFabric,
+                HexObjectFabric hexObjectFabric,
+                PropsObjectFabric propsObjectFabric,
                 PathContainer pathContainer,
                 HexagonalFieldModel hexagonalFieldModel,
+                IReadOnlyList<PropsModel> propsModels,
                 int castleHealth, int towerRemovingDuration,
                 HexMapReachableService hexMapReachableService,
                 HexObjectsContainer hexObjectsContainer,
+                PropsObjectsContainer propsObjectsContainer,
                 ReactiveCommand<int> reachCastleByMobReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand ,
@@ -49,14 +55,17 @@ namespace Match.Field
                 )
             {
                 FieldRoot = fieldRoot;
-                HexFabric = hexFabric;
+                HexObjectFabric = hexObjectFabric;
+                PropsObjectFabric = propsObjectFabric;
                 PathContainer = pathContainer;
                 HexagonalFieldModel = hexagonalFieldModel;
+                PropsModels = propsModels;
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
                 HexMapReachableService = hexMapReachableService;
                 HexObjectsContainer = hexObjectsContainer;
+                PropsObjectsContainer = propsObjectsContainer;
                 ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
                 EnableHexesHighlightReactiveCommand = enableHexesHighlightReactiveCommand;
@@ -68,6 +77,7 @@ namespace Match.Field
 
         private Transform _groundRoot;
         private Transform _hexsRoot;
+        private Transform _propsRoot;
         private Transform _buildingsRoot;
         private Transform _crystalsRoot;
         private Transform _mobsRoot;
@@ -273,11 +283,16 @@ namespace Match.Field
             return projectileInstance;
         }
 
-        public void CreateCells()
+        public void CreateMap()
         {
             foreach (var fieldHex in _context.HexagonalFieldModel)
             {
                 CreateHexTile(fieldHex.Value.HexModel);
+            }
+            
+            foreach (var propsModel in _context.PropsModels)
+            {
+                CreateProps(propsModel);
             }
         }
 
@@ -285,8 +300,16 @@ namespace Match.Field
         {
             Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)hexModel);
 
-            var hexObject = _context.HexFabric.CreateHexObject(hexModel, _hexsRoot, spawnPosition);
+            var hexObject = _context.HexObjectFabric.Create(hexModel, _hexsRoot, spawnPosition);
             _context.HexObjectsContainer.HexObjects.Add(hexModel.GetHashCode(), hexObject);
+        }
+
+        public void CreateProps(PropsModel propsModel)
+        {
+            Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)propsModel);
+
+            var propsObject = _context.PropsObjectFabric.Create(propsModel, _propsRoot, spawnPosition);
+            _context.PropsObjectsContainer.PropsObjects.Add(propsModel.GetHashCode(), propsObject);
         }
     }
 }

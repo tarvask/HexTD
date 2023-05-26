@@ -172,12 +172,14 @@ namespace Match
            _buffManager = new BuffManager();
 
            // fields
-           var hexFabric = new HexFabric(_context.FieldConfig.HexagonPrefabConfig);
+           var hexFabric = new HexObjectFabric(_context.FieldConfig.HexagonPrefabConfig);
+           var propsFabric = new PropsObjectFabric(_context.FieldConfig.PropsPrefabConfig);
 
            //TODO: click handle separate with field controller
            FieldController.Context enemyFieldContext = new FieldController.Context(
                 _context.MatchView.EnemyFieldRoot,
                 hexFabric,
+                propsFabric,
                 _context.FieldConfig, mapModel,
                 _configsRetriever,
                 _buffManager,
@@ -196,6 +198,7 @@ namespace Match
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
                 hexFabric,
+                propsFabric,
                 _context.FieldConfig, mapModel,
                 _configsRetriever,
                 _buffManager,

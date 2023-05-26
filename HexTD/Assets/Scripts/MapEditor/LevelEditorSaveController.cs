@@ -12,16 +12,20 @@ namespace MapEditor
 		private readonly MapLoader _mapLoader;
 		private readonly JsonSerializer _serializer;
 		
-		private readonly HexGridModel _hexGridModel;
+		private readonly EditorHexesModel _editorHexesModel;
+		private readonly EditorPropsModel _editorPropsModel;
 		private readonly EditorPathContainer _pathContainer;
 		private readonly PathEditorController _pathEditorController;
 
 		
-		public LevelEditorSaveController(HexGridModel hexGridModel,
+		public LevelEditorSaveController(
+			EditorHexesModel editorHexesModel,
+			EditorPropsModel editorPropsModel,
 			EditorPathContainer pathContainer,
 			PathEditorController pathEditorController)
 		{
-			_hexGridModel = hexGridModel;
+			_editorHexesModel = editorHexesModel;
+			_editorPropsModel = editorPropsModel;
 			_pathContainer = pathContainer;
 			_pathEditorController = pathEditorController;
 
@@ -35,7 +39,8 @@ namespace MapEditor
 		{
 			LevelMapModel levelMapModel = new LevelMapModel()
 			{
-				HexModels = _hexGridModel.GetAllHexes(),
+				HexModels = _editorHexesModel.GetAllHexes(),
+				PropsModels = _editorPropsModel.GetAllProps(),
 				PathDatas = _pathContainer.GetPathsForSave()
 			};
 			
@@ -66,10 +71,15 @@ namespace MapEditor
 
 		private void ApplyLevelMapModel(LevelMapModel levelMapModel)
 		{
-			_hexGridModel.Clear();
+			_editorHexesModel.Clear();
 			foreach (HexModel hexModel in levelMapModel.HexModels)
 			{
-				_hexGridModel.CreateHex(hexModel);
+				_editorHexesModel.CreateHex(hexModel);
+			}
+			
+			foreach (PropsModel propsModel in levelMapModel.PropsModels)
+			{
+				_editorPropsModel.CreateProps(propsModel);
 			}
 			
 			_pathEditorController.Clear();

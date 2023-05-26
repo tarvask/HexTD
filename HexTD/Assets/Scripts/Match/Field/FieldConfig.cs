@@ -22,6 +22,7 @@ namespace Match.Field
         [Header("Hexes")] 
         [SerializeField] private HexSettingsConfig hexSettingsConfig;
         [SerializeField] private HexagonPrefabConfig hexagonPrefabConfig;
+        [SerializeField] private PropsPrefabConfig propsPrefabConfig;
 
         [Header("Towers")]
         [SerializeField] private TowerConfigsNew towersConfig;
@@ -45,6 +46,7 @@ namespace Match.Field
         // cells
         public HexSettingsConfig HexSettingsConfig => hexSettingsConfig;
         public HexagonPrefabConfig HexagonPrefabConfig => hexagonPrefabConfig;
+        public PropsPrefabConfig PropsPrefabConfig => propsPrefabConfig;
 
         // towers
         public TowerConfigsNew TowersConfig => towersConfig;

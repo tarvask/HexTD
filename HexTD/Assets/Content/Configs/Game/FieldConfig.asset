@@ -21,6 +21,7 @@ MonoBehaviour:
   technicalPauseBetweenWavesDuration: 1
   hexSettingsConfig: {fileID: 11400000, guid: de8e5719bbe23694495832da453b5ee0, type: 2}
   hexagonPrefabConfig: {fileID: 11400000, guid: 1aba3ec50fc95fc4288bd063b741fc44, type: 2}
+  propsPrefabConfig: {fileID: 11400000, guid: 0162b680e9d1b814dba043a439830f87, type: 2}
   towersConfig: {fileID: 11400000, guid: edfd41f6b405f0d4386c877845ad8a5a, type: 2}
   mobsConfig: {fileID: 11400000, guid: 3731662891967634795c1eab2b8e14ef, type: 2}
   levelsConfig: {fileID: 11400000, guid: c392943212dede7428130646b83aa790, type: 2}

@@ -57,6 +57,16 @@ public static class PhotonEventsConstants
             public const string DataValue = "DataValue";
         }
 
+        public static class PropsStateParam
+        {
+            public const string Q = "Q";
+            public const string R = "R";
+            public const string H = "H";
+            public const string DataLength = "DataLength";
+            public const string DataKey = "DataKey";
+            public const string DataValue = "DataValue";
+        }
+
         public static class PathData
         {
             public const string Name = "Name";

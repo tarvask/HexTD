@@ -52,8 +52,9 @@ namespace Match.Field.Hexagons
                 .ToList();
             
             List<Hex2d> obstacles = hexesInRadius.Where(hex =>
-                    (_hexagonalFieldModel[hex.GetHashCode()]?.Height ?? -1)
+                    ((_hexagonalFieldModel[hex.GetHashCode()]?.Height ?? -1)
                     > positionHexModel.Height)
+                    ||_hexagonalFieldModel.GetHexIsRangeAttackBlocker(hex))
                 .ToList();
 
 //            foreach (Hex2d obstacle in obstacles)

@@ -24,18 +24,15 @@ namespace Match.Field
             _context = context;
         }
 
+        //#85925650 дублирование
         public HexObject GetCellByType(string hexTypeName)
         {
-            switch (hexTypeName)
+            if (!_context.FieldConfig.HexagonPrefabConfig.HexObjects.TryGetValue(hexTypeName, out var hexObject))
             {
-                case HexTypeNameConstants.SimpleType:
-                    return _context.FieldConfig.HexagonPrefabConfig.SimpleHexObject;
-                    
-                case HexTypeNameConstants.BridgeType:
-                    return _context.FieldConfig.HexagonPrefabConfig.BridgeHexObject;
+                throw new ArgumentException("Unknown or undefined cell type");
             }
             
-            throw new ArgumentException("Unknown or undefined cell type");
+            return hexObject;
         }
     }
 }

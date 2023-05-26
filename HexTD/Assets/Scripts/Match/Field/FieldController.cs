@@ -26,7 +26,8 @@ namespace Match.Field
         public struct Context
         {
             public Transform FieldRoot { get; }
-            public HexFabric HexFabric { get; }
+            public HexObjectFabric HexObjectFabric { get; }
+            public PropsObjectFabric PropsObjectFabric { get; }
             public FieldConfig FieldConfig { get; }
             public LevelMapModel LevelMapModel { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
@@ -46,7 +47,8 @@ namespace Match.Field
 
             public Context(
                 Transform fieldRoot,
-                HexFabric hexFabric,
+                HexObjectFabric hexObjectFabric,
+                PropsObjectFabric propsObjectFabric,
                 FieldConfig fieldConfig, LevelMapModel levelMapModel,
                 ConfigsRetriever configsRetriever,
                 BuffManager buffManager,
@@ -64,7 +66,8 @@ namespace Match.Field
                 ReactiveCommand<float> matchStartedReactiveCommand)
             {
                 FieldRoot = fieldRoot;
-                HexFabric = hexFabric;
+                HexObjectFabric = hexObjectFabric;
+                PropsObjectFabric = propsObjectFabric;
                 
                 FieldConfig = fieldConfig;
                 LevelMapModel = levelMapModel;
@@ -107,6 +110,7 @@ namespace Match.Field
         private readonly PlayerStateLoader _stateLoader;
         
         private readonly HexObjectsContainer _hexObjectsContainer ;
+        private readonly PropsObjectsContainer _propsObjectsContainer ;
         private readonly FieldHighlightsController _fieldHighlightsController ;
         
         public const float MoveLerpCoeff = 0.7f;
@@ -142,6 +146,7 @@ namespace Match.Field
             TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
 
             _hexObjectsContainer = new HexObjectsContainer();
+            _propsObjectsContainer = new PropsObjectsContainer();
             
             _fieldHighlightsController = AddDisposable(new FieldHighlightsController(
                 new FieldHighlightsController.Context(_hexObjectsContainer)));
@@ -153,13 +158,16 @@ namespace Match.Field
             
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
-                _context.HexFabric,
+                _context.HexObjectFabric,
+                _context.PropsObjectFabric,
                 _pathContainer,
                 _hexagonalFieldModel,
+                _context.LevelMapModel.GetFieldProps(),
                 _context.FieldConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,
                 _hexMapReachableService,
                 _hexObjectsContainer,
+                _propsObjectsContainer,
                 castleReachedByMobReactiveCommand,
                 _context.CastleDestroyedReactiveCommand,
                 enableHexesHighlightReactiveCommand,
@@ -237,7 +245,7 @@ namespace Match.Field
             _currencyController.CrystalsCountReactiveProperty.Subscribe((newValue) =>
                 _context.CrystalsCountChangedReactiveCommand.Execute(newValue));
             
-            _factory.CreateCells();
+            _factory.CreateMap();
         }
         
         public void OuterLogicUpdate(float frameLength)
