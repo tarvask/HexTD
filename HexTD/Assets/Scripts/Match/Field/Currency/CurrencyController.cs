@@ -80,8 +80,8 @@ namespace Match.Field.Currency
 
         private void RewardForRemovedMob(MobController mob)
         {
-            if (!mob.IsEscaping)
-                AddCoins(mob.RewardInCoins);
+            // if (!mob.IsEscaping)
+            //     AddCoins(mob.RewardInCoins);
         }
     }
 }
