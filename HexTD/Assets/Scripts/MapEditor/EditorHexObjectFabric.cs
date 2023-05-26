@@ -1,5 +1,4 @@
-﻿using Configs;
-using HexSystem;
+﻿using HexSystem;
 using Match.Field;
 using UnityEngine;
 
@@ -9,7 +8,7 @@ namespace MapEditor
     {
         private readonly Transform _hexsRoot;
         
-        public EditorHexObjectFabric(HexagonPrefabConfig hexPrefabConfig) : base(hexPrefabConfig)
+        public EditorHexObjectFabric(IHexPrefabConfigRetriever hexPrefabConfigRetriever) : base(hexPrefabConfigRetriever)
         {
             // create cells root
             _hexsRoot = new GameObject("Hexes").transform;

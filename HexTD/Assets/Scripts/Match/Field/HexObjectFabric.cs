@@ -1,6 +1,4 @@
-﻿using System;
-using Configs;
-using Configs.Constants;
+﻿using Configs.Constants;
 using HexSystem;
 using MapEditor;
 using UnityEngine;
@@ -10,16 +8,16 @@ namespace Match.Field
 {
     public class HexObjectFabric
     {
-        private readonly HexagonPrefabConfig _hexagonPrefabConfig;
+        private readonly IHexPrefabConfigRetriever _hexPrefabConfigRetriever;
 
-        public HexObjectFabric(HexagonPrefabConfig hexagonPrefabConfig)
+        public HexObjectFabric(IHexPrefabConfigRetriever hexPrefabConfigRetriever)
         {
-            _hexagonPrefabConfig = hexagonPrefabConfig;
+            _hexPrefabConfigRetriever = hexPrefabConfigRetriever;
         }
 
         public HexObject Create(HexModel hexModel, Transform root, Vector3 position)
         {
-            HexObject hexPrefab = GetHexObjectPrefabByName(hexModel.HexType);
+            HexObject hexPrefab = _hexPrefabConfigRetriever.GetHexByType(hexModel.HexType);
             HexObject hexInstance = Object.Instantiate(hexPrefab, root);
             hexInstance.SetHex(hexModel.Position);
             hexInstance.transform.position = position; //_layout.ToPlane((Hex3d)hexModel);
@@ -43,19 +41,6 @@ namespace Match.Field
             hexInstance.SetIsHighlighted(false);
             
             return hexInstance;
-        }
-
-        
-        //#85925650 дублирование
-        private HexObject GetHexObjectPrefabByName(string hexTypeName)
-        {
-            
-            if (!_hexagonPrefabConfig.HexObjects.TryGetValue(hexTypeName, out var hexObject))
-            {
-                throw new ArgumentException($"Unknown or undefined cell type {hexTypeName}");
-            }
-            
-            return hexObject;
         }
     }
 }

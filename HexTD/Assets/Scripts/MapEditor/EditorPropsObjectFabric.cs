@@ -1,5 +1,4 @@
-﻿using Configs;
-using Match.Field;
+﻿using Match.Field;
 using UnityEngine;
 
 namespace MapEditor
@@ -8,7 +7,7 @@ namespace MapEditor
 	{
 		private readonly Transform _rootTransform;
         
-		public EditorPropsObjectFabric(PropsPrefabConfig propsPrefabConfig) : base(propsPrefabConfig)
+		public EditorPropsObjectFabric(IPropsObjectPrefabConfigRetriever propsPrefabConfigRetriever) : base(propsPrefabConfigRetriever)
 		{
 			// create cells root
 			_rootTransform = new GameObject("Props").transform;

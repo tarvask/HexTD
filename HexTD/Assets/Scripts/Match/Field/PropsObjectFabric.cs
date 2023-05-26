@@ -1,5 +1,4 @@
-﻿using System;
-using Configs;
+﻿using Configs;
 using Configs.Constants;
 using MapEditor;
 using UnityEngine;
@@ -9,16 +8,16 @@ namespace Match.Field
 {
 	public class PropsObjectFabric
     {
-        private readonly PropsPrefabConfig _propsPrefabConfig;
+        private readonly IPropsObjectPrefabConfigRetriever _propsPrefabConfigRetriever;
 
-        public PropsObjectFabric(PropsPrefabConfig propsPrefabConfig)
+        public PropsObjectFabric(IPropsObjectPrefabConfigRetriever propsPrefabConfigRetriever)
         {
-            _propsPrefabConfig = propsPrefabConfig;
+            _propsPrefabConfigRetriever = propsPrefabConfigRetriever;
         }
 
         public PropsObject Create(PropsModel model, Transform root, Vector3 position)
         {
-            PropsPrefabConfig.PropsObjectConfig config = GetPropsObjectConfigByType(model.HexType);
+            PropsPrefabConfig.PropsObjectConfig config = _propsPrefabConfigRetriever.GetPropsByType(model.HexType);
             PropsObject prefab = config.PropsObject;
             PropsObject instance = Object.Instantiate(prefab, root);
             instance.SetHex(model.Position);
@@ -32,18 +31,6 @@ namespace Match.Field
             }
             
             return instance;
-        }
-        
-        //#85925650 дублирование
-        private PropsPrefabConfig.PropsObjectConfig GetPropsObjectConfigByType(string propsTypeName)
-        {
-            
-            if (!_propsPrefabConfig.PropsObjectConfigs.TryGetValue(propsTypeName, out var propsObject))
-            {
-                throw new ArgumentException($"Unknown or undefined type {propsTypeName}");
-            }
-            
-            return propsObject;
         }
     }
 }

@@ -175,8 +175,8 @@ namespace Match
            _vfxManager = new VfxManager();
 
            // fields
-           var hexFabric = new HexObjectFabric(_context.FieldConfig.HexagonPrefabConfig);
-           var propsFabric = new PropsObjectFabric(_context.FieldConfig.PropsPrefabConfig);
+           var hexFabric = new HexObjectFabric(_configsRetriever);
+           var propsFabric = new PropsObjectFabric(_configsRetriever);
 
            //TODO: click handle separate with field controller
            FieldController.Context enemyFieldContext = new FieldController.Context(

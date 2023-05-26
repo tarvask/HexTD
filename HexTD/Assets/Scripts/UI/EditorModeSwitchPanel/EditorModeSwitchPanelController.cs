@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using Configs;
 using InputSystem;
 using MapEditor;
 using UI.Tools;
+using UI.Tools.SimpleToggle;
 using UniRx;
 using UnityEngine.UI;
 
@@ -35,62 +37,47 @@ namespace UI.EditorModeSwitchPanel
 			_view.PathModeToggle.onValueChanged.AddListener(OnPathModeChosen);
 
 			Toggle firstHexToggle = null;
-			foreach (var hexObjectsKey in _hexagonPrefabConfig.HexObjects.Keys)
-			{
-				var toggleItem = _view.HexTypeToggleGroup.AddToggle(hexObjectsKey);
-				firstHexToggle = firstHexToggle == null ? toggleItem.Toggle : firstHexToggle;
-
-				//#623705 дублирование
-				AddDisposable(toggleItem.Toggle.OnValueChangedAsObservable()
-					.Skip(1)
-					.Where(b => b)
-					.AsUnitObservable()
-					.Subscribe(unit =>
-					{
-						_view.HexTypeToggleGroup.EnableOneToggle(toggleItem.Toggle,false);
-					}));
-
-				AddDisposable(toggleItem.Toggle.OnValueChangedAsObservable()
-					.Where(b => b)
-					.AsUnitObservable()
-					.Subscribe(unit =>
-					{
-						_hexSpawnerController.SetHexType(hexObjectsKey);
-					}));
-			}
-			_view.HexTypeToggleGroup.EnableOneToggle(firstHexToggle);
-
+			InitTogglesGroup(_hexSpawnerController,
+				_hexagonPrefabConfig.HexObjects.Keys,
+				_view.HexTypeToggleGroup,
+				ref firstHexToggle);
 			
 			Toggle firstPropsToggle = null;
-			foreach (var propsObjectsKey in _propsPrefabConfig.PropsObjectConfigs.Keys)
-			{
-				var toggleItem = _view.PropsTypeToggleGroup.AddToggle(propsObjectsKey);
-				firstPropsToggle = firstPropsToggle == null ? toggleItem.Toggle : firstPropsToggle;
-
-				//#623705 дублирование
-				AddDisposable(toggleItem.Toggle.OnValueChangedAsObservable()
-					.Skip(1)
-					.Where(b => b)
-					.AsUnitObservable()
-					.Subscribe(unit =>
-					{
-						_view.PropsTypeToggleGroup.EnableOneToggle(toggleItem.Toggle,false);
-					}));
-
-				AddDisposable(toggleItem.Toggle.OnValueChangedAsObservable()
-					.Where(b => b)
-					.AsUnitObservable()
-					.Subscribe(unit =>
-					{
-						_propsSpawnerController.SetPropsType(propsObjectsKey);
-					}));
-			}
-			_view.PropsTypeToggleGroup.EnableOneToggle(firstPropsToggle);
+			InitTogglesGroup(_propsSpawnerController,
+				_propsPrefabConfig.PropsObjectConfigs.Keys,
+				_view.PropsTypeToggleGroup,
+				ref firstPropsToggle);
 
 			OnHexModeChosen(true);
 
 			// set default mode
 			_view.HexModeToggle.isOn = true;
+		}
+
+		private void InitTogglesGroup(
+			IObjectsSpawner objectsSpawner,
+			IEnumerable<string> keys,
+			SimpleToggleGroup simpleToggleGroup,
+			ref Toggle firstToggleInGroup)
+		{
+			foreach (var objectKey in keys)
+			{
+				var simpleToggleItem = simpleToggleGroup.AddToggle(objectKey);
+				firstToggleInGroup = firstToggleInGroup == null ? simpleToggleItem.Toggle : firstToggleInGroup;
+				
+				AddDisposable(simpleToggleItem.Toggle.OnValueChangedAsObservable()
+					.Skip(1)
+					.Where(b => b)
+					.AsUnitObservable()
+					.Subscribe(unit => { simpleToggleGroup.EnableOneToggle(simpleToggleItem.Toggle, false); }));
+
+				AddDisposable(simpleToggleItem.Toggle.OnValueChangedAsObservable()
+					.Where(b => b)
+					.AsUnitObservable()
+					.Subscribe(unit => { objectsSpawner.SetObjectType(objectKey); }));
+			}
+			
+			simpleToggleGroup.EnableOneToggle(firstToggleInGroup);
 		}
 
 		private void OnHexModeChosen(bool isChosen)

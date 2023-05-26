@@ -3,30 +3,31 @@ using System.Collections.Generic;
 using Configs;
 using Configs.Constants;
 using HexSystem;
+using Match.Field;
 
 namespace MapEditor
 {
-	public class PropsSpawnerController
+	public class PropsSpawnerController : IObjectsSpawner
 	{
 		private readonly EditorPropsModel _editorPropsModel;
-		private readonly PropsPrefabConfig _propsPrefabConfig;
+		private readonly IPropsObjectPrefabConfigRetriever _propsObjectPrefabConfigRetriever;
 		private readonly EditorHexesModel _editorHexesModel;
 		private readonly HexSpawnerController _hexSpawnerController;
 		private string _currentPropsTypeName;
 
 		public PropsSpawnerController(
 			EditorPropsModel editorPropsModel,
-			PropsPrefabConfig propsPrefabConfig,
+			IPropsObjectPrefabConfigRetriever propsObjectPrefabConfigRetriever,
 			EditorHexesModel editorHexesModel,
 			HexSpawnerController hexSpawnerController)
 		{
 			_editorPropsModel = editorPropsModel;
-			_propsPrefabConfig = propsPrefabConfig;
+			_propsObjectPrefabConfigRetriever = propsObjectPrefabConfigRetriever;
 			_editorHexesModel = editorHexesModel;
 			_hexSpawnerController = hexSpawnerController;
 		}
 
-		public void CreateProps(Hex2d position)
+		public void CreateObjects(Hex2d position)
 		{
 			if (_currentPropsTypeName == null) throw new Exception();
 
@@ -36,11 +37,7 @@ namespace MapEditor
 				(PropsParamsNameConstants.Rotation, "0"),
 			};
 
-
-			if (!_propsPrefabConfig.PropsObjectConfigs.TryGetValue(_currentPropsTypeName, out var config))
-			{
-				throw new ArgumentException();
-			}
+			var config = _propsObjectPrefabConfigRetriever.GetPropsByType(_currentPropsTypeName);
 
 			if (config.PropsPlacingConfig.IsReplacesHex)
 			{
@@ -100,7 +97,7 @@ namespace MapEditor
 			}
 		}
 
-		public void SetPropsType(string propsType)
+		public void SetObjectType(string propsType)
 		{
 			_currentPropsTypeName = propsType;
 		}

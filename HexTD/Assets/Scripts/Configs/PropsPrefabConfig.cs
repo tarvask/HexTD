@@ -25,8 +25,6 @@ namespace Configs
 			
 			public PropsObject PropsObject => propsObject;
 			public PropsPlacingConfig PropsPlacingConfig => propsPlacingConfig;
-			
-			
 		}
 	}
 }

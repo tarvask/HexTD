@@ -1,6 +1,7 @@
 ﻿using Configs;
 using HexSystem;
 using MapEditor;
+using Match.Field;
 using UnityEngine;
 using Zenject;
 
@@ -16,7 +17,9 @@ namespace Installers
         {
             Container.Bind<HexSettingsConfig>().FromInstance(hexSettingsConfig).AsSingle();
             Container.Bind<HexagonPrefabConfig>().FromInstance(hexagonPrefabConfig).AsSingle();
+            Container.BindInterfacesTo<HexPrefabConfigRetriever>().FromNew().AsSingle();
             Container.Bind<PropsPrefabConfig>().FromInstance(propsPrefabConfig).AsSingle();
+            Container.BindInterfacesTo<PropsObjectPrefabConfigRetriever>().FromNew().AsSingle();
 
             var hexLayout = new Layout(hexSettingsConfig.HexSize, Vector3.zero,  hexSettingsConfig.IsFlat);
             Container.Bind<Layout>().FromInstance(hexLayout).AsSingle();

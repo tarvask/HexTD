@@ -153,32 +153,24 @@ namespace Match.Field.Hexagons
             return bounds;
         }
 
-        //#702659 дублирование
         public bool GetHexIsBlocker(Hex2d hex)
         {
-            if (_cachedLevelFieldHexes.ContainsKey(hex.GetHashCode()))
-            {
-                if (_cachedLevelFieldHexes[hex.GetHashCode()].HexModel.Data.TryGetValue(
-                        HexParamsNameConstants.IsBlockerParam, out var isBlocker))
-                {
-                    return bool.Parse(isBlocker);
-                }
-
-                return false;
-            }
-
-            return true;
+            return IsHexWithProperty(hex, HexParamsNameConstants.IsBlockerParam);
         }
 
-        //#702658 дублирование
         public bool GetHexIsRangeAttackBlocker(Hex2d hex)
+        {
+            return IsHexWithProperty(hex, HexParamsNameConstants.IsRangeAttackBlockerParam);
+        }
+
+        private bool IsHexWithProperty(Hex2d hex, string propertyName)
         {
             if (_cachedLevelFieldHexes.ContainsKey(hex.GetHashCode()))
             {
                 if (_cachedLevelFieldHexes[hex.GetHashCode()].HexModel.Data.TryGetValue(
-                        HexParamsNameConstants.IsRangeAttackBlockerParam, out var isBlocker))
+                        propertyName, out var propertyValue))
                 {
-                    return bool.Parse(isBlocker);
+                    return bool.Parse(propertyValue);
                 }
 
                 return false;

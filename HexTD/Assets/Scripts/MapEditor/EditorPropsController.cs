@@ -95,7 +95,7 @@ namespace MapEditor
             PropsModel propsModel = _editorPropsModel.GetPropsModel(hex2d);
             if (propsModel == null)
             {
-                _propsSpawnerController.CreateProps(hex2d);
+                _propsSpawnerController.CreateObjects(hex2d);
             }
             else
             {

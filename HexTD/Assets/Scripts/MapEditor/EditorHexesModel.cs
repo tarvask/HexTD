@@ -108,60 +108,56 @@ namespace MapEditor
 			return _hexModels.ContainsKey(hex.GetHashCode());
 		}
 
-		//#702659 дублирование
 		public bool GetHexIsBlocker(Hex2d hex)
 		{
-			if (!_hexModels[hex.GetHashCode()].Data
-				    .TryGetValue(HexParamsNameConstants.IsBlockerParam, out var isBlocker))
-			{
-				return false;
-			}
-
-			return bool.Parse(isBlocker);
+			return IsHexWithProperty(hex, HexParamsNameConstants.IsBlockerParam);
 		}
 
-		//#702658 дублирование
 		public bool GetHexIsRangeAttackBlocker(Hex2d hex)
 		{
-			if (!_hexModels[hex.GetHashCode()].Data
-				    .TryGetValue(HexParamsNameConstants.IsRangeAttackBlockerParam, out var isBlocker))
+			return IsHexWithProperty(hex, HexParamsNameConstants.IsRangeAttackBlockerParam);
+		}
+
+		private bool IsHexWithProperty(Hex2d hex, string propertyName)
+		{
+			if (_hexModels.ContainsKey(hex.GetHashCode()))
 			{
+				if (_hexModels[hex.GetHashCode()].Data.TryGetValue(
+					    propertyName, out var propertyValue))
+				{
+					return bool.Parse(propertyValue);
+				}
+
 				return false;
 			}
 
-			return bool.Parse(isBlocker);
+			return true;
 		}
 
 		public void SetHexIsBlocker(Hex2d hex, bool isBlocker)
 		{
-			int hexHashCode = hex.GetHashCode();
-			
-			if (!_hexModels[hexHashCode].Data.ContainsKey(HexParamsNameConstants.IsBlockerParam))
-			{
-				_hexModels[hexHashCode].Data.Add(HexParamsNameConstants.IsBlockerParam,isBlocker.ToString());
-			}
-			else
-			{
-				_hexModels[hexHashCode].Data[HexParamsNameConstants.IsBlockerParam] = isBlocker.ToString();
-			}
-
-			_hexObjects[hexHashCode].SetIsBlocker(isBlocker);
+			SetHexWithProperty(hex, HexParamsNameConstants.IsBlockerParam, isBlocker);
 		}
 
 		public void SetHexIsRangeAttackBlocker(Hex2d hex, bool isBlocker)
 		{
+			SetHexWithProperty(hex, HexParamsNameConstants.IsRangeAttackBlockerParam, isBlocker);
+		}
+		
+		private void SetHexWithProperty(Hex2d hex, string propertyName, bool value)
+		{
 			int hexHashCode = hex.GetHashCode();
 			
-			if (!_hexModels[hexHashCode].Data.ContainsKey(HexParamsNameConstants.IsRangeAttackBlockerParam))
+			if (!_hexModels[hexHashCode].Data.ContainsKey(propertyName))
 			{
-				_hexModels[hexHashCode].Data.Add(HexParamsNameConstants.IsRangeAttackBlockerParam,isBlocker.ToString());
+				_hexModels[hexHashCode].Data.Add(propertyName, value.ToString());
 			}
 			else
 			{
-				_hexModels[hexHashCode].Data[HexParamsNameConstants.IsRangeAttackBlockerParam] = isBlocker.ToString();
+				_hexModels[hexHashCode].Data[HexParamsNameConstants.IsBlockerParam] = value.ToString();
 			}
 
-			_hexObjects[hexHashCode].SetIsRangeAttackBlocker(isBlocker);
+			_hexObjects[hexHashCode].SetIsBlocker(value);
 		}
 	}
 }

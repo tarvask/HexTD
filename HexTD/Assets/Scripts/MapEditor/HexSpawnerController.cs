@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace MapEditor
 {
-    public class HexSpawnerController
+    public class HexSpawnerController : IObjectsSpawner
     {
         private const string InvisibleHexTypeName = "invisible";
         
@@ -22,7 +22,7 @@ namespace MapEditor
         
         public void CreateInvisibleHex(Hex2d position) => CreateHex(position, InvisibleHexTypeName);
         
-        public void CreateHex(Hex2d position, string hexTypeName)
+        private void CreateHex(Hex2d position, string hexTypeName)
         {
             List<(string, string)> parameters = new List<(string, string)>()
             {
@@ -38,7 +38,7 @@ namespace MapEditor
             _currentHexTypeName = GetInputtedHexType();
         }
 
-        public void SetHexType(string hexType)
+        public void SetObjectType(string hexType)
         {
             _currentHexTypeName = hexType;
         }
