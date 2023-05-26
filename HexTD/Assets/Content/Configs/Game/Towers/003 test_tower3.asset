@@ -16,7 +16,7 @@ MonoBehaviour:
   view: {fileID: 1568221066824527527, guid: 85617f7781cb14e538853fbf6597dd8e, type: 3}
   regularParameters:
     towerType: 3
-    towerName: TestTower
+    towerName: BasicShooter2
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
     allowedPositions: 1
@@ -26,20 +26,20 @@ MonoBehaviour:
     keyData: 01000000
     valueData:
     - buildPrice: 6
-      refundPrice: 2
-      buildTime: 1
+      refundPrice: 6
+      buildTime: 0
       healthPoint: 80
   attacksConfig:
     attacks:
     - attackTargetType: 1
-      attackRangeType: 1
-      baseDamage: 1
+      attackRangeType: 4
+      baseDamage: 4
       delay: 0
       cooldown: 1
       projectileSpeed: 40
       projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
       serializableBuffs: []
-      attackRadiusInHex: 4
+      attackRadiusInHex: 3
     splashAttacks: []
   references:
     version: 2

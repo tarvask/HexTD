@@ -16,7 +16,7 @@ MonoBehaviour:
   view: {fileID: 1568221066824527527, guid: 9dee75195704b1e4a93614334de38814, type: 3}
   regularParameters:
     towerType: 1
-    towerName: TestTower
+    towerName: BasicShooter
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
     allowedPositions: 1

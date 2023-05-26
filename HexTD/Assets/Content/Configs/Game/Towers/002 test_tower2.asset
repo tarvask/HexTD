@@ -16,12 +16,12 @@ MonoBehaviour:
   view: {fileID: 1568221066824527527, guid: 6634f8e1afd0944d4a02af801f2bdebd, type: 3}
   regularParameters:
     towerType: 2
-    towerName: TestTower
+    towerName: BasicMelee
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
     allowedPositions: 2
     targetFindingTacticType: 1
-    maxEnemyBlocked: 0
+    maxEnemyBlocked: 1
   towerLevelConfigs:
     keyData: 01000000
     valueData:
