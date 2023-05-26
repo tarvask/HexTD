@@ -6,6 +6,7 @@ using Match.Field.Hexagons;
 using Match.Field.Shooting.SplashDamage;
 using Match.Field.Shooting.TargetFinding;
 using Match.Field.Tower;
+using Match.Field.VFX;
 using Match.Wave;
 using Tools;
 using Tools.Interfaces;
@@ -21,16 +22,19 @@ namespace Match.Field.Shooting
             public HexMapReachableService HexMapReachableService { get; }
             public FieldFactory Factory { get; }
             public BuffManager BuffManager { get; }
+            public VfxManager VfxManager { get; }
 
             public Context(FieldModel fieldModel, 
                 HexMapReachableService hexMapReachableService,
                 FieldFactory factory,
-                BuffManager buffManager)
+                BuffManager buffManager,
+                VfxManager vfxManager)
             {
                 FieldModel = fieldModel;
                 HexMapReachableService = hexMapReachableService;
                 Factory = factory;
                 BuffManager = buffManager;
+                VfxManager = vfxManager;
             }
         }
 
@@ -199,7 +203,7 @@ namespace Match.Field.Shooting
         private void HandleHitShootable(ProjectileController projectile, ITarget targeter, float sqrDistance)
         {
             projectile.BaseAttackEffect.ApplyAttackImpact(targeter, sqrDistance);
-            projectile.BaseAttackEffect.ApplyAttackEffect(targeter, _context.BuffManager);
+            projectile.BaseAttackEffect.ApplyAttackEffect(targeter, _context.BuffManager, _context.VfxManager);
             
             if (!_shootablesWithAttackingTowers.ContainsKey(targeter.TargetId))
                 _shootablesWithAttackingTowers.Add(targeter.TargetId, new List<int>());

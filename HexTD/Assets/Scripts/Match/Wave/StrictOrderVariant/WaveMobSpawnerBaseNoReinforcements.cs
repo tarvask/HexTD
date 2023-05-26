@@ -165,7 +165,7 @@ namespace Match.Wave
             switch (_state)
             {
                 case WaveStateType.Loading:
-                    UpdateInLoading();
+                    UpdateInLoading(frameLength);
                     break;
                 case WaveStateType.BetweenWavesTechnicalPause:
                     UpdateInTechnicalPause(frameLength);
@@ -181,9 +181,15 @@ namespace Match.Wave
             }
         }
 
-        private void UpdateInLoading()
+        private void UpdateInLoading(float frameLength)
         {
-            NextWave();
+            _spawnTimer += frameLength;
+            
+            if (IsTimeForNextWave(_spawnTimer, _currentWaveNumber))
+            {
+                NextWave();
+                _currentPauseDuration = 0;
+            }
         }
 
         private void UpdateInTechnicalPause(float frameLength)

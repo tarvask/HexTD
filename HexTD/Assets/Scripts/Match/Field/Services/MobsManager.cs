@@ -71,6 +71,7 @@ namespace Match.Field.Services
         public void RemoveMob(MobController mobController)
         {
             _mobsContainer.RemoveMob(mobController);
+            _context.RemoveMobReactiveCommand.Execute(mobController);
         }
         
         public void OuterLogicUpdate(float frameLength)

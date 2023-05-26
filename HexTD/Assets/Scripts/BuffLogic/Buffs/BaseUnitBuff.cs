@@ -1,4 +1,4 @@
-﻿using Match.Field.Mob;
+﻿using System;
 using Match.Field.Shooting;
 
 namespace BuffLogic
@@ -6,6 +6,8 @@ namespace BuffLogic
     public abstract class BaseUnitBuff : IBuff<ITarget>
     {
         protected ITarget BuffableValue;
+
+        private Action _onEnd;
         private bool _isEndConditionDone;
 
         public int Priority => int.MaxValue;
@@ -42,5 +44,15 @@ namespace BuffLogic
         public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff<ITarget>;
         protected abstract void UpdateBuff();
         protected abstract bool ConditionCheck();
+
+        public void SubscribeOnEnd(Action onEnd)
+        {
+            _onEnd += onEnd;
+        }
+
+        public void Dispose()
+        {
+            _onEnd.Invoke();
+        }
     }
 }

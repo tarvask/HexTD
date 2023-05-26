@@ -58,7 +58,7 @@ namespace Services.PhotonRelated
             roomOptions.IsOpen = true; // to let others join till its open to join
             roomOptions.IsVisible = true; // to list room created room in lobby for callback function
 
-            PhotonNetwork.CreateRoom("GreenRoom", roomOptions, null);
+            PhotonNetwork.CreateRoom(null, roomOptions, null);
         }
         
         public override void OnCreatedRoom()

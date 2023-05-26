@@ -12,6 +12,7 @@ using Match.Field.Services;
 using Match.Field.Shooting;
 using Match.Field.State;
 using Match.Field.Tower;
+using Match.Field.VFX;
 using PathSystem;
 using Services;
 using Tools;
@@ -32,6 +33,7 @@ namespace Match.Field
             public LevelMapModel LevelMapModel { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public BuffManager BuffManager { get; }
+            public VfxManager VfxManager { get; }
 
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             public ReactiveCommand<PlayerState> StateSyncedReactiveCommand { get; }
@@ -52,6 +54,7 @@ namespace Match.Field
                 FieldConfig fieldConfig, LevelMapModel levelMapModel,
                 ConfigsRetriever configsRetriever,
                 BuffManager buffManager,
+                VfxManager vfxManager,
                 
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
                 ReactiveCommand<PlayerState> stateSyncedReactiveCommand,
@@ -73,7 +76,8 @@ namespace Match.Field
                 LevelMapModel = levelMapModel;
                 ConfigsRetriever = configsRetriever;
                 BuffManager = buffManager;
-                
+                VfxManager = vfxManager;
+
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
                 StateSyncedReactiveCommand = stateSyncedReactiveCommand;
                 SpawnMobReactiveCommand = spawnMobReactiveCommand;
@@ -190,6 +194,7 @@ namespace Match.Field
             FieldModel.Context fieldModelContext = new FieldModel.Context(
                 _hexagonalFieldModel,
                 _hexagonalFieldModel.CurrentFieldHexTypes,
+                _context.VfxManager,
                 towersManager,
                 _mobsManager,
                 _factory,
@@ -213,7 +218,7 @@ namespace Match.Field
             
             // shooting
             ShootingProcessManager.Context shootingControllerContext = new ShootingProcessManager.Context(_model, 
-                _hexMapReachableService, _factory, _context.BuffManager);
+                _hexMapReachableService, _factory, _context.BuffManager, _context.VfxManager);
             _shootingProcessManager = AddDisposable(new ShootingProcessManager(shootingControllerContext));
             
             // currency

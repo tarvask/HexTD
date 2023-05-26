@@ -4,6 +4,7 @@ using BuffLogic;
 using BuffLogic.SerializableBuffs;
 using Match.Field.Shooting;
 using Match.Field.Tower;
+using Match.Field.VFX;
 using UnityEngine;
 
 namespace Match.Field.AttackEffect
@@ -35,11 +36,11 @@ namespace Match.Field.AttackEffect
             attackerController.Hurt(damage);
         }
 
-        public void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager)
+        public void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager, VfxManager vfxManager)
         {
             foreach (var serializableBuff in serializableBuffs)
             {
-                serializableBuff.ApplyBuff(attackerController, buffManager);
+                serializableBuff.ApplyBuff(attackerController, buffManager, vfxManager);
             }
         }
     }
