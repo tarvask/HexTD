@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Match.Field.Shooting;
 using Match.Field.VFX;
 using UnityEngine;
@@ -12,13 +13,28 @@ namespace BuffLogic.SerializableBuffs
         
         public abstract void ApplyBuff(ITarget target, BuffManager buffManager, VfxManager vfxManager);
 
-        protected void ApplyVfx(IBuff buff, ITarget target, VfxManager vfxManager)
+        protected void ApplyVfx(IBuff buff, ITarget target, BuffManager buffManager, VfxManager vfxManager)
         {
             if(vfxPrefab == null)
                 return;
             
             vfxManager.AddVfx(target, vfxPrefab);
-            buff.SubscribeOnEnd(() => vfxManager.ReleaseVfx(target));
+            buff.SubscribeOnEnd(() => ReleaseVfx(vfxManager, buffManager, target));
+        }
+
+        private void ReleaseVfx(VfxManager vfxManager, BuffManager buffManager, ITarget target)
+        {
+            if(buffManager.IsBuffs(target))
+                return;
+
+            foreach (EntityBuffableValueType entityBuffableValueType in Enum.GetValues(typeof(EntityBuffableValueType)))
+            {
+                if(target.BaseReactiveModel.TryGetBuffableValue(entityBuffableValueType, out IBuffableValue<float> buffableValue) &&
+                   buffManager.IsBuffs(buffableValue))
+                    return;
+            }
+            
+            vfxManager.ReleaseVfx(target);
         }
     }
 }

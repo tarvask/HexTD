@@ -19,19 +19,16 @@ namespace Match.Field.VFX
             foreach (var particleSystem in _vfxObjectContainer.ParticleSystems)
             {
                 particleSystem.Play();
-                particleSystem.gameObject.SetActive(true);
             }
 
             foreach (var animator in _vfxObjectContainer.Animators)
             {
                 animator.SetBool(IsVfx, true);
-                animator.gameObject.SetActive(true);                
             }
 
             foreach (var vfxController in _vfxObjectContainer.VfxControllers)
             {
                 vfxController.Play();
-                vfxController.gameObject.SetActive(true);
             }
             
             _vfxObjectContainer.Transform.gameObject.SetActive(true);
@@ -42,19 +39,16 @@ namespace Match.Field.VFX
             foreach (var particleSystem in _vfxObjectContainer.ParticleSystems)
             {
                 particleSystem.Stop();
-                particleSystem.gameObject.SetActive(false);
             }
 
             foreach (var animator in _vfxObjectContainer.Animators)
             {
                 animator.SetBool(IsVfx, false);
-                animator.gameObject.SetActive(false);                
             }
 
             foreach (var vfxController in _vfxObjectContainer.VfxControllers)
             {
                 vfxController.Stop();
-                vfxController.gameObject.SetActive(false);
             }
             
             _vfxObjectContainer.Transform.gameObject.SetActive(false);

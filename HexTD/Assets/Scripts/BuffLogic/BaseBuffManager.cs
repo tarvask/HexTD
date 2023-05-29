@@ -7,6 +7,7 @@ namespace BuffLogic
     public interface IBaseBuffManager : IOuterLogicUpdatable
     {
         void AddBuff<T>(IBuffableValue targetValue, IBuff<T> buff);
+        bool IsBuffs(IBuffableValue targetValue);
         IEnumerable<T> GetBuffOf<T>(IBuffableValue<T> targetValue);
     }
     
@@ -33,6 +34,13 @@ namespace BuffLogic
         public void AddBuff<T>(IBuffableValue targetValue, IBuff<T> buff)
         {
             AddBuff((IBuffableValue<TValue>)targetValue, (IBuff<TValue>)buff);
+        }
+
+        public bool IsBuffs(IBuffableValue targetValue)
+        {
+            var target = (IBuffableValue<TValue>)targetValue;
+
+            return _buffs.ContainsKey(target);
         }
 
         public IEnumerable<T> GetBuffOf<T>(IBuffableValue<T> targetValue)

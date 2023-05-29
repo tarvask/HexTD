@@ -31,7 +31,7 @@ namespace Match.Field.Shooting
             _health.Value = newHealth;
         }
 
-        public virtual bool TryGetBuffableValue(EntityBuffableValueType buffableValueType, out IBuffableValue buffableValue)
+        public virtual bool TryGetBuffableValue(EntityBuffableValueType buffableValueType, out IBuffableValue<float> buffableValue)
         {
             switch (buffableValueType)
             {
