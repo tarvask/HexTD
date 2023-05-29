@@ -264,11 +264,13 @@ namespace Match.Field
                 ? SplashShootType.UnderSelf
                 : SplashShootType.ToTarget;
             
+            bool hasTargetVolumeDamage = (baseTowerAttack as BaseSingleAttack)?.SplashRadiusInUnits > 0;
+            
             ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttack.ProjectileView, spawnPosition);
             ProjectileController.Context projectileControllerContext = new ProjectileController.Context(projectileId,
                 projectileInstance,
                 baseTowerAttack, attackIndex, splashShootType,
-                baseTowerAttack.ProjectileSpeed, hasSplashDamage, towerId, targetId);
+                baseTowerAttack.ProjectileSpeed, hasSplashDamage, hasTargetVolumeDamage, towerId, targetId);
             ProjectileController projectileController = new ProjectileController(projectileControllerContext);
 
             return projectileController;

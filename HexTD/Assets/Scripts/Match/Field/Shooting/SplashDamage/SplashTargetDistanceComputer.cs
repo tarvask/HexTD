@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HexSystem;
 using Match.Field.AttackEffect;
@@ -9,16 +10,37 @@ namespace Match.Field.Shooting.SplashDamage
     {
         public static void GetTargetsWithSqrDistances(ProjectileController projectile,
             IHexPositionConversionService hexPositionConversionService,
-            IReadOnlyDictionary<int, List<ITarget>> targetsByPosition, 
+            in IReadOnlyDictionary<int, List<ITarget>> targetsByPosition, 
             List<TargetWithSqrDistancePair> targetWithDistances)
         {
-            BaseSplashAttack splashAttack = projectile.BaseAttackEffect as BaseSplashAttack;
-            if(splashAttack == null)
-                return;
+            Hex2d projectilePosition =
+                hexPositionConversionService.ToHexFromWorldPosition(projectile.CurrentPosition, false);
+            
+            if (projectile.BaseAttackEffect is BaseSplashAttack splashAttack)
+            {
+                int auraRadiusInHex = splashAttack.SplashRadiusInHex;
+                GetTargetsAroundPosition(projectilePosition, auraRadiusInHex, projectile, targetsByPosition,
+                    targetWithDistances,
+                    -1, (f1, f2) => true);
+            }
+            else if (projectile.BaseAttackEffect is BaseSingleAttack volumeAttack)
+            {
+                float volumeRadiusInUnits = volumeAttack.SplashRadiusInUnits;
+                int volumeRadiusInHexesUpper = (int)(volumeRadiusInUnits / hexPositionConversionService.HexSize.x) + 1;
+                GetTargetsAroundPosition(projectilePosition, volumeRadiusInHexesUpper, projectile, targetsByPosition,
+                    targetWithDistances,
+                    volumeRadiusInUnits * volumeRadiusInUnits,
+                    (f1, f2) => f1 <= f2);
+            }
+        }
 
-            int radius = splashAttack.SplashRadiusInHex;
-            Hex2d projectilePosition = hexPositionConversionService.ToHexFromWorldPosition(projectile.CurrentPosition, false);
-
+        private static void GetTargetsAroundPosition(in Hex2d projectilePosition, in int radius,
+            ProjectileController projectile,
+            in IReadOnlyDictionary<int, List<ITarget>> targetsByPosition,
+            List<TargetWithSqrDistancePair> targetWithDistances,
+            float sqrDistanceForCondition,
+            Func<float, float, bool> sqrDistanceCondition)
+        {
             foreach (var hex in Hex2d.IterateSpiralRing(projectilePosition, radius))
             {
                 int hexHash = hex.GetHashCode();
@@ -28,7 +50,9 @@ namespace Match.Field.Shooting.SplashDamage
                 foreach (var target in targets)
                 {
                     float sqrDistance = (target.Position - projectile.CurrentPosition).sqrMagnitude;
-                    targetWithDistances.Add(new TargetWithSqrDistancePair(target, sqrDistance));
+                    
+                    if (sqrDistanceCondition(sqrDistance, sqrDistanceForCondition))
+                        targetWithDistances.Add(new TargetWithSqrDistancePair(target, sqrDistance));
                 }
             }
         }

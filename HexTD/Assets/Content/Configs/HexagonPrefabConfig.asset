@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hexObjects:
     keyData:
-    - simple
+    - Simple
     - Grass
     - Bridge
     - Invisible
