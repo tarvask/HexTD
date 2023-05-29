@@ -16,43 +16,31 @@ MonoBehaviour:
   view: {fileID: 1568221066824527527, guid: 6634f8e1afd0944d4a02af801f2bdebd, type: 3}
   regularParameters:
     towerType: 2
-    towerName: TestTower
+    towerName: BasicMelee
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
-    allowedPositions: 0
-    targetFindingTacticType: 5
-    maxEnemyBlocked: 0
+    allowedPositions: 2
+    targetFindingTacticType: 1
+    maxEnemyBlocked: 1
   towerLevelConfigs:
-    keyData: 0200000001000000
+    keyData: 01000000
     valueData:
-    - buildPrice: 15
-      refundPrice: 1
-      buildTime: 1
-      healthPoint: 120
-    - buildPrice: 12
-      refundPrice: 3
-      buildTime: 1
+    - buildPrice: 8
+      refundPrice: 200
+      buildTime: 0
       healthPoint: 100
   attacksConfig:
     attacks:
-    - attackTargetType: 2
+    - attackTargetType: 1
       attackRangeType: 4
-      baseDamage: 0
+      baseDamage: 1
       delay: 0
-      cooldown: 3
-      attackRadiusInHex: 3
+      cooldown: 0.3
       projectileSpeed: 35
       projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
-      serializableBuffs:
-      - rid: 8806733234106269704
+      serializableBuffs: []
+      attackRadiusInHex: 0
     splashAttacks: []
   references:
     version: 2
-    RefIds:
-    - rid: 8806733234106269704
-      type: {class: TargetBuff, ns: BuffLogic.SerializableBuffs, asm: Assembly-CSharp}
-      data:
-        influenceType: 1
-        capacity: 10
-        impactPerDelay: 1
-        delay: 0.1
+    RefIds: []

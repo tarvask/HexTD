@@ -6,26 +6,13 @@ namespace Match.Field.Mob
 {
     public class MobConfigRetriever : BaseDisposable
     {
-        public struct Context
-        {
-            public MobsConfig MobsConfig { get; }
-
-            public Context(MobsConfig mobsConfig)
-            {
-                MobsConfig = mobsConfig;
-            }
-        }
-
-        private readonly Context _context;
         private readonly List<MobConfig> _mobsList;
         private readonly Dictionary<byte, MobConfig> _mobsConfigsDictionary;
         
-        public MobConfigRetriever(Context context)
+        public MobConfigRetriever(MobsConfig mobsConfig)
         {
-            _context = context;
-
-            _mobsList = new List<MobConfig>(_context.MobsConfig.Mobs.Length);
-            _mobsList.AddRange(_context.MobsConfig.Mobs);
+            _mobsList = new List<MobConfig>(mobsConfig.Mobs.Length);
+            _mobsList.AddRange(mobsConfig.Mobs);
 
             _mobsConfigsDictionary = FillMobsDictionary();
         }

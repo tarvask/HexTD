@@ -155,12 +155,22 @@ namespace Match.Field.Hexagons
 
         public bool GetHexIsBlocker(Hex2d hex)
         {
+            return IsHexWithProperty(hex, HexParamsNameConstants.IsBlockerParam);
+        }
+
+        public bool GetHexIsRangeAttackBlocker(Hex2d hex)
+        {
+            return IsHexWithProperty(hex, HexParamsNameConstants.IsRangeAttackBlockerParam);
+        }
+
+        private bool IsHexWithProperty(Hex2d hex, string propertyName)
+        {
             if (_cachedLevelFieldHexes.ContainsKey(hex.GetHashCode()))
             {
                 if (_cachedLevelFieldHexes[hex.GetHashCode()].HexModel.Data.TryGetValue(
-                        HexParamsNameConstants.IsBlockerParam, out var isBlocker))
+                        propertyName, out var propertyValue))
                 {
-                    return bool.Parse(isBlocker);
+                    return bool.Parse(propertyValue);
                 }
 
                 return false;

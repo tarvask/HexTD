@@ -5,23 +5,32 @@ using UnityEngine;
 
 namespace MapEditor
 {
-    public class HexSpawnerController
+    public class HexSpawnerController : IObjectsSpawner
     {
-        private readonly HexGridModel _hexGridModel;
+        private const string InvisibleHexTypeName = "invisible";
+        
+        private readonly EditorHexesModel _editorHexesModel;
         private string _currentHexTypeName;
 
-        public HexSpawnerController(HexGridModel hexGridModel)
+        public HexSpawnerController(EditorHexesModel editorHexesModel)
         {
-            _hexGridModel = hexGridModel;
+            _editorHexesModel = editorHexesModel;
             _currentHexTypeName = HexTypeNameConstants.SimpleType;
         }
 
-        public void CreateHex(Hex2d position)
+        public void CreateHex(Hex2d position) => CreateHex(position, _currentHexTypeName);
+        
+        public void CreateInvisibleHex(Hex2d position) => CreateHex(position, InvisibleHexTypeName);
+        
+        private void CreateHex(Hex2d position, string hexTypeName)
         {
-            List<(string, string)> parameters = new List<(string, string)>();
-            parameters.Add((HexParamsNameConstants.HexTypeParam, _currentHexTypeName));
-            parameters.Add((HexParamsNameConstants.HexRotationParam, "0"));
-            HexModel hexModel = _hexGridModel.CreateHex(position, parameters);
+            List<(string, string)> parameters = new List<(string, string)>()
+            {
+                (HexParamsNameConstants.HexTypeParam, hexTypeName),
+                (HexParamsNameConstants.HexRotationParam, "0"),
+            };
+
+            HexModel hexModel = _editorHexesModel.CreateHex(position, parameters);
         }
 
         public void UpdateHexType()
@@ -29,7 +38,7 @@ namespace MapEditor
             _currentHexTypeName = GetInputtedHexType();
         }
 
-        public void SetHexType(string hexType)
+        public void SetObjectType(string hexType)
         {
             _currentHexTypeName = hexType;
         }
@@ -39,15 +48,9 @@ namespace MapEditor
             if (Input.GetKeyDown(KeyCode.Alpha1))
                 return HexTypeNameConstants.SimpleType;
             if (Input.GetKeyDown(KeyCode.Alpha2))
-                return HexTypeNameConstants.BridgeType;
+                return HexTypeNameConstants.GrassType;
             if (Input.GetKeyDown(KeyCode.Alpha3))
-                return HexTypeNameConstants.StonePropsType;
-            if (Input.GetKeyDown(KeyCode.Alpha4))
-                return HexTypeNameConstants.BushPropsType;
-            if (Input.GetKeyDown(KeyCode.Alpha5))
-                return HexTypeNameConstants.TreePropsType;
-            if (Input.GetKeyDown(KeyCode.Alpha6))
-                return HexTypeNameConstants.GrassPropsType;
+                return HexTypeNameConstants.BridgeType;
 
             return _currentHexTypeName;
         }

@@ -6,8 +6,8 @@ namespace MapEditor.CustomHex
 {
     public class RotationHexSetController : BaseHexSetController
     {
-        public RotationHexSetController(HexGridModel hexGridModel, 
-            Layout layout) : base(hexGridModel, layout)
+        public RotationHexSetController(EditorHexesModel editorHexesModel, 
+            Layout layout) : base(editorHexesModel, layout)
         {
         }
         
@@ -34,7 +34,7 @@ namespace MapEditor.CustomHex
                 hexModel.Data[HexParamsNameConstants.HexRotationParam] = (stepNum % 6).ToString();
             }
             
-            HexObject bridgeInstance = HexGridModel.GetHexagonInstance(hexModel);
+            HexObject bridgeInstance = EditorHexesModel.GetHexagonInstance(hexModel);
             bridgeInstance.transform.Rotate(Vector3.up, MapConstants.AngleStep * directionSign);
         }
     }

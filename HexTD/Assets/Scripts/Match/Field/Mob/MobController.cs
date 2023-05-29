@@ -73,7 +73,7 @@ namespace Match.Field.Mob
         public int BlockerId => _blockerId;
         
         public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.Cooldown + _context.Parameters.Delay;
-        public int RewardInCoins => _context.Parameters.RewardInCoins;
+        //public int RewardInCoins => _context.Parameters.RewardInCoins;
         public bool IsCarrion => _isCarrion;
         public bool IsBlocked => _isBlocked;
         public bool HasReachedCastle => _hasReachedCastle;

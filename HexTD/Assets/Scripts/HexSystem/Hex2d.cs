@@ -77,8 +77,8 @@ namespace HexSystem
 			return (this - other).Magnitude;
 		}
 
-		public float Magnitude => (Mathf.Abs(R) + Mathf.Abs(Q) + Mathf.Abs(S)) * .5f;
-		public int Length => (int)Magnitude;
+		[JsonIgnore] public float Magnitude => (Mathf.Abs(R) + Mathf.Abs(Q) + Mathf.Abs(S)) * .5f;
+		[JsonIgnore] public int Length => (int)Magnitude;
 
 		public static Hex2d RoundToHex(float q, float r, float s, float h)
 		{

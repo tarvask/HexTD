@@ -4,7 +4,7 @@ using WindowSystem.Controller;
 using Extensions;
 using Game;
 using UI.ShopWindow;
-using UI.ShopwWindow;
+using UI.InventoryWindow;
 using UniRx;
 
 namespace UI.MainMenuWindow
@@ -32,6 +32,10 @@ namespace UI.MainMenuWindow
 
 			View.ShopButtonClick
 				.Subscribe(ShowMarket)
+				.AddTo(View);
+
+			View.InventoryButtonClick
+				.Subscribe(ShowInentory)
 				.AddTo(View);
 		}
 
@@ -62,8 +66,23 @@ namespace UI.MainMenuWindow
 
 		private void ShowMarket()
 		{
+			if (WindowsManager.IsOpen<InventoryWindowController>())
+			{
+				WindowsManager.CloseAsync(WindowsManager.GetOpened<InventoryWindowController>()).Forget();
+			}
+
 			WindowsManager.OpenAsync<ShopWindowController>();
 		}
+
+		private void ShowInentory()
+        {
+			if (WindowsManager.IsOpen<ShopWindowController>())
+			{
+				WindowsManager.CloseAsync(WindowsManager.GetOpened<ShopWindowController>()).Forget();
+			}
+
+			WindowsManager.OpenAsync<InventoryWindowController>();
+        }
 
 		private void CloseWindows()
         {
@@ -73,6 +92,11 @@ namespace UI.MainMenuWindow
 			{
 				WindowsManager.CloseAsync(WindowsManager.GetOpened<ShopWindowController>()).Forget();
 			}
+
+			if (WindowsManager.IsOpen<InventoryWindowController>())
+            {
+				WindowsManager.CloseAsync(WindowsManager.GetOpened<InventoryWindowController>()).Forget();
+            }
 		}
 	}
 }
