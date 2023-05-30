@@ -227,6 +227,7 @@ namespace Match.Field.State
                 return new Hashtable
                 {
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerIdParam, towersState.Id},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTargetIdParam, towersState.TargetId},
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionQParam, towersState.PositionQ},
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionRParam, towersState.PositionR},
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTypeParam, (byte)towersState.Type},
