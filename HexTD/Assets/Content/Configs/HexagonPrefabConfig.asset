@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hexObjects:
     keyData:
-    - Simple
-    - Grass
-    - Bridge
-    - Invisible
+    - simple
+    - grass
+    - bridge
+    - invisible
     valueData:
     - {fileID: 2843427230044144718, guid: 209d45949411164459c0a95bdb0f06c1, type: 3}
     - {fileID: 8178014620764492173, guid: aa4ccc29e553d4affb86787a7ae7e635, type: 3}
