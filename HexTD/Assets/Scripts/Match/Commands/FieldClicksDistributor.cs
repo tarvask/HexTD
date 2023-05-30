@@ -24,7 +24,6 @@ namespace Match.Commands
             public MatchCommands MatchCommands { get; }
             
             public TowerManipulationWindowController TowerManipulationWindowController { get; }
-            public TowerInfoWindowController TowerInfoWindowController { get; }
             
             public ReactiveCommand<Hex2d> PlaceForTowerSelectedCommand { get; }
 
@@ -37,7 +36,6 @@ namespace Match.Commands
                 MatchCommands matchCommands,
 
                 TowerManipulationWindowController towerManipulationWindowController,
-                TowerInfoWindowController towerInfoWindowController,
                 
                 ReactiveCommand<Hex2d> placeForTowerSelectedCommand)
             {
@@ -50,7 +48,6 @@ namespace Match.Commands
                 MatchCommands = matchCommands;
                 
                 TowerManipulationWindowController = towerManipulationWindowController;
-                TowerInfoWindowController = towerInfoWindowController;
 
                 PlaceForTowerSelectedCommand = placeForTowerSelectedCommand;
             }

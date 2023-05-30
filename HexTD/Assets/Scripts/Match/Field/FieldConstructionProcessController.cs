@@ -4,6 +4,7 @@ using Match.Field.Tower;
 using Match.Field.Tower.TowerConfigs;
 using Tools;
 using Tools.Interfaces;
+using UnityEngine;
 
 namespace Match.Field
 {
@@ -92,15 +93,13 @@ namespace Match.Field
             removingTower.SetRemoving();
         }
 
-        public TowerController SetTowerBuilding(TowerConfigNew towerConfig, Hex2d position)
+        public void SetTowerBuilding(TowerConfigNew towerConfig, Hex2d position)
         {
             int positionHash = position.GetHashCode();
             TowerController towerInstance = _context.Factory.CreateTower(towerConfig, position);
             towerInstance.SetLevel(1);
             _context.FieldModel.AddTower(towerInstance, position);
             _constructingTowers.Add(positionHash, towerInstance);
-
-            return towerInstance;
         }
 
         public void SetTowerUpgrading(TowerController tower)
@@ -110,10 +109,10 @@ namespace Match.Field
             _constructingTowers.Add(positionHash, tower);
         }
 
-        public TowerView SetTowerView(TowerConfigNew towerConfig)
+        public TowerController SetTowerInstance(TowerConfigNew towerConfig)
         {
-            TowerView towerInstance = _context.Factory.CreateTowerView(towerConfig);
-            return towerInstance;
+            var hexToPlaceTower = _context.FieldModel.HexPositionConversionService.GetHexWithMinZ();
+            return _context.Factory.CreateTowerWithId(towerConfig, hexToPlaceTower, -1, -1);
         }
     }
 }

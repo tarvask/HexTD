@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using HexSystem;
 using Match.Field.Tower;
@@ -98,7 +99,7 @@ namespace Match.Field.Hexagons
 
                 if (!y.ContainsKey(attackRadius))
                 {
-                    y.Add(attackRadius, res);
+                    y.Add(attackRadius, new List<Hex2d>(res));
                 }
             }
 

@@ -330,7 +330,6 @@ namespace Match
                     ourField.FieldConstructionProcessController,
                     _ourPlayerHandController, _ourTowerPlacer, _context.MatchCommandsOur,
                     _windowsManager.TowerManipulationWindowController,
-                    _windowsManager.TowerInfoWindowController,
                     placeForOurTowerSelectedCommand
                 );
             _ourClicksDistributor = AddDisposable(new FieldClicksDistributor(ourClicksDistributorContext));
@@ -341,7 +340,6 @@ namespace Match
                     enemyField.FieldConstructionProcessController,
                     _enemyPlayerHandController, null, _context.MatchCommandsEnemy,
                     _windowsManager.TowerManipulationWindowController,
-                    _windowsManager.TowerInfoWindowController,
                     placeForOurTowerSelectedCommand
                 );
             _enemyClicksDistributor = AddDisposable(new FieldClicksDistributor(enemyClicksDistributorContext));
