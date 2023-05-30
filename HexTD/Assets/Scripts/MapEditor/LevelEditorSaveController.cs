@@ -72,20 +72,29 @@ namespace MapEditor
 		private void ApplyLevelMapModel(LevelMapModel levelMapModel)
 		{
 			_editorHexesModel.Clear();
-			foreach (HexModel hexModel in levelMapModel.HexModels)
+			if (levelMapModel.HexModels != null)
 			{
-				_editorHexesModel.CreateHex(hexModel);
+				foreach (HexModel hexModel in levelMapModel.HexModels)
+				{
+					_editorHexesModel.CreateHex(hexModel);
+				}
 			}
-			
-			foreach (PropsModel propsModel in levelMapModel.PropsModels)
+
+			if (levelMapModel.PropsModels != null)
 			{
-				_editorPropsModel.CreateProps(propsModel);
+				foreach (PropsModel propsModel in levelMapModel.PropsModels)
+				{
+					_editorPropsModel.CreateProps(propsModel);
+				}
 			}
-			
+
 			_pathEditorController.Clear();
-			foreach (var path in levelMapModel.PathDatas)
+			if (levelMapModel.PathDatas != null)
 			{
-				_pathEditorController.AddPath(path);
+				foreach (var path in levelMapModel.PathDatas)
+				{
+					_pathEditorController.AddPath(path);
+				}
 			}
 		}
 	}
