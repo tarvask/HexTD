@@ -23,11 +23,16 @@ namespace Match.Windows.Tower
 
         private readonly Context _context;
         private Action _onCloseWindowClickAction;
+        private readonly TowerInfoPanelController _infoPanelController;
         
         public TowerInfoWindowController(Context context)
             : base(context.View, context.OpenWindowsCountReactiveProperty)
         {
             _context = context;
+
+            TowerInfoPanelController.Context infoPanelControllerContext =
+                new TowerInfoPanelController.Context(_context.View.InfoPanel);
+            _infoPanelController = AddDisposable(new TowerInfoPanelController(infoPanelControllerContext));
             
             _context.View.CloseButton.onClick.AddListener(CloseWindow);
         }
@@ -37,24 +42,7 @@ namespace Match.Windows.Tower
         {
             _onCloseWindowClickAction = onCloseWindowClickedHandler;
             
-            _context.View.TowerNameText.text = towerParameters.RegularParameters.TowerName;
-
-            //TODO: adaptive new levels config init
-            //_context.View.TowerDamageText.text = $"{towerParameters.TowerLevelConfigs[towerLevel - 1].LevelRegularParams.Data.AttackPower}";
-            //_context.View.TowerAttackRateText.text =
-            //    $"{(1f / towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.ReloadTime):F2} / sec";
-            //_context.View.TowerRangeText.text = $"{towerParameters.Levels[towerLevel - 1].LevelRegularParams.Data.AttackRadiusInHexCount}";
-            //_context.View.TowerTargetText.text = $"{towerParameters.RegularParameters.Data.TargetFindingTacticType}";
-            
-            // buffs
-            // if (buffs != null)
-            // {
-            //     foreach (KeyValuePair<int, AbstractBuffModel> buffPair in buffs)
-            //     {
-            //         TextMeshProUGUI buffInfoElement = Object.Instantiate(_context.View.BuffInfoElementPrefab, _context.View.BuffsInfoScrollRoot);
-            //         buffInfoElement.text = buffPair.Value.GetTextInfo();
-            //     }
-            // }
+            _infoPanelController.Init(towerParameters, towerLevel);
 
             base.ShowWindow();
         }
@@ -62,13 +50,8 @@ namespace Match.Windows.Tower
         public void CloseWindow()
         {
             _onCloseWindowClickAction?.Invoke();
+            _infoPanelController.Clear();
             HideWindow();
-
-            // clear buff info elements
-            foreach (Transform buffInfoElementTransform in _context.View.BuffsInfoScrollRoot)
-            {
-                Object.Destroy(buffInfoElementTransform.gameObject);
-            }
         }
     }
 }
