@@ -19,7 +19,6 @@ namespace Match.Field
         {
             public IHexPositionConversionService HexPositionConversionService { get; }
             public FieldHexTypesController FieldHexTypesController { get; }
-            public VfxManager VfxManager { get; }
             public TowersManager TowersManager { get; }
             public MobsManager MobsManager { get; }
             public FieldFactory Factory { get; }
@@ -29,7 +28,6 @@ namespace Match.Field
 
             public Context(IHexPositionConversionService hexPositionConversionService,
                 FieldHexTypesController fieldHexTypesController,
-                VfxManager vfxManager,
                 TowersManager towersManager,
                 MobsManager mobsManager,
                 FieldFactory factory,
@@ -39,7 +37,6 @@ namespace Match.Field
             {
                 HexPositionConversionService = hexPositionConversionService;
                 FieldHexTypesController = fieldHexTypesController;
-                VfxManager = vfxManager;
                 TowersManager = towersManager;
                 MobsManager = mobsManager;
                 Factory = factory;
@@ -119,7 +116,6 @@ namespace Match.Field
             if(!_context.FieldHexTypesController.TryRemoveTower(positionHash))
                 return;
 
-            _context.VfxManager.ReleaseVfx(removingTower);
             _context.TowersManager.RemoveTower(removingTower);
         }
 
@@ -134,7 +130,6 @@ namespace Match.Field
 
         private void RemoveMob(MobController mobController)
         {
-            _context.VfxManager.ReleaseVfx(mobController);
             if (_context.MobsManager.MobCount == 0 && _context.HasMobsOnFieldReactiveProperty.Value)
                 _context.HasMobsOnFieldReactiveProperty.Value = false;
         }

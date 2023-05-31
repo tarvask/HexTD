@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Match.Field.VFX;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
@@ -7,6 +8,7 @@ namespace Match.Field.Tower
 {
     public class TowersManager : BaseDisposable, IOuterLogicUpdatable
     {
+        private readonly VfxManager _vfxManager;
         private readonly TowerContainer _towerContainer;
         private readonly List<TowerController> _dyingTowers;
         
@@ -19,8 +21,9 @@ namespace Match.Field.Tower
         // towers by ids
         public IReadOnlyDictionary<int, TowerController> Towers => _towerContainer.Towers;
         
-        public TowersManager(int fieldHexGridSize)
+        public TowersManager(VfxManager vfxManager, int fieldHexGridSize)
         {
+            _vfxManager = vfxManager;
             _towerContainer = new TowerContainer(fieldHexGridSize);
             _dyingTowers = new List<TowerController>(fieldHexGridSize);
             
@@ -47,6 +50,7 @@ namespace Match.Field.Tower
         {
             _towerContainer.RemoveTower(removingTower);
             TowerRemovedReactiveCommand.Execute(removingTower);
+            _vfxManager.ReleaseVfx(removingTower);
             removingTower.Dispose();
         }
 

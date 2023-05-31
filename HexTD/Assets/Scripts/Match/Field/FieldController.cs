@@ -147,7 +147,7 @@ namespace Match.Field
             _pathFindingService = new HexPathFindingService(_hexagonalFieldModel);
             _pathContainer = new PathContainer(_pathFindingService, _context.LevelMapModel.PathDatas);
             
-            TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
+            TowersManager towersManager = new TowersManager(_context.VfxManager, _hexagonalFieldModel.HexGridSize);
 
             _hexObjectsContainer = new HexObjectsContainer();
             _propsObjectsContainer = new PropsObjectsContainer();
@@ -183,6 +183,7 @@ namespace Match.Field
             _mobsByTowersBlocker = AddDisposable(new MobsByTowersBlocker(mobsByTowersBlockerContext));
 
             MobsManager.Context mobsManagerContext = new MobsManager.Context(
+                _context.VfxManager,
                 _mobsByTowersBlocker,
                 _context.FieldConfig.RemoveMobsOnBossAppearing,
                 attackTowerByMobReactiveCommand,
@@ -194,7 +195,6 @@ namespace Match.Field
             FieldModel.Context fieldModelContext = new FieldModel.Context(
                 _hexagonalFieldModel,
                 _hexagonalFieldModel.CurrentFieldHexTypes,
-                _context.VfxManager,
                 towersManager,
                 _mobsManager,
                 _factory,

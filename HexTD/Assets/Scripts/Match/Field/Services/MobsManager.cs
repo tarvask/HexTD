@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Match.Field.Mob;
 using Match.Field.Shooting;
+using Match.Field.VFX;
 using Match.Wave;
 using Tools;
 using Tools.Interfaces;
@@ -12,6 +13,7 @@ namespace Match.Field.Services
     {
         public struct Context
         {
+            public VfxManager VfxManager { get; }
             public MobsByTowersBlocker MobsByTowersBlocker { get; }
             public bool RemoveMobsOnBossAppearing { get; }
             
@@ -21,6 +23,7 @@ namespace Match.Field.Services
             public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
 
             public Context(
+                VfxManager vfxManager,
                 MobsByTowersBlocker mobsByTowersBlocker,
                 bool removeMobsOnBossAppearing,
                 
@@ -29,6 +32,7 @@ namespace Match.Field.Services
                 ReactiveCommand<MobController> removeMobReactiveCommand,
                 ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand)
             {
+                VfxManager = vfxManager;
                 MobsByTowersBlocker = mobsByTowersBlocker;
                 RemoveMobsOnBossAppearing = removeMobsOnBossAppearing;
                 
@@ -116,7 +120,7 @@ namespace Match.Field.Services
             foreach (MobController mob in _carrionBodies)
             {
                 _deadBodies.Remove(mob.Id);
-                _mobsContainer.RemoveMob(mob);
+                _context.VfxManager.ReleaseVfx(mob);
                 mob.Dispose();
             }
 
@@ -184,6 +188,7 @@ namespace Match.Field.Services
                 if (escapingMob.IsEscaping && escapingMob.IsInSafety)
                 {
                     RemoveMob(escapingMob);
+                    _context.VfxManager.ReleaseVfx(escapingMob);
                     escapingMob.Dispose();
                 }
             }
