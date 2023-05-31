@@ -20,18 +20,21 @@ namespace Match.Field.Mob
         {
             public int Id { get; }
             public int TargetId { get; }
+            public byte PathId { get; }
             public IPathEnumerator PathEnumerator { get; }
             public IHexPositionConversionService HexPositionConversionService { get; }
             public MobParameters Parameters { get; }
             public MobView View { get; }
 
-            public Context(int id, int targetId, MobParameters parameters, 
+            public Context(int id, int targetId, byte pathId,
+                MobParameters parameters, 
                 IPathEnumerator pathEnumerator,
                 IHexPositionConversionService hexPositionConversionService,
                 MobView view)
             {
                 Id = id;
                 TargetId = targetId;
+                PathId = pathId;
                 Parameters = parameters;
                 PathEnumerator = pathEnumerator;
                 HexPositionConversionService = hexPositionConversionService;
@@ -46,7 +49,6 @@ namespace Match.Field.Mob
         private Hex2d _currentHexPosition;
         private Hex2d _currentTargetHexPosition;
         
-        private byte _pathIndex;
         private float _currentPathLength;
 
         private int _blockerId;
@@ -242,7 +244,7 @@ namespace Match.Field.Mob
         public PlayerState.MobState GetMobState()
         {
             return new PlayerState.MobState(_context.Id, _context.TargetId, _context.Parameters.TypeId,
-                Position.x, Position.y, _pathIndex, _context.PathEnumerator.CurrentPointIndex,
+                Position.x, Position.y, _context.PathId, _context.PathEnumerator.CurrentPointIndex,
                 _reactiveModel.Health.Value, _blockerId);
         }
 

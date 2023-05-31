@@ -261,7 +261,7 @@ namespace Match.Wave
             _currentPlayer1Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player1MobsWithDelaysAndPaths, builtWaveParams.Duration));
             _currentPlayer2Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player2MobsWithDelaysAndPaths, builtWaveParams.Duration));
             
-            Debug.Log($"Changing wave number to {_currentWaveNumber + 1}, has {_currentPlayer1Waves} more waves");
+            Debug.Log($"Changing wave number to {_currentWaveNumber + 1}, has {_currentPlayer1Waves.Count} more waves");
             // send +1 to avoid counting from 0
             _context.WaveNumberChangedReactiveCommand.Execute(_currentWaveNumber + 1);
 
