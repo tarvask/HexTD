@@ -236,6 +236,7 @@ namespace Match.Field.Mob
         
         public void LoadState(in PlayerState.MobState mobState)
         {
+            _currentPosition = Position;
             _context.PathEnumerator.MoveTo(mobState.NextWaypoint);
             ComputePathLengthAfterTeleport();
             _reactiveModel.SetHealth(mobState.CurrentHealth);
@@ -246,19 +247,6 @@ namespace Match.Field.Mob
             return new PlayerState.MobState(_context.Id, _context.TargetId, _context.Parameters.TypeId,
                 Position.x, Position.y, _context.PathId, _context.PathEnumerator.CurrentPointIndex,
                 _reactiveModel.Health.Value, _blockerId);
-        }
-
-        public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITarget>> buffs, IBuff<ITarget> addedBuff)
-        {
-            addedBuff.ApplyBuff(this);
-        }
-
-        public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<ITarget>> buffs, IEnumerable<IBuff<ITarget>> removedBuffs)
-        {
-            foreach (var removedBuff in removedBuffs)
-            {
-                removedBuff.ApplyBuff(this);
-            }
         }
 
         protected override void OnDispose()
