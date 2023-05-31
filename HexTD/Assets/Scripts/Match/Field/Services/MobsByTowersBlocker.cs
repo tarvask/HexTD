@@ -56,7 +56,7 @@ namespace Match.Field.Services
                 return false;
 
             if (!_mobsByTowers.TryGetValue(possibleBlocker.Id, out var blockedMobs))
-                throw new ArgumentException($"Tried to block mob tower with id={possibleBlocker.Id} that is not is in registry");
+                throw new ArgumentException($"Tried to block mob tower with id={possibleBlocker.Id} that is not in registry");
 
             if (blockedMobs.Count < possibleBlocker.MaxEnemyBlocked)
             {
@@ -98,12 +98,17 @@ namespace Match.Field.Services
             _mobsByTowers.Remove(tower.Id);
         }
 
-        protected override void OnDispose()
+        public void Clear()
         {
             foreach (KeyValuePair<int,List<MobController>> towerWithMobs in _mobsByTowers)
                 towerWithMobs.Value.Clear();
             
             _mobsByTowers.Clear();
+        }
+
+        protected override void OnDispose()
+        {
+            Clear();
             
             base.OnDispose();
         }
