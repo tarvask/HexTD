@@ -130,19 +130,7 @@ namespace Match.Field.Shooting
         {
             foreach (ProjectileController projectile in _hittingProjectiles)
             {
-                if (projectile.HasSplashDamage)
-                {
-                    SplashTargetDistanceComputer.GetTargetsWithSqrDistances(projectile, 
-                        _context.FieldModel.HexPositionConversionService,
-                        _context.FieldModel.Targets.GetTargetsByPosition(projectile.BaseAttackEffect.AttackTargetType),
-                        _targetsWithSqrDistances);
-                }
-                else if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectile.TargetId, 
-                             projectile.BaseAttackEffect.AttackTargetType, out var target))
-                {
-                    // distance is 0 for straight hit
-                    _targetsWithSqrDistances.Add(new TargetWithSqrDistancePair(target, 0));
-                }
+                GetTargetsWithSqrDistancesForProjectile(projectile, _targetsWithSqrDistances);
 
                 // handle hit for every target in damage area
                 foreach (TargetWithSqrDistancePair targetWithSqrDistance in _targetsWithSqrDistances)
@@ -157,6 +145,11 @@ namespace Match.Field.Shooting
                     int hexRadius = ((BaseSplashAttack)projectile.BaseAttackEffect).SplashRadiusInHex;
                     float radius = _context.FieldModel.HexPositionConversionService.GetRadiusFromRadiusInHex(hexRadius);
                     projectile.ShowSplash(radius);
+                }
+                else if (projectile.HasTargetVolumeDamage)
+                {
+                    float unitsRadius = ((BaseSingleAttack)projectile.BaseAttackEffect).SplashRadiusInUnits;
+                    projectile.ShowSplash(unitsRadius);
                 }
                 else
                     projectile.ShowSingleHit();
@@ -198,6 +191,24 @@ namespace Match.Field.Shooting
         {
             var projectileController = tower.CreateAndInitProjectile(_context.Factory);
             _context.FieldModel.AddProjectile(projectileController);
+        }
+
+        private void GetTargetsWithSqrDistancesForProjectile(ProjectileController projectile,
+            List<TargetWithSqrDistancePair> targetWithSqrDistancePairs)
+        {
+            if (projectile.HasSplashDamage || projectile.HasTargetVolumeDamage)
+            {
+                SplashTargetDistanceComputer.GetTargetsWithSqrDistances(projectile, 
+                    _context.FieldModel.HexPositionConversionService,
+                    _context.FieldModel.Targets.GetTargetsByPosition(projectile.BaseAttackEffect.AttackTargetType),
+                    targetWithSqrDistancePairs);
+            }
+            else if (_context.FieldModel.Targets.TryGetTargetByIdAndType(projectile.TargetId, 
+                         projectile.BaseAttackEffect.AttackTargetType, out var target))
+            {
+                // distance is 0 for straight hit
+                targetWithSqrDistancePairs.Add(new TargetWithSqrDistancePair(target, 0));
+            }
         }
 
         private void HandleHitShootable(ProjectileController projectile, ITarget targeter, float sqrDistance)

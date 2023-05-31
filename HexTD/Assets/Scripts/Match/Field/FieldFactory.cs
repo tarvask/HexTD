@@ -182,14 +182,6 @@ namespace Match.Field
             return towerView;
         }
 
-        public TowerView CreateTowerView(TowerConfigNew towerConfig)
-        {
-            TowerView towerView = Object.Instantiate(towerConfig.View, _buildingsRoot);
-            towerView.name = $"{towerConfig.RegularParameters.TowerName}";
-
-            return towerView;
-        }
-
         public CastleController CreateCastle()
         {
             CastleController.Context castleContext = new CastleController.Context(_context.CastleHealth,
@@ -264,11 +256,13 @@ namespace Match.Field
                 ? SplashShootType.UnderSelf
                 : SplashShootType.ToTarget;
             
+            bool hasTargetVolumeDamage = (baseTowerAttack as BaseSingleAttack)?.SplashRadiusInUnits > 0;
+            
             ProjectileView projectileInstance = CreateProjectileView(projectileId, baseTowerAttack.ProjectileView, spawnPosition);
             ProjectileController.Context projectileControllerContext = new ProjectileController.Context(projectileId,
                 projectileInstance,
                 baseTowerAttack, attackIndex, splashShootType,
-                baseTowerAttack.ProjectileSpeed, hasSplashDamage, towerId, targetId);
+                baseTowerAttack.ProjectileSpeed, hasSplashDamage, hasTargetVolumeDamage, towerId, targetId);
             ProjectileController projectileController = new ProjectileController(projectileControllerContext);
 
             return projectileController;
@@ -296,7 +290,7 @@ namespace Match.Field
             }
         }
 
-        public void CreateHexTile(HexModel hexModel)
+        private void CreateHexTile(HexModel hexModel)
         {
             Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)hexModel);
 
@@ -304,7 +298,7 @@ namespace Match.Field
             _context.HexObjectsContainer.HexObjects.Add(hexModel.GetHashCode(), hexObject);
         }
 
-        public void CreateProps(PropsModel propsModel)
+        private void CreateProps(PropsModel propsModel)
         {
             Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)propsModel);
 

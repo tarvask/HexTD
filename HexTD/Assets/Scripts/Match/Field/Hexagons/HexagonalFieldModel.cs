@@ -153,6 +153,25 @@ namespace Match.Field.Hexagons
             return bounds;
         }
 
+        public Hex2d GetHexWithMinZ()
+        {
+            HexModel hexWithMinZ = _cachedLevelFieldHexes.Values.First().HexModel;
+            Vector3 min = GetPlanePosition(hexWithMinZ.Position);
+
+            foreach (var fieldHex in _cachedLevelFieldHexes.Values.Skip(1))
+            {
+                var nextPlanePosition = GetPlanePosition(fieldHex.HexModel.Position);
+
+                if (nextPlanePosition.z < min.z)
+                {
+                    min.z = nextPlanePosition.z;
+                    hexWithMinZ = fieldHex.HexModel;
+                }
+            }
+
+            return hexWithMinZ.Position;
+        }
+
         public bool GetHexIsBlocker(Hex2d hex)
         {
             return IsHexWithProperty(hex, HexParamsNameConstants.IsBlockerParam);

@@ -164,6 +164,7 @@ namespace Match.Wave
                 {
                     {PhotonEventsConstants.SyncState.WavesState.WaveElementState.MobIdParam, waveElement.MobId},
                     {PhotonEventsConstants.SyncState.WavesState.WaveElementState.DelayParam, (int)(waveElement.Delay * 1000)},
+                    {PhotonEventsConstants.SyncState.WavesState.WaveElementState.PathParam, waveElement.PathId},
                 };
             }
         }

@@ -55,13 +55,12 @@ namespace Match.Field.Tower
         private readonly EntityShootModel _shootModel;
         private readonly TowerStableModel _stableModel;
         private readonly TowerReactiveModel _reactiveModel;
-        // effects that are applied to mobs after shot (firing, icing, slowing)
         
         private TowerLevelConfig CurrentLevel => _context.TowerConfig.TowerLevelConfigs[_stableModel.Level];
         public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
 
         public int Id => _context.Id;
-        public override Hex2d HexPosition => _context.Position;
+        public override Hex2d HexPosition => _stableModel.HexPosition;
         public override Vector3 Position => _context.View.transform.localPosition;
 
         public bool IsAttackReady => _shootModel.IsReadyAttack && CanShoot;
@@ -84,9 +83,7 @@ namespace Match.Field.Tower
             _reactiveModel = AddDisposable(new TowerReactiveModel(CurrentLevel.HealthPoint));
             
             _context.View.SetType(_context.TowerConfig.RegularParameters.TowerName);
-            
-            //TODO: test code for healing test
-            _reactiveModel.SetHealth(CurrentLevel.HealthPoint/2);
+            _stableModel.SetHexPosition(_context.Position);
         }
 
         public void OuterLogicUpdate(float frameLength)
@@ -229,10 +226,30 @@ namespace Match.Field.Tower
 
         public void ShowSelection()
         {
-            var hexes= _context.HexMapReachableService.GetInRangeMapByTargetFinderType(
+            int attackRadius;
+            AttackRangeType attackRangeType;
+
+            if (_context.TowerConfig.AttacksConfig.Attacks.Count > 0)
+            {
+                BaseSingleAttack attackConfig = _context.TowerConfig.AttacksConfig.Attacks[0];
+                attackRadius = attackConfig.AttackRadiusInHex;
+                attackRangeType = attackConfig.AttackRangeType;
+            }
+            else if (_context.TowerConfig.AttacksConfig.SplashAttacks.Count > 0)
+            {
+                BaseSplashAttack splashAttackConfig = _context.TowerConfig.AttacksConfig.SplashAttacks[0];
+                attackRadius = splashAttackConfig.SplashRadiusInHex;
+                attackRangeType = splashAttackConfig.AttackRangeType;
+            }
+            else
+            {
+                throw new ArgumentException("Badly configured attacks for tower: " + _context.TowerConfig.RegularParameters.TowerName);
+            }
+            
+            var hexes = _context.HexMapReachableService.GetInRangeMapByTargetFinderType(
                 HexPosition,
-                ((BaseSingleAttack)_context.TowerConfig.AttacksConfig.Attacks[0]).AttackRadiusInHex,
-                _context.TowerConfig.AttacksConfig.Attacks[0].AttackRangeType);
+                attackRadius,
+                attackRangeType);
 
             _context.EnableHexesHighlightReactiveCommand.Execute(hexes);
         }
@@ -240,6 +257,18 @@ namespace Match.Field.Tower
         public void HideSelection()
         {
             _context.RemoveAllHexesHighlightsReactiveCommand.Execute();
+        }
+
+        public void SetPlacing()
+        {
+            _stableModel.SetState(TowerState.Placing);
+            _context.View.SetPlacing();
+        }
+
+        public void ChangePosition(Hex2d hexPosition, Vector3 worldPosition)
+        {
+            _stableModel.SetHexPosition(hexPosition);
+            _context.View.transform.position = worldPosition;
         }
 
         public void LoadState(in PlayerState.TowerState towerState)

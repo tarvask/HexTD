@@ -98,7 +98,7 @@ namespace Match.Field.Hexagons
 
                 if (!y.ContainsKey(attackRadius))
                 {
-                    y.Add(attackRadius, res);
+                    y.Add(attackRadius, new List<Hex2d>(res));
                 }
             }
 

@@ -270,6 +270,7 @@ namespace Match.Field
 
         private void LoadState(PlayerState playerState)
         {
+            _mobsByTowersBlocker.Clear();
             _stateLoader.ClearState();
             _stateLoader.LoadState(playerState);
         }
