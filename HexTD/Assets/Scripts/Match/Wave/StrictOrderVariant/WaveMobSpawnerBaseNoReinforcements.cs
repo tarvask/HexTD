@@ -7,6 +7,7 @@ using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
+using UnityEngine;
 
 namespace Match.Wave
 {
@@ -102,6 +103,7 @@ namespace Match.Wave
 
         public void LoadState(WavesState wavesState)
         {
+            Debug.Log($"Waves state loading: removing current {_currentPlayer1Waves.Count} waves");
             _currentWaveNumber = wavesState.CurrentWaveNumber;
             _state = wavesState.State;
             // convert from int in milliseconds to float
@@ -135,6 +137,7 @@ namespace Match.Wave
                 _currentPlayer2Waves.Enqueue(wave);
             }
             
+            Debug.Log($"Waves state loading: loaded {_currentPlayer1Waves.Count} waves, next wave is {_currentWaveNumber + 1}");
             _context.WaveNumberChangedReactiveCommand.Execute(_currentWaveNumber + 1);
         }
 
@@ -258,6 +261,7 @@ namespace Match.Wave
             _currentPlayer1Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player1MobsWithDelaysAndPaths, builtWaveParams.Duration));
             _currentPlayer2Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player2MobsWithDelaysAndPaths, builtWaveParams.Duration));
             
+            Debug.Log($"Changing wave number to {_currentWaveNumber + 1}, has {_currentPlayer1Waves} more waves");
             // send +1 to avoid counting from 0
             _context.WaveNumberChangedReactiveCommand.Execute(_currentWaveNumber + 1);
 
