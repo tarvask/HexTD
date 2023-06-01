@@ -46,13 +46,10 @@ namespace Match.Field.Services
         public bool TryGetBlockingTowerForMob(MobController mob, out int possibleBlockerId)
         {
             possibleBlockerId = -1;
-            int positionHash = mob.CurrentTargetHexPosition.GetHashCode();
+            int positionHash = mob.HexPosition.GetHashCode();
 
             if (!_context.TowersManager.TowerContainer.TryGetTowerInPositionHash(positionHash,
                     out TowerController possibleBlocker))
-                return false;
-            
-            if ((mob.Position - possibleBlocker.Position).sqrMagnitude > _singleHexSizeSqr)
                 return false;
 
             if (!_mobsByTowers.TryGetValue(possibleBlocker.Id, out var blockedMobs))

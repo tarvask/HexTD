@@ -13,6 +13,6 @@ namespace Match.Field.Hexagons
         Vector3 GetBottomHexPosition(Hex2d hexPosition, bool isWorld = true);
         Hex2d ToHexFromWorldPosition(Vector3 position, bool isWorld = true);
         float GetRadiusFromRadiusInHex(int radius);
-        bool IsCloseToNewHex(float distanceToHex);
+        bool IsCloseToNewHex(float distanceToHexSqr);
     }
 }

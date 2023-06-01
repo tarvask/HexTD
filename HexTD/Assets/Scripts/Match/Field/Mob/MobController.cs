@@ -106,15 +106,16 @@ namespace Match.Field.Mob
 
         public void LogicMove(float frameLength)
         {
-            float distanceToTarget = Vector3.Magnitude(_currentPosition - _currentTargetPosition);
+            float distanceToTargetSqr = Vector3.SqrMagnitude(_currentPosition - _currentTargetPosition);
             float distancePerFrame = _reactiveModel.Speed.Value; //_buffsManager.ParameterResultValue(BuffedParameterType.MovementSpeed) * frameLength;
 
-            if (distancePerFrame < distanceToTarget)
+            if (distancePerFrame * distancePerFrame < distanceToTargetSqr)
             {
                 _currentPosition = Vector3.MoveTowards(_currentPosition, _currentTargetPosition, distancePerFrame);
                 _currentPathLength += distancePerFrame;
                 if (!_wasNewHexReached && 
-                    _context.HexPositionConversionService.IsCloseToNewHex(distanceToTarget))
+                    //_context.HexPositionConversionService.IsCloseToNewHex(distanceToTargetSqr)
+                    _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition) != _currentHexPosition)
                 {
                     _wasNewHexReached = true;
                     UpdateHexPosition();

@@ -21,7 +21,7 @@ namespace Match.Field.Tower
         {
             public int Id { get; }
             public int TargetId { get; }
-            public Hex2d Position { get; }
+            public Hex2d HexPosition { get; }
             public TowerConfigNew TowerConfig { get; }
             public TowerView View { get; }
             public Sprite Icon { get; }
@@ -31,7 +31,7 @@ namespace Match.Field.Tower
             public ReactiveCommand<IReadOnlyCollection<Hex2d>> EnableHexesHighlightReactiveCommand { get; }
             public ReactiveCommand RemoveAllHexesHighlightsReactiveCommand { get; }
 
-            public Context(int id, int targetId, Hex2d position, TowerConfigNew towerConfig, 
+            public Context(int id, int targetId, Hex2d hexPosition, TowerConfigNew towerConfig, 
                 TowerView view, Sprite icon, int towerRemovingDuration,
                 HexMapReachableService hexMapReachableService,
                 ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand ,
@@ -43,7 +43,7 @@ namespace Match.Field.Tower
                 TowerConfig = towerConfig;
                 View = view;
                 Icon = icon;
-                Position = position;
+                HexPosition = hexPosition;
                 TowerRemovingDuration = towerRemovingDuration;
                 HexMapReachableService = hexMapReachableService;
                 EnableHexesHighlightReactiveCommand = enableHexesHighlightReactiveCommand;
@@ -83,7 +83,7 @@ namespace Match.Field.Tower
             _reactiveModel = AddDisposable(new TowerReactiveModel(CurrentLevel.HealthPoint));
             
             _context.View.SetType(_context.TowerConfig.RegularParameters.TowerName);
-            _stableModel.SetHexPosition(_context.Position);
+            _stableModel.SetHexPosition(_context.HexPosition);
         }
 
         public void OuterLogicUpdate(float frameLength)
@@ -280,7 +280,7 @@ namespace Match.Field.Tower
         {
             return new PlayerState.TowerState(_context.Id, 
                 _context.TargetId,
-                (byte)_context.Position.Q, (byte)_context.Position.R,
+                (byte)_stableModel.HexPosition.Q, (byte)_stableModel.HexPosition.R,
                 _context.TowerConfig.RegularParameters.TowerType,
                 (byte)_stableModel.Level,
                 // save remaining time
