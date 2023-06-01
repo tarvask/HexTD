@@ -137,23 +137,7 @@ namespace Match.Field.Services
         
         public void ClearState()
         {
-            // towers
-            foreach (KeyValuePair<int, TowerController> towerPair in _context.FieldModel.TowersManager.Towers)
-                towerPair.Value.Dispose();
-            
-            _context.FieldModel.TowersManager.Clear();
-
-            // mobs
-            foreach (KeyValuePair<int, MobController> mobPair in _context.FieldModel.MobsManager.Mobs)
-                mobPair.Value.Dispose();
-            
-            _context.FieldModel.MobsManager.Clear();
-            
-            // projectiles
-            foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.Projectiles)
-                projectilePair.Value.Dispose();
-            
-            _context.FieldModel.Projectiles.Clear();
+            _context.FieldModel.ClearState();
         }
     }
 }

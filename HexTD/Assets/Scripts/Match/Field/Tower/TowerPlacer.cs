@@ -12,7 +12,6 @@ using Tools;
 using Tools.Interfaces;
 using UniRx;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Match.Field.Tower
 {

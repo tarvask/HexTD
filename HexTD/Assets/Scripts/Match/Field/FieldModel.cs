@@ -6,7 +6,6 @@ using Match.Field.Mob;
 using Match.Field.Services;
 using Match.Field.Shooting;
 using Match.Field.Tower;
-using Match.Field.VFX;
 using Match.Wave;
 using Tools;
 using UniRx;
@@ -56,8 +55,8 @@ namespace Match.Field
         
         // supporting data
         // objects that can be shot
-        private TargetContainer _targets;
-        private ShooterContainer _shooters;
+        private readonly TargetContainer _targets;
+        private readonly ShooterContainer _shooters;
 
         public int HexGridSize => _context.FieldHexTypesController.HexGridSize;
         
@@ -100,7 +99,7 @@ namespace Match.Field
 
         public void AddTower(TowerController tower, Hex2d position)
         {
-            if(!_context.FieldHexTypesController.TryAddTower(position.GetHashCode()))
+            if (!_context.FieldHexTypesController.TryAddTower(position.GetHashCode()))
                 return;
 
             _context.TowersManager.AddTower(tower);
@@ -113,7 +112,7 @@ namespace Match.Field
 
         public void RemoveTower(int positionHash, TowerController removingTower)
         {
-            if(!_context.FieldHexTypesController.TryRemoveTower(positionHash))
+            if (!_context.FieldHexTypesController.TryRemoveTower(positionHash))
                 return;
 
             _context.TowersManager.RemoveTower(removingTower);
@@ -142,6 +141,31 @@ namespace Match.Field
         public void RemoveProjectile(int projectileId)
         {
             _projectiles.Remove(projectileId);
+        }
+
+        public void ClearState()
+        {
+            // towers
+            foreach (KeyValuePair<int, TowerController> towerPair in TowersManager.Towers)
+            {
+                // clear tower's hex
+                _context.FieldHexTypesController.TryRemoveTower(towerPair.Value.HexPosition.GetHashCode());
+                towerPair.Value.Dispose();
+            }
+            
+            TowersManager.Clear();
+
+            // mobs
+            foreach (KeyValuePair<int, MobController> mobPair in MobsManager.Mobs)
+                mobPair.Value.Dispose();
+            
+            MobsManager.Clear();
+            
+            // projectiles
+            foreach (KeyValuePair<int, ProjectileController> projectilePair in Projectiles)
+                projectilePair.Value.Dispose();
+            
+            Projectiles.Clear();
         }
     }
 }
