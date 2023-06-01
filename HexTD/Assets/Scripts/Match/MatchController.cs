@@ -409,7 +409,6 @@ namespace Match
                 return;
             
             _ourClicksDistributor.OuterLogicUpdate(frameLength);
-            _ourTowerPlacer.OuterLogicUpdate(frameLength);
 
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
             _buffManager.OuterLogicUpdate(frameLength);
