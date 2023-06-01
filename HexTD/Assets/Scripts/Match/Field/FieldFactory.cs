@@ -107,11 +107,18 @@ namespace Match.Field
             _groundRoot.localScale = Vector3.one;
             
             // create cells root
-            _hexsRoot = AddComponent(new GameObject("Cells")).transform;
+            _hexsRoot = AddComponent(new GameObject("Hexes")).transform;
             _hexsRoot.SetParent(_context.FieldRoot);
             _hexsRoot.SetAsLastSibling();
             _hexsRoot.localPosition = Vector3.zero;
             _hexsRoot.localScale = Vector3.one;
+            
+            // create props root
+            _propsRoot = AddComponent(new GameObject("Props")).transform;
+            _propsRoot.SetParent(_context.FieldRoot);
+            _propsRoot.SetAsLastSibling();
+            _propsRoot.localPosition = Vector3.zero;
+            _propsRoot.localScale = Vector3.one;
             
             // create buildings root
             _buildingsRoot = AddComponent(new GameObject("Buildings")).transform;
@@ -294,7 +301,6 @@ namespace Match.Field
         private void CreateHexTile(HexModel hexModel)
         {
             Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)hexModel);
-
             var hexObject = _context.HexObjectFabric.Create(hexModel, _hexsRoot, spawnPosition);
             _context.HexObjectsContainer.HexObjects.Add(hexModel.GetHashCode(), hexObject);
         }
@@ -302,7 +308,6 @@ namespace Match.Field
         private void CreateProps(PropsModel propsModel)
         {
             Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)propsModel);
-
             var propsObject = _context.PropsObjectFabric.Create(propsModel, _propsRoot, spawnPosition);
             _context.PropsObjectsContainer.PropsObjects.Add(propsModel.GetHashCode(), propsObject);
         }
