@@ -1,15 +1,27 @@
 using System;
+using UI.SeedsItem;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
 using WindowSystem;
 using WindowSystem.View;
 
-namespace UI.ShopwWindow
+namespace UI.ShopWindow
 {
     public class ShopWindowView : WindowViewBase
     {
         [SerializeField] private Button _closeButton;
+
+        [SerializeField] private Button _seedsTabButton;
+        [SerializeField] private Button _cropsTabButton;
+        [SerializeField] private Button _plotsTabButton;
+        [SerializeField] private Button _greenhousesTabButton;
+
+        [field:SerializeField] public Transform SeedsItemsRoot;
+        [field:SerializeField] public SeedsItemView SeedsItemView;
+
+        [SerializeField] private Button _seedsFilterButton;
+        [SerializeField] private Button _plotsFilterButton;
 
         [SerializeField] private GameObject _seedsSelectedTab;
         [SerializeField] private GameObject _cropsSelectedTab;
@@ -24,6 +36,22 @@ namespace UI.ShopwWindow
         public IObservable<Unit> CloseButtonClick => _closeButton
             .OnClickAsObservable()
             .WhereAppeared(this);
+
+        public IObservable<Unit> SeedsFilterButtonClick => _seedsFilterButton
+            .OnClickAsObservable()
+            .WhereAppeared(this);
+
+        public IObservable<Unit> PlotsFilterButtonClick => _plotsFilterButton
+            .OnClickAsObservable()
+            .WhereAppeared(this);
+
+        protected override void DoAwake()
+        {
+            _seedsTabButton.onClick.AddListener(SelectSeedsTab);
+            _cropsTabButton.onClick.AddListener(SelectCropsTab);
+            _plotsTabButton.onClick.AddListener(SelectPlotsTab);
+            _greenhousesTabButton.onClick.AddListener(SelectGreenhousesTab);
+        }
 
         public void SelectSeedsTab()
         {
