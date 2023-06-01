@@ -85,19 +85,19 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
-  - view: {fileID: 9205431198672850726, guid: 157d3e45786b2d240967f14a665309c9, type: 3}
-    viewType: UI.SeedsFilterWindow.SeedsFilterWindowView
-    cacheInMemory: 0
-    assetReference:
-      m_AssetGUID: 157d3e45786b2d240967f14a665309c9
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_EditorAssetChanged: 0
-  - view: {fileID: 1221745646731882153, guid: 0be51aa10d7ed1e419843a040e4be504, type: 3}
+  - view: {fileID: 255710172282095398, guid: 0be51aa10d7ed1e419843a040e4be504, type: 3}
     viewType: UI.PlotsFilterWindow.PlotsFilterWindowView
     cacheInMemory: 0
     assetReference:
       m_AssetGUID: 0be51aa10d7ed1e419843a040e4be504
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: 4542708381535264973, guid: 157d3e45786b2d240967f14a665309c9, type: 3}
+    viewType: UI.SeedsFilterWindow.SeedsFilterWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 157d3e45786b2d240967f14a665309c9
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0

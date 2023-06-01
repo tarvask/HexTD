@@ -10,8 +10,8 @@ public class RangeSlider : MonoBehaviour
         var anchorMin = (spriteCenter - (spriteLenght / 2)) / 100f;
         var anchorMax = (spriteCenter + (spriteLenght / 2)) / 100f;
 
-        slider.anchorMin = new Vector2(anchorMin, 0f);
-        slider.anchorMax = new Vector2(anchorMax, 1f);
+        slider.anchorMin = new Vector2(anchorMin, 0.15f);
+        slider.anchorMax = new Vector2(anchorMax, 0.85f);
         slider.pivot = new Vector2(0.5f, 0.5f);
     }
 }
