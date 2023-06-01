@@ -247,6 +247,14 @@ namespace Match.Wave
                     Spawn(waveMobsQueue.GetNextElement(), spawnPlayerMobReactiveCommand, canSpawnForPlayer);
                 }
             }
+
+            // try to remove empty wave
+            if (currentWaves.TryPeek(out WaveMobsQueue firstCurrentWave)
+                && !firstCurrentWave.HasMoreMobs)
+            {
+                firstCurrentWave.Dispose();
+                currentWaves.Dequeue();
+            }
         }
 
         protected abstract void NextWave();
