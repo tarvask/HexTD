@@ -9,7 +9,6 @@ namespace Match.Field
     [CreateAssetMenu(menuName = "Configs/Match/Field Config")]
     public class FieldConfig : ScriptableObject
     {
-        [SerializeField] private int castleHealth;
         [SerializeField] private bool removeMobsOnBossAppearing;
 
         [Header("Delays and durations")]
@@ -32,8 +31,7 @@ namespace Match.Field
 
         [Header("Levels")]
         [SerializeField] private MatchesConfig levelsConfig;
-
-        public int CastleHealth => castleHealth;
+        
         public bool RemoveMobsOnBossAppearing => removeMobsOnBossAppearing;
 
         // delays and duration

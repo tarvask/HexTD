@@ -30,6 +30,7 @@ namespace Match.Field
             public HexObjectFabric HexObjectFabric { get; }
             public PropsObjectFabric PropsObjectFabric { get; }
             public FieldConfig FieldConfig { get; }
+            public MatchConfig LevelConfig { get; }
             public LevelMapModel LevelMapModel { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public BuffManager BuffManager { get; }
@@ -48,7 +49,9 @@ namespace Match.Field
                 Transform fieldRoot,
                 HexObjectFabric hexObjectFabric,
                 PropsObjectFabric propsObjectFabric,
-                FieldConfig fieldConfig, LevelMapModel levelMapModel,
+                FieldConfig fieldConfig,
+                MatchConfig levelConfig,
+                LevelMapModel levelMapModel,
                 ConfigsRetriever configsRetriever,
                 BuffManager buffManager,
                 VfxManager vfxManager,
@@ -67,6 +70,7 @@ namespace Match.Field
                 PropsObjectFabric = propsObjectFabric;
                 
                 FieldConfig = fieldConfig;
+                LevelConfig = levelConfig;
                 LevelMapModel = levelMapModel;
                 ConfigsRetriever = configsRetriever;
                 BuffManager = buffManager;
@@ -158,7 +162,7 @@ namespace Match.Field
                 _pathContainer,
                 _hexagonalFieldModel,
                 _context.LevelMapModel.GetFieldProps(),
-                _context.FieldConfig.CastleHealth, 
+                _context.LevelConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,
                 _hexMapReachableService,
                 _hexObjectsContainer,

@@ -19,4 +19,5 @@ MonoBehaviour:
       waveConfig: {fileID: 11400000, guid: 9729750e3da98684fbd27fc7123b3cb5, type: 2}
   initialEnergy: 10
   energyRecoveryTime: 2
+  castleHealth: 10
   levelMap: {fileID: 4900000, guid: bd03392e999a9d548996fba1a5f5d846, type: 3}
