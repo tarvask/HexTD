@@ -189,18 +189,13 @@ namespace Match.Field.Hexagons
 
         private bool IsHexWithProperty(Hex2d hex, string propertyName)
         {
-            if (_cachedLevelFieldHexes.ContainsKey(hex.GetHashCode()))
+            if (_cachedLevelFieldHexes.TryGetValue(hex.GetHashCode(), out FieldHex inspectedHex)
+                && inspectedHex.HexModel.Data.TryGetValue(propertyName, out var propertyValue))
             {
-                if (_cachedLevelFieldHexes[hex.GetHashCode()].HexModel.Data.TryGetValue(
-                        propertyName, out var propertyValue))
-                {
-                    return bool.Parse(propertyValue);
-                }
-
-                return false;
+                return bool.Parse(propertyValue);
             }
 
-            return true;
+            return false;
         }
     }
 }
