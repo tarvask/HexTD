@@ -34,18 +34,15 @@ namespace Match.Field
             public ConfigsRetriever ConfigsRetriever { get; }
             public BuffManager BuffManager { get; }
             public VfxManager VfxManager { get; }
+            public bool ShouldCreateMap { get; }
 
-            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             public ReactiveCommand<PlayerState> StateSyncedReactiveCommand { get; }
             public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
             public ReactiveProperty<bool> HasMobsOnField { get; }
-            public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
-            public ReactiveCommand WaveEndedReactiveCommand { get; }
             public ReactiveCommand<HealthInfo> CastleHealthChangedReactiveCommand { get; }
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
             public ReactiveCommand<int> GoldenCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand<int> CrystalsCountChangedReactiveCommand { get; }
-            public ReactiveCommand<float> MatchStartedReactiveCommand { get; }
 
             public Context(
                 Transform fieldRoot,
@@ -55,18 +52,15 @@ namespace Match.Field
                 ConfigsRetriever configsRetriever,
                 BuffManager buffManager,
                 VfxManager vfxManager,
+                bool shouldCreateMap,
                 
-                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
                 ReactiveCommand<PlayerState> stateSyncedReactiveCommand,
                 ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand,
                 ReactiveProperty<bool> hasMobsOnField,
-                ReactiveCommand<int> waveNumberChangedReactiveCommand,
-                ReactiveCommand waveEndedReactiveCommand,
                 ReactiveCommand<HealthInfo> castleHealthChangedReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<int> goldenCoinsCountChangedReactiveCommand,
-                ReactiveCommand<int> crystalsCountChangedReactiveCommand,
-                ReactiveCommand<float> matchStartedReactiveCommand)
+                ReactiveCommand<int> crystalsCountChangedReactiveCommand)
             {
                 FieldRoot = fieldRoot;
                 HexObjectFabric = hexObjectFabric;
@@ -77,18 +71,15 @@ namespace Match.Field
                 ConfigsRetriever = configsRetriever;
                 BuffManager = buffManager;
                 VfxManager = vfxManager;
+                ShouldCreateMap = shouldCreateMap;
 
-                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
                 StateSyncedReactiveCommand = stateSyncedReactiveCommand;
                 SpawnMobReactiveCommand = spawnMobReactiveCommand;
                 HasMobsOnField = hasMobsOnField;
-                WaveNumberChangedReactiveCommand = waveNumberChangedReactiveCommand;
-                WaveEndedReactiveCommand = waveEndedReactiveCommand;
                 CastleHealthChangedReactiveCommand = castleHealthChangedReactiveCommand;
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
                 GoldenCoinsCountChangedReactiveCommand = goldenCoinsCountChangedReactiveCommand;
                 CrystalsCountChangedReactiveCommand = crystalsCountChangedReactiveCommand;
-                MatchStartedReactiveCommand = matchStartedReactiveCommand;
             }
         }
 
@@ -250,7 +241,8 @@ namespace Match.Field
             _currencyController.CrystalsCountReactiveProperty.Subscribe((newValue) =>
                 _context.CrystalsCountChangedReactiveCommand.Execute(newValue));
             
-            _factory.CreateMap();
+            if (_context.ShouldCreateMap)
+                _factory.CreateMap();
         }
         
         public void OuterLogicUpdate(float frameLength)

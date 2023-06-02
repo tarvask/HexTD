@@ -38,7 +38,7 @@ namespace Match
             public IReadOnlyReactiveProperty<bool> IsConnectedReactiveProperty { get; }
             public ReactiveCommand RollbackStateReactiveCommand { get; }
             public bool IsMultiPlayerGame { get; }
-            public WindowSystem.IWindowsManager NewWindowsManager { get; }
+            public WindowSystem.IWindowsManager WindowsManager { get; }
 
             public Context(MatchView matchView, 
                 MatchInitDataParameters matchInitDataParameters, 
@@ -52,7 +52,7 @@ namespace Match
                 IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
                 ReactiveCommand rollbackStateReactiveCommand,
                 bool isMultiPlayerGame,
-                WindowSystem.IWindowsManager newWindowsManager)
+                WindowSystem.IWindowsManager windowsManager)
             {
                 MatchView = matchView;
                 MatchInitDataParameters = matchInitDataParameters;
@@ -68,7 +68,7 @@ namespace Match
                 IsConnectedReactiveProperty = isConnectedReactiveProperty;
                 RollbackStateReactiveCommand = rollbackStateReactiveCommand;
                 IsMultiPlayerGame = isMultiPlayerGame;
-                NewWindowsManager = newWindowsManager;
+                WindowsManager = windowsManager;
             }
         }
 
@@ -168,7 +168,7 @@ namespace Match
                ourCrystalsCountChangedReactiveCommand,
                dragCardChangeStatusCommand,
                _context.QuitMatchReactiveCommand,
-               _context.NewWindowsManager);
+               _context.WindowsManager);
            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
            _buffManager = new BuffManager();
@@ -187,17 +187,15 @@ namespace Match
                 _configsRetriever,
                 _buffManager,
                 _vfxManager,
+                _context.IsMultiPlayerGame,
                 
-                _context.CurrentEngineFrameReactiveProperty, _enemyStateSyncedReactiveCommand,
+                _enemyStateSyncedReactiveCommand,
                 spawnEnemyMobReactiveCommand,
                 hasMobsOnEnemyField,
-                waveNumberChangedReactiveCommand,
-                waveEndedReactiveCommand,
                 enemyCastleHealthChangedReactiveCommand,
                 enemyCastleDestroyedReactiveCommand,
                 enemyGoldenCoinsCountChangedReactiveCommand,
-                enemyCrystalsCountChangedReactiveCommand,
-                matchStartedReactiveCommand);
+                enemyCrystalsCountChangedReactiveCommand);
                
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _context.MatchView.OurFieldRoot,
@@ -207,17 +205,15 @@ namespace Match
                 _configsRetriever,
                 _buffManager,
                 _vfxManager,
+                true,
                 
-                _context.CurrentEngineFrameReactiveProperty, _ourStateSyncedReactiveCommand,
+                _ourStateSyncedReactiveCommand,
                 spawnOurMobReactiveCommand,
                 hasMobsOnOurField,
-                waveNumberChangedReactiveCommand,
-                waveEndedReactiveCommand,
                 ourCastleHealthChangedReactiveCommand,
                 ourCastleDestroyedReactiveCommand,
                 ourGoldenCoinsCountChangedReactiveCommand,
-                ourCrystalsCountChangedReactiveCommand,
-                matchStartedReactiveCommand);
+                ourCrystalsCountChangedReactiveCommand);
 
             ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
             MatchCommands player1MatchCommands, player2MatchCommands;
