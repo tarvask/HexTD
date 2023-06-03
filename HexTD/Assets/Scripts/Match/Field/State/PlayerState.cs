@@ -462,6 +462,7 @@ namespace Match.Field.State
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.ProjectileIdParam, projectileState.Id},
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.TowerIdParam, projectileState.TowerId},
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.TargetIdParam, projectileState.TargetId},
+                    {PhotonEventsConstants.SyncState.PlayerState.Projectiles.AttackIndex, projectileState.AttackIndex},
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionXParam, projectileState.PositionX},
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionYParam, projectileState.PositionY},
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.SpeedParam, projectileState.Speed},
