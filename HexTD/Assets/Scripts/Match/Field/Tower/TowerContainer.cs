@@ -1,14 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Match.Field.Shooting;
-using Match.Field.VFX;
 
 namespace Match.Field.Tower
 {
     public interface ITowerContainer : ITypeTargetContainer, IShooterContainer
     {
         IReadOnlyDictionary<int, TowerController> Towers { get; }
-        bool TryGetTowerInPositionHash(int positionHash, out TowerController towerInPosition);
     }
     
     public class TowerContainer : ITowerContainer

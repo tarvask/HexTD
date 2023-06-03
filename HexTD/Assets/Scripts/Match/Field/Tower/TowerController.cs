@@ -97,7 +97,7 @@ namespace Match.Field.Tower
             // no construction for duration = 0
             if (constructionDuration < 0)
                 SetConstructing(CurrentLevel.BuildTime);
-            else if (constructionDuration > 0)
+            else
                 SetConstructing(constructionDuration * 0.001f);
             
             _stableModel.SetLevel(newLevel, Time.time);

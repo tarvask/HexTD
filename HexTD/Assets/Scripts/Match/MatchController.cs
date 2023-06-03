@@ -371,8 +371,6 @@ namespace Match
         private void SyncState(MatchState matchState, int timeStamp)
         {
             _context.SyncFrameCounterReactiveCommand.Execute(timeStamp);
-            _player1FieldController.Reset();
-            _player2FieldController.Reset();
 
             if (_context.OurGameRoleReactiveProperty.Value == ProcessRoles.Player1)
             {

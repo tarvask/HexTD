@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HexSystem;
 using Match.Field.Castle;
@@ -83,7 +84,8 @@ namespace Match.Field
             _targets = new TargetContainer(MobsManager.MobContainer, TowersManager.TowerContainer);
             _shooters = new ShooterContainer(_context.TowersManager.TowerContainer); 
             
-            _context.RemoveMobReactiveCommand.Subscribe(RemoveMob);
+            AddDisposable(_context.RemoveMobReactiveCommand.Subscribe(RemoveMob));
+            AddDisposable(_context.TowersManager.TowerRemovedReactiveCommand.Subscribe(RemoveTowerFromHex));
         }
 
         public FieldHexType GetFieldHexType(Hex2d position)
@@ -100,7 +102,7 @@ namespace Match.Field
         public void AddTower(TowerController tower, Hex2d position)
         {
             if (!_context.FieldHexTypesController.TryAddTower(position.GetHashCode()))
-                return;
+                throw new ArgumentException($"Cannot add tower to hex: hex model already has a tower in {position}");
 
             _context.TowersManager.AddTower(tower);
         }
@@ -110,12 +112,15 @@ namespace Match.Field
             _context.TowersManager.UpgradeTower(tower);
         }
 
-        public void RemoveTower(int positionHash, TowerController removingTower)
+        public void RemoveTower(TowerController removingTower)
         {
-            if (!_context.FieldHexTypesController.TryRemoveTower(positionHash))
-                return;
-
             _context.TowersManager.RemoveTower(removingTower);
+        }
+
+        private void RemoveTowerFromHex(TowerController removedTower)
+        {
+            if (!_context.FieldHexTypesController.TryRemoveTower(removedTower.HexPosition.GetHashCode()))
+                throw new ArgumentException($"Cannot remove tower form hex: hex model has no tower in {removedTower.HexPosition}");
         }
 
         public void AddMob(MobController mobController)
@@ -146,13 +151,11 @@ namespace Match.Field
         public void ClearState()
         {
             // towers
-            foreach (KeyValuePair<int, TowerController> towerPair in TowersManager.Towers)
-            {
-                // clear tower's hex
-                _context.FieldHexTypesController.TryRemoveTower(towerPair.Value.HexPosition.GetHashCode());
-                towerPair.Value.Dispose();
-            }
-            
+            List<TowerController> towersToRemove = new List<TowerController>(TowersManager.Towers.Values);
+            foreach (TowerController tower in towersToRemove)
+                RemoveTower(tower);
+
+            towersToRemove.Clear();
             TowersManager.Clear();
 
             // mobs

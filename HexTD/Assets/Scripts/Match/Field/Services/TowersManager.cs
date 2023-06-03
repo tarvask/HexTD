@@ -33,6 +33,11 @@ namespace Match.Field.Tower
             TowerRemovedReactiveCommand = AddDisposable(new ReactiveCommand<TowerController>());
         }
 
+        public bool TryGetTowerInPositionHash(int positionHash, out TowerController towerInPosition)
+        {
+            return _towerContainer.TryGetTowerInPositionHash(positionHash, out towerInPosition);
+        }
+
         public void AddTower(TowerController tower)
         {
             _towerContainer.AddTower(tower);
@@ -56,7 +61,7 @@ namespace Match.Field.Tower
 
         public void OuterLogicUpdate(float frameLength)
         {
-            foreach (var tower in TowerContainer.Towers.Values)
+            foreach (var tower in _towerContainer.Towers.Values)
             {
                 tower.OuterLogicUpdate(frameLength);
 
