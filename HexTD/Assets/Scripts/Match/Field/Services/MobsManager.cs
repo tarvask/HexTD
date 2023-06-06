@@ -5,7 +5,9 @@ using Match.Field.VFX;
 using Match.Wave;
 using Tools;
 using Tools.Interfaces;
+using UI.ScreenSpaceOverlaySystem;
 using UniRx;
+using Zenject;
 
 namespace Match.Field.Services
 {
@@ -49,20 +51,28 @@ namespace Match.Field.Services
         private readonly Dictionary<int, MobController> _deadBodies;
         private readonly List<MobController> _carrionBodies;
         private readonly List<MobController> _escapingMobs;
+        private readonly Dictionary<int, MobController> _escapedBodies;
+        private readonly List<MobController> _mobsInSafety;
+        
+        private readonly ScreenSpaceOverlayController _screenSpaceOverlayController;
 
         public ITypeTargetContainer MobContainer => _mobsContainer;
         public IReadOnlyDictionary<int, MobController> Mobs => _mobsContainer.Mobs;
         public int MobCount => _mobsContainer.Mobs.Count;
 
-        public MobsManager(Context context)
+        public MobsManager(Context context, ScreenSpaceOverlayController screenSpaceOverlayController)
         {
             _context = context;
+            _screenSpaceOverlayController = screenSpaceOverlayController;
 
             _mobsContainer = new MobsContainer();
             _dyingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _deadBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _carrionBodies = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            
             _escapingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            _escapedBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            _mobsInSafety = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
 
             _context.SpawnMobReactiveCommand.Subscribe(CheckForBossSpawn);
         }
@@ -105,9 +115,8 @@ namespace Match.Field.Services
             foreach (MobController dyingMob in _dyingMobs)
             {
                 _deadBodies.Add(dyingMob.Id, dyingMob);
-                _mobsContainer.RemoveMob(dyingMob);
                 dyingMob.Die();
-                _context.RemoveMobReactiveCommand.Execute(dyingMob);
+                RemoveMob(dyingMob);
             }
 
             foreach (KeyValuePair<int, MobController> mobPair in _deadBodies)
@@ -120,8 +129,7 @@ namespace Match.Field.Services
             foreach (MobController mob in _carrionBodies)
             {
                 _deadBodies.Remove(mob.Id);
-                _context.VfxManager.ReleaseVfx(mob);
-                mob.Dispose();
+                UtiliseMob(mob);
             }
 
             _dyingMobs.Clear();
@@ -172,28 +180,36 @@ namespace Match.Field.Services
         {
             foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
-                if (mobPair.Value.HasReachedCastle)
+                if (mobPair.Value.HasReachedCastle && !mobPair.Value.IsEscaping)
+                {
                     _escapingMobs.Add(mobPair.Value);
+                }
             }
 
+            // needed to clean up escaping mobs from FieldModel.Mobs
             foreach (MobController escapingMob in _escapingMobs)
             {
-                if (!escapingMob.IsEscaping)
-                {
-                    _context.ReachCastleByMobReactiveCommand.Execute(1); // 1 means that 1 mob escaped
-                    escapingMob.Escape();
-                    _context.RemoveMobReactiveCommand.Execute(escapingMob);
-                }
+                _context.ReachCastleByMobReactiveCommand.Execute(1); // 1 means that 1 mob escaped
+                escapingMob.Escape();
+                RemoveMob(escapingMob);
+                _escapedBodies.Add(escapingMob.Id, escapingMob);
+            }
 
-                if (escapingMob.IsEscaping && escapingMob.IsInSafety)
-                {
-                    RemoveMob(escapingMob);
-                    _context.VfxManager.ReleaseVfx(escapingMob);
-                    escapingMob.Dispose();
-                }
+            foreach (KeyValuePair<int,MobController> escapedBodyPair in _escapedBodies)
+            {
+                if (escapedBodyPair.Value.IsInSafety)
+                    _mobsInSafety.Add(escapedBodyPair.Value);
+            }
+
+            // needed to clean up escapedBodies after cooldown
+            foreach (MobController mobInSafety in _mobsInSafety)
+            {
+                _escapedBodies.Remove(mobInSafety.Id);
+                UtiliseMob(mobInSafety);
             }
             
             _escapingMobs.Clear();
+            _mobsInSafety.Clear();
         }
 
         private void CheckForBossSpawn(MobSpawnParameters mobSpawnParameters)
@@ -216,11 +232,18 @@ namespace Match.Field.Services
             }
         }
 
+        private void UtiliseMob(MobController mobToUtilise)
+        {
+            _context.VfxManager.ReleaseVfx(mobToUtilise);
+			_screenSpaceOverlayController.RemoveByTarget(mobToUtilise);
+            mobToUtilise.Dispose();
+        }
+
         public void Clear()
         {
             _mobsContainer.Clear();
             _deadBodies.Clear();
-            _carrionBodies.Clear();
+            _escapingMobs.Clear();
         }
 
         protected override void OnDispose()
@@ -228,7 +251,11 @@ namespace Match.Field.Services
             base.OnDispose();
             
             _deadBodies.Clear();
-            _carrionBodies.Clear();
+            _escapingMobs.Clear();
+        }
+
+        public class Factory : PlaceholderFactory<Context, MobsManager>
+        {
         }
     }
 }

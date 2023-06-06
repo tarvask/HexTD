@@ -11,8 +11,10 @@ using Match.Field.Tower;
 using Match.Field.Tower.TowerConfigs;
 using PathSystem;
 using Tools;
+using UI.ScreenSpaceOverlaySystem;
 using UniRx;
 using UnityEngine;
+using Zenject;
 using Object = UnityEngine.Object;
 
 namespace Match.Field
@@ -74,6 +76,8 @@ namespace Match.Field
         }
 
         private readonly Context _context;
+        
+        private readonly ScreenSpaceOverlayController _screenSpaceOverlayController;
 
         private Transform _groundRoot;
         private Transform _hexsRoot;
@@ -91,9 +95,12 @@ namespace Match.Field
         // TODO: use for blockers on map 
         private int _lastTargetId;
 
-        public FieldFactory(Context context)
+        public FieldFactory(Context context, ScreenSpaceOverlayController screenSpaceOverlayController)
         {
             _context = context;
+
+            _screenSpaceOverlayController = screenSpaceOverlayController;
+            
             PrepareFieldContainers();
         }
 
@@ -176,6 +183,10 @@ namespace Match.Field
                 _context.RemoveAllHexesHighlightsReactiveCommand);
             TowerController towerController = new TowerController(towerControllerContext);
 
+            // avoid creating for temporary tower, used for placing
+            if (towerId > 0)
+                _screenSpaceOverlayController.CreateForTarget(towerController, towerView, false);
+            
             return towerController;
         }
         
@@ -228,6 +239,8 @@ namespace Match.Field
                 _context.HexagonalFieldModel,
                 mobView);
             MobController mobController = new MobController(mobControllerContext);
+            
+            _screenSpaceOverlayController.CreateForTarget(mobController, mobView);
 
             return mobController;
         }
@@ -310,6 +323,10 @@ namespace Match.Field
             Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)propsModel);
             var propsObject = _context.PropsObjectFabric.Create(propsModel, _propsRoot, spawnPosition);
             _context.PropsObjectsContainer.PropsObjects.Add(propsModel.GetHashCode(), propsObject);
+        }
+        
+        public class Factory : PlaceholderFactory<Context, FieldFactory>
+        {
         }
     }
 }

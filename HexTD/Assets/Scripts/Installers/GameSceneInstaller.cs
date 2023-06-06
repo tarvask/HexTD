@@ -35,7 +35,8 @@ namespace Installers
         {
             Container.Bind(typeof(IMatchStarterLoader))
                 .To<MatchStarterLoader>().AsSingle();
-            Container.Decorate<IMatchStarterLoader>().With<MatchStarterLoadingWindowDecorator>();
+            Container.Decorate<IMatchStarterLoader>()
+                .With<MatchStarterLoadingWindowDecorator>();
         }
 
 //        private void BindFactoryProductInstance<TProduct, TFactory>() where TFactory : PlaceholderFactory<TProduct>
