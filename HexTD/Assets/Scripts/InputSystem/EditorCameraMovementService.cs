@@ -67,12 +67,12 @@ namespace InputSystem
 
         private void MoveCameraForwardOrBackInParallelPlaneBy(float relativeValue)
         {
-	        _editorCamera.transform.Translate(Vector3.forward * relativeValue, Space.World);
+	        _editorCamera.transform.Translate(Vector3.right * relativeValue, Space.World);
         }
 
         private void MoveCameraToSideBy(float relativeValue)
         {
-	        _editorCamera.transform.Translate(relativeValue, 0, 0);
+	        _editorCamera.transform.Translate(Vector3.back * relativeValue, Space.World);
         }
 
         private void MoveCameraVertical(float relativeValue)

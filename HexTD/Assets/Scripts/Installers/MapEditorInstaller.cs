@@ -13,7 +13,8 @@ namespace Installers
     {
         public override void InstallBindings()
         {
-            Hex2d editableAreaSize = new Hex2d(14, 10);
+//            Hex2d editableAreaSize = new Hex2d(14, 10);
+            Hex2d editableAreaSize = new Hex2d(8, 15);
             
             Container.Bind<EditorPointerInputHandler>().FromNew().AsSingle();
             
