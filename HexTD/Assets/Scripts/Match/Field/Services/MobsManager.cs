@@ -51,6 +51,7 @@ namespace Match.Field.Services
         private readonly Dictionary<int, MobController> _deadBodies;
         private readonly List<MobController> _carrionBodies;
         private readonly List<MobController> _escapingMobs;
+        private readonly Dictionary<int, MobController> _escapedBodies;
         private readonly List<MobController> _mobsInSafety;
         
         private readonly ScreenSpaceOverlayController _screenSpaceOverlayController;
@@ -68,7 +69,9 @@ namespace Match.Field.Services
             _dyingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _deadBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _carrionBodies = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            
             _escapingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
+            _escapedBodies = new Dictionary<int, MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
             _mobsInSafety = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
 
             _context.SpawnMobReactiveCommand.Subscribe(CheckForBossSpawn);
@@ -180,26 +183,32 @@ namespace Match.Field.Services
                 if (mobPair.Value.HasReachedCastle && !mobPair.Value.IsEscaping)
                 {
                     _escapingMobs.Add(mobPair.Value);
-                    _context.ReachCastleByMobReactiveCommand.Execute(1); // 1 means that 1 mob escaped
-                    mobPair.Value.Escape();
-                    RemoveMob(mobPair.Value);
                 }
             }
 
+            // needed to clean up escaping mobs from FieldModel.Mobs
             foreach (MobController escapingMob in _escapingMobs)
             {
-                if (escapingMob.IsInSafety)
-                {
-                    _mobsInSafety.Add(escapingMob);
-                }
+                _context.ReachCastleByMobReactiveCommand.Execute(1); // 1 means that 1 mob escaped
+                escapingMob.Escape();
+                RemoveMob(escapingMob);
+                _escapedBodies.Add(escapingMob.Id, escapingMob);
             }
 
+            foreach (KeyValuePair<int,MobController> escapedBodyPair in _escapedBodies)
+            {
+                if (escapedBodyPair.Value.IsInSafety)
+                    _mobsInSafety.Add(escapedBodyPair.Value);
+            }
+
+            // needed to clean up escapedBodies after cooldown
             foreach (MobController mobInSafety in _mobsInSafety)
             {
-                _escapingMobs.Remove(mobInSafety);
+                _escapedBodies.Remove(mobInSafety.Id);
                 UtiliseMob(mobInSafety);
             }
             
+            _escapingMobs.Clear();
             _mobsInSafety.Clear();
         }
 

@@ -183,11 +183,10 @@ namespace Match.Field
                 _context.RemoveAllHexesHighlightsReactiveCommand);
             TowerController towerController = new TowerController(towerControllerContext);
 
+            // avoid creating for temporary tower, used for placing
             if (towerId > 0)
-            {
                 _screenSpaceOverlayController.CreateForTarget(towerController, towerView, false);
-            }
-
+            
             return towerController;
         }
         
