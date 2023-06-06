@@ -19,6 +19,7 @@ using Tools;
 using Tools.Interfaces;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace Match.Field
 {
@@ -120,9 +121,20 @@ namespace Match.Field
         public FieldConstructionProcessController FieldConstructionProcessController => _constructionProcessController;
         public FieldModel FieldModel => _model;
 
-        public FieldController(Context context)
+        private FieldFactory.Factory _fieldFactoryFactory;
+        private TowersManager.Factory _towersManagerFactory;
+        private MobsManager.Factory _mobsManagerFactory;
+
+        public FieldController(
+            Context context,
+            FieldFactory.Factory fieldFactoryFactory,
+            TowersManager.Factory towersManagerFactory,
+            MobsManager.Factory mobsManagerFactory)
         {
             _context = context;
+            _fieldFactoryFactory = fieldFactoryFactory;
+            _towersManagerFactory = towersManagerFactory;
+            _mobsManagerFactory = mobsManagerFactory;
 
             ReactiveCommand<MobController> attackTowerByMobReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<int> castleReachedByMobReactiveCommand = AddDisposable(new ReactiveCommand<int>());
@@ -142,7 +154,9 @@ namespace Match.Field
             _pathFindingService = new HexPathFindingService(_hexagonalFieldModel);
             _pathContainer = new PathContainer(_pathFindingService, _context.LevelMapModel.PathDatas);
             
-            TowersManager towersManager = new TowersManager(_context.VfxManager, _hexagonalFieldModel.HexGridSize);
+            TowersManager towersManager = _towersManagerFactory.Create(
+                _context.VfxManager, 
+                _hexagonalFieldModel.HexGridSize);
 
             _hexObjectsContainer = new HexObjectsContainer();
             _propsObjectsContainer = new PropsObjectsContainer();
@@ -171,7 +185,7 @@ namespace Match.Field
                 _context.CastleDestroyedReactiveCommand,
                 enableHexesHighlightReactiveCommand,
                 removeAllHexesHighlightsReactiveCommand);
-            _factory = AddDisposable(new FieldFactory(factoryContext));
+            _factory = AddDisposable(_fieldFactoryFactory.Create(factoryContext));
             
             MobsByTowersBlocker.Context mobsByTowersBlockerContext = new MobsByTowersBlocker.Context(
                 _hexagonalFieldModel.HexSize, towersManager, removeMobReactiveCommand);
@@ -185,7 +199,7 @@ namespace Match.Field
                 castleReachedByMobReactiveCommand,
                 removeMobReactiveCommand,
                 _context.SpawnMobReactiveCommand);
-            _mobsManager = AddDisposable(new MobsManager(mobsManagerContext));
+            _mobsManager = AddDisposable(_mobsManagerFactory.Create(mobsManagerContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
                 _hexagonalFieldModel,
@@ -289,6 +303,10 @@ namespace Match.Field
         public void Reset()
         {
             _hexagonalFieldModel.Reset();
+        }
+
+        public class Factory : PlaceholderFactory<Context, FieldController>
+        {
         }
     }
 }

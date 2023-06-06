@@ -2,7 +2,9 @@
 using Match.Field.VFX;
 using Tools;
 using Tools.Interfaces;
+using UI.ScreenSpaceOverlaySystem;
 using UniRx;
+using Zenject;
 
 namespace Match.Field.Tower
 {
@@ -11,6 +13,8 @@ namespace Match.Field.Tower
         private readonly VfxManager _vfxManager;
         private readonly TowerContainer _towerContainer;
         private readonly List<TowerController> _dyingTowers;
+        
+        private readonly ScreenSpaceOverlayController _screenSpaceOverlayController;
         
         public ReactiveCommand<TowerController> TowerBuiltReactiveCommand { get; }
         public ReactiveCommand<TowerController> TowerPreUpgradedReactiveCommand { get; }
@@ -21,11 +25,13 @@ namespace Match.Field.Tower
         // towers by ids
         public IReadOnlyDictionary<int, TowerController> Towers => _towerContainer.Towers;
         
-        public TowersManager(VfxManager vfxManager, int fieldHexGridSize)
+        public TowersManager(VfxManager vfxManager, int fieldHexGridSize, 
+            ScreenSpaceOverlayController screenSpaceOverlayController)
         {
             _vfxManager = vfxManager;
             _towerContainer = new TowerContainer(fieldHexGridSize);
             _dyingTowers = new List<TowerController>(fieldHexGridSize);
+            _screenSpaceOverlayController = screenSpaceOverlayController;
             
             TowerBuiltReactiveCommand = AddDisposable(new ReactiveCommand<TowerController>());
             TowerPreUpgradedReactiveCommand = AddDisposable(new ReactiveCommand<TowerController>());
@@ -51,6 +57,7 @@ namespace Match.Field.Tower
             _towerContainer.RemoveTower(removingTower);
             TowerRemovedReactiveCommand.Execute(removingTower);
             _vfxManager.ReleaseVfx(removingTower);
+            _screenSpaceOverlayController.RemoveByTarget(removingTower);
             removingTower.Dispose();
         }
 
@@ -75,6 +82,10 @@ namespace Match.Field.Tower
         public void Clear()
         {
             _towerContainer.Clear();
+        }
+
+        public class Factory : PlaceholderFactory<VfxManager, int, TowersManager>
+        {
         }
     }
 }

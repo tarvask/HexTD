@@ -1,6 +1,7 @@
 using Match.Field;
 using Tools;
 using UnityEngine;
+using Zenject;
 
 namespace Match
 {
@@ -27,5 +28,9 @@ namespace Match
         public FieldConfig FieldConfig => fieldConfig;
 
         public MatchUiViewsCollection MatchUiViews => matchUiViews;
+        
+        public class Factory : PlaceholderFactory<MatchView>
+        {
+        }
     }
 }
