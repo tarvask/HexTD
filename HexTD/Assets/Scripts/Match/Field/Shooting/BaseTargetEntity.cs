@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BuffLogic;
 using HexSystem;
 using Tools;
@@ -30,5 +31,9 @@ namespace Match.Field.Shooting
                 removedBuff.ApplyBuff(this);
             }
         }
+
+        public ITarget Value => throw new NotImplementedException();
+        public bool HasValue => throw new NotImplementedException();
+        public IDisposable Subscribe(IObserver<ITarget> observer) => throw new NotImplementedException();
     }
 }

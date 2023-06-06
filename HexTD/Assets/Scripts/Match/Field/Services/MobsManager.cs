@@ -5,7 +5,9 @@ using Match.Field.VFX;
 using Match.Wave;
 using Tools;
 using Tools.Interfaces;
+using UI.ScreenSpaceOverlaySystem;
 using UniRx;
+using Zenject;
 
 namespace Match.Field.Services
 {
@@ -49,14 +51,17 @@ namespace Match.Field.Services
         private readonly Dictionary<int, MobController> _deadBodies;
         private readonly List<MobController> _carrionBodies;
         private readonly List<MobController> _escapingMobs;
+        
+        private readonly ScreenSpaceOverlayController _screenSpaceOverlayController;
 
         public ITypeTargetContainer MobContainer => _mobsContainer;
         public IReadOnlyDictionary<int, MobController> Mobs => _mobsContainer.Mobs;
         public int MobCount => _mobsContainer.Mobs.Count;
 
-        public MobsManager(Context context)
+        public MobsManager(Context context, ScreenSpaceOverlayController screenSpaceOverlayController)
         {
             _context = context;
+            _screenSpaceOverlayController = screenSpaceOverlayController;
 
             _mobsContainer = new MobsContainer();
             _dyingMobs = new List<MobController>(WaveMobSpawnerCoordinator.MaxMobsInWave);
@@ -121,6 +126,7 @@ namespace Match.Field.Services
             {
                 _deadBodies.Remove(mob.Id);
                 _context.VfxManager.ReleaseVfx(mob);
+                _screenSpaceOverlayController.RemoveByTarget(mob);
                 mob.Dispose();
             }
 
@@ -229,6 +235,10 @@ namespace Match.Field.Services
             
             _deadBodies.Clear();
             _carrionBodies.Clear();
+        }
+
+        public class Factory : PlaceholderFactory<Context, MobsManager>
+        {
         }
     }
 }

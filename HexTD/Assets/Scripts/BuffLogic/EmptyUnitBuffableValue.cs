@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Tools.PriorityTools;
 
 namespace BuffLogic
@@ -14,5 +15,9 @@ namespace BuffLogic
         {
             
         }
+
+        public TValue Value => throw new NotImplementedException();
+        public bool HasValue => throw new NotImplementedException();
+        public IDisposable Subscribe(IObserver<TValue> observer) => throw new NotImplementedException();
     }
 }

@@ -1,10 +1,14 @@
 using Tools;
+using UI.ScreenSpaceOverlaySystem;
 using UnityEngine;
 
 namespace Match.Field.Tower
 {
-    public class TowerView : BaseMonoBehaviour
+    public class TowerView : BaseMonoBehaviour, ITargetView
     {
+        [SerializeField] private Transform infoPanelPivot;
+        public Transform InfoPanelPivot => infoPanelPivot;
+
         public void SetType(string towerType)
         {
             

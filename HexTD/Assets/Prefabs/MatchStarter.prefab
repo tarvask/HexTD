@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 6965751542809133232}
   - component: {fileID: 6965751542809133231}
   - component: {fileID: 5926312863009226861}
-  - component: {fileID: 4917645604679316126}
+  - component: {fileID: 6811641787500511624}
   m_Layer: 0
   m_Name: MatchStarter
   m_TagString: Untagged
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
   _monoInstallers:
-  - {fileID: 4917645604679316126}
+  - {fileID: 6811641787500511624}
   _installerPrefabs: []
   _autoRun: 1
   _kernel: {fileID: 0}
@@ -163,8 +163,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   matchPrefab: {fileID: 4679155216261781234, guid: a36ae4fde7a654e99abc082ff7f070b9, type: 3}
-  matchScenesNames:
-  - StandaloneMatch
 --- !u!114 &6965751542809133232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e8f1c4849db48cf9da55e37f6f81627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4917645604679316126
+--- !u!114 &6811641787500511624
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,6 +209,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6965751542809133235}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb1dd4b583fd468a930059afcc36b70d, type: 3}
+  m_Script: {fileID: 11500000, guid: 5889a2795dd740779de1b6e229aa6137, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  matchViewPrefab: {fileID: 4679155216261781234, guid: a36ae4fde7a654e99abc082ff7f070b9, type: 3}
