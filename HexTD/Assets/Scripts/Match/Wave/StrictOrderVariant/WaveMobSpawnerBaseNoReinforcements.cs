@@ -221,12 +221,12 @@ namespace Match.Wave
         private void UpdateInSpawning(float frameLength)
         {
             _spawnTimer += frameLength;
-            
-            if (_currentPlayer1Waves.Count == 0 && _currentPlayer2Waves.Count == 0)
-                return;
 
-            UpdateCurrentWaves(_currentPlayer1Waves, _context.SpawnPlayer1MobReactiveCommand, frameLength);
-            UpdateCurrentWaves(_currentPlayer2Waves, _context.SpawnPlayer2MobReactiveCommand, frameLength, _context.IsMultiPlayer);
+            if (_currentPlayer1Waves.Count > 0 || _currentPlayer2Waves.Count > 0)
+            {
+                UpdateCurrentWaves(_currentPlayer1Waves, _context.SpawnPlayer1MobReactiveCommand, frameLength);
+                UpdateCurrentWaves(_currentPlayer2Waves, _context.SpawnPlayer2MobReactiveCommand, frameLength, _context.IsMultiPlayer);
+            }
             
             if (IsTimeForNextWave(_spawnTimer, _currentWaveNumber))
             {
