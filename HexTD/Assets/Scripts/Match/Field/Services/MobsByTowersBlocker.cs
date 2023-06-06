@@ -4,7 +4,6 @@ using Match.Field.Mob;
 using Match.Field.Tower;
 using Tools;
 using UniRx;
-using UnityEngine;
 
 namespace Match.Field.Services
 {
@@ -12,22 +11,19 @@ namespace Match.Field.Services
     {
         public struct Context
         {
-            public Vector3 SingleHexSize { get; }
             public TowersManager TowersManager { get; }
             
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
 
-            public Context(Vector3 singleHexSize, TowersManager towersManager,
+            public Context(TowersManager towersManager,
                 ReactiveCommand<MobController> removeMobReactiveCommand)
             {
-                SingleHexSize = singleHexSize;
                 TowersManager = towersManager;
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
             }
         }
         
         private readonly Context _context;
-        private readonly float _singleHexSizeSqr;
         
         private readonly Dictionary<int, List<MobController>> _mobsByTowers;
 
@@ -35,7 +31,6 @@ namespace Match.Field.Services
         {
             _context = context;
 
-            _singleHexSizeSqr = _context.SingleHexSize.x * _context.SingleHexSize.x;
             _mobsByTowers = new Dictionary<int, List<MobController>>(TestMatchEngine.TowersInHandCount);
 
             AddDisposable(_context.RemoveMobReactiveCommand.Subscribe(RemoveMobFromBlockerTower));
@@ -48,7 +43,7 @@ namespace Match.Field.Services
             possibleBlockerId = -1;
             int positionHash = mob.HexPosition.GetHashCode();
 
-            if (!_context.TowersManager.TowerContainer.TryGetTowerInPositionHash(positionHash,
+            if (!_context.TowersManager.TryGetTowerInPositionHash(positionHash,
                     out TowerController possibleBlocker))
                 return false;
 

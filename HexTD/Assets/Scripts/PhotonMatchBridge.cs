@@ -37,12 +37,10 @@ public class PhotonMatchBridge : BaseMonoBehaviour
 
     private List<Player> _players;
     private bool _isDisposed;
+    private bool _isMultiPlayerGame;
 
     private bool IsServer => !_isMultiPlayerGame || PhotonNetwork.IsMasterClient;
 
-    
-    private bool _isMultiPlayerGame;
-    
     [Inject]
     public void Constructor(MatchSettingsProvider matchSettingsProvider)
     {

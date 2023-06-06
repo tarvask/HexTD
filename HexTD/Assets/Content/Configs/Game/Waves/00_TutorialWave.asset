@@ -18,8 +18,6 @@ MonoBehaviour:
     - mobId: 1
       delay: 0
     - mobId: 1
-      delay: 1
+      delay: 4
     - mobId: 1
-      delay: 2
-    - mobId: 2
-      delay: 3
+      delay: 8

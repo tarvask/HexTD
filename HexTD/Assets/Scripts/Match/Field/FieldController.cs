@@ -188,7 +188,7 @@ namespace Match.Field
             _factory = AddDisposable(_fieldFactoryFactory.Create(factoryContext));
             
             MobsByTowersBlocker.Context mobsByTowersBlockerContext = new MobsByTowersBlocker.Context(
-                _hexagonalFieldModel.HexSize, towersManager, removeMobReactiveCommand);
+                towersManager, removeMobReactiveCommand);
             _mobsByTowersBlocker = AddDisposable(new MobsByTowersBlocker(mobsByTowersBlockerContext));
 
             MobsManager.Context mobsManagerContext = new MobsManager.Context(
@@ -244,7 +244,9 @@ namespace Match.Field
 
             // clicks distribution
 
-            PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model, _factory,
+            PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model,
+                _factory,
+                _constructionProcessController,
                 _context.ConfigsRetriever,
                 _currencyController);
             _stateLoader = AddDisposable(new PlayerStateLoader(stateLoaderContext));
@@ -280,7 +282,6 @@ namespace Match.Field
 
         private void LoadState(PlayerState playerState)
         {
-            _mobsByTowersBlocker.Clear();
             _stateLoader.ClearState();
             _stateLoader.LoadState(playerState);
         }
@@ -299,11 +300,6 @@ namespace Match.Field
         }
 
         public Bounds GetFieldBounds() => _hexagonalFieldModel.GetBounds();
-
-        public void Reset()
-        {
-            _hexagonalFieldModel.Reset();
-        }
 
         public class Factory : PlaceholderFactory<Context, FieldController>
         {

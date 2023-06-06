@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using HexSystem;
 using Match.Field.Currency;
 using Match.Field.Mob;
@@ -18,15 +17,19 @@ namespace Match.Field.Services
         {
             public FieldModel FieldModel { get; }
             public FieldFactory FieldFactory { get; }
+            public FieldConstructionProcessController FieldConstructionProcessController { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public CurrencyController CurrencyController { get; }
 
-            public Context(FieldModel fieldModel, FieldFactory fieldFactory,
+            public Context(FieldModel fieldModel,
+                FieldFactory fieldFactory,
+                FieldConstructionProcessController fieldConstructionProcessController,
                 ConfigsRetriever towerConfigRetriever,
                 CurrencyController currencyController)
             {
                 FieldModel = fieldModel;
                 FieldFactory = fieldFactory;
+                FieldConstructionProcessController = fieldConstructionProcessController;
                 ConfigsRetriever = towerConfigRetriever;
                 CurrencyController = currencyController;
             }
@@ -63,11 +66,7 @@ namespace Match.Field.Services
                 
                 TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerState.Type);
                 Hex2d towerHexPosition = new Hex2d(towerState.PositionQ, towerState.PositionR);
-                TowerController towerController = _context.FieldFactory.CreateTowerWithId(towerConfig,
-                    towerHexPosition, towerState.Id, towerState.TargetId);
-                towerController.LoadState(towerState);
-
-                _context.FieldModel.AddTower(towerController, towerHexPosition);
+                _context.FieldConstructionProcessController.SetTowerConstructingWithState(towerConfig, towerHexPosition, towerState);
             }
 
             // mobs

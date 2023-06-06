@@ -128,7 +128,7 @@ namespace Match.Commands
             
             int towerKey = clickedHex.GetHashCode();
 
-            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(towerKey,
+            if (!_context.FieldModel.TowersManager.TryGetTowerInPositionHash(towerKey,
                     out TowerController towerInstance))
                 return;
 
@@ -159,7 +159,7 @@ namespace Match.Commands
             
             int positionHashcode = position.GetHashCode();
             
-            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(positionHashcode,
+            if (!_context.FieldModel.TowersManager.TryGetTowerInPositionHash(positionHashcode,
                     out TowerController towerInstance))
                 return;
 
@@ -175,7 +175,7 @@ namespace Match.Commands
         {
             int positionHashcode = position.GetHashCode();
             
-            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(positionHashcode,
+            if (!_context.FieldModel.TowersManager.TryGetTowerInPositionHash(positionHashcode,
                     out TowerController towerInstance))
                 return;
             
