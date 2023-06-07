@@ -25,7 +25,7 @@ MonoBehaviour:
   towerLevelConfigs:
     keyData: 01000000
     valueData:
-    - buildPrice: 29
+    - buildPrice: 28
       refundPrice: 0
       buildTime: 0
       healthPoint: 65
@@ -33,14 +33,14 @@ MonoBehaviour:
     attacks:
     - attackTargetType: 1
       attackRangeType: 3
-      baseDamage: 40
+      baseDamage: 32
       delay: 0
       cooldown: 2.2
-      projectileSpeed: 30
+      projectileSpeed: 40
       projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
       serializableBuffs: []
       attackRadiusInHex: 2
-      splashRadiusInUnits: 0
+      splashRadiusInUnits: 1
     splashAttacks: []
   references:
     version: 2
