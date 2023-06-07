@@ -37,6 +37,7 @@ namespace Match.Field
             public BuffManager BuffManager { get; }
             public VfxManager VfxManager { get; }
             public bool ShouldCreateMap { get; }
+            public bool ShouldCreateObjectInfo { get; }
 
             public ReactiveCommand<PlayerState> StateSyncedReactiveCommand { get; }
             public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
@@ -57,6 +58,7 @@ namespace Match.Field
                 BuffManager buffManager,
                 VfxManager vfxManager,
                 bool shouldCreateMap,
+                bool shouldCreateObjectInfo,
                 
                 ReactiveCommand<PlayerState> stateSyncedReactiveCommand,
                 ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand,
@@ -77,6 +79,7 @@ namespace Match.Field
                 BuffManager = buffManager;
                 VfxManager = vfxManager;
                 ShouldCreateMap = shouldCreateMap;
+                ShouldCreateObjectInfo = shouldCreateObjectInfo;
 
                 StateSyncedReactiveCommand = stateSyncedReactiveCommand;
                 SpawnMobReactiveCommand = spawnMobReactiveCommand;
@@ -178,6 +181,7 @@ namespace Match.Field
                 _context.LevelMapModel.GetFieldProps(),
                 _context.LevelConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,
+                _context.ShouldCreateObjectInfo,
                 _hexMapReachableService,
                 _hexObjectsContainer,
                 _propsObjectsContainer,

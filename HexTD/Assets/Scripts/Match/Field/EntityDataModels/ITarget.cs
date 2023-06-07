@@ -1,5 +1,6 @@
 using BuffLogic;
 using HexSystem;
+using UI.ScreenSpaceOverlaySystem;
 using UnityEngine;
 
 namespace Match.Field.Shooting
@@ -12,5 +13,6 @@ namespace Match.Field.Shooting
         BaseReactiveModel BaseReactiveModel { get; }
         void Heal(float heal);
         void Hurt(float damage);
+        ITargetView TargetView { get; }
     }
 }

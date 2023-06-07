@@ -200,6 +200,7 @@ namespace Match
                 _buffManager,
                 _vfxManager,
                 _context.IsMultiPlayerGame,
+               false,
                 
                 _enemyStateSyncedReactiveCommand,
                 spawnEnemyMobReactiveCommand,
@@ -219,6 +220,7 @@ namespace Match
                 _configsRetriever,
                 _buffManager,
                 _vfxManager,
+                true,
                 true,
                 
                 _ourStateSyncedReactiveCommand,

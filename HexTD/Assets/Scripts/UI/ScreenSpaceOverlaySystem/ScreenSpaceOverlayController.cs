@@ -8,19 +8,18 @@ namespace UI.ScreenSpaceOverlaySystem
 {
 	public class ScreenSpaceOverlayController : BaseDisposable, IOuterViewUpdatable
 	{
-		private readonly TargetObjectInfoPanelView.Factory targetObjectInfoPanelViewFactory;
+		private readonly TargetObjectInfoPanelView.Factory _targetObjectInfoPanelViewFactory;
 
-		private readonly Dictionary<int, TargetObjectInfoPanelView> _targetObjectInfoPanelViews = new();
+		private readonly Dictionary<Transform, TargetObjectInfoPanelView> _targetObjectInfoPanelViews = new();
 
 		public ScreenSpaceOverlayController(TargetObjectInfoPanelView.Factory targetObjectInfoPanelViewFactory)
 		{
-			this.targetObjectInfoPanelViewFactory = targetObjectInfoPanelViewFactory;
+			_targetObjectInfoPanelViewFactory = targetObjectInfoPanelViewFactory;
 		}
 
 		public void CreateForTarget(ITarget target, ITargetView targetView, bool isShowHealthBarWhenFullHealth = true)
 		{
-//			Debug.Log(target.TargetId);
-			var newTargetObjectInfoPanelView = targetObjectInfoPanelViewFactory.Create(
+			var newTargetObjectInfoPanelView = _targetObjectInfoPanelViewFactory.Create(
 				new TargetObjectInfoPanelView.Context(
 					target.BaseReactiveModel.MaxHealth,
 					target.BaseReactiveModel.Health,
@@ -28,7 +27,7 @@ namespace UI.ScreenSpaceOverlaySystem
 					isShowHealthBarWhenFullHealth)
 			);
 
-			_targetObjectInfoPanelViews.Add(target.TargetId, newTargetObjectInfoPanelView);
+			_targetObjectInfoPanelViews.Add(targetView.InfoPanelPivot, newTargetObjectInfoPanelView);
 		}
 
 		public void OuterViewUpdate(float frameLength)
@@ -41,9 +40,13 @@ namespace UI.ScreenSpaceOverlaySystem
 
 		public void RemoveByTarget(ITarget target)
 		{
-//			Debug.Log($"qwe {target.TargetId}");
-			_targetObjectInfoPanelViews[target.TargetId].Dispose();
-			_targetObjectInfoPanelViews.Remove(target.TargetId);
+			Transform targetViewTransform = target.TargetView.InfoPanelPivot;
+
+			if (!_targetObjectInfoPanelViews.ContainsKey(targetViewTransform))
+				return;
+			
+			_targetObjectInfoPanelViews[targetViewTransform].Dispose();
+			_targetObjectInfoPanelViews.Remove(targetViewTransform);
 		}
 	}
 }

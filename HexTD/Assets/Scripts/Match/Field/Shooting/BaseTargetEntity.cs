@@ -4,6 +4,7 @@ using BuffLogic;
 using HexSystem;
 using Tools;
 using Tools.PriorityTools;
+using UI.ScreenSpaceOverlaySystem;
 using UnityEngine;
 
 namespace Match.Field.Shooting
@@ -34,6 +35,7 @@ namespace Match.Field.Shooting
 
         public ITarget Value => throw new NotImplementedException();
         public bool HasValue => throw new NotImplementedException();
+        public abstract ITargetView TargetView { get; }
         public IDisposable Subscribe(IObserver<ITarget> observer) => throw new NotImplementedException();
     }
 }

@@ -9,6 +9,7 @@ using Match.Field.Shooting.TargetFinding;
 using Match.Field.State;
 using Match.Field.Tower.TowerConfigs;
 using Tools.Interfaces;
+using UI.ScreenSpaceOverlaySystem;
 using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -73,6 +74,7 @@ namespace Match.Field.Tower
         public TowerType TowerType => _context.TowerConfig.RegularParameters.TowerType;
         public byte MaxEnemyBlocked => _context.TowerConfig.RegularParameters.MaxEnemyBlocked;
         public Sprite Icon => _context.Icon;
+        public override ITargetView TargetView => _context.View;
 
         public TowerController(Context context)
         {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using BuffLogic;
 using HexSystem;
@@ -7,7 +6,7 @@ using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.State;
 using PathSystem;
-using Tools.PriorityTools;
+using UI.ScreenSpaceOverlaySystem;
 using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -73,6 +72,7 @@ namespace Match.Field.Mob
         public override Hex2d HexPosition => _currentHexPosition;
         public Hex2d CurrentTargetHexPosition => _currentTargetHexPosition;
         public int BlockerId => _blockerId;
+        public override ITargetView TargetView => _context.View;
         
         public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.Cooldown + _context.Parameters.Delay;
         //public int RewardInCoins => _context.Parameters.RewardInCoins;

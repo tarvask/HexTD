@@ -31,6 +31,7 @@ namespace Match.Field
             public IReadOnlyList<PropsModel> PropsModels{ get; }
             public int CastleHealth { get; }
             public int TowerRemovingDuration { get; }
+            public bool ShouldCreateObjectInfo { get; }
             public HexMapReachableService HexMapReachableService { get; }
             public HexObjectsContainer HexObjectsContainer { get; }
             public PropsObjectsContainer PropsObjectsContainer { get; }
@@ -46,7 +47,7 @@ namespace Match.Field
                 PathContainer pathContainer,
                 HexagonalFieldModel hexagonalFieldModel,
                 IReadOnlyList<PropsModel> propsModels,
-                int castleHealth, int towerRemovingDuration,
+                int castleHealth, int towerRemovingDuration, bool shouldCreateObjectInfo,
                 HexMapReachableService hexMapReachableService,
                 HexObjectsContainer hexObjectsContainer,
                 PropsObjectsContainer propsObjectsContainer,
@@ -65,6 +66,7 @@ namespace Match.Field
 
                 CastleHealth = castleHealth;
                 TowerRemovingDuration = towerRemovingDuration;
+                ShouldCreateObjectInfo = shouldCreateObjectInfo;
                 HexMapReachableService = hexMapReachableService;
                 HexObjectsContainer = hexObjectsContainer;
                 PropsObjectsContainer = propsObjectsContainer;
@@ -184,7 +186,7 @@ namespace Match.Field
             TowerController towerController = new TowerController(towerControllerContext);
 
             // avoid creating for temporary tower, used for placing
-            if (towerId > 0)
+            if (_context.ShouldCreateObjectInfo && towerId > 0)
                 _screenSpaceOverlayController.CreateForTarget(towerController, towerView, false);
             
             return towerController;
@@ -240,7 +242,8 @@ namespace Match.Field
                 mobView);
             MobController mobController = new MobController(mobControllerContext);
             
-            _screenSpaceOverlayController.CreateForTarget(mobController, mobView);
+            if (_context.ShouldCreateObjectInfo)
+                _screenSpaceOverlayController.CreateForTarget(mobController, mobView);
 
             return mobController;
         }
