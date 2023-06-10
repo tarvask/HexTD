@@ -17,7 +17,15 @@ MonoBehaviour:
     waves:
     - waveDelay: 5
       waveConfig: {fileID: 11400000, guid: 9729750e3da98684fbd27fc7123b3cb5, type: 2}
+    - waveDelay: 20
+      waveConfig: {fileID: 11400000, guid: b7282d0f01a933d47b1fc0608c224a59, type: 2}
+    - waveDelay: 35
+      waveConfig: {fileID: 11400000, guid: def3898ca76f87c4badc644adb4d95f2, type: 2}
+    - waveDelay: 50
+      waveConfig: {fileID: 11400000, guid: 0ea942711461aa24c94cfa102472a1ed, type: 2}
+    - waveDelay: 65
+      waveConfig: {fileID: 11400000, guid: 83dccf4c95150ff4d835e5695a69b181, type: 2}
   initialEnergy: 10
   energyRecoveryTime: 2
-  castleHealth: 10
+  castleHealth: 3
   levelMap: {fileID: 4900000, guid: bd03392e999a9d548996fba1a5f5d846, type: 3}

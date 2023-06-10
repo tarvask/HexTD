@@ -17,7 +17,7 @@ MonoBehaviour:
   parameters:
     typeId: 2
     healthPoints: 80
-    speed: 0.06
+    speed: 0.05
     attackPower: 4
     delay: 0
     cooldown: 1

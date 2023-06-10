@@ -16,9 +16,9 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 881798b77426a8f47b533dcc4767e9e5, type: 3}
   parameters:
     typeId: 4
-    healthPoints: 300
-    speed: 0.04
-    attackPower: 40
+    healthPoints: 80
+    speed: 0.1
+    attackPower: 12
     delay: 0
     cooldown: 1
-    isBoss: 1
+    isBoss: 0

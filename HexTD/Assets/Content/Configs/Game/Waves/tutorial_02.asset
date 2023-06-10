@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7fae58e43fb445699eda86d8b9974ca4, type: 3}
-  m_Name: 00_TutorialWave
+  m_Name: tutorial_02
   m_EditorClassIdentifier: 
   waveParameters:
     pauseBeforeWave: 0
     elements:
-    - mobId: 1
+    - mobId: 3
       delay: 0
-    - mobId: 1
+    - mobId: 2
+      delay: 2
+    - mobId: 2
       delay: 4
-    - mobId: 1
-      delay: 8
+    - mobId: 2
+      delay: 6
