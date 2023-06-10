@@ -26,6 +26,6 @@ MonoBehaviour:
     - waveDelay: 65
       waveConfig: {fileID: 11400000, guid: 83dccf4c95150ff4d835e5695a69b181, type: 2}
   initialEnergy: 10
-  energyRecoveryTime: 2
+  energyRecoveryTime: 1.6
   castleHealth: 3
   levelMap: {fileID: 4900000, guid: bd03392e999a9d548996fba1a5f5d846, type: 3}
