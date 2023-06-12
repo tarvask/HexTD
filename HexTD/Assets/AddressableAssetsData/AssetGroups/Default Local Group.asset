@@ -57,6 +57,26 @@ MonoBehaviour:
     m_Address: Assets/Prefabs/UI/Windows/InventoryWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 157d3e45786b2d240967f14a665309c9
+    m_Address: Assets/Prefabs/UI/Windows/SeedsFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 0be51aa10d7ed1e419843a040e4be504
+    m_Address: Assets/Prefabs/UI/Windows/PlotsFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 14bed26bc74c3d34b8e8043f023d363c
+    m_Address: Assets/Prefabs/UI/Windows/SeedsInfoWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 76b7c250dd595d4468802572e3514790
+    m_Address: Assets/Prefabs/UI/Windows/CropsFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 831678d434362ba49acff63d4a7c8580
+    m_Address: Assets/Prefabs/UI/Windows/GreenhousesFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3ec02984d4bb4544aa626424941dabb8, type: 2}
   m_SchemaSet:

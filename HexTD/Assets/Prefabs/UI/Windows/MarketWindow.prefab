@@ -14112,7 +14112,7 @@ GameObject:
   - component: {fileID: 2662622688686591633}
   - component: {fileID: 5822377405943102550}
   m_Layer: 5
-  m_Name: ShopWindow
+  m_Name: MarketWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14170,7 +14170,9 @@ MonoBehaviour:
   SeedsItemsRoot: {fileID: 3691352207698944383}
   SeedsItemView: {fileID: 8280201386879561284, guid: 6e6debe641a12e54e92afd3a5fccd9c4, type: 3}
   _seedsFilterButton: {fileID: 5523883325166164921}
+  _cropsFilterButton: {fileID: 3160491342959511754}
   _plotsFilterButton: {fileID: 5418978612638205294}
+  _greenhousesFilterButton: {fileID: 1887353718353686702}
   _seedsSelectedTab: {fileID: 685590520981757754}
   _cropsSelectedTab: {fileID: 2646915574223805770}
   _plotsSelectedTab: {fileID: 4033262942786239824}

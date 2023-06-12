@@ -1,5 +1,7 @@
 using Cysharp.Threading.Tasks;
 using Extensions;
+using UI.CropsFilterWindow;
+using UI.GreenhousesFilterWindow;
 using UI.PlotsFilterWindow;
 using UI.SeedsFilterWindow;
 using UI.SeedsInfoWindow;
@@ -10,7 +12,7 @@ using WindowSystem.Controller;
 
 namespace UI.ShopWindow
 {
-    public class ShopWindowController : LoadableWindowController<ShopWindowView>
+    public class MarketWindowController : LoadableWindowController<MarketWindowView>
     {
         private UiElementListPool<SeedsItemView> _seedsItemViews;
 
@@ -24,8 +26,16 @@ namespace UI.ShopWindow
                 .Subscribe(OpenSeedsFilterWindow)
                 .AddTo(View);
 
+            View.CropsFilterButtonClick
+                .Subscribe(OpenCropsFilterWindow)
+                .AddTo(View);
+
             View.PlotsFilterButtonClick
                 .Subscribe(OpenPlotsFilterWindow)
+                .AddTo(View);
+
+            View.GreenhousesFilterButtonClick
+                .Subscribe(OpenGreenhousesFilterWindow)
                 .AddTo(View);
 
             _seedsItemViews = new UiElementListPool<SeedsItemView>(View.SeedsItemView,
@@ -48,9 +58,19 @@ namespace UI.ShopWindow
             WindowsManager.OpenAsync<SeedsFilterWindowController>();
         }
 
+        private void OpenCropsFilterWindow()
+        {
+            WindowsManager.OpenAsync<CropsFilterWindowController>();
+        }
+
         private void OpenPlotsFilterWindow()
         {
             WindowsManager.OpenAsync<PlotsFilterWindowController>();
+        }
+
+        private void OpenGreenhousesFilterWindow()
+        {
+            WindowsManager.OpenAsync<GreenhousesFilterWindowController>();
         }
 
         private void OpenSeedsInfoWindow()

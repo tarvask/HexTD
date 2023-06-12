@@ -8,7 +8,7 @@ using WindowSystem.View;
 
 namespace UI.ShopWindow
 {
-    public class ShopWindowView : WindowViewBase
+    public class MarketWindowView : WindowViewBase
     {
         [SerializeField] private Button _closeButton;
 
@@ -21,7 +21,9 @@ namespace UI.ShopWindow
         [field:SerializeField] public SeedsItemView SeedsItemView;
 
         [SerializeField] private Button _seedsFilterButton;
+        [SerializeField] private Button _cropsFilterButton;
         [SerializeField] private Button _plotsFilterButton;
+        [SerializeField] private Button _greenhousesFilterButton;
 
         [SerializeField] private GameObject _seedsSelectedTab;
         [SerializeField] private GameObject _cropsSelectedTab;
@@ -41,7 +43,15 @@ namespace UI.ShopWindow
             .OnClickAsObservable()
             .WhereAppeared(this);
 
+        public IObservable<Unit> CropsFilterButtonClick => _cropsFilterButton
+            .OnClickAsObservable()
+            .WhereAppeared(this);
+
         public IObservable<Unit> PlotsFilterButtonClick => _plotsFilterButton
+            .OnClickAsObservable()
+            .WhereAppeared(this);
+
+        public IObservable<Unit> GreenhousesFilterButtonClick => _greenhousesFilterButton
             .OnClickAsObservable()
             .WhereAppeared(this);
 

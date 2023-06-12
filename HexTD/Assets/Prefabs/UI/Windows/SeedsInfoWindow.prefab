@@ -3453,7 +3453,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5613748874486115019}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c97a6ac2b176f7b43a225ac62456a82e, type: 3}
+  m_Script: {fileID: 11500000, guid: c75ba0b8d39fc1a4194edb88b19e676a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _closeButton: {fileID: 2546671148899051656}
@@ -3467,13 +3467,13 @@ MonoBehaviour:
   _phLevelMin: {fileID: 8296466793845073740}
   _phLevelMax: {fileID: 6128310083626574289}
   _humusSlider: {fileID: 18997041339745113}
-  _humusMin: {fileID: 0}
+  _humusMin: {fileID: 2277860034205222252}
   _humusMax: {fileID: 3094561845702120039}
   _rangeSlider: {fileID: 7821265653085772447}
-  _temperatureValuesTest: 320000004e000000
-  _humididtyValuesTest: 420000005f000000
-  _phLevelValuesTest: 4b00000050000000
-  _humusValuesTest: 0000000037000000
+  _temperatureValuesTest: 4300000057000000
+  _humididtyValuesTest: 5500000063000000
+  _phLevelValuesTest: 3b00000057000000
+  _humusValuesTest: 000000004b000000
 --- !u!114 &7821265653085772447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3483,7 +3483,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5613748874486115019}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a42263f3d6addc46a1c798175a4b6fd, type: 3}
+  m_Script: {fileID: 11500000, guid: a22332e1354b7cf499930885f3d678ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5974549976726206865
