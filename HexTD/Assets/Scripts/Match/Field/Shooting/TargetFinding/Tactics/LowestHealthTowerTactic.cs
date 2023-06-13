@@ -9,7 +9,7 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
 
         public int GetTargetWithTactic(IReadOnlyList<ITarget> targets)
         {
-            float lowestHealth = 0;
+            float lowestHealth = float.MaxValue;
             int towerWithLowestHealthId = -1;
 
             foreach (ITarget target in targets)
