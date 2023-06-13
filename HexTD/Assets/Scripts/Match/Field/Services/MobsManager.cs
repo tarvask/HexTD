@@ -232,7 +232,7 @@ namespace Match.Field.Services
             }
         }
 
-        private void UtiliseMob(MobController mobToUtilise)
+        public void UtiliseMob(MobController mobToUtilise)
         {
             _context.VfxManager.ReleaseVfx(mobToUtilise);
 			_screenSpaceOverlayController.RemoveByTarget(mobToUtilise);

@@ -221,7 +221,7 @@ namespace Match.Field
         }
 
         public MobController CreateMobWithId(MobSpawnParameters mobSpawnParameters, int mobId, int targetId,
-            Vector3 hexSpawnPosition)
+            Vector3 mobSpawnPosition)
         {
             if (_lastMobId < mobId)
                 _lastMobId = mobId;
@@ -234,7 +234,7 @@ namespace Match.Field
                                             $"- in [{mobSpawnParameters.MobConfig.name} with id {mobId}] prefab");
 
             MobView mobView = CreateMobView($"{mobId}",
-                mobId, mobSpawnParameters.MobConfig.View, hexSpawnPosition);
+                mobId, mobSpawnParameters.MobConfig.View, mobSpawnPosition);
             MobController.Context mobControllerContext = new MobController.Context(mobId, targetId, mobSpawnParameters.PathId,
                 mobSpawnParameters.MobConfig.Parameters,
                 pathData.GetPathEnumerator(), 

@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using BuffLogic;
 using HexSystem;
 using Match.Field.Hexagons;
 using Match.Field.Shooting;
@@ -46,7 +45,6 @@ namespace Match.Field.Mob
         private Vector3 _currentPosition;
         private Vector3 _currentTargetPosition;
         private Hex2d _currentHexPosition;
-        private Hex2d _currentTargetHexPosition;
         
         private float _currentPathLength;
 
@@ -65,12 +63,10 @@ namespace Match.Field.Mob
         public override int TargetId => _context.TargetId;
         public override Vector3 Position => _context.View.transform.localPosition;
         public IReadOnlyReactiveProperty<float> Health => _reactiveModel.Health;
-        public IReadonlyBuffableValue<float> Speed => _reactiveModel.Speed;
         public float PathLength => _currentPathLength;
         public float RemainingPathDistance => _context.PathEnumerator.PathLength - _currentPathLength;
         public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
         public override Hex2d HexPosition => _currentHexPosition;
-        public Hex2d CurrentTargetHexPosition => _currentTargetHexPosition;
         public int BlockerId => _blockerId;
         public override ITargetView TargetView => _context.View;
         
@@ -82,8 +78,6 @@ namespace Match.Field.Mob
         public bool IsEscaping => _isEscaping;
         public bool IsInSafety => _isInSafety;
         public bool IsBoss => _context.Parameters.IsBoss;
-        
-        public bool CanMove => true;
 
         public MobController(Context context)
         {
@@ -101,7 +95,6 @@ namespace Match.Field.Mob
             _currentPosition = _currentTargetPosition;
             _context.View.transform.localPosition = _currentPosition;
             _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false);
-			_currentTargetHexPosition = _currentHexPosition;
         }
 
         public void LogicMove(float frameLength)
@@ -128,7 +121,6 @@ namespace Match.Field.Mob
 
                 if (!_hasReachedCastle)
                 {
-                    _currentTargetHexPosition = _context.PathEnumerator.Current;
                     _currentTargetPosition = _context.HexPositionConversionService.GetHexPosition(
                         _context.PathEnumerator.Current, false);
                 }
@@ -160,19 +152,29 @@ namespace Match.Field.Mob
 
         private void ComputePathLengthAfterTeleport()
         {
-            //byte waypointIndex = 1;
-//
-            //while (waypointIndex < _nextWaypoint)
-            //{
-            //    _currentPathLength +=
-            //        Mathf.Abs(_context.Waypoints[waypointIndex].x - _context.Waypoints[waypointIndex - 1].x)
-            //        + Mathf.Abs(_context.Waypoints[waypointIndex].y - _context.Waypoints[waypointIndex - 1].y);
-            //    waypointIndex++;
-            //}
-            //
-            //_currentPathLength +=
-            //    Mathf.Abs(Position.x - _context.Waypoints[waypointIndex - 1].x)
-            //    + Mathf.Abs(Position.y - _context.Waypoints[waypointIndex - 1].y);
+            // cache current waypoint
+            byte lastWaypointIndex = _context.PathEnumerator.CurrentPointIndex;
+            // reset enumerator to iterate from the beginning
+            _context.PathEnumerator.Reset();
+            byte currentWaypointIndex = 0;
+            Vector3 currentPoint = _context.HexPositionConversionService.GetHexPosition(_context.PathEnumerator.Current);
+
+            while (currentWaypointIndex < lastWaypointIndex)
+            {
+                var prevPoint = currentPoint;
+                _context.PathEnumerator.MoveNext();
+                currentPoint = _context.HexPositionConversionService.GetHexPosition(_context.PathEnumerator.Current);
+                _currentPathLength +=
+                    Mathf.Abs(currentPoint.x - prevPoint.x) + Mathf.Abs(currentPoint.y - prevPoint.y);
+                currentWaypointIndex++;
+            }
+            
+            _currentPathLength +=
+                Mathf.Abs(Position.x - currentPoint.x)
+                + Mathf.Abs(Position.y - currentPoint.y);
+            
+            // restore enumerator from cached value
+            _context.PathEnumerator.MoveTo(lastWaypointIndex);
         }
 
         public override void Heal(float heal)
@@ -207,11 +209,6 @@ namespace Match.Field.Mob
             });
         }
 
-        public void RemoveBody()
-        {
-            Dispose();
-        }
-
         public void UpdateTimer(float frameLength)
         {
             _attackingTimer += frameLength;
@@ -237,8 +234,11 @@ namespace Match.Field.Mob
         
         public void LoadState(in PlayerState.MobState mobState)
         {
-            _currentPosition = Position;
+            _currentPosition = new Vector3(mobState.PositionX, 0, mobState.PositionZ);
             _context.PathEnumerator.MoveTo(mobState.NextWaypoint);
+            _currentTargetPosition = _context.HexPositionConversionService.GetHexPosition(
+                _context.PathEnumerator.Current, false);
+            _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false);
             ComputePathLengthAfterTeleport();
             _reactiveModel.SetHealth(mobState.CurrentHealth);
         }
@@ -246,7 +246,7 @@ namespace Match.Field.Mob
         public PlayerState.MobState GetMobState()
         {
             return new PlayerState.MobState(_context.Id, _context.TargetId, _context.Parameters.TypeId,
-                Position.x, Position.y, _context.PathId, _context.PathEnumerator.CurrentPointIndex,
+                Position.x, Position.z, _context.PathId, _context.PathEnumerator.CurrentPointIndex,
                 _reactiveModel.Health.Value, _blockerId);
         }
 

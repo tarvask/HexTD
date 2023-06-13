@@ -76,7 +76,7 @@ namespace Match.Field.Services
                 
                 MobConfig mobConfig = _context.ConfigsRetriever.GetMobById(mobState.TypeId);
                 MobSpawnParameters mobSpawnParameters = new MobSpawnParameters(mobConfig, mobState.PathId);
-                Vector2 mobPosition = new Vector2(mobState.PositionX, mobState.PositionY);
+                Vector3 mobPosition = new Vector3(mobState.PositionX, 0, mobState.PositionZ);
                 MobController mobController = _context.FieldFactory.CreateMobWithId(mobSpawnParameters,
                     mobState.Id, mobState.TargetId,
                     mobPosition);
@@ -96,7 +96,7 @@ namespace Match.Field.Services
                 TowerType towerType = _context.FieldModel.TowersManager.Towers[projectileState.TowerId].TowerType;
                 TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerType);
                 
-                Vector3 projectilePosition = new Vector3(projectileState.PositionX, projectileState.PositionY);
+                Vector3 projectilePosition = new Vector3(projectileState.PositionX, 0, projectileState.PositionZ);
                 ProjectileController projectileController = _context.FieldFactory.CreateProjectileWithId(
                     towerConfig.AttacksConfig.Attacks[projectileState.AttackIndex],
                     projectileState.Id,

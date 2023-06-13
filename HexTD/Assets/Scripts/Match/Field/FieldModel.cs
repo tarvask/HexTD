@@ -160,7 +160,7 @@ namespace Match.Field
 
             // mobs
             foreach (KeyValuePair<int, MobController> mobPair in MobsManager.Mobs)
-                mobPair.Value.Dispose();
+                MobsManager.UtiliseMob(mobPair.Value);
             
             MobsManager.Clear();
             
