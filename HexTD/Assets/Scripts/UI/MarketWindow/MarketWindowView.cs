@@ -1,5 +1,9 @@
 using System;
-using UI.SeedsItem;
+using UI.CropItem;
+using UI.GreenhouseItem;
+using UI.OrderItem;
+using UI.PlotItem;
+using UI.SeedItem;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,36 +14,30 @@ namespace UI.ShopWindow
 {
     public class MarketWindowView : WindowViewBase
     {
+        [Header("Buttons")]
         [SerializeField] private Button _closeButton;
-
-        [SerializeField] private Button _seedsTabButton;
-        [SerializeField] private Button _cropsTabButton;
-        [SerializeField] private Button _plotsTabButton;
-        [SerializeField] private Button _greenhousesTabButton;
-
-        [field:SerializeField] public Transform SeedsItemsRoot;
-        [field:SerializeField] public SeedsItemView SeedsItemView;
-
-        [SerializeField] private Button _seedsFilterButton;
         [SerializeField] private Button _cropsFilterButton;
         [SerializeField] private Button _plotsFilterButton;
+        [SerializeField] private Button _seedsFilterButton;
         [SerializeField] private Button _greenhousesFilterButton;
 
-        [SerializeField] private GameObject _seedsSelectedTab;
-        [SerializeField] private GameObject _cropsSelectedTab;
-        [SerializeField] private GameObject _plotsSelectedTab;
-        [SerializeField] private GameObject _greenhousesSelectedTab;
 
-        [SerializeField] private GameObject _seedsSelectedContent;
-        [SerializeField] private GameObject _cropsSelectedContent;
-        [SerializeField] private GameObject _plotsSelectedContent;
-        [SerializeField] private GameObject _greenhousesSelectedContent;
+        [Header("Roots")]
+        [field: SerializeField] public Transform CropItemsRoot;
+        [field: SerializeField] public Transform PlotItemsRoot;
+        [field: SerializeField] public Transform SeedsItemsRoot;
+        [field: SerializeField] public Transform GreenhouseItemsRoot;
+        [field: SerializeField] public Transform OrderItemsRoot;
+
+        [Header("Vies")]
+        [field: SerializeField] public CropItemView CropItemView;
+        [field: SerializeField] public PlotItemView PlotItemView;
+        [field:SerializeField] public SeedsItemView SeedsItemView;
+        [field: SerializeField] public GreenhouseItemView GreenhouseItemView;
+        [field: SerializeField] public OrderItemView OrderItemView;
+
 
         public IObservable<Unit> CloseButtonClick => _closeButton
-            .OnClickAsObservable()
-            .WhereAppeared(this);
-
-        public IObservable<Unit> SeedsFilterButtonClick => _seedsFilterButton
             .OnClickAsObservable()
             .WhereAppeared(this);
 
@@ -51,68 +49,12 @@ namespace UI.ShopWindow
             .OnClickAsObservable()
             .WhereAppeared(this);
 
-        public IObservable<Unit> GreenhousesFilterButtonClick => _greenhousesFilterButton
+        public IObservable<Unit> SeedsFilterButtonClick => _seedsFilterButton
             .OnClickAsObservable()
             .WhereAppeared(this);
 
-        protected override void DoAwake()
-        {
-            _seedsTabButton.onClick.AddListener(SelectSeedsTab);
-            _cropsTabButton.onClick.AddListener(SelectCropsTab);
-            _plotsTabButton.onClick.AddListener(SelectPlotsTab);
-            _greenhousesTabButton.onClick.AddListener(SelectGreenhousesTab);
-        }
-
-        public void SelectSeedsTab()
-        {
-            _seedsSelectedTab.SetActive(true);
-            _cropsSelectedTab.SetActive(false);
-            _plotsSelectedTab.SetActive(false);
-            _greenhousesSelectedTab.SetActive(false);
-
-            _seedsSelectedContent.SetActive(true);
-            _cropsSelectedContent.SetActive(false);
-            _plotsSelectedContent.SetActive(false);
-            _greenhousesSelectedContent.SetActive(false);
-        }
-
-        public void SelectCropsTab()
-        {
-            _seedsSelectedTab.SetActive(false);
-            _cropsSelectedTab.SetActive(true);
-            _plotsSelectedTab.SetActive(false);
-            _greenhousesSelectedTab.SetActive(false);
-
-            _seedsSelectedContent.SetActive(false);
-            _cropsSelectedContent.SetActive(true);
-            _plotsSelectedContent.SetActive(false);
-            _greenhousesSelectedContent.SetActive(false);
-        }
-
-        public void SelectPlotsTab()
-        {
-            _seedsSelectedTab.SetActive(false);
-            _cropsSelectedTab.SetActive(false);
-            _plotsSelectedTab.SetActive(true);
-            _greenhousesSelectedTab.SetActive(false);
-
-            _seedsSelectedContent.SetActive(false);
-            _cropsSelectedContent.SetActive(false);
-            _plotsSelectedContent.SetActive(true);
-            _greenhousesSelectedContent.SetActive(false);
-        }
-
-        public void SelectGreenhousesTab()
-        {
-            _seedsSelectedTab.SetActive(false);
-            _cropsSelectedTab.SetActive(false);
-            _plotsSelectedTab.SetActive(false);
-            _greenhousesSelectedTab.SetActive(true);
-
-            _seedsSelectedContent.SetActive(false);
-            _cropsSelectedContent.SetActive(false);
-            _plotsSelectedContent.SetActive(false);
-            _greenhousesSelectedContent.SetActive(true);
-        }
+        public IObservable<Unit> GreenhousesFilterButtonClick => _greenhousesFilterButton
+            .OnClickAsObservable()
+            .WhereAppeared(this);
     }
 }

@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using Tools;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI.SeedsItem
+namespace UI.SeedItem
 {
     public class SeedsItemView : BaseMonoBehaviour
     {

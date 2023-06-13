@@ -49,10 +49,6 @@ MonoBehaviour:
     m_Address: Assets/Prefabs/UI/Windows/MatchRoundStartInfoWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 84a25058512b5094ebc7d4c13d24e21c
-    m_Address: Assets/Prefabs/UI/Windows/ShopWindow.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: 0efca6871ee0f8e4781ab722069ce729
     m_Address: Assets/Prefabs/UI/Windows/InventoryWindow.prefab
     m_ReadOnly: 0
@@ -75,6 +71,10 @@ MonoBehaviour:
     m_SerializedLabels: []
   - m_GUID: 831678d434362ba49acff63d4a7c8580
     m_Address: Assets/Prefabs/UI/Windows/GreenhousesFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 58dcec4dab5754d488c3b46a3f6ac570
+    m_Address: Assets/Prefabs/UI/Windows/MarketWindowTest.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

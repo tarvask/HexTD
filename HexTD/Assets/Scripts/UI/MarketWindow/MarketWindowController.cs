@@ -2,19 +2,27 @@ using Cysharp.Threading.Tasks;
 using Extensions;
 using UI.CropsFilterWindow;
 using UI.GreenhousesFilterWindow;
+using UI.OrderItem;
 using UI.PlotsFilterWindow;
 using UI.SeedsFilterWindow;
 using UI.SeedsInfoWindow;
-using UI.SeedsItem;
+using UI.SeedItem;
 using UI.Tools;
 using UniRx;
 using WindowSystem.Controller;
+using UI.CropItem;
+using UI.PlotItem;
+using UI.GreenhouseItem;
 
 namespace UI.ShopWindow
 {
     public class MarketWindowController : LoadableWindowController<MarketWindowView>
     {
+        private UiElementListPool<CropItemView> _cropsItemViews;
+        private UiElementListPool<PlotItemView> _plotsItemViews;
         private UiElementListPool<SeedsItemView> _seedsItemViews;
+        private UiElementListPool<GreenhouseItemView> _greenhousesItemViews;
+        private UiElementListPool<OrderItemView> _orderItemViews;
 
         protected override void DoInitialize()
         {
@@ -38,14 +46,23 @@ namespace UI.ShopWindow
                 .Subscribe(OpenGreenhousesFilterWindow)
                 .AddTo(View);
 
-            _seedsItemViews = new UiElementListPool<SeedsItemView>(View.SeedsItemView,
-                View.SeedsItemsRoot);
+            _cropsItemViews = new UiElementListPool<CropItemView>(View.CropItemView, View.CropItemsRoot);
+            _plotsItemViews = new UiElementListPool<PlotItemView>(View.PlotItemView, View.PlotItemsRoot);
+            _seedsItemViews = new UiElementListPool<SeedsItemView>(View.SeedsItemView, View.SeedsItemsRoot);
+            _greenhousesItemViews = new UiElementListPool<GreenhouseItemView>(View.GreenhouseItemView, View.GreenhouseItemsRoot);
+
+            _orderItemViews = new UiElementListPool<OrderItemView>(View.OrderItemView, View.OrderItemsRoot);
 
             // temporary solution, cause number of elements unknown
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 18; i++)
             {
+                CreateCropItem();
+                CreatePlotItem();
                 CreateSeedsItem();
+                CreateGreenhouseItem();
+                CreateOrderItem();
             }
+
         }
 
         private void CloseWindow()
@@ -78,10 +95,30 @@ namespace UI.ShopWindow
             WindowsManager.OpenAsync<SeedsInfoWindowController>();
         }
 
+        private void CreateCropItem()
+        {
+            CropItemView cropItemView = _cropsItemViews.GetElement();
+        }
+
+        private void CreatePlotItem()
+        {
+            PlotItemView plotItemView = _plotsItemViews.GetElement();
+        }
+
         private void CreateSeedsItem()
         {
-            SeedsItemView towerCardView = _seedsItemViews.GetElement();
-            towerCardView.InfoButton.onClick.AddListener(OpenSeedsInfoWindow);
+            SeedsItemView seedItemView = _seedsItemViews.GetElement();
+            seedItemView.InfoButton.onClick.AddListener(OpenSeedsInfoWindow);
+        }
+
+        private void CreateGreenhouseItem()
+        {
+            GreenhouseItemView greenhouseItemView = _greenhousesItemViews.GetElement();
+        }
+        private void CreateOrderItem()
+        {
+            OrderItemView orderItemView  = _orderItemViews.GetElement();
+            orderItemView.CancelButton.onClick.AddListener(OpenSeedsInfoWindow);
         }
     }
 }

@@ -61,11 +61,11 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
-  - view: {fileID: 5822377405943102550, guid: 84a25058512b5094ebc7d4c13d24e21c, type: 3}
-    viewType: UI.ShopWindow.ShopWindowView
+  - view: {fileID: 4924169388024697399, guid: 58dcec4dab5754d488c3b46a3f6ac570, type: 3}
+    viewType: UI.ShopWindow.MarketWindowView
     cacheInMemory: 0
     assetReference:
-      m_AssetGUID: 84a25058512b5094ebc7d4c13d24e21c
+      m_AssetGUID: 58dcec4dab5754d488c3b46a3f6ac570
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
