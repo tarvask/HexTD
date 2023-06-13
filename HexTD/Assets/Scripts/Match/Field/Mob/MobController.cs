@@ -51,6 +51,7 @@ namespace Match.Field.Mob
         private int _blockerId;
         
         private float _attackingTimer;
+        private bool _isHittingForTheFirstTime;
         private bool _wasNewHexReached;
         private bool _isCarrion;
         private bool _isBlocked;
@@ -70,7 +71,9 @@ namespace Match.Field.Mob
         public int BlockerId => _blockerId;
         public override ITargetView TargetView => _context.View;
         
-        public bool IsReadyToAttack => _attackingTimer >= _context.Parameters.Cooldown + _context.Parameters.Delay;
+        public bool IsReadyToAttack => _isHittingForTheFirstTime
+            ? _attackingTimer >= _context.Parameters.Delay
+            : _attackingTimer >= _context.Parameters.Cooldown;
         //public int RewardInCoins => _context.Parameters.RewardInCoins;
         public bool IsCarrion => _isCarrion;
         public bool IsBlocked => _isBlocked;
@@ -218,6 +221,7 @@ namespace Match.Field.Mob
         {
             _isBlocked = true;
             _blockerId = blockerId;
+            _isHittingForTheFirstTime = true;
         }
 
         public void Unblock()
@@ -229,6 +233,7 @@ namespace Match.Field.Mob
         public int Attack()
         {
             _attackingTimer = 0;
+            _isHittingForTheFirstTime = false;
             return _context.Parameters.AttackPower;
         }
         
