@@ -3,9 +3,9 @@ using Extensions;
 using UniRx;
 using WindowSystem.Controller;
 
-namespace UI.SeedsInfoWindow
+namespace UI.SeedsInfoSellWindow
 {
-    public class SeedsInfoWindowController : LoadableWindowController<SeedsInfoWindowView>
+    public class SeedsInfoSellWindowController : LoadableWindowController<SeedsInfoSellWindowView>
     {
         protected override void DoInitialize()
         {

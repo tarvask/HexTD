@@ -6,11 +6,12 @@ using UnityEngine.UI;
 using WindowSystem;
 using WindowSystem.View;
 
-namespace UI.SeedsInfoWindow
+namespace UI.SeedsInfoSellWindow
 {
-    public class SeedsInfoWindowView : WindowViewBase
+    public class SeedsInfoSellWindowView : WindowViewBase
     {
         [SerializeField] private Button _closeButton;
+        [SerializeField] private Button _sellButton;
 
         [Header("Temperature")]
         [SerializeField] private RectTransform _temperatureSlider;

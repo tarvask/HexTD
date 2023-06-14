@@ -5,7 +5,7 @@ using UI.GreenhousesFilterWindow;
 using UI.OrderItem;
 using UI.PlotsFilterWindow;
 using UI.SeedsFilterWindow;
-using UI.SeedsInfoWindow;
+using UI.SeedsInfoSellWindow;
 using UI.SeedItem;
 using UI.Tools;
 using UniRx;
@@ -13,6 +13,7 @@ using WindowSystem.Controller;
 using UI.CropItem;
 using UI.PlotItem;
 using UI.GreenhouseItem;
+using UI.SeedsInfoBuyWindow;
 
 namespace UI.ShopWindow
 {
@@ -90,9 +91,14 @@ namespace UI.ShopWindow
             WindowsManager.OpenAsync<GreenhousesFilterWindowController>();
         }
 
-        private void OpenSeedsInfoWindow()
+        private void OpenSeedsSellWindow()
         {
-            WindowsManager.OpenAsync<SeedsInfoWindowController>();
+            WindowsManager.OpenAsync<SeedsInfoSellWindowController>();
+        }
+
+        private void OpenSeedsBuyWindow()
+        {
+            WindowsManager.OpenAsync<SeedsInfoBuyWindowController>();
         }
 
         private void CreateCropItem()
@@ -108,7 +114,7 @@ namespace UI.ShopWindow
         private void CreateSeedsItem()
         {
             SeedsItemView seedItemView = _seedsItemViews.GetElement();
-            seedItemView.InfoButton.onClick.AddListener(OpenSeedsInfoWindow);
+            seedItemView.InfoButton.onClick.AddListener(OpenSeedsBuyWindow);
         }
 
         private void CreateGreenhouseItem()
@@ -118,7 +124,7 @@ namespace UI.ShopWindow
         private void CreateOrderItem()
         {
             OrderItemView orderItemView  = _orderItemViews.GetElement();
-            orderItemView.CancelButton.onClick.AddListener(OpenSeedsInfoWindow);
+            orderItemView.CancelButton.onClick.AddListener(OpenSeedsSellWindow);
         }
     }
 }

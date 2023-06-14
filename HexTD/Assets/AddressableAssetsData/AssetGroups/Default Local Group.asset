@@ -77,6 +77,10 @@ MonoBehaviour:
     m_Address: Assets/Prefabs/UI/Windows/MarketWindowTest.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: f599e7ebcc1479f4dbb069d1fbc0cfc9
+    m_Address: Assets/Prefabs/UI/Windows/SeedsInfoBuyWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3ec02984d4bb4544aa626424941dabb8, type: 2}
   m_SchemaSet:

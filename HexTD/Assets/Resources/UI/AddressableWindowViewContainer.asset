@@ -78,10 +78,18 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
   - view: {fileID: 8713960140880805655, guid: 14bed26bc74c3d34b8e8043f023d363c, type: 3}
-    viewType: UI.SeedsInfoWindow.SeedsInfoWindowView
+    viewType: UI.SeedsInfoSellWindow.SeedsInfoSellWindowView
     cacheInMemory: 0
     assetReference:
       m_AssetGUID: 14bed26bc74c3d34b8e8043f023d363c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: 5386075523446251795, guid: f599e7ebcc1479f4dbb069d1fbc0cfc9, type: 3}
+    viewType: UI.SeedsInfoBuyWindow.SeedsInfoBuyWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: f599e7ebcc1479f4dbb069d1fbc0cfc9
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
