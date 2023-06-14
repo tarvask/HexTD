@@ -55,11 +55,11 @@ namespace Match.Field.Tower
             _context = context;
 
             _context.DragCardChangeStatusCommand.Subscribe(DragCardChangeStatus);
-            LeanTouch.OnFingerDown += finger => Debug.Log($"Drag started with finger {finger.Index}");
-            LeanTouch.OnFingerUp += finger => Debug.Log($"Drag ended with finger {finger.Index}");
-            LeanTouch.OnFingerInactive += finger => Debug.Log($"Finger {finger.Index} became inactive");
-            LeanTouch.OnFingerExpired += finger => Debug.Log($"Finger {finger.Index} expired");
-            LeanTouch.OnFingerOld += finger => Debug.Log($"Finger {finger.Index} became old");
+            // LeanTouch.OnFingerDown += finger => Debug.Log($"Drag started with finger {finger.Index}");
+            // LeanTouch.OnFingerUp += finger => Debug.Log($"Drag ended with finger {finger.Index}");
+            // LeanTouch.OnFingerInactive += finger => Debug.Log($"Finger {finger.Index} became inactive");
+            // LeanTouch.OnFingerExpired += finger => Debug.Log($"Finger {finger.Index} expired");
+            // LeanTouch.OnFingerOld += finger => Debug.Log($"Finger {finger.Index} became old");
         }
 
         private TowerController _towerInstance;

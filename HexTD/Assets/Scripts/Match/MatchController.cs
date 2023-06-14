@@ -366,7 +366,7 @@ namespace Match
             // state saver
             MatchStateSaver.Context stateSaverContext = new MatchStateSaver.Context(
                 _player1FieldController, _player2FieldController, _waveMobSpawnerCoordinator,
-                waveStartedReactiveCommand);
+                waveStartedReactiveCommand, _context.CurrentEngineFrameReactiveProperty);
             _stateSaver = AddDisposable(new MatchStateSaver(stateSaverContext));
 
             _context.MatchCommandsCommon.IncomingGeneral.RequestSyncState.Subscribe(SendState);
