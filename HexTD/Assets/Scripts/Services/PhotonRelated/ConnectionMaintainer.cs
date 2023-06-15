@@ -294,6 +294,29 @@ namespace Services.PhotonRelated
             _backToMatch = null;
         }
 
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            if (pauseStatus)
+                Debug.Log("Application went to tray, pause state started");
+            else
+                Debug.Log("Pause ended");
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (hasFocus)
+            {
+                Debug.Log("Application caught focus");
+                
+                if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+                    RequestMatchState();
+            }
+            else
+            {
+                Debug.Log("Application lost focus");
+            }
+        }
+
         [ContextMenu("Request Sync")]
         private void RequestMatchState()
         {
