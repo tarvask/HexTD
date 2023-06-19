@@ -33,7 +33,7 @@ MonoBehaviour:
     attacks:
     - attackTargetType: 2
       attackRangeType: 1
-      baseDamage: 18
+      baseDamage: -18
       delay: 0
       cooldown: 1.4
       projectileSpeed: 80
