@@ -33,9 +33,6 @@ MonoBehaviour:
     m_Address: Assets/Scenes/MatchEngine.prefab
     m_ReadOnly: 0
     m_SerializedLabels:
-    - test
-    - match_loading
-    - match_loader
     - match_starter
   - m_GUID: 4271ee78b16f931488ee676ce102de24
     m_Address: Assets/Prefabs/UI/Windows/EnemyFieldViewWindow.prefab
@@ -55,6 +52,10 @@ MonoBehaviour:
     m_SerializedLabels: []
   - m_GUID: 0efca6871ee0f8e4781ab722069ce729
     m_Address: Assets/Prefabs/UI/Windows/InventoryWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 788fc68b21b574238bdf363dba26b41d
+    m_Address: Assets/Prefabs/UI/Windows/AuthorizationWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

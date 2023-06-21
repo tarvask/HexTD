@@ -13,9 +13,7 @@ namespace UI.MainMenuWindow
 	{
 		private readonly GameController _gameController;
 
-		public MainMenuWindowController(
-			GameController gameController
-		)
+		public MainMenuWindowController(GameController gameController)
 		{
 			_gameController = gameController;
 		}
@@ -35,7 +33,7 @@ namespace UI.MainMenuWindow
 				.AddTo(View);
 
 			View.InventoryButtonClick
-				.Subscribe(ShowInentory)
+				.Subscribe(ShowInventory)
 				.AddTo(View);
 		}
 
@@ -74,7 +72,7 @@ namespace UI.MainMenuWindow
 			WindowsManager.OpenAsync<ShopWindowController>();
 		}
 
-		private void ShowInentory()
+		private void ShowInventory()
         {
 			if (WindowsManager.IsOpen<ShopWindowController>())
 			{

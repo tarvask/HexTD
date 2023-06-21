@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using UI.MainMenuWindow;
+using UI.AuthorizationWindow;
 using UnityEngine;
 using WindowSystem;
 using Zenject;
@@ -16,12 +16,12 @@ namespace Loading.Steps
         [Inject]
         private void Construct(IWindowsManager windowsManager)
         {
-            _windowsManager= windowsManager;
+            _windowsManager = windowsManager;
         }
 
         public override async UniTask LoadStep()
         {
-	        var mainMenuWindowController = await _windowsManager.OpenAsync<MainMenuWindowController>();
+	        await _windowsManager.OpenAsync<AuthorizationWindowController>();
         }
     }
 }
