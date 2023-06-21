@@ -23,11 +23,11 @@ namespace Services
 
         private readonly Context _context;
         
-        private Dictionary<ProcessRoles, int> _rolesAndUserIds;
-        private Dictionary<int, ProcessRoles> _userIdsAndRoles;
+        private readonly Dictionary<ProcessRoles, int> _rolesAndUserIds;
+        private readonly Dictionary<int, ProcessRoles> _userIdsAndRoles;
         private readonly ReactiveProperty<ProcessRoles> _currentProcessGameRoleReactiveProperty;
         private readonly ReactiveProperty<NetworkRoles> _currentProcessNetworkRoleReactiveProperty;
-        private Dictionary<byte, int> _rolesAndUserIdsNetwork;
+        private readonly Dictionary<byte, int> _rolesAndUserIdsNetwork;
         
         public Dictionary<byte, int> RolesAndUserIdsNetwork => _rolesAndUserIdsNetwork;
         public IReadOnlyReactiveProperty<ProcessRoles> CurrentProcessGameRoleReactiveProperty => _currentProcessGameRoleReactiveProperty;

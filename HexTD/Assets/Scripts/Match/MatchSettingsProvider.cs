@@ -2,6 +2,6 @@
 {
 	public class MatchSettingsProvider
 	{
-		public  MatchSettings Settings { get; set; }
+		public MatchSettings Settings { get; set; }
 	}
 }

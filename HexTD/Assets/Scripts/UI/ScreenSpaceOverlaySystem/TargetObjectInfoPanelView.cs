@@ -54,14 +54,10 @@ namespace UI.ScreenSpaceOverlaySystem
 			}
 		}
 
-		private string name;
-
 		public void OnSpawned(Context context, IMemoryPool pool)
 		{
 			_pool = pool;
 			_context = context;
-
-			name = context.Pivot.parent.name;
 
 			_compositeDisposable = new CompositeDisposable();
 
@@ -82,15 +78,10 @@ namespace UI.ScreenSpaceOverlaySystem
 
 		public void OuterViewUpdate(float frameLength)
 		{
-//			Debug.Log(name);
 			if (_context.Pivot != null)
 			{
 				SetPosition(_context.Pivot.position);
 			}
-//			else
-//			{
-//				Debug.Log("eee");
-//			}
 		}
 
 		private void SetPosition(Vector3 worldPosition)

@@ -20,7 +20,6 @@ namespace BuffLogic
             set => _value.Value = value;
         }
 
-
         #endregion
 
         #region BuffMethods
