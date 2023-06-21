@@ -81,6 +81,10 @@ MonoBehaviour:
     m_Address: Assets/Prefabs/UI/Windows/SeedsInfoBuyWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 16495b2c66bbfab4e9016a5bdc7f0323
+    m_Address: Assets/Prefabs/MainMenuBackground.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3ec02984d4bb4544aa626424941dabb8, type: 2}
   m_SchemaSet:

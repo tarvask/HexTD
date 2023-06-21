@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using MainMenuFarm;
+using System.ComponentModel;
 using UI.MainMenuWindow;
 using UnityEngine;
 using WindowSystem;
@@ -10,6 +12,7 @@ namespace Loading.Steps
     public class GameplayLoadingStep : GameLoadingStep
     {
 	    private IWindowsManager _windowsManager;
+        private IMainMenuFarmLoader _mainMenuFarmLoader;
 
         public override int StepWeight => 2;
 
@@ -19,9 +22,16 @@ namespace Loading.Steps
             _windowsManager= windowsManager;
         }
 
+        [Inject]
+        private void Construct(IMainMenuFarmLoader mainMenuFarmLoader)
+        {
+            _mainMenuFarmLoader = mainMenuFarmLoader;
+        }
+
         public override async UniTask LoadStep()
         {
-	        var mainMenuWindowController = await _windowsManager.OpenAsync<MainMenuWindowController>();
+            var mainMenuWindowController = await _windowsManager.OpenAsync<MainMenuWindowController>();
+            var mainMenuFarm = await _mainMenuFarmLoader.LoadAsync();
         }
     }
 }
