@@ -1,5 +1,6 @@
 using System;
 using Addressables;
+using MainMenuFarm;
 using MatchStarter;
 using Tools.Disposing;
 using UnityEngine;
@@ -20,7 +21,8 @@ namespace Installers
             Container.Bind<AssetsDownloadingProvider>().AsSingle();
 
             BindMatchStarterLoader();
-            
+            BindMainMenuFarmLoader();
+
             Container.Bind<EventSystem>().FromComponentInNewPrefab(eventSystem).AsSingle().NonLazy();
         }
 
@@ -39,11 +41,17 @@ namespace Installers
                 .With<MatchStarterLoadingWindowDecorator>();
         }
 
-//        private void BindFactoryProductInstance<TProduct, TFactory>() where TFactory : PlaceholderFactory<TProduct>
-//        {
-//            Container.Bind<TProduct>()
-//                .FromMethod(() => Container.Resolve<TFactory>().Create())
-//                .AsSingle();
-//        }
+        private void BindMainMenuFarmLoader()
+        {
+            Container.Bind(typeof(IMainMenuFarmLoader))
+                .To<MainMenuFarmLoader>().AsSingle();
+        }
+
+        //        private void BindFactoryProductInstance<TProduct, TFactory>() where TFactory : PlaceholderFactory<TProduct>
+        //        {
+        //            Container.Bind<TProduct>()
+        //                .FromMethod(() => Container.Resolve<TFactory>().Create())
+        //                .AsSingle();
+        //        }
     }
 }

@@ -11,6 +11,11 @@ namespace UI.InventoryWindow
     {
         [SerializeField] private Button _closeButton;
 
+        [SerializeField] private Button _seedsTabButton;
+        [SerializeField] private Button _cropsTabButton;
+        [SerializeField] private Button _plotsTabButton;
+        [SerializeField] private Button _greenhousesTabButton;
+
         [SerializeField] private GameObject _seedsSelectedTab;
         [SerializeField] private GameObject _cropsSelectedTab;
         [SerializeField] private GameObject _plotsSelectedTab;
@@ -24,6 +29,14 @@ namespace UI.InventoryWindow
         public IObservable<Unit> CloseButtonClick => _closeButton
             .OnClickAsObservable()
             .WhereAppeared(this);
+
+        protected override void DoAwake()
+        {
+            _seedsTabButton.onClick.AddListener(SelectSeedsTab);
+            _cropsTabButton.onClick.AddListener(SelectCropsTab);
+            _plotsTabButton.onClick.AddListener(SelectPlotsTab);
+            _greenhousesTabButton.onClick.AddListener(SelectGreenhousesTab);
+        }
 
         public void SelectSeedsTab()
         {

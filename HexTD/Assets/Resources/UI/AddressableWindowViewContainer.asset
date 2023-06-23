@@ -61,11 +61,11 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
-  - view: {fileID: 5822377405943102550, guid: 84a25058512b5094ebc7d4c13d24e21c, type: 3}
-    viewType: UI.ShopwWindow.ShopWindowView
+  - view: {fileID: 4924169388024697399, guid: 58dcec4dab5754d488c3b46a3f6ac570, type: 3}
+    viewType: UI.ShopWindow.MarketWindowView
     cacheInMemory: 0
     assetReference:
-      m_AssetGUID: 84a25058512b5094ebc7d4c13d24e21c
+      m_AssetGUID: 58dcec4dab5754d488c3b46a3f6ac570
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
@@ -77,6 +77,51 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
+  - view: {fileID: 8713960140880805655, guid: 14bed26bc74c3d34b8e8043f023d363c, type: 3}
+    viewType: UI.SeedsInfoSellWindow.SeedsInfoSellWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 14bed26bc74c3d34b8e8043f023d363c
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: 5386075523446251795, guid: f599e7ebcc1479f4dbb069d1fbc0cfc9, type: 3}
+    viewType: UI.SeedsInfoBuyWindow.SeedsInfoBuyWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: f599e7ebcc1479f4dbb069d1fbc0cfc9
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: 4542708381535264973, guid: 157d3e45786b2d240967f14a665309c9, type: 3}
+    viewType: UI.SeedsFilterWindow.SeedsFilterWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 157d3e45786b2d240967f14a665309c9
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: 2383927876386584025, guid: 76b7c250dd595d4468802572e3514790, type: 3}
+    viewType: UI.CropsFilterWindow.CropsFilterWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 76b7c250dd595d4468802572e3514790
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: 255710172282095398, guid: 0be51aa10d7ed1e419843a040e4be504, type: 3}
+    viewType: UI.PlotsFilterWindow.PlotsFilterWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 0be51aa10d7ed1e419843a040e4be504
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+  - view: {fileID: 3004686950438730900, guid: 831678d434362ba49acff63d4a7c8580, type: 3}
+    viewType: UI.GreenhousesFilterWindow.GreenhousesFilterWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 831678d434362ba49acff63d4a7c8580
   - view: {fileID: 6838586709747597363, guid: 788fc68b21b574238bdf363dba26b41d, type: 3}
     viewType: UI.AuthorizationWindow.AuthorizationWindowView
     cacheInMemory: 0

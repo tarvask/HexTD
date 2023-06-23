@@ -46,14 +46,43 @@ MonoBehaviour:
     m_Address: Assets/Prefabs/UI/Windows/MatchRoundStartInfoWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 84a25058512b5094ebc7d4c13d24e21c
-    m_Address: Assets/Prefabs/UI/Windows/ShopWindow.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: 0efca6871ee0f8e4781ab722069ce729
     m_Address: Assets/Prefabs/UI/Windows/InventoryWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 157d3e45786b2d240967f14a665309c9
+    m_Address: Assets/Prefabs/UI/Windows/SeedsFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 0be51aa10d7ed1e419843a040e4be504
+    m_Address: Assets/Prefabs/UI/Windows/PlotsFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 14bed26bc74c3d34b8e8043f023d363c
+    m_Address: Assets/Prefabs/UI/Windows/SeedsInfoWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 76b7c250dd595d4468802572e3514790
+    m_Address: Assets/Prefabs/UI/Windows/CropsFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 831678d434362ba49acff63d4a7c8580
+    m_Address: Assets/Prefabs/UI/Windows/GreenhousesFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 58dcec4dab5754d488c3b46a3f6ac570
+    m_Address: Assets/Prefabs/UI/Windows/MarketWindowTest.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: f599e7ebcc1479f4dbb069d1fbc0cfc9
+    m_Address: Assets/Prefabs/UI/Windows/SeedsInfoBuyWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 16495b2c66bbfab4e9016a5bdc7f0323
+    m_Address: Assets/Prefabs/MainMenuBackground.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - mainmenu_background
   - m_GUID: 788fc68b21b574238bdf363dba26b41d
     m_Address: Assets/Prefabs/UI/Windows/AuthorizationWindow.prefab
     m_ReadOnly: 0

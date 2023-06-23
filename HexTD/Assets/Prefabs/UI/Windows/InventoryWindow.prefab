@@ -656,9 +656,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3509632573043374970}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI.InventoryWindow.InventoryWindowView, Assembly-CSharp
-        m_MethodName: SelectGreenhousesTab
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6119,9 +6119,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3509632573043374970}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI.InventoryWindow.InventoryWindowView, Assembly-CSharp
-        m_MethodName: SelectCropsTab
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7770,9 +7770,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3509632573043374970}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI.InventoryWindow.InventoryWindowView, Assembly-CSharp
-        m_MethodName: SelectPlotsTab
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13603,9 +13603,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3509632573043374970}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UI.InventoryWindow.InventoryWindowView, Assembly-CSharp
-        m_MethodName: SelectSeedsTab
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -17389,10 +17389,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _closeButton: {fileID: 1258878447648706945}
-  _seedsSelectedTab: {fileID: 6152559702783545534}
-  _cropsSelectedTab: {fileID: 9080982229153510693}
-  _plotsSelectedTab: {fileID: 5299657647118813098}
-  _greenhousesSelectedTab: {fileID: 6565153420244324413}
+  _seedsTabButton: {fileID: 8725512965947193538}
+  _cropsTabButton: {fileID: 7312053521783022369}
+  _plotsTabButton: {fileID: 5920455050585607050}
+  _greenhousesTabButton: {fileID: 5416713741628632604}
+  _seedsSelectedTab: {fileID: 685590520981757754}
+  _cropsSelectedTab: {fileID: 2646915574223805770}
+  _plotsSelectedTab: {fileID: 4033262942786239824}
+  _greenhousesSelectedTab: {fileID: 6907284296788164201}
   _seedsSelectedContent: {fileID: 8650060295031563668}
   _cropsSelectedContent: {fileID: 2466612469486733881}
   _plotsSelectedContent: {fileID: 6671962081903998615}

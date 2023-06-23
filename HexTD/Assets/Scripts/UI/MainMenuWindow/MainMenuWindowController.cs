@@ -69,14 +69,14 @@ namespace UI.MainMenuWindow
 				WindowsManager.CloseAsync(WindowsManager.GetOpened<InventoryWindowController>()).Forget();
 			}
 
-			WindowsManager.OpenAsync<ShopWindowController>();
+			WindowsManager.OpenAsync<MarketWindowController>();
 		}
 
 		private void ShowInventory()
         {
-			if (WindowsManager.IsOpen<ShopWindowController>())
+			if (WindowsManager.IsOpen<MarketWindowController>())
 			{
-				WindowsManager.CloseAsync(WindowsManager.GetOpened<ShopWindowController>()).Forget();
+				WindowsManager.CloseAsync(WindowsManager.GetOpened<MarketWindowController>()).Forget();
 			}
 
 			WindowsManager.OpenAsync<InventoryWindowController>();
@@ -86,9 +86,9 @@ namespace UI.MainMenuWindow
         {
 			WindowsManager.CloseAsync(this).Forget();
 
-			if (WindowsManager.IsOpen<ShopWindowController>())
+			if (WindowsManager.IsOpen<MarketWindowController>())
 			{
-				WindowsManager.CloseAsync(WindowsManager.GetOpened<ShopWindowController>()).Forget();
+				WindowsManager.CloseAsync(WindowsManager.GetOpened<MarketWindowController>()).Forget();
 			}
 
 			if (WindowsManager.IsOpen<InventoryWindowController>())
