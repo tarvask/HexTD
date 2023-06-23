@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: 001 test_tower1
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 0ac55f9f886d827408c102bdf33c5ff7, type: 3}
+  image: {fileID: 21300000, guid: fd99df10f0fffd343b0aa9482e3ea883, type: 3}
   view: {fileID: 1568221066824527527, guid: 9dee75195704b1e4a93614334de38814, type: 3}
   regularParameters:
     towerType: 1
@@ -40,10 +41,10 @@ MonoBehaviour:
       baseDamage: 5
       delay: 0
       cooldown: 3
-      attackRadiusInHex: 4
       projectileSpeed: 35
       projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
       serializableBuffs: []
+      attackRadiusInHex: 4
     splashAttacks: []
   references:
     version: 2

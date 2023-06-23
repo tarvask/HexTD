@@ -73,6 +73,9 @@ namespace Match.Windows.Hand
             towerCardView.Button.onClick.AddListener(() => 
                 _context.PlayerHandController.SetChosenTower(towerType));
 
+            towerCardView.ReadyTowerImage.sprite = towerConfig.Image;
+            towerCardView.NotReadyTowerImage.sprite = towerConfig.Image;
+
             _context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Subscribe(
                 currentEnergyValue => SetTowerCardReadyState(towerCardView, price <= currentEnergyValue));
         }

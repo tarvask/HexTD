@@ -31,7 +31,7 @@ namespace Loading.Steps
         public override async UniTask LoadStep()
         {
             var mainMenuWindowController = await _windowsManager.OpenAsync<MainMenuWindowController>();
-            var mainMenuFarm = await _mainMenuFarmLoader.LoadAsync();
+            //var mainMenuFarm = await _mainMenuFarmLoader.LoadAsync();
         }
     }
 }

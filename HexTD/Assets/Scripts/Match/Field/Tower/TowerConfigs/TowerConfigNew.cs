@@ -11,12 +11,14 @@ namespace Match.Field.Tower.TowerConfigs
 		public const int FirstTowerLevel = 1;
 		
 		[SerializeField] private Sprite icon;
+		[SerializeField] private Sprite image;
 		[SerializeField] private TowerView view;
 		[SerializeField] private TowerRegularParameters regularParameters;
 		[SerializeField] private TowerLevelConfigsDictionary towerLevelConfigs;
 		[SerializeField] private AttacksConfig attacksConfig;
 
 		public Sprite Icon => icon;
+		public Sprite Image => image;
 		public TowerView View => view;
 		public TowerRegularParameters RegularParameters => regularParameters;
 		public TowerLevelConfigsDictionary TowerLevelConfigs => towerLevelConfigs;

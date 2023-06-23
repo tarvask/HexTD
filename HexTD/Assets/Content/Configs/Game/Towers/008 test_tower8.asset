@@ -13,17 +13,16 @@ MonoBehaviour:
   m_Name: 008 test_tower8
   m_EditorClassIdentifier: 
   icon: {fileID: 21300000, guid: 0ac55f9f886d827408c102bdf33c5ff7, type: 3}
+  image: {fileID: 21300000, guid: 44d00501aca99604c923df7db610a327, type: 3}
   view: {fileID: 1568221066824527527, guid: 7ae096262ec4d419486736a71e955d29, type: 3}
   regularParameters:
     towerType: 8
     towerName: TestTower
     preferUnbuffedTargets: 0
     resetTargetEveryShot: 0
-    placementType: 0
-    reachableAttackTargetFinderType: 1
+    allowedPositions: 0
     targetFindingTacticType: 2
-    raceType: 1
-    epicDegree: 1
+    maxEnemyBlocked: 0
   towerLevelConfigs:
     keyData: 0200000001000000
     valueData:
@@ -37,19 +36,16 @@ MonoBehaviour:
       healthPoint: 100
   attacksConfig:
     attacks:
-    - rid: 8526326042669350912
+    - attackTargetType: 0
+      attackRangeType: 0
+      baseDamage: 0
+      delay: 0
+      cooldown: 0
+      projectileSpeed: 0
+      projectileView: {fileID: 0}
+      serializableBuffs: []
+      attackRadiusInHex: 0
     splashAttacks: []
   references:
     version: 2
-    RefIds:
-    - rid: 8526326042669350912
-      type: {class: HealTowerAttack, ns: Match.Field.AttackEffect, asm: Assembly-CSharp}
-      data:
-        attackTargetType: 2
-        cooldown: 2
-        attackRadiusInHex: 3
-        projectileSpeed: 25
-        projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
-        healCapacity: 10
-        healPerDelay: 1
-        delay: 0.1
+    RefIds: []

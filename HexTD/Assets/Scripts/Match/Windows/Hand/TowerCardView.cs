@@ -17,12 +17,16 @@ namespace Match.Windows.Hand
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _costText;
         [SerializeField] private TMP_Text _towerNameText;
+        [SerializeField] private Image _readyTowerImage;
+        [SerializeField] private Image _notReadyTowerImage;
 
         public Transform ReadyBgImage => _readyBgImage;
         public Transform NotReadyBgImage => _notReadyBgImage;
         public Button Button => _button;
         public TMP_Text CostText => _costText;
         public TMP_Text TowerNameText => _towerNameText;
+        public Image ReadyTowerImage => _readyTowerImage;
+        public Image NotReadyTowerImage => _notReadyTowerImage;
 
         private bool _isDraged = false;
         private bool _isReady = false;
