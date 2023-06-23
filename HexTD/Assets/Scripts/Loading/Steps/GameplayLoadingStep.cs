@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using MainMenuFarm;
-using System.ComponentModel;
 using UI.MainMenuWindow;
 using UnityEngine;
 using WindowSystem;
@@ -17,9 +16,11 @@ namespace Loading.Steps
         public override int StepWeight => 2;
 
         [Inject]
-        private void Construct(IWindowsManager windowsManager)
+        private void Construct(IWindowsManager windowsManager,
+            IMainMenuFarmLoader mainMenuFarmLoader)
         {
-            _windowsManager= windowsManager;
+            _windowsManager = windowsManager;
+            _mainMenuFarmLoader = mainMenuFarmLoader;
         }
 
         [Inject]

@@ -23,7 +23,6 @@ namespace Installers
             BindMatchStarterLoader();
             BindMainMenuFarmLoader();
 
-
             Container.Bind<EventSystem>().FromComponentInNewPrefab(eventSystem).AsSingle().NonLazy();
         }
 
