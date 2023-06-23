@@ -20,10 +20,11 @@ namespace MatchDataBase
 
 		public MatchStarterSettings MatchStarterSettings => _settings.MatchStarterSettings;
 	}
-		[Serializable]
-		public class MatchStarterSettings
-		{
-			public AssetReferenceGameObject MatchStarterPrefabReference;
-			public AssetLabelReference MatchStarterLabel;
-		}
+	
+	[Serializable]
+	public class MatchStarterSettings
+	{
+		public AssetReferenceGameObject MatchStarterPrefabReference;
+		public AssetLabelReference MatchStarterLabel;
+	}
 }
