@@ -1,5 +1,6 @@
 ﻿using System;
 using Cysharp.Threading.Tasks;
+using MainMenuFarm;
 using Match;
 using MatchStarter;
 using Services.PhotonRelated;
@@ -15,17 +16,21 @@ namespace Game
 		private readonly IMatchStarterLoader _matchStarterLoader;
 		private readonly MatchSettingsProvider _matchSettingsProvider;
 		private readonly IWindowsManager _windowsManager;
+		private readonly IMainMenuFarmLoader _mainMenuFarmLoader;
 
 		private IDisposable _matchDisposable;
 
 		public GameController(
 			IMatchStarterLoader matchStarterLoader,
 			MatchSettingsProvider matchSettingsProvider,
-			IWindowsManager windowsManager)
+			IWindowsManager windowsManager,
+			IMainMenuFarmLoader mainMenuFarmLoader
+			)
 		{
 			_matchStarterLoader = matchStarterLoader;
 			_matchSettingsProvider = matchSettingsProvider;
 			_windowsManager = windowsManager;
+			_mainMenuFarmLoader = mainMenuFarmLoader;
 		}
 
 		public async void RunBattle(bool isMultiPlayer)
@@ -38,6 +43,7 @@ namespace Game
 			
 			_matchSettingsProvider.Settings = new MatchSettings(isMultiPlayer);
 
+			_mainMenuFarmLoader.DestroyAndRelease();
 			var matchStarter = await _matchStarterLoader.LoadAsync();
 
 			_matchDisposable = matchStarter.OnQuitMatch.Subscribe(OnQuitMatchHandler);
@@ -50,6 +56,7 @@ namespace Game
 			_matchStarterLoader.DestroyAndRelease();
 			
 			_windowsManager.OpenAsync<MainMenuWindowController>();
+			_mainMenuFarmLoader.LoadAsync();
 		}
 	}
 }
