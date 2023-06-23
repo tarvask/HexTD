@@ -95,6 +95,13 @@
       "dependencies": {},
       "hash": "701d58fde76f3b93e40d0a792cd8fa4c130f1450"
     },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.0.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
     "com.unity.performance.profile-analyzer": {
       "version": "1.2.2",
       "depth": 1,
