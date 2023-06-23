@@ -1,3 +1,5 @@
+using HexSystem;
+
 namespace Tools
 {
     using Newtonsoft.Json.Utilities;
@@ -7,7 +9,10 @@ namespace Tools
     {
         public void Awake()
         {
-            AotHelper.EnsureList<int>();
+            AotHelper.EnsureType<Hex2d>();
+            AotHelper.EnsureList<Hex2d>();
+            AotHelper.EnsureDictionary<Hex2d, int>();
+            AotHelper.EnsureDictionary<Hex2d, Hex2d>();
         }
     }
 }
