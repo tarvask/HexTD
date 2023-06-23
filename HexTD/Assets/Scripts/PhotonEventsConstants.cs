@@ -57,6 +57,16 @@ public static class PhotonEventsConstants
             public const string DataValue = "DataValue";
         }
 
+        public static class PropsStateParam
+        {
+            public const string Q = "Q";
+            public const string R = "R";
+            public const string H = "H";
+            public const string DataLength = "DataLength";
+            public const string DataKey = "DataKey";
+            public const string DataValue = "DataValue";
+        }
+
         public static class PathData
         {
             public const string Name = "Name";
@@ -173,7 +183,7 @@ public static class PhotonEventsConstants
                 public const string TargetIdParam = "targetId";
                 public const string TypeIdParam = "typeId";
                 public const string PositionXParam = "xposition";
-                public const string PositionYParam = "yposition";
+                public const string PositionZParam = "zposition";
                 public const string PathIdParam = "path";
                 public const string NextWaypointParam = "waypoint";
                 public const string CurrentHealthParam = "curHealth";
@@ -190,7 +200,7 @@ public static class PhotonEventsConstants
                 public const string TargetIdParam = "targetId";
                 public const string AttackIndex = "attackIndex";
                 public const string PositionXParam = "xposition";
-                public const string PositionYParam = "yposition";
+                public const string PositionZParam = "zposition";
                 // can be computed by tower
                 public const string SpeedParam = "speed";
                 public const string HasSplashDamageParam = "hasSplash";

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using HexSystem;
 using Match.Field.Currency;
 using Match.Field.Mob;
@@ -18,15 +17,19 @@ namespace Match.Field.Services
         {
             public FieldModel FieldModel { get; }
             public FieldFactory FieldFactory { get; }
+            public FieldConstructionProcessController FieldConstructionProcessController { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public CurrencyController CurrencyController { get; }
 
-            public Context(FieldModel fieldModel, FieldFactory fieldFactory,
+            public Context(FieldModel fieldModel,
+                FieldFactory fieldFactory,
+                FieldConstructionProcessController fieldConstructionProcessController,
                 ConfigsRetriever towerConfigRetriever,
                 CurrencyController currencyController)
             {
                 FieldModel = fieldModel;
                 FieldFactory = fieldFactory;
+                FieldConstructionProcessController = fieldConstructionProcessController;
                 ConfigsRetriever = towerConfigRetriever;
                 CurrencyController = currencyController;
             }
@@ -63,11 +66,7 @@ namespace Match.Field.Services
                 
                 TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerState.Type);
                 Hex2d towerHexPosition = new Hex2d(towerState.PositionQ, towerState.PositionR);
-                TowerController towerController = _context.FieldFactory.CreateTowerWithId(towerConfig,
-                    towerHexPosition, towerState.Id, towerState.TargetId);
-                towerController.LoadState(towerState);
-
-                _context.FieldModel.AddTower(towerController, towerHexPosition);
+                _context.FieldConstructionProcessController.SetTowerConstructingWithState(towerConfig, towerHexPosition, towerState);
             }
 
             // mobs
@@ -77,7 +76,7 @@ namespace Match.Field.Services
                 
                 MobConfig mobConfig = _context.ConfigsRetriever.GetMobById(mobState.TypeId);
                 MobSpawnParameters mobSpawnParameters = new MobSpawnParameters(mobConfig, mobState.PathId);
-                Vector2 mobPosition = new Vector2(mobState.PositionX, mobState.PositionY);
+                Vector3 mobPosition = new Vector3(mobState.PositionX, 0, mobState.PositionZ);
                 MobController mobController = _context.FieldFactory.CreateMobWithId(mobSpawnParameters,
                     mobState.Id, mobState.TargetId,
                     mobPosition);
@@ -97,7 +96,7 @@ namespace Match.Field.Services
                 TowerType towerType = _context.FieldModel.TowersManager.Towers[projectileState.TowerId].TowerType;
                 TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerType);
                 
-                Vector3 projectilePosition = new Vector3(projectileState.PositionX, projectileState.PositionY);
+                Vector3 projectilePosition = new Vector3(projectileState.PositionX, 0, projectileState.PositionZ);
                 ProjectileController projectileController = _context.FieldFactory.CreateProjectileWithId(
                     towerConfig.AttacksConfig.Attacks[projectileState.AttackIndex],
                     projectileState.Id,
@@ -137,23 +136,7 @@ namespace Match.Field.Services
         
         public void ClearState()
         {
-            // towers
-            foreach (KeyValuePair<int, TowerController> towerPair in _context.FieldModel.TowersManager.Towers)
-                towerPair.Value.Dispose();
-            
-            _context.FieldModel.TowersManager.Clear();
-
-            // mobs
-            foreach (KeyValuePair<int, MobController> mobPair in _context.FieldModel.MobsManager.Mobs)
-                mobPair.Value.Dispose();
-            
-            _context.FieldModel.MobsManager.Clear();
-            
-            // projectiles
-            foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.Projectiles)
-                projectilePair.Value.Dispose();
-            
-            _context.FieldModel.Projectiles.Clear();
+            _context.FieldModel.ClearState();
         }
     }
 }

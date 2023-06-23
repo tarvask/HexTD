@@ -12,7 +12,6 @@ using Tools;
 using Tools.Interfaces;
 using UniRx;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Match.Field.Tower
 {
@@ -56,9 +55,14 @@ namespace Match.Field.Tower
             _context = context;
 
             _context.DragCardChangeStatusCommand.Subscribe(DragCardChangeStatus);
+            // LeanTouch.OnFingerDown += finger => Debug.Log($"Drag started with finger {finger.Index}");
+            // LeanTouch.OnFingerUp += finger => Debug.Log($"Drag ended with finger {finger.Index}");
+            // LeanTouch.OnFingerInactive += finger => Debug.Log($"Finger {finger.Index} became inactive");
+            // LeanTouch.OnFingerExpired += finger => Debug.Log($"Finger {finger.Index} expired");
+            // LeanTouch.OnFingerOld += finger => Debug.Log($"Finger {finger.Index} became old");
         }
 
-        private TowerView _towerInstance;
+        private TowerController _towerInstance;
 
         private Plane _plane = new Plane(Vector3.down, 0);
 
@@ -101,7 +105,15 @@ namespace Match.Field.Tower
 
         private void UpdateDragProcess()
         {
+            if (LeanTouch.Fingers == null || LeanTouch.Fingers.Count == 0)
+            {
+                DragCardChangeStatus(false);
+                return;
+            }
+                
             var finger = LeanTouch.Fingers.First();
+            
+            
             var ray = finger.GetRay(Camera.main);
             var hits = Physics.RaycastAll(ray, float.MaxValue);
 
@@ -111,18 +123,27 @@ namespace Match.Field.Tower
                 {
                     if (CanTowerBePlacedToHex(_currentTowerConfig, hex.HitHex))
                     {
-                        _lastValidHex = hex.HitHex;
-                        _towerInstance.transform.position = hex.transform.position;
-                        _canPlace = true;
+                        if (_lastValidHex != hex.HitHex)
+                        {
+                            _lastValidHex = hex.HitHex;
+                            _towerInstance.ChangePosition(hex.HitHex, hex.transform.position);
+                            _towerInstance.HideSelection();
+                            _towerInstance.ShowSelection();
+                            _canPlace = true;
+                        }
+
                         return;
                     }
                 }
             }
 
+            if (_canPlace)
+                _towerInstance.HideSelection();
+            
             _canPlace = false;
             if (_plane.Raycast(ray, out float distance))
             {
-                _towerInstance.transform.position = ray.GetPoint(distance);
+                _towerInstance.ChangePosition(_lastValidHex, ray.GetPoint(distance));
             }
         }
 
@@ -137,13 +158,11 @@ namespace Match.Field.Tower
         private void StartDragProcess()
         {
             _activeDragProcess = true;
+            _lastValidHex = new Hex2d(int.MinValue, int.MinValue);
             DestroyTowerInstance();
 
-            _towerInstance = CreateTowerView();
-
-            var color = _towerInstance.GetComponentInChildren<MeshRenderer>().material.color;
-            color.a = 0.5f;
-            _towerInstance.GetComponentInChildren<MeshRenderer>().material.color = color;
+            _towerInstance = CreateTowerInstance();
+            _towerInstance.SetPlacing();
         }
 
         private void EndDragProcess()
@@ -155,23 +174,21 @@ namespace Match.Field.Tower
                 _context.PlaceForTowerSelectedCommand.Execute(_lastValidHex);
             }
 
+            _towerInstance.HideSelection();
             DestroyTowerInstance();
         }
 
-        private TowerView CreateTowerView()
+        private TowerController CreateTowerInstance()
         {
             TowerShortParams towerParams = new TowerShortParams(_context.PlayerHandController.ChosenTowerType, 1);
             _currentTowerConfig = _context.ConfigsRetriever.GetTowerByType(towerParams.TowerType);
 
-            return _context.ConstructionProcessController.SetTowerView(_currentTowerConfig);
+            return _context.ConstructionProcessController.SetTowerInstance(_currentTowerConfig);
         }
 
         private void DestroyTowerInstance()
         {
-            if (_towerInstance != null)
-            {
-                Object.Destroy(_towerInstance.gameObject);
-            }
+            _towerInstance?.Dispose();
         }
     }
 }

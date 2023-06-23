@@ -10,6 +10,8 @@ namespace MapEditor
 	{
 		[JsonProperty("Hexes")]
 		public List<HexModel> HexModels;
+		[JsonProperty("Props")]
+		public List<PropsModel> PropsModels;
 		[JsonProperty("Paths")]
 		public List<PathData.SavePathData> PathDatas;
 
@@ -24,5 +26,7 @@ namespace MapEditor
 
 			return fieldHexes;
 		}
+
+		public IReadOnlyList<PropsModel> GetFieldProps() => PropsModels;
 	}
 }

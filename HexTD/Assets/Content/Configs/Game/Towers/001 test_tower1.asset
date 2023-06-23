@@ -17,34 +17,31 @@ MonoBehaviour:
   view: {fileID: 1568221066824527527, guid: 9dee75195704b1e4a93614334de38814, type: 3}
   regularParameters:
     towerType: 1
-    towerName: TestTower
+    towerName: Penny the Peashooter
     preferUnbuffedTargets: 0
-    resetTargetEveryShot: 0
-    allowedPositions: 0
-    targetFindingTacticType: 2
+    resetTargetEveryShot: 1
+    allowedPositions: 1
+    targetFindingTacticType: 1
     maxEnemyBlocked: 0
   towerLevelConfigs:
-    keyData: 0200000001000000
+    keyData: 01000000
     valueData:
-    - buildPrice: 1
-      refundPrice: 1
-      buildTime: 1
-      healthPoint: 120
-    - buildPrice: 6
-      refundPrice: 2
-      buildTime: 1
-      healthPoint: 100
+    - buildPrice: 8
+      refundPrice: 0
+      buildTime: 0
+      healthPoint: 50
   attacksConfig:
     attacks:
     - attackTargetType: 1
       attackRangeType: 1
-      baseDamage: 5
+      baseDamage: 12
       delay: 0
-      cooldown: 3
-      projectileSpeed: 35
+      cooldown: 1
+      projectileSpeed: 80
       projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
       serializableBuffs: []
-      attackRadiusInHex: 4
+      attackRadiusInHex: 3
+      splashRadiusInUnits: 0
     splashAttacks: []
   references:
     version: 2

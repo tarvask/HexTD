@@ -17,34 +17,31 @@ MonoBehaviour:
   view: {fileID: 1568221066824527527, guid: 8efdcb991bf45452da177e75486dc5b0, type: 3}
   regularParameters:
     towerType: 5
-    towerName: TestTower
+    towerName: Hazel the Healer
     preferUnbuffedTargets: 0
-    resetTargetEveryShot: 0
-    allowedPositions: 0
-    targetFindingTacticType: 2
+    resetTargetEveryShot: 1
+    allowedPositions: 1
+    targetFindingTacticType: 5
     maxEnemyBlocked: 0
   towerLevelConfigs:
-    keyData: 0200000001000000
+    keyData: 01000000
     valueData:
-    - buildPrice: 12
-      refundPrice: 3
-      buildTime: 1
-      healthPoint: 120
-    - buildPrice: 7
-      refundPrice: 2
-      buildTime: 1
-      healthPoint: 100
+    - buildPrice: 15
+      refundPrice: 0
+      buildTime: 0
+      healthPoint: 70
   attacksConfig:
     attacks:
-    - attackTargetType: 0
-      attackRangeType: 0
-      baseDamage: 0
+    - attackTargetType: 2
+      attackRangeType: 1
+      baseDamage: -18
       delay: 0
-      cooldown: 0
-      projectileSpeed: 0
-      projectileView: {fileID: 0}
+      cooldown: 1.4
+      projectileSpeed: 80
+      projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
       serializableBuffs: []
-      attackRadiusInHex: 0
+      attackRadiusInHex: 3
+      splashRadiusInUnits: 0
     splashAttacks: []
   references:
     version: 2

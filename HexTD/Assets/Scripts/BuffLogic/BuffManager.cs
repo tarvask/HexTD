@@ -26,6 +26,16 @@ namespace BuffLogic
             buffManager.AddBuff(targetValue, buff);
         }
 
+        public bool IsBuffs<TValue>(IBuffableValue<TValue> targetValue)
+        {
+            if (_buffManagers.TryGetValue(typeof(TValue), out IBaseBuffManager buffManager))
+            {
+                return buffManager.IsBuffs(targetValue);
+            }
+
+            return false;
+        }
+
         public IEnumerable<TValue> GetBuffsOf<TValue>(IBuffableValue<TValue> targetValue)
         {
             if (_buffManagers.TryGetValue(typeof(TValue), out IBaseBuffManager buffManager))

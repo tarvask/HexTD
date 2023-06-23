@@ -24,7 +24,6 @@ namespace Match.Commands
             public MatchCommands MatchCommands { get; }
             
             public TowerManipulationWindowController TowerManipulationWindowController { get; }
-            public TowerInfoWindowController TowerInfoWindowController { get; }
             
             public ReactiveCommand<Hex2d> PlaceForTowerSelectedCommand { get; }
 
@@ -37,7 +36,6 @@ namespace Match.Commands
                 MatchCommands matchCommands,
 
                 TowerManipulationWindowController towerManipulationWindowController,
-                TowerInfoWindowController towerInfoWindowController,
                 
                 ReactiveCommand<Hex2d> placeForTowerSelectedCommand)
             {
@@ -50,7 +48,6 @@ namespace Match.Commands
                 MatchCommands = matchCommands;
                 
                 TowerManipulationWindowController = towerManipulationWindowController;
-                TowerInfoWindowController = towerInfoWindowController;
 
                 PlaceForTowerSelectedCommand = placeForTowerSelectedCommand;
             }
@@ -131,7 +128,7 @@ namespace Match.Commands
             
             int towerKey = clickedHex.GetHashCode();
 
-            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(towerKey,
+            if (!_context.FieldModel.TowersManager.TryGetTowerInPositionHash(towerKey,
                     out TowerController towerInstance))
                 return;
 
@@ -140,6 +137,7 @@ namespace Match.Commands
             
             TowerShortParams towerShortParams = towerInstance.GetShortParams();
             TowerConfigNew towerConfig = _context.ConfigsRetriever.GetTowerByType(towerShortParams.TowerType);
+            towerInstance.ShowSelection();
             
             _context.TowerManipulationWindowController.ShowWindow(towerConfig, towerShortParams.Level,
                 _context.PlayerHandController.EnergyCharger.CurrentEnergyCount.Value,
@@ -150,18 +148,8 @@ namespace Match.Commands
                         towerConfig.TowerLevelConfigs[towerShortParams.NextLevel].BuildPrice)
                         _context.MatchCommands.Outgoing.RequestUpgradeTower.Fire(clickedHex, towerShortParams);
                 },
-                () =>
-                {
-                    towerInstance.ShowSelection();
-                    _context.TowerInfoWindowController.ShowWindow(towerConfig, towerShortParams.Level,
-                        //towerInstance.Buffs,
-                        () =>
-                        {
-                            towerInstance.HideSelection();
-                            _context.TowerManipulationWindowController.ShowWindow();
-                        });
-                },
-                () => _context.MatchCommands.Outgoing.RequestSellTower.Fire(clickedHex, towerShortParams));
+                () => _context.MatchCommands.Outgoing.RequestSellTower.Fire(clickedHex, towerShortParams),
+                () => towerInstance.HideSelection());
         }
 
         private void ProcessUpgrade(Hex2d position, TowerShortParams towerShortParams)
@@ -171,7 +159,7 @@ namespace Match.Commands
             
             int positionHashcode = position.GetHashCode();
             
-            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(positionHashcode,
+            if (!_context.FieldModel.TowersManager.TryGetTowerInPositionHash(positionHashcode,
                     out TowerController towerInstance))
                 return;
 
@@ -187,7 +175,7 @@ namespace Match.Commands
         {
             int positionHashcode = position.GetHashCode();
             
-            if (!_context.FieldModel.TowersManager.TowerContainer.TryGetTowerInPositionHash(positionHashcode,
+            if (!_context.FieldModel.TowersManager.TryGetTowerInPositionHash(positionHashcode,
                     out TowerController towerInstance))
                 return;
             

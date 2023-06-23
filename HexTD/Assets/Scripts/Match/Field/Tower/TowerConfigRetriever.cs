@@ -7,25 +7,13 @@ namespace Match.Field.Tower
 {
     public class TowerConfigRetriever : BaseDisposable
     {
-        public struct Context
-        {
-            public TowerConfigsNew TowersConfig { get; }
-
-            public Context(TowerConfigsNew towersConfig)
-            {
-                TowersConfig = towersConfig;
-            }
-        }
-
-        private readonly Context _context;
         private readonly Dictionary<byte, TowerConfigNew> _towersByIds;
         
-        public TowerConfigRetriever(Context context)
+        public TowerConfigRetriever(TowerConfigsNew towersConfig)
         {
-            _context = context;
-            _towersByIds = new Dictionary<byte, TowerConfigNew>(_context.TowersConfig.Towers.Count);
+            _towersByIds = new Dictionary<byte, TowerConfigNew>(towersConfig.Towers.Count);
 
-            foreach (TowerConfigNew towerConfig in _context.TowersConfig.Towers)
+            foreach (TowerConfigNew towerConfig in towersConfig.Towers)
             {
                 _towersByIds.Add((byte)towerConfig.RegularParameters.TowerType, towerConfig);
             }

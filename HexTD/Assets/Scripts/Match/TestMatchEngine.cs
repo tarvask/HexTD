@@ -32,11 +32,16 @@ namespace Match
         public IncomingCommandsProcessor IncomingCommandsProcessor => _incomingCommandsProcessor;
         public ReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; private set; }
 
+        private MatchController.Factory _matchControllerFactory;
         private WindowSystem.IWindowsManager _newWindowsManager;
         
         [Inject]
-        public void Constructor(WindowSystem.IWindowsManager newWindowsManager)
+        public void Constructor(
+            MatchController.Factory matchControllerFactory,
+            WindowSystem.IWindowsManager newWindowsManager)
         {
+            _matchControllerFactory = matchControllerFactory;
+            
             _newWindowsManager = newWindowsManager;
         }
 
@@ -69,15 +74,14 @@ namespace Match
             ReactiveCommand<int> syncFrameCounterCommand = new ReactiveCommand<int>();
             _rollbackStateReactiveCommand = new ReactiveCommand();
             
-            MatchView matchView = Instantiate(matchPrefab, Vector3.zero, Quaternion.identity, transform);
-            MatchController.Context matchControllerContext = new MatchController.Context(matchView, matchInitDataParameters, matchView.FieldConfig,
+            MatchController.Context matchControllerContext = new MatchController.Context( matchInitDataParameters,
                 matchCommandsEnemy, matchCommandsOur, matchCommonCommands,
                 CurrentEngineFrameReactiveProperty, quitMatchReactiveCommand, syncFrameCounterCommand,
                 currentProcessGameRoleReactiveProperty, currentProcessNetworkRoleReactiveProperty, isConnectedReactiveProperty,
                 _rollbackStateReactiveCommand,
                 isMultiPlayerGame,
                 _newWindowsManager);
-            _matchController = new MatchController(matchControllerContext);
+            _matchController = _matchControllerFactory.Create(matchControllerContext);
 
             OutgoingCommandsProcessor.Context outgoingCommandsProcessorContext = new OutgoingCommandsProcessor.Context(
                 this, eventBus, currentProcessGameRoleReactiveProperty, matchOutgoingCommands);

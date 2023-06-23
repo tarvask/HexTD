@@ -13,6 +13,7 @@ namespace Match
         [SerializeField] private float energyRecoveryTime;
         public const int EnergyRestoreValue = 1;
         public const int EnergyMaxCount = 100000;
+        [SerializeField] private int castleHealth;
         [SerializeField] private TextAsset levelMap;
 
         public PathWithWaves[] WavesConfigs
@@ -72,6 +73,14 @@ namespace Match
             get { return energyRecoveryTime; }
 #if UNITY_EDITOR
             set { energyRecoveryTime = value; }
+#endif
+        }
+
+        public int CastleHealth
+        {
+            get { return castleHealth; }
+#if UNITY_EDITOR
+            set { castleHealth = value; }
 #endif
         }
 

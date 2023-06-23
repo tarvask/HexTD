@@ -24,14 +24,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.8754261, y: -0.10938163, z: 0.23456968, w: 0.40821788}
   m_LocalPosition: {x: 0, y: 6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6965751542809133233}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 130, y: -30, z: 0}
 --- !u!108 &705507994
 Light:
   m_ObjectHideFlags: 0
@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 6965751542809133232}
   - component: {fileID: 6965751542809133231}
   - component: {fileID: 5926312863009226861}
-  - component: {fileID: 4917645604679316126}
+  - component: {fileID: 6811641787500511624}
   m_Layer: 0
   m_Name: MatchStarter
   m_TagString: Untagged
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
   _monoInstallers:
-  - {fileID: 4917645604679316126}
+  - {fileID: 6811641787500511624}
   _installerPrefabs: []
   _autoRun: 1
   _kernel: {fileID: 0}
@@ -163,8 +163,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   matchPrefab: {fileID: 4679155216261781234, guid: a36ae4fde7a654e99abc082ff7f070b9, type: 3}
-  matchScenesNames:
-  - StandaloneMatch
 --- !u!114 &6965751542809133232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,7 +200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e8f1c4849db48cf9da55e37f6f81627, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &4917645604679316126
+--- !u!114 &6811641787500511624
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,6 +209,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6965751542809133235}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb1dd4b583fd468a930059afcc36b70d, type: 3}
+  m_Script: {fileID: 11500000, guid: 5889a2795dd740779de1b6e229aa6137, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  matchViewPrefab: {fileID: 4679155216261781234, guid: a36ae4fde7a654e99abc082ff7f070b9, type: 3}

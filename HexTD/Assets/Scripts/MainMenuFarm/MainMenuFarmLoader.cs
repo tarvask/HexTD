@@ -28,12 +28,10 @@ namespace MainMenuFarm
         public MainMenuFarmLoader(
             AssetsDownloadingProvider downloadingProvider,
             IInstantiator instantiator,
-            Subject<Unit> locationLoaded,
             FarmSettings farmSettings)
         {
             _downloadingProvider = downloadingProvider;
             _instantiator = instantiator;
-            _locationLoaded = locationLoaded;
             _farmSettings = farmSettings;
         }
 

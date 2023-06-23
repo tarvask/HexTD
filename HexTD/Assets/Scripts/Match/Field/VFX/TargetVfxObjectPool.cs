@@ -9,12 +9,9 @@ namespace Match.Field.VFX
         {
         }
 
-        public override void OuterLogicUpdate(float frameLength)
+        protected override void SetPosition(ITarget key, VfxController vfxController)
         {
-            foreach (var vfxControllerKeyPair in ActiveVfxControllers)
-            {
-                vfxControllerKeyPair.Value.SetPosition(vfxControllerKeyPair.Key.Position);
-            }
+            vfxController.SetPosition(key.Position);
         }
     }
 }

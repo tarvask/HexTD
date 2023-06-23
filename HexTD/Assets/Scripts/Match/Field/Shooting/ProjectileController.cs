@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Match.Field.AttackEffect;
 using Match.Field.State;
-using Match.Field.Tower.TowerConfigs;
 using Tools;
 using UnityEngine;
 
@@ -20,10 +19,11 @@ namespace Match.Field.Shooting
             public int SpawnTowerId { get; }
             public int TargetId { get; }
             public bool HasSplashDamage { get; }
+            public bool HasTargetVolumeDamage { get; }
 
             public Context(int id, ProjectileView view, 
                 BaseAttackEffect baseAttackEffect, int attackIndex, SplashShootType splashShootType, 
-                float speed, bool hasSplashDamage, int spawnTowerId, int targetId)
+                float speed, bool hasSplashDamage, bool hasTargetVolumeDamage, int spawnTowerId, int targetId)
             {
                 Id = id;
                 View = view;
@@ -33,6 +33,7 @@ namespace Match.Field.Shooting
 
                 Speed = speed;
                 HasSplashDamage = hasSplashDamage;
+                HasTargetVolumeDamage = hasTargetVolumeDamage;
                 SpawnTowerId = spawnTowerId;
                 TargetId = targetId;
             }
@@ -51,6 +52,7 @@ namespace Match.Field.Shooting
         public SplashShootType SplashShootType => _context.SplashShootType;
         public int TargetId => _context.TargetId;
         public bool HasSplashDamage => _context.HasSplashDamage;
+        public bool HasTargetVolumeDamage => _context.HasTargetVolumeDamage;
         public Vector3 CurrentPosition => _currentPosition;
         public Vector3 CurrentTargetPosition => _currentTargetPosition;
         public bool HasReachedTarget => _hasReachedTarget;
@@ -110,7 +112,7 @@ namespace Match.Field.Shooting
         
         public void LoadState(in PlayerState.ProjectileState projectileState)
         {
-            _currentPosition = new Vector3(projectileState.PositionX, projectileState.PositionY);
+            _currentPosition = new Vector3(projectileState.PositionX, projectileState.PositionZ);
         }
         
         public PlayerState.ProjectileState GetProjectileState()

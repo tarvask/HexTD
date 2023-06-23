@@ -1,3 +1,4 @@
+using HexSystem;
 using Tools;
 
 namespace Match.Field.Tower
@@ -9,6 +10,7 @@ namespace Match.Field.Tower
         private float _constructionTimeLabel;
         private int _targetId;
         private TowerState _towerState;
+        private Hex2d _hexPosition;
         
         public int Level => _level;
         public float ConstructionTimeLabel => _constructionTimeLabel;
@@ -18,6 +20,7 @@ namespace Match.Field.Tower
         public bool IsConstructing => _towerState == TowerState.Constructing;
         public bool IsReadyToRelease => _towerState == TowerState.ToRelease;
         public bool IsReadyToDispose => _towerState == TowerState.ToDispose;
+        public Hex2d HexPosition => _hexPosition;
 
         public TowerStableModel()
         {
@@ -43,6 +46,11 @@ namespace Match.Field.Tower
         public void ResetTarget()
         {
             _targetId = -1;
+        }
+
+        public void SetHexPosition(Hex2d hexPosition)
+        {
+            _hexPosition = hexPosition;
         }
     }
 }

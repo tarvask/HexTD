@@ -71,5 +71,9 @@ namespace BuffLogic
         }
 
         #endregion
+
+        public bool HasValue => _value.HasValue;
+        
+        public IDisposable Subscribe(IObserver<TValue> observer) => _value.Subscribe(observer);
     }
 }

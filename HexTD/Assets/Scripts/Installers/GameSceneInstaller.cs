@@ -23,7 +23,6 @@ namespace Installers
             BindMatchStarterLoader();
             BindMainMenuFarmLoader();
 
-
             Container.Bind<EventSystem>().FromComponentInNewPrefab(eventSystem).AsSingle().NonLazy();
         }
 
@@ -38,7 +37,8 @@ namespace Installers
         {
             Container.Bind(typeof(IMatchStarterLoader))
                 .To<MatchStarterLoader>().AsSingle();
-            Container.Decorate<IMatchStarterLoader>().With<MatchStarterLoadingWindowDecorator>();
+            Container.Decorate<IMatchStarterLoader>()
+                .With<MatchStarterLoadingWindowDecorator>();
         }
 
         private void BindMainMenuFarmLoader()

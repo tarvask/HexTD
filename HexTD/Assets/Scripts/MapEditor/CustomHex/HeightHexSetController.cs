@@ -4,8 +4,8 @@ namespace MapEditor.CustomHex
 {
     public class HeightHexSetController : BaseHexSetController
     {
-        public HeightHexSetController(HexGridModel hexGridModel, 
-            Layout layout) : base(hexGridModel, layout)
+        public HeightHexSetController(EditorHexesModel editorHexesModel, 
+            Layout layout) : base(editorHexesModel, layout)
         {
         }
 
@@ -26,7 +26,7 @@ namespace MapEditor.CustomHex
 
         private void UpdateHexObjectPosition(HexModel hexModel)
         {
-            HexGridModel.GetHexagonInstance(hexModel).transform.position = Layout.ToPlane((Hex3d)hexModel);
+            EditorHexesModel.GetHexagonInstance(hexModel).transform.position = Layout.ToPlane((Hex3d)hexModel);
         }
     }
 }

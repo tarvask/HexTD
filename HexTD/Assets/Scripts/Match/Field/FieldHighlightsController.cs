@@ -8,7 +8,7 @@ namespace Match.Field
 	{
 		public struct Context
 		{
-			public HexObjectsContainer HexObjectsContainer;
+			public HexObjectsContainer HexObjectsContainer { get; }
 			
 	        public Context(
 		        HexObjectsContainer hexObjectsContainer)

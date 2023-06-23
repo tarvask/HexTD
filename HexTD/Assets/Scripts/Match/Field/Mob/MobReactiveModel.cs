@@ -32,7 +32,7 @@ namespace Match.Field.Mob
             _onHexPositionChange?.Invoke(mobController, newPosition);
         }
 
-        public override bool TryGetBuffableValue(EntityBuffableValueType buffableValueType, out IBuffableValue buffableValue)
+        public override bool TryGetBuffableValue(EntityBuffableValueType buffableValueType, out IBuffableValue<float> buffableValue)
         {
             if (base.TryGetBuffableValue(buffableValueType, out buffableValue))
                 return true;

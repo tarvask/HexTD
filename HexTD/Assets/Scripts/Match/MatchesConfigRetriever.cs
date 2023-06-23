@@ -6,25 +6,13 @@ namespace Match
 {
     public class MatchesConfigRetriever : BaseDisposable
     {
-        public struct Context
-        {
-            public MatchesConfig MatchesConfig { get; }
-
-            public Context(MatchesConfig matchesConfig)
-            {
-                MatchesConfig = matchesConfig;
-            }
-        }
-
-        private readonly Context _context;
         private readonly Dictionary<byte, MatchConfig> _levelsByIds;
         
-        public MatchesConfigRetriever(Context context)
+        public MatchesConfigRetriever(in MatchesConfig matchesConfig)
         {
-            _context = context;
-            _levelsByIds = new Dictionary<byte, MatchConfig>(_context.MatchesConfig.Levels.Count);
+            _levelsByIds = new Dictionary<byte, MatchConfig>(matchesConfig.Levels.Count);
 
-            foreach (var levelConfigPair in _context.MatchesConfig.Levels)
+            foreach (var levelConfigPair in matchesConfig.Levels)
             {
                 _levelsByIds.Add(levelConfigPair.Key, levelConfigPair.Value);
             }

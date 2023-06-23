@@ -1,3 +1,4 @@
+using Configs;
 using MapEditor;
 using Match;
 using Match.Field;
@@ -8,7 +9,7 @@ using Tools;
 
 namespace Services
 {
-    public class ConfigsRetriever : BaseDisposable
+    public class ConfigsRetriever : BaseDisposable, IHexPrefabConfigRetriever, IPropsObjectPrefabConfigRetriever
     {
         public struct Context
         {
@@ -26,30 +27,29 @@ namespace Services
         {
             _context = context;
 
-            MatchesConfigRetriever.Context levelConfigRetrieverContext =
-                new MatchesConfigRetriever.Context(_context.FieldConfig.LevelsConfig);
-            _levelConfigRetriever = AddDisposable(new MatchesConfigRetriever(levelConfigRetrieverContext));
-            FieldConfigCellsRetriever.Context fieldConfigCellsRetrieverContext =
-                new FieldConfigCellsRetriever.Context(_context.FieldConfig);
-            _fieldConfigCellsRetriever = AddDisposable(new FieldConfigCellsRetriever(fieldConfigCellsRetrieverContext));
-            TowerConfigRetriever.Context towerConfigRetrieverContext =
-                new TowerConfigRetriever.Context(_context.FieldConfig.TowersConfig);
-            _towerConfigRetriever = AddDisposable(new TowerConfigRetriever(towerConfigRetrieverContext));
-            MobConfigRetriever.Context mobConfigRetrieverContext =
-                new MobConfigRetriever.Context(_context.FieldConfig.MobsConfig);
-            _mobConfigRetriever = AddDisposable(new MobConfigRetriever(mobConfigRetrieverContext));
+            _levelConfigRetriever = AddDisposable(new MatchesConfigRetriever(_context.FieldConfig.LevelsConfig));
+            _hexPrefabConfigRetriever = AddDisposable(new HexPrefabConfigRetriever(_context.FieldConfig.HexagonPrefabConfig));
+            _propsObjectPrefabConfigRetriever = AddDisposable(new PropsObjectPrefabConfigRetriever(_context.FieldConfig.PropsPrefabConfig));
+            _towerConfigRetriever = AddDisposable(new TowerConfigRetriever(_context.FieldConfig.TowersConfig));
+            _mobConfigRetriever = AddDisposable(new MobConfigRetriever(_context.FieldConfig.MobsConfig));
         }
 
         private readonly Context _context;
 
         private readonly MatchesConfigRetriever _levelConfigRetriever;
-        private readonly FieldConfigCellsRetriever _fieldConfigCellsRetriever;
+        private readonly HexPrefabConfigRetriever _hexPrefabConfigRetriever;
+        private readonly PropsObjectPrefabConfigRetriever _propsObjectPrefabConfigRetriever;
         private readonly TowerConfigRetriever _towerConfigRetriever;
         private readonly MobConfigRetriever _mobConfigRetriever;
         
-        public HexObject GetCellByType(string hexTypeName)
+        public HexObject GetHexByType(string hexTypeName)
         {
-            return _fieldConfigCellsRetriever.GetCellByType(hexTypeName);
+            return _hexPrefabConfigRetriever.GetHexByType(hexTypeName);
+        }
+        
+        public PropsPrefabConfig.PropsObjectConfig GetPropsByType(string propsTypeName)
+        {
+            return _propsObjectPrefabConfigRetriever.GetPropsByType(propsTypeName);
         }
 
         public TowerConfigNew GetTowerByType(TowerType towerType)

@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using MainMenuFarm;
-using System.ComponentModel;
-using UI.MainMenuWindow;
+using UI.AuthorizationWindow;
 using UnityEngine;
 using WindowSystem;
 using Zenject;
@@ -17,21 +16,18 @@ namespace Loading.Steps
         public override int StepWeight => 2;
 
         [Inject]
-        private void Construct(IWindowsManager windowsManager)
+        private void Construct(
+            IWindowsManager windowsManager,
+            IMainMenuFarmLoader mainMenuFarmLoader)
         {
-            _windowsManager= windowsManager;
-        }
-
-        [Inject]
-        private void Construct(IMainMenuFarmLoader mainMenuFarmLoader)
-        {
+            _windowsManager = windowsManager;
             _mainMenuFarmLoader = mainMenuFarmLoader;
         }
 
         public override async UniTask LoadStep()
         {
-            var mainMenuWindowController = await _windowsManager.OpenAsync<MainMenuWindowController>();
-            //var mainMenuFarm = await _mainMenuFarmLoader.LoadAsync();
+	        await _windowsManager.OpenAsync<AuthorizationWindowController>();
+            await _mainMenuFarmLoader.LoadAsync();
         }
     }
 }

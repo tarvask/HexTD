@@ -23,20 +23,25 @@ namespace Match.Windows.Tower
         }
 
         private readonly Context _context;
+        
+        private readonly TowerInfoPanelController _towerInfoPanelController;
         private bool _hasUpgrade;
         private int _currentUpgradePrice;
         private int _currentSellPrice;
         private Action _onTowerUpgradeClickAction;
-        private Action _onTowerInfoClickAction;
         private Action _onTowerSellClickAction;
+        private Action _onCloseClickAction;
         
         public TowerManipulationWindowController(Context context) : base(context.View, context.OpenWindowsCountReactiveProperty)
         {
             _context = context;
+
+            TowerInfoPanelController.Context towerInfoPanelControllerContext =
+                new TowerInfoPanelController.Context(_context.View.TowerInfoPanel);
+            _towerInfoPanelController = AddDisposable(new TowerInfoPanelController(towerInfoPanelControllerContext));
             
-            _context.View.CloseButton.onClick.AddListener(HideWindow);
+            _context.View.CloseButton.onClick.AddListener(CloseWindow);
             _context.View.UpgradeButton.onClick.AddListener(OnTowerUpgradeClickedHandler);
-            _context.View.InfoButton.onClick.AddListener(OnTowerInfoClickedHandler);
             _context.View.SellButton.onClick.AddListener(OnTowerSellClickedHandler);
 
             _context.CoinsCountChangedReactiveCommand.Subscribe(Refresh);
@@ -44,12 +49,14 @@ namespace Match.Windows.Tower
         
         public void ShowWindow(TowerConfigNew towerParameters, int towerLevel, int currentCoinsCount,
             Action onTowerUpgradeClickAction,
-            Action onTowerInfoClickAction,
-            Action onTowerSellClickAction)
+            Action onTowerSellClickAction,
+            Action onCloseClickAction)
         {
             _onTowerUpgradeClickAction = onTowerUpgradeClickAction;
-            _onTowerInfoClickAction = onTowerInfoClickAction;
             _onTowerSellClickAction = onTowerSellClickAction;
+            _onCloseClickAction = onCloseClickAction;
+            
+            _towerInfoPanelController.Init(towerParameters, towerLevel);
 
             _hasUpgrade = false;//towerLevel < towerParameters.TowerLevelConfigs.Count;
             _currentUpgradePrice = _hasUpgrade ? towerParameters.TowerLevelConfigs[towerLevel + 1].BuildPrice : -1;
@@ -77,19 +84,20 @@ namespace Match.Windows.Tower
         private void OnTowerUpgradeClickedHandler()
         {
             _onTowerUpgradeClickAction.Invoke();
-            HideWindow();
-        }
-        
-        private void OnTowerInfoClickedHandler()
-        {
-            _onTowerInfoClickAction.Invoke();
-            HideWindow();
+            CloseWindow();
         }
         
         private void OnTowerSellClickedHandler()
         {
             _onTowerSellClickAction.Invoke();
+            CloseWindow();
+        }
+
+        private void CloseWindow()
+        {
             HideWindow();
+            _towerInfoPanelController.Clear();
+            _onCloseClickAction.Invoke();
         }
         
         protected override void OnDispose()

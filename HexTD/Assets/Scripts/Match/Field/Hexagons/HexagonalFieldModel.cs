@@ -12,11 +12,14 @@ namespace Match.Field.Hexagons
     {
         private readonly Layout _layout;
         private readonly IDictionary<int, FieldHex> _cachedLevelFieldHexes;
-        
-       public FieldHexTypesController CurrentFieldHexTypes { get; }
+        private readonly float _layoutHexSizeXSqr;
+        private readonly float _layoutHexSizeZSqr;
+
+        private readonly FieldHexTypesController _currentFieldHexTypes;
 
         public int HexGridSize => _cachedLevelFieldHexes.Count;
         public Vector3 HexSize => _layout.HexSize;
+        public FieldHexTypesController CurrentFieldHexTypes => _currentFieldHexTypes;
 
         public HexModel this[int positionHash] => _cachedLevelFieldHexes.ContainsKey(positionHash)
             ? _cachedLevelFieldHexes[positionHash].HexModel
@@ -24,7 +27,7 @@ namespace Match.Field.Hexagons
         
         public bool IsHexInMap(int positionHash) => _cachedLevelFieldHexes.ContainsKey(positionHash);        
         
-        public FieldHexType GetHexTypeByPosition(Hex2d position) => CurrentFieldHexTypes[position.GetHashCode()];
+        public FieldHexType GetHexTypeByPosition(Hex2d position) => _currentFieldHexTypes[position.GetHashCode()];
 
         public HexagonalFieldModel(HexSettingsConfig hexSettingsConfig, Vector3 rootPosition, List<FieldHex> fieldHexes)
         {
@@ -37,8 +40,10 @@ namespace Match.Field.Hexagons
                 int hashKey = fieldHex.HexModel.GetHashCode();
                 _cachedLevelFieldHexes.Add(hashKey, cachedFieldHex);
             }
-            
-            CurrentFieldHexTypes = new FieldHexTypesController(_cachedLevelFieldHexes);
+
+            _layoutHexSizeXSqr = _layout.HexSize.x * _layout.HexSize.x;
+            _layoutHexSizeZSqr = _layout.HexSize.z * _layout.HexSize.z;
+            _currentFieldHexTypes = new FieldHexTypesController(_cachedLevelFieldHexes);
         }
 
         public Vector3 GetPlanePosition(Hex2d hexPosition, bool isWorld = true)
@@ -73,9 +78,9 @@ namespace Match.Field.Hexagons
             return radius * _layout.HexSize.x;
         }
 
-        public bool IsCloseToNewHex(float distanceToHex)
+        public bool IsCloseToNewHex(float distanceToHexSqr)
         {
-            return distanceToHex < _layout.HexSize.y && distanceToHex < _layout.HexSize.x;
+            return distanceToHexSqr < _layoutHexSizeXSqr && distanceToHexSqr < _layoutHexSizeZSqr;
         }
 
         public bool IsHexInMap(Hex2d position)
@@ -87,7 +92,7 @@ namespace Match.Field.Hexagons
         {
             foreach (var fieldHexHashPair in _cachedLevelFieldHexes)
             {
-                CurrentFieldHexTypes.ForceSetHexType(fieldHexHashPair.Key, fieldHexHashPair.Value.HexType);
+                _currentFieldHexTypes.ForceSetHexType(fieldHexHashPair.Key, fieldHexHashPair.Value.HexType);
             }
         }
 
@@ -153,20 +158,44 @@ namespace Match.Field.Hexagons
             return bounds;
         }
 
-        public bool GetHexIsBlocker(Hex2d hex)
+        public Hex2d GetHexWithMinZ()
         {
-            if (_cachedLevelFieldHexes.ContainsKey(hex.GetHashCode()))
-            {
-                if (_cachedLevelFieldHexes[hex.GetHashCode()].HexModel.Data.TryGetValue(
-                        HexParamsNameConstants.IsBlockerParam, out var isBlocker))
-                {
-                    return bool.Parse(isBlocker);
-                }
+            HexModel hexWithMinZ = _cachedLevelFieldHexes.Values.First().HexModel;
+            Vector3 min = GetPlanePosition(hexWithMinZ.Position);
 
-                return false;
+            foreach (var fieldHex in _cachedLevelFieldHexes.Values.Skip(1))
+            {
+                var nextPlanePosition = GetPlanePosition(fieldHex.HexModel.Position);
+
+                if (nextPlanePosition.z < min.z)
+                {
+                    min.z = nextPlanePosition.z;
+                    hexWithMinZ = fieldHex.HexModel;
+                }
             }
 
-            return true;
+            return hexWithMinZ.Position;
+        }
+
+        public bool GetHexIsBlocker(Hex2d hex)
+        {
+            return IsHexWithProperty(hex, HexParamsNameConstants.IsBlockerParam);
+        }
+
+        public bool GetHexIsRangeAttackBlocker(Hex2d hex)
+        {
+            return IsHexWithProperty(hex, HexParamsNameConstants.IsRangeAttackBlockerParam);
+        }
+
+        private bool IsHexWithProperty(Hex2d hex, string propertyName)
+        {
+            if (_cachedLevelFieldHexes.TryGetValue(hex.GetHashCode(), out FieldHex inspectedHex)
+                && inspectedHex.HexModel.Data.TryGetValue(propertyName, out var propertyValue))
+            {
+                return bool.Parse(propertyValue);
+            }
+
+            return false;
         }
     }
 }

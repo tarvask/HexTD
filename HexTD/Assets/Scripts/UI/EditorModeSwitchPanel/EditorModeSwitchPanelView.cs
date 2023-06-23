@@ -1,5 +1,7 @@
+using UI.Tools.SimpleToggle;
 using UnityEngine;
 using UnityEngine.UI;
+using Toggle = UnityEngine.UI.Toggle;
 
 namespace UI.EditorModeSwitchPanel
 {
@@ -9,32 +11,23 @@ namespace UI.EditorModeSwitchPanel
         [SerializeField] private ToggleGroup hexPathModesToggleGroup;
         
         [SerializeField] private Toggle hexModeToggle;
+        [SerializeField] private Toggle propsModeToggle;
         [SerializeField] private Toggle pathModeToggle;
 
-        [Header("Hex types toggle group")]
-        [SerializeField] private ToggleGroup hexTypeModeToggleGroup;
-
-        [SerializeField] private Toggle normalHexToggle;
-        [SerializeField] private Toggle bridgeHexToggle;
-        [SerializeField] private Toggle stonePropsHexToggle;
-        [SerializeField] private Toggle bushPropsHexToggle;
-        [SerializeField] private Toggle treePropsHexToggle;
-        [SerializeField] private Toggle grassPropsHexToggle;
-        [SerializeField] private Toggle mushroomSinglePropsHexToggle;
-        [SerializeField] private Toggle mushroomClusterPropsHexToggle;
+        [SerializeField] private SimpleToggleGroup hexTypeToggleGroup;
+        [SerializeField] private ScrollRect hexTypeScrollRect;
+        
+        [SerializeField] private SimpleToggleGroup propsTypeToggleGroup;
+        [SerializeField] private ScrollRect propsTypeScrollRect;
 
         public ToggleGroup HexPathModesToggleGroup => hexPathModesToggleGroup;
         public Toggle HexModeToggle => hexModeToggle;
+        public Toggle PropsModeToggle => propsModeToggle;
         public Toggle PathModeToggle => pathModeToggle;
         
-        public ToggleGroup HexTypeModeToggleGroup => hexTypeModeToggleGroup;
-        public Toggle NormalHexToggle => normalHexToggle;
-        public Toggle BridgeHexToggle => bridgeHexToggle;
-        public Toggle StonePropsHexToggle => stonePropsHexToggle;
-        public Toggle BushPropsHexToggle => bushPropsHexToggle;
-        public Toggle TreePropsHexToggle => treePropsHexToggle;
-        public Toggle GrassPropsHexToggle => grassPropsHexToggle;
-        public Toggle MushroomSinglePropsHexToggle => mushroomSinglePropsHexToggle;
-        public Toggle MushroomClusterPropsHexToggle => mushroomClusterPropsHexToggle;
+        public SimpleToggleGroup HexTypeToggleGroup => hexTypeToggleGroup;
+        public ScrollRect HexTypeScrollRect => hexTypeScrollRect;
+        public SimpleToggleGroup PropsTypeToggleGroup => propsTypeToggleGroup;
+        public ScrollRect PropsTypeScrollRect => propsTypeScrollRect;
     }
 }

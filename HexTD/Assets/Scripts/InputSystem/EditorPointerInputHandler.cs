@@ -11,21 +11,26 @@ namespace InputSystem
             Undefined = 0,
             
             HexMapEdit = 1,
-            PathEdit = 2
+            PropsEdit = 2,
+            PathEdit = 3
         }
 
         private const EditMode DefaultEditMode = EditMode.HexMapEdit;
         
-        private readonly HexMapEditorController _hexMapController;
+        private readonly EditorHexesController _editorHexesController;
+        private readonly EditorPropsController _editorPropsController;
         private readonly PathEditorController _pathEditorController;
 
         private EditMode _currentEditMode;
         private IPointerInputListener _currentPointerInputListener;
 
-        public EditorPointerInputHandler(HexMapEditorController hexMapController, 
+        public EditorPointerInputHandler(
+            EditorHexesController editorHexesController, 
+            EditorPropsController editorPropsController, 
             PathEditorController pathEditorController)
         {
-            _hexMapController = hexMapController;
+            _editorHexesController = editorHexesController;
+            _editorPropsController = editorPropsController;
             _pathEditorController = pathEditorController;
 
             SwitchEditMode(DefaultEditMode);
@@ -58,7 +63,10 @@ namespace InputSystem
             switch (_currentEditMode)
             {
                 case EditMode.HexMapEdit:
-                    _currentPointerInputListener = _hexMapController;
+                    _currentPointerInputListener = _editorHexesController;
+                    break;
+                case EditMode.PropsEdit:
+                    _currentPointerInputListener = _editorPropsController;
                     break;
                 case EditMode.PathEdit:
                     _currentPointerInputListener = _pathEditorController;
@@ -82,7 +90,8 @@ namespace InputSystem
 
         public void KeyboardInputHandle(Hex2d hex, bool isHexUnderMouse)
         {
-            _hexMapController.ApplyKeyboardInput(hex, isHexUnderMouse);
+            _editorHexesController.ApplyKeyboardInput(hex, isHexUnderMouse);
+            _editorPropsController.ApplyKeyboardInput(hex, isHexUnderMouse);
         }
     }
 }

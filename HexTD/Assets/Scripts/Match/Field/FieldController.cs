@@ -19,6 +19,7 @@ using Tools;
 using Tools.Interfaces;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 namespace Match.Field
 {
@@ -27,65 +28,66 @@ namespace Match.Field
         public struct Context
         {
             public Transform FieldRoot { get; }
-            public HexFabric HexFabric { get; }
+            public HexObjectFabric HexObjectFabric { get; }
+            public PropsObjectFabric PropsObjectFabric { get; }
             public FieldConfig FieldConfig { get; }
+            public MatchConfig LevelConfig { get; }
             public LevelMapModel LevelMapModel { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
             public BuffManager BuffManager { get; }
             public VfxManager VfxManager { get; }
+            public bool ShouldCreateMap { get; }
+            public bool ShouldCreateObjectInfo { get; }
 
-            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             public ReactiveCommand<PlayerState> StateSyncedReactiveCommand { get; }
             public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
             public ReactiveProperty<bool> HasMobsOnField { get; }
-            public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
-            public ReactiveCommand WaveEndedReactiveCommand { get; }
             public ReactiveCommand<HealthInfo> CastleHealthChangedReactiveCommand { get; }
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
             public ReactiveCommand<int> GoldenCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand<int> CrystalsCountChangedReactiveCommand { get; }
-            public ReactiveCommand<float> MatchStartedReactiveCommand { get; }
 
             public Context(
                 Transform fieldRoot,
-                HexFabric hexFabric,
-                FieldConfig fieldConfig, LevelMapModel levelMapModel,
+                HexObjectFabric hexObjectFabric,
+                PropsObjectFabric propsObjectFabric,
+                FieldConfig fieldConfig,
+                MatchConfig levelConfig,
+                LevelMapModel levelMapModel,
                 ConfigsRetriever configsRetriever,
                 BuffManager buffManager,
                 VfxManager vfxManager,
+                bool shouldCreateMap,
+                bool shouldCreateObjectInfo,
                 
-                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
                 ReactiveCommand<PlayerState> stateSyncedReactiveCommand,
                 ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand,
                 ReactiveProperty<bool> hasMobsOnField,
-                ReactiveCommand<int> waveNumberChangedReactiveCommand,
-                ReactiveCommand waveEndedReactiveCommand,
                 ReactiveCommand<HealthInfo> castleHealthChangedReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<int> goldenCoinsCountChangedReactiveCommand,
-                ReactiveCommand<int> crystalsCountChangedReactiveCommand,
-                ReactiveCommand<float> matchStartedReactiveCommand)
+                ReactiveCommand<int> crystalsCountChangedReactiveCommand)
             {
                 FieldRoot = fieldRoot;
-                HexFabric = hexFabric;
+                HexObjectFabric = hexObjectFabric;
+                PropsObjectFabric = propsObjectFabric;
                 
                 FieldConfig = fieldConfig;
+                LevelConfig = levelConfig;
                 LevelMapModel = levelMapModel;
                 ConfigsRetriever = configsRetriever;
                 BuffManager = buffManager;
                 VfxManager = vfxManager;
+                ShouldCreateMap = shouldCreateMap;
+                ShouldCreateObjectInfo = shouldCreateObjectInfo;
 
-                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
                 StateSyncedReactiveCommand = stateSyncedReactiveCommand;
                 SpawnMobReactiveCommand = spawnMobReactiveCommand;
                 HasMobsOnField = hasMobsOnField;
-                WaveNumberChangedReactiveCommand = waveNumberChangedReactiveCommand;
-                WaveEndedReactiveCommand = waveEndedReactiveCommand;
                 CastleHealthChangedReactiveCommand = castleHealthChangedReactiveCommand;
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
                 GoldenCoinsCountChangedReactiveCommand = goldenCoinsCountChangedReactiveCommand;
                 CrystalsCountChangedReactiveCommand = crystalsCountChangedReactiveCommand;
-                MatchStartedReactiveCommand = matchStartedReactiveCommand;
             }
         }
 
@@ -111,6 +113,7 @@ namespace Match.Field
         private readonly PlayerStateLoader _stateLoader;
         
         private readonly HexObjectsContainer _hexObjectsContainer ;
+        private readonly PropsObjectsContainer _propsObjectsContainer ;
         private readonly FieldHighlightsController _fieldHighlightsController ;
         
         public const float MoveLerpCoeff = 0.7f;
@@ -121,9 +124,20 @@ namespace Match.Field
         public FieldConstructionProcessController FieldConstructionProcessController => _constructionProcessController;
         public FieldModel FieldModel => _model;
 
-        public FieldController(Context context)
+        private FieldFactory.Factory _fieldFactoryFactory;
+        private TowersManager.Factory _towersManagerFactory;
+        private MobsManager.Factory _mobsManagerFactory;
+
+        public FieldController(
+            Context context,
+            FieldFactory.Factory fieldFactoryFactory,
+            TowersManager.Factory towersManagerFactory,
+            MobsManager.Factory mobsManagerFactory)
         {
             _context = context;
+            _fieldFactoryFactory = fieldFactoryFactory;
+            _towersManagerFactory = towersManagerFactory;
+            _mobsManagerFactory = mobsManagerFactory;
 
             ReactiveCommand<MobController> attackTowerByMobReactiveCommand = AddDisposable(new ReactiveCommand<MobController>());
             ReactiveCommand<int> castleReachedByMobReactiveCommand = AddDisposable(new ReactiveCommand<int>());
@@ -143,9 +157,12 @@ namespace Match.Field
             _pathFindingService = new HexPathFindingService(_hexagonalFieldModel);
             _pathContainer = new PathContainer(_pathFindingService, _context.LevelMapModel.PathDatas);
             
-            TowersManager towersManager = new TowersManager(_hexagonalFieldModel.HexGridSize);
+            TowersManager towersManager = _towersManagerFactory.Create(
+                _context.VfxManager, 
+                _hexagonalFieldModel.HexGridSize);
 
             _hexObjectsContainer = new HexObjectsContainer();
+            _propsObjectsContainer = new PropsObjectsContainer();
             
             _fieldHighlightsController = AddDisposable(new FieldHighlightsController(
                 new FieldHighlightsController.Context(_hexObjectsContainer)));
@@ -157,36 +174,40 @@ namespace Match.Field
             
             FieldFactory.Context factoryContext = new FieldFactory.Context(
                 _context.FieldRoot,
-                _context.HexFabric,
+                _context.HexObjectFabric,
+                _context.PropsObjectFabric,
                 _pathContainer,
                 _hexagonalFieldModel,
-                _context.FieldConfig.CastleHealth, 
+                _context.LevelMapModel.GetFieldProps(),
+                _context.LevelConfig.CastleHealth, 
                 _context.FieldConfig.TowerRemovingDuration,
+                _context.ShouldCreateObjectInfo,
                 _hexMapReachableService,
                 _hexObjectsContainer,
+                _propsObjectsContainer,
                 castleReachedByMobReactiveCommand,
                 _context.CastleDestroyedReactiveCommand,
                 enableHexesHighlightReactiveCommand,
                 removeAllHexesHighlightsReactiveCommand);
-            _factory = AddDisposable(new FieldFactory(factoryContext));
+            _factory = AddDisposable(_fieldFactoryFactory.Create(factoryContext));
             
             MobsByTowersBlocker.Context mobsByTowersBlockerContext = new MobsByTowersBlocker.Context(
-                _hexagonalFieldModel.HexSize, towersManager, removeMobReactiveCommand);
+                towersManager, removeMobReactiveCommand);
             _mobsByTowersBlocker = AddDisposable(new MobsByTowersBlocker(mobsByTowersBlockerContext));
 
             MobsManager.Context mobsManagerContext = new MobsManager.Context(
+                _context.VfxManager,
                 _mobsByTowersBlocker,
                 _context.FieldConfig.RemoveMobsOnBossAppearing,
                 attackTowerByMobReactiveCommand,
                 castleReachedByMobReactiveCommand,
                 removeMobReactiveCommand,
                 _context.SpawnMobReactiveCommand);
-            _mobsManager = AddDisposable(new MobsManager(mobsManagerContext));
+            _mobsManager = AddDisposable(_mobsManagerFactory.Create(mobsManagerContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
                 _hexagonalFieldModel,
                 _hexagonalFieldModel.CurrentFieldHexTypes,
-                _context.VfxManager,
                 towersManager,
                 _mobsManager,
                 _factory,
@@ -227,7 +248,9 @@ namespace Match.Field
 
             // clicks distribution
 
-            PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model, _factory,
+            PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model,
+                _factory,
+                _constructionProcessController,
                 _context.ConfigsRetriever,
                 _currencyController);
             _stateLoader = AddDisposable(new PlayerStateLoader(stateLoaderContext));
@@ -242,7 +265,8 @@ namespace Match.Field
             _currencyController.CrystalsCountReactiveProperty.Subscribe((newValue) =>
                 _context.CrystalsCountChangedReactiveCommand.Execute(newValue));
             
-            _factory.CreateCells();
+            if (_context.ShouldCreateMap)
+                _factory.CreateMap();
         }
         
         public void OuterLogicUpdate(float frameLength)
@@ -281,9 +305,8 @@ namespace Match.Field
 
         public Bounds GetFieldBounds() => _hexagonalFieldModel.GetBounds();
 
-        public void Reset()
+        public class Factory : PlaceholderFactory<Context, FieldController>
         {
-            _hexagonalFieldModel.Reset();
         }
     }
 }

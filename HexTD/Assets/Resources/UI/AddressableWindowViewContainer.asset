@@ -122,6 +122,11 @@ MonoBehaviour:
     cacheInMemory: 0
     assetReference:
       m_AssetGUID: 831678d434362ba49acff63d4a7c8580
+  - view: {fileID: 6838586709747597363, guid: 788fc68b21b574238bdf363dba26b41d, type: 3}
+    viewType: UI.AuthorizationWindow.AuthorizationWindowView
+    cacheInMemory: 0
+    assetReference:
+      m_AssetGUID: 788fc68b21b574238bdf363dba26b41d
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0

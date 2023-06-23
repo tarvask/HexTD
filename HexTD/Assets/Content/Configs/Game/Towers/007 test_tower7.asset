@@ -17,34 +17,31 @@ MonoBehaviour:
   view: {fileID: 1568221066824527527, guid: 702b7605107b5428d85178d38747b670, type: 3}
   regularParameters:
     towerType: 7
-    towerName: TestTower
+    towerName: Fiona
     preferUnbuffedTargets: 0
-    resetTargetEveryShot: 0
-    allowedPositions: 0
-    targetFindingTacticType: 2
+    resetTargetEveryShot: 1
+    allowedPositions: 1
+    targetFindingTacticType: 1
     maxEnemyBlocked: 0
   towerLevelConfigs:
-    keyData: 0200000001000000
+    keyData: 01000000
     valueData:
-    - buildPrice: 1
-      refundPrice: 1
-      buildTime: 1
-      healthPoint: 120
-    - buildPrice: 7
-      refundPrice: 3
-      buildTime: 2
-      healthPoint: 110
+    - buildPrice: 19
+      refundPrice: 0
+      buildTime: 0
+      healthPoint: 75
   attacksConfig:
     attacks:
-    - attackTargetType: 0
-      attackRangeType: 0
-      baseDamage: 0
+    - attackTargetType: 1
+      attackRangeType: 2
+      baseDamage: 70
       delay: 0
-      cooldown: 0
-      projectileSpeed: 0
-      projectileView: {fileID: 0}
+      cooldown: 2.6
+      projectileSpeed: 80
+      projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
       serializableBuffs: []
-      attackRadiusInHex: 0
+      attackRadiusInHex: 2
+      splashRadiusInUnits: 0
     splashAttacks: []
   references:
     version: 2

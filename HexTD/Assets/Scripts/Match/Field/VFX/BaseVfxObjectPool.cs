@@ -13,7 +13,7 @@ namespace Match.Field.VFX
         private readonly Dictionary<TKey, VfxController> _activeVfxControllers;
         private readonly Stack<VfxController> _pooledVfxControllers;
 
-        public IReadOnlyDictionary<TKey, VfxController> ActiveVfxControllers => _activeVfxControllers;
+        protected IReadOnlyDictionary<TKey, VfxController> ActiveVfxControllers => _activeVfxControllers;
 
         public BaseVfxObjectPool(Transform vfxObjectTransformPrefab, Transform parentTransform = null)
         {
@@ -58,7 +58,15 @@ namespace Match.Field.VFX
             _pooledVfxControllers.Push(vfxController);
         }
 
-        public abstract void OuterLogicUpdate(float frameLength);
+        protected abstract void SetPosition(TKey key, VfxController vfxController);
+
+        public void OuterLogicUpdate(float frameLength)
+        {
+            foreach (var vfxControllerKeyPair in ActiveVfxControllers)
+            {
+                SetPosition(vfxControllerKeyPair.Key, vfxControllerKeyPair.Value);
+            }
+        }
         
         public void Dispose()
         {

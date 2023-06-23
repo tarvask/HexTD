@@ -143,7 +143,7 @@ namespace Match.Wave
 
         private void MigrateState(NetworkRoles newRole)
         {
-            WavesState currentState = GetWaveState();
+            WavesState currentState = GetWavesState();
             
             switch (newRole)
             {
@@ -158,7 +158,7 @@ namespace Match.Wave
             }
         }
 
-        public WavesState GetWaveState()
+        public WavesState GetWavesState()
         {
             return _currentImplementation.SaveState();
         }

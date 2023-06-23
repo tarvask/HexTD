@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using HexSystem;
 using Match.Field.Castle;
@@ -6,7 +7,6 @@ using Match.Field.Mob;
 using Match.Field.Services;
 using Match.Field.Shooting;
 using Match.Field.Tower;
-using Match.Field.VFX;
 using Match.Wave;
 using Tools;
 using UniRx;
@@ -19,7 +19,6 @@ namespace Match.Field
         {
             public IHexPositionConversionService HexPositionConversionService { get; }
             public FieldHexTypesController FieldHexTypesController { get; }
-            public VfxManager VfxManager { get; }
             public TowersManager TowersManager { get; }
             public MobsManager MobsManager { get; }
             public FieldFactory Factory { get; }
@@ -29,7 +28,6 @@ namespace Match.Field
 
             public Context(IHexPositionConversionService hexPositionConversionService,
                 FieldHexTypesController fieldHexTypesController,
-                VfxManager vfxManager,
                 TowersManager towersManager,
                 MobsManager mobsManager,
                 FieldFactory factory,
@@ -39,7 +37,6 @@ namespace Match.Field
             {
                 HexPositionConversionService = hexPositionConversionService;
                 FieldHexTypesController = fieldHexTypesController;
-                VfxManager = vfxManager;
                 TowersManager = towersManager;
                 MobsManager = mobsManager;
                 Factory = factory;
@@ -59,8 +56,8 @@ namespace Match.Field
         
         // supporting data
         // objects that can be shot
-        private TargetContainer _targets;
-        private ShooterContainer _shooters;
+        private readonly TargetContainer _targets;
+        private readonly ShooterContainer _shooters;
 
         public int HexGridSize => _context.FieldHexTypesController.HexGridSize;
         
@@ -87,7 +84,8 @@ namespace Match.Field
             _targets = new TargetContainer(MobsManager.MobContainer, TowersManager.TowerContainer);
             _shooters = new ShooterContainer(_context.TowersManager.TowerContainer); 
             
-            _context.RemoveMobReactiveCommand.Subscribe(RemoveMob);
+            AddDisposable(_context.RemoveMobReactiveCommand.Subscribe(RemoveMob));
+            AddDisposable(_context.TowersManager.TowerRemovedReactiveCommand.Subscribe(RemoveTowerFromHex));
         }
 
         public FieldHexType GetFieldHexType(Hex2d position)
@@ -103,8 +101,8 @@ namespace Match.Field
 
         public void AddTower(TowerController tower, Hex2d position)
         {
-            if(!_context.FieldHexTypesController.TryAddTower(position.GetHashCode()))
-                return;
+            if (!_context.FieldHexTypesController.TryAddTower(position.GetHashCode()))
+                throw new ArgumentException($"Cannot add tower to hex: hex model already has a tower in {position}");
 
             _context.TowersManager.AddTower(tower);
         }
@@ -114,13 +112,15 @@ namespace Match.Field
             _context.TowersManager.UpgradeTower(tower);
         }
 
-        public void RemoveTower(int positionHash, TowerController removingTower)
+        public void RemoveTower(TowerController removingTower)
         {
-            if(!_context.FieldHexTypesController.TryRemoveTower(positionHash))
-                return;
-
-            _context.VfxManager.ReleaseVfx(removingTower);
             _context.TowersManager.RemoveTower(removingTower);
+        }
+
+        private void RemoveTowerFromHex(TowerController removedTower)
+        {
+            if (!_context.FieldHexTypesController.TryRemoveTower(removedTower.HexPosition.GetHashCode()))
+                throw new ArgumentException($"Cannot remove tower form hex: hex model has no tower in {removedTower.HexPosition}");
         }
 
         public void AddMob(MobController mobController)
@@ -134,7 +134,6 @@ namespace Match.Field
 
         private void RemoveMob(MobController mobController)
         {
-            _context.VfxManager.ReleaseVfx(mobController);
             if (_context.MobsManager.MobCount == 0 && _context.HasMobsOnFieldReactiveProperty.Value)
                 _context.HasMobsOnFieldReactiveProperty.Value = false;
         }
@@ -147,6 +146,29 @@ namespace Match.Field
         public void RemoveProjectile(int projectileId)
         {
             _projectiles.Remove(projectileId);
+        }
+
+        public void ClearState()
+        {
+            // towers
+            List<TowerController> towersToRemove = new List<TowerController>(TowersManager.Towers.Values);
+            foreach (TowerController tower in towersToRemove)
+                RemoveTower(tower);
+
+            towersToRemove.Clear();
+            TowersManager.Clear();
+
+            // mobs
+            foreach (KeyValuePair<int, MobController> mobPair in MobsManager.Mobs)
+                MobsManager.UtiliseMob(mobPair.Value);
+            
+            MobsManager.Clear();
+            
+            // projectiles
+            foreach (KeyValuePair<int, ProjectileController> projectilePair in Projectiles)
+                projectilePair.Value.Dispose();
+            
+            Projectiles.Clear();
         }
     }
 }
