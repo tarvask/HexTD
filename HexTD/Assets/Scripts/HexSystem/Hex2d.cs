@@ -19,7 +19,8 @@ namespace HexSystem
 
 		[JsonIgnore] public readonly int S;
 
-		public Hex2d(int q, int r)
+		[JsonConstructor]
+		public Hex2d([JsonProperty("Q")] int q, [JsonProperty("R")] int r)
 		{
 			Q = q;
 			R = r;
