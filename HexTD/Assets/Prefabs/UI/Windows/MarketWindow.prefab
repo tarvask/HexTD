@@ -6800,8 +6800,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Buy
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 55e0d16a868392e428fd6a7c905cfa9f, type: 2}
-  m_sharedMaterial: {fileID: 5388011124292480595, guid: 55e0d16a868392e428fd6a7c905cfa9f, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 549ce639f0039d94e81c0fdfa1e0045f, type: 2}
+  m_sharedMaterial: {fileID: 5388011124292480595, guid: 549ce639f0039d94e81c0fdfa1e0045f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -9391,8 +9391,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Buy orders
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 55e0d16a868392e428fd6a7c905cfa9f, type: 2}
-  m_sharedMaterial: {fileID: 5388011124292480595, guid: 55e0d16a868392e428fd6a7c905cfa9f, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 549ce639f0039d94e81c0fdfa1e0045f, type: 2}
+  m_sharedMaterial: {fileID: 5388011124292480595, guid: 549ce639f0039d94e81c0fdfa1e0045f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -11969,8 +11969,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: My sell orders
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 55e0d16a868392e428fd6a7c905cfa9f, type: 2}
-  m_sharedMaterial: {fileID: 5388011124292480595, guid: 55e0d16a868392e428fd6a7c905cfa9f, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 549ce639f0039d94e81c0fdfa1e0045f, type: 2}
+  m_sharedMaterial: {fileID: 5388011124292480595, guid: 549ce639f0039d94e81c0fdfa1e0045f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
