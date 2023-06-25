@@ -83,6 +83,10 @@ MonoBehaviour:
     m_Address: Assets/Prefabs/UI/Windows/AuthorizationWindow.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 157d3e45786b2d240967f14a665309c9
+    m_Address: Assets/Prefabs/UI/Windows/SeedsFilterWindow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3ec02984d4bb4544aa626424941dabb8, type: 2}
   m_SchemaSet:
