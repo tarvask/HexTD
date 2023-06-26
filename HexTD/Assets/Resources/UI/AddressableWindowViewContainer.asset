@@ -93,7 +93,7 @@ MonoBehaviour:
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
-  - view: {fileID: 4542708381535264973, guid: 157d3e45786b2d240967f14a665309c9, type: 3}
+  - view: {fileID: 1729365130494393818, guid: 157d3e45786b2d240967f14a665309c9, type: 3}
     viewType: UI.SeedsFilterWindow.SeedsFilterWindowView
     cacheInMemory: 0
     assetReference:
@@ -122,6 +122,9 @@ MonoBehaviour:
     cacheInMemory: 0
     assetReference:
       m_AssetGUID: 831678d434362ba49acff63d4a7c8580
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
   - view: {fileID: 6838586709747597363, guid: 788fc68b21b574238bdf363dba26b41d, type: 3}
     viewType: UI.AuthorizationWindow.AuthorizationWindowView
     cacheInMemory: 0

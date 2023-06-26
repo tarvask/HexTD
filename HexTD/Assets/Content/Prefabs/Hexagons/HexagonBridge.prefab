@@ -11,6 +11,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PF_WoodenBridge
       objectReference: {fileID: 0}
+    - target: {fileID: 2872294221816865918, guid: d04f6a3ea9ed6c845a976e2b7eb9272e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3213213661338107588, guid: d04f6a3ea9ed6c845a976e2b7eb9272e, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -95,6 +99,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1371744611869071208, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 3362331327838442613, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -139,6 +147,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3646412295363312249, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4093040146474971571, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_Name
       value: HexagonBridge
@@ -154,3 +166,60 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3362331327838442613, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
   m_PrefabInstance: {fileID: 8172390080298447689}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &9211884549318037852
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 6900447004974327612}
+    m_Modifications:
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 96275149372721084, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 728977379153632518, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
+      propertyPath: m_Name
+      value: HexagonBridge
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dceb8b7677854ce43a858421ed298b3c, type: 3}
