@@ -11,7 +11,7 @@ namespace Match
     public class TestMatchEngine : BaseMonoBehaviour
     {
         public const float FrameLength = 0.5f;
-        public const byte TowersInHandCount = 12;
+        public const byte TowersInHandCount = 8;
         
         [SerializeField] private MatchView matchPrefab;
 
