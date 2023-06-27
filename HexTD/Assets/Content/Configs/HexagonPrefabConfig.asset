@@ -14,12 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hexObjects:
     keyData:
-    - simple
-    - grass
+    - road180
+    - emptyRock
     - bridge
     - invisible
+    - road120
+    - road60
     valueData:
     - {fileID: 2843427230044144718, guid: 209d45949411164459c0a95bdb0f06c1, type: 3}
     - {fileID: 8178014620764492173, guid: aa4ccc29e553d4affb86787a7ae7e635, type: 3}
     - {fileID: 7008967563772727906, guid: 08f7f7bf444f98341bf3feca9c3881ff, type: 3}
     - {fileID: 7008967563772727906, guid: 22c0bcbd210a562458fad878a05f23cf, type: 3}
+    - {fileID: 2843427230044144718, guid: 9ea3089d00089934093cd3c07dd5c5ea, type: 3}
+    - {fileID: 2843427230044144718, guid: aec180fb1934caf458c5277d277f08f1, type: 3}
