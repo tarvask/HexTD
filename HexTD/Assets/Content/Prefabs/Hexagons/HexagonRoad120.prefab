@@ -69,7 +69,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5784606333235595111, guid: c08e2076ba2498c4fbb97918b3d5655a, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5808845299405261956, guid: c08e2076ba2498c4fbb97918b3d5655a, type: 3}
       propertyPath: m_IsActive
@@ -82,6 +82,18 @@ PrefabInstance:
     - target: {fileID: 6971796019796549043, guid: c08e2076ba2498c4fbb97918b3d5655a, type: 3}
       propertyPath: m_RootOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6971796019796549043, guid: c08e2076ba2498c4fbb97918b3d5655a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6971796019796549043, guid: c08e2076ba2498c4fbb97918b3d5655a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6971796019796549043, guid: c08e2076ba2498c4fbb97918b3d5655a, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.3
       objectReference: {fileID: 0}
     - target: {fileID: 6971796019796549043, guid: c08e2076ba2498c4fbb97918b3d5655a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -153,7 +165,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9013136396552268661, guid: c08e2076ba2498c4fbb97918b3d5655a, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c08e2076ba2498c4fbb97918b3d5655a, type: 3}
@@ -329,7 +341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4093040146474971571, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_Name
-      value: HexagonSimple
+      value: HexagonRoad120
       objectReference: {fileID: 0}
     - target: {fileID: 8327889286216733584, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_IsActive
