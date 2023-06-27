@@ -12,8 +12,8 @@ namespace UI.MainMenuWindow
 		//[SerializeField] private Image testImage;
 		[SerializeField] private Button singlePlayerBattleRunButton;
 		[SerializeField] private Button multiPlayerBattleRunButton;
-		[SerializeField] private Button shopButton;
-		[SerializeField] private Button inventoryButton;
+		[SerializeField] private Button marketButton;
+		//[SerializeField] private Button inventoryButton;
 
 		public IObservable<Unit> SinglePlayerBattleRunClick => singlePlayerBattleRunButton
 			.OnClickAsObservable()
@@ -23,13 +23,13 @@ namespace UI.MainMenuWindow
 			.OnClickAsObservable()
 			.WhereAppeared(this);
 
-		public IObservable<Unit> ShopButtonClick => shopButton
+		public IObservable<Unit> MarketButtonClick => marketButton
 			.OnClickAsObservable()
 			.WhereAppeared(this);
 
-		public IObservable<Unit> InventoryButtonClick => inventoryButton
-			.OnClickAsObservable()
-			.WhereAppeared(this);
+		//public IObservable<Unit> InventoryButtonClick => inventoryButton
+		//	.OnClickAsObservable()
+		//	.WhereAppeared(this);
 
 		//public void TestShowLoaded() => testImage.color = Color.green;
 	}

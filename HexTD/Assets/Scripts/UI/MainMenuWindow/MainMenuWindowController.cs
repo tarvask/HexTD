@@ -28,13 +28,13 @@ namespace UI.MainMenuWindow
 				.Subscribe(RunMultiPlayerBattle)
 				.AddTo(View);
 
-			View.ShopButtonClick
+			View.MarketButtonClick
 				.Subscribe(ShowMarket)
 				.AddTo(View);
 
-			View.InventoryButtonClick
-				.Subscribe(ShowInventory)
-				.AddTo(View);
+			//View.InventoryButtonClick
+			//	.Subscribe(ShowInventory)
+			//	.AddTo(View);
 		}
 
 		protected override UniTask DoShowAsync(bool animated = true)
