@@ -15,7 +15,7 @@ MonoBehaviour:
   hexObjects:
     keyData:
     - road180
-    - emptyRock
+    - simpleRocky
     - bridge
     - invisible
     - road120
