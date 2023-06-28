@@ -111,7 +111,7 @@ namespace Match.Field.Mob
                 _currentPathLength += distancePerFrame;
                 if (!_wasNewHexReached && 
                     //_context.HexPositionConversionService.IsCloseToNewHex(distanceToTargetSqr)
-                    _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition) != _currentHexPosition)
+                    _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false) != _currentHexPosition)
                 {
                     _wasNewHexReached = true;
                     UpdateHexPosition();
