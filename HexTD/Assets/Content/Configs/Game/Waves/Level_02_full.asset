@@ -74,12 +74,12 @@ MonoBehaviour:
     - mobId: 7
       delay: 90
     - mobId: 7
+      delay: 91
+    - mobId: 7
       delay: 92
+    - mobId: 7
+      delay: 93
     - mobId: 7
       delay: 94
     - mobId: 7
-      delay: 96
-    - mobId: 7
-      delay: 98
-    - mobId: 7
-      delay: 100
+      delay: 95
