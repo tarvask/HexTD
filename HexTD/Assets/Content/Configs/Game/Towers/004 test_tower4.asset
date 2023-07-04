@@ -26,15 +26,15 @@ MonoBehaviour:
   towerLevelConfigs:
     keyData: 01000000
     valueData:
-    - buildPrice: 14
+    - buildPrice: 13
       refundPrice: 0
       buildTime: 0
-      healthPoint: 120
+      healthPoint: 140
   attacksConfig:
     attacks:
     - attackTargetType: 1
       attackRangeType: 1
-      baseDamage: 16
+      baseDamage: 18
       delay: 0
       cooldown: 1.2
       projectileSpeed: 100

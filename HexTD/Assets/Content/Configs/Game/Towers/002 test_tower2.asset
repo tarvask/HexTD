@@ -26,10 +26,10 @@ MonoBehaviour:
   towerLevelConfigs:
     keyData: 01000000
     valueData:
-    - buildPrice: 9
+    - buildPrice: 10
       refundPrice: 0
       buildTime: 0
-      healthPoint: 80
+      healthPoint: 100
   attacksConfig:
     attacks:
     - attackTargetType: 1

@@ -18,7 +18,7 @@ MonoBehaviour:
     typeId: 3
     healthPoints: 200
     speed: 0.08
-    attackPower: 12
+    attackPower: 4
     delay: 0
     cooldown: 1
     isBoss: 0

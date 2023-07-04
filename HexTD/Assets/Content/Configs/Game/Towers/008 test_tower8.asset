@@ -41,7 +41,7 @@ MonoBehaviour:
       projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
       serializableBuffs: []
       attackRadiusInHex: 2
-      splashRadiusInUnits: 1
+      splashRadiusInUnits: 6
     splashAttacks: []
   references:
     version: 2
