@@ -22,11 +22,11 @@ MonoBehaviour:
     resetTargetEveryShot: 0
     allowedPositions: 2
     targetFindingTacticType: 1
-    maxEnemyBlocked: 2
+    maxEnemyBlocked: 1
   towerLevelConfigs:
     keyData: 01000000
     valueData:
-    - buildPrice: 10
+    - buildPrice: 9
       refundPrice: 0
       buildTime: 0
       healthPoint: 100
