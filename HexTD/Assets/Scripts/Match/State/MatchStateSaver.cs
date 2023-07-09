@@ -16,6 +16,7 @@ namespace Match.State
             public WaveMobSpawnerCoordinator WaveMobSpawnerCoordinator { get; }
             public ReactiveCommand<float> WaveStartedReactiveCommand { get; }
             public ReactiveCommand<MatchStateCheckSum> MatchStateCheckSumComputedReactiveCommand { get; }
+            public IReadOnlyReactiveProperty<bool> IsMatchRunningReactiveProperty { get; }
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(FieldController player1FieldController, FieldController player2FieldController,
@@ -23,6 +24,7 @@ namespace Match.State
                 WaveMobSpawnerCoordinator waveMobSpawnerCoordinator,
                 ReactiveCommand<float> waveStartedReactiveCommand,
                 ReactiveCommand<MatchStateCheckSum> matchStateCheckSumComputedReactiveCommand,
+                IReadOnlyReactiveProperty<bool> isMatchRunningReactiveProperty,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 Player1FieldController = player1FieldController;
@@ -31,6 +33,7 @@ namespace Match.State
                 WaveMobSpawnerCoordinator = waveMobSpawnerCoordinator;
                 WaveStartedReactiveCommand = waveStartedReactiveCommand;
                 MatchStateCheckSumComputedReactiveCommand = matchStateCheckSumComputedReactiveCommand;
+                IsMatchRunningReactiveProperty = isMatchRunningReactiveProperty;
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
@@ -46,8 +49,13 @@ namespace Match.State
 
             // use savings at wave start to rollback to wave start
             //_context.WaveStartedReactiveCommand.Subscribe((waveStartDelay) => SaveMatchState());
-            _context.CurrentEngineFrameReactiveProperty
-                .Where(currentFrame => currentFrame % SaveDelayInEngineFrames == 0).Subscribe((x) => SaveMatchState());
+            _context.CurrentEngineFrameReactiveProperty.Subscribe(OnCurrentEngineFrameChanged);
+        }
+
+        private void OnCurrentEngineFrameChanged(int currentEngineFrame)
+        {
+            if (currentEngineFrame % SaveDelayInEngineFrames == 0 && _context.IsMatchRunningReactiveProperty.Value)
+                SaveMatchState();
         }
 
         private void SaveMatchState()

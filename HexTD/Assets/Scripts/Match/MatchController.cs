@@ -371,7 +371,9 @@ namespace Match
             MatchStateSaver.Context stateSaverContext = new MatchStateSaver.Context(
                 _player1FieldController, _player2FieldController,
                 _checkSumComputerController, _waveMobSpawnerCoordinator,
-                waveStartedReactiveCommand, matchStateCheckSumComputedReactiveCommand, _context.CurrentEngineFrameReactiveProperty);
+                waveStartedReactiveCommand, matchStateCheckSumComputedReactiveCommand,
+                _rulesController.IsMatchRunning,
+                _context.CurrentEngineFrameReactiveProperty);
             _stateSaver = AddDisposable(new MatchStateSaver(stateSaverContext));
             
             // state verification
@@ -430,7 +432,7 @@ namespace Match
 
         public void OuterLogicUpdate(float frameLength)
         {
-            if (!_rulesController.IsMatchRunning)
+            if (!_rulesController.IsMatchRunning.Value)
                 return;
             
             _ourClicksDistributor.OuterLogicUpdate(frameLength);
@@ -453,6 +455,9 @@ namespace Match
 
         public void OuterViewUpdate(float frameLength)
         {
+            if (!_rulesController.IsMatchRunning.Value)
+                return;
+            
             _player1FieldController.OuterViewUpdate(frameLength);
             
             if (_context.IsMultiPlayerGame)

@@ -24,11 +24,11 @@ namespace Match
         }
         
         private readonly Context _context;
-        private bool _isMatchRunning;
+        private ReactiveProperty<bool> _isMatchRunning;
         private bool _isEnemyCastleDestroyed, _isOurCastleDestroyed;
         private MatchResultType _matchResult;
 
-        public bool IsMatchRunning => _isMatchRunning;
+        public IReadOnlyReactiveProperty<bool> IsMatchRunning => _isMatchRunning;
 
         public MatchRulesController(Context context)
         {
@@ -37,7 +37,7 @@ namespace Match
             _context.EnemyCastleDestroyedReactiveCommand.Subscribe(OnEnemyCastleDestroyedEventHandler);
             _context.OurCastleDestroyedReactiveCommand.Subscribe(OnOurCastleDestroyedEventHandler);
 
-            _isMatchRunning = true;
+            _isMatchRunning = AddDisposable(new ReactiveProperty<bool>(true));
             _matchResult = MatchResultType.Undefined;
         }
 
@@ -53,9 +53,9 @@ namespace Match
                     _matchResult = MatchResultType.Draw;
             }
 
-            _isMatchRunning = _matchResult == MatchResultType.Undefined;
+            _isMatchRunning.Value = _matchResult == MatchResultType.Undefined;
             
-            if (!_isMatchRunning)
+            if (!_isMatchRunning.Value)
                 _context.WinLoseWindowController.ShowWindow(_matchResult);
         }
 
