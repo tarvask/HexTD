@@ -11,6 +11,7 @@ using Match.Field.State;
 using Match.Field.Tower;
 using Match.Field.VFX;
 using Match.State;
+using Match.State.CheckSum;
 using Match.Wave;
 using Services;
 using Tools;
@@ -88,6 +89,7 @@ namespace Match
         private readonly FieldClicksDistributor _ourClicksDistributor;
         private readonly FieldClicksDistributor _enemyClicksDistributor;
         private readonly TowerPlacer _ourTowerPlacer;
+        private readonly MatchStateCheckSumComputerController _checkSumComputerController;
         private readonly MatchStateSaver _stateSaver;
         
         private readonly MatchView _matchView;
@@ -258,32 +260,27 @@ namespace Match
                 ourField = _player2FieldController;
                 enemyField = _player1FieldController;
             }
-
+            
+            // setup our and enemy cameras
             {
-                {
-                    var ourFieldBounds = ourField.GetFieldBounds();
-                    DebugDrawingTools.DrawBounds(ourFieldBounds, Color.white, 5.0f);
+                var ourFieldBounds = ourField.GetFieldBounds();
+                DebugDrawingTools.DrawBounds(ourFieldBounds, Color.white, 5.0f);
 
-                    if (_matchView.OurFieldCamera.TryGetFocusTransforms(ourFieldBounds, out var pos,
-                            out var rot))
-                    {
-                        _matchView.OurFieldCamera.transform.SetPositionAndRotation(
-                            pos - _matchView.OurFieldCamera.transform.up * 5.0f,
-                            rot);
-                    }
-                }
-                {
-                    var enemyFieldBounds = enemyField.GetFieldBounds();
-                    DebugDrawingTools.DrawBounds(enemyFieldBounds, Color.white, 5.0f);
+                if (_matchView.OurFieldCamera.TryGetFocusTransforms(ourFieldBounds, out var pos,
+                        out var rot))
+                    _matchView.OurFieldCamera.transform.SetPositionAndRotation(
+                        pos - _matchView.OurFieldCamera.transform.up * 5.0f,
+                        rot);
+            }
+            {
+                var enemyFieldBounds = enemyField.GetFieldBounds();
+                DebugDrawingTools.DrawBounds(enemyFieldBounds, Color.white, 5.0f);
 
-                    if (_matchView.EnemyFieldCamera.TryGetFocusTransforms(enemyFieldBounds, out var pos,
-                            out var rot))
-                    {
-                        _matchView.EnemyFieldCamera.transform.SetPositionAndRotation(
-                            pos,
-                            rot);
-                    }
-                }
+                if (_matchView.EnemyFieldCamera.TryGetFocusTransforms(enemyFieldBounds, out var pos,
+                        out var rot))
+                    _matchView.EnemyFieldCamera.transform.SetPositionAndRotation(
+                        pos,
+                        rot);
             }
 
             ourField.InitPlayerHand(_ourPlayerHandController);
@@ -364,9 +361,12 @@ namespace Match
             _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
             
             // state saver
+            _checkSumComputerController = AddDisposable(new MatchStateCheckSumComputerController());
+            
             MatchStateSaver.Context stateSaverContext = new MatchStateSaver.Context(
-                _player1FieldController, _player2FieldController, _waveMobSpawnerCoordinator,
-                waveStartedReactiveCommand, _context.CurrentEngineFrameReactiveProperty);
+                _player1FieldController, _player2FieldController,
+                _checkSumComputerController, _waveMobSpawnerCoordinator,
+                waveStartedReactiveCommand, matchStateCheckSumComputedReactiveCommand, _context.CurrentEngineFrameReactiveProperty);
             _stateSaver = AddDisposable(new MatchStateSaver(stateSaverContext));
 
             _context.MatchCommandsCommon.IncomingGeneral.RequestSyncState.Subscribe(SendState);
@@ -380,9 +380,9 @@ namespace Match
             _context.MatchCommandsCommon.Server.SendState.Fire(_stateSaver.GetCurrentMatchState());
         }
         
-        private void SyncState(MatchState matchState, int timeStamp)
+        private void SyncState(MatchState matchState, int frameCounter)
         {
-            _context.SyncFrameCounterReactiveCommand.Execute(timeStamp);
+            _context.SyncFrameCounterReactiveCommand.Execute(frameCounter);
 
             if (_context.OurGameRoleReactiveProperty.Value == ProcessRoles.Player1)
             {

@@ -1,10 +1,9 @@
 using Match.Field;
-using Match.State;
 using Match.Wave;
 using Tools;
 using UniRx;
 
-namespace Match
+namespace Match.State
 {
     public class MatchStateSaver : BaseDisposable
     {
@@ -12,26 +11,30 @@ namespace Match
         {
             public FieldController Player1FieldController { get; }
             public FieldController Player2FieldController { get; }
+            public MatchStateCheckSumComputerController CheckSumComputerController { get; }
             public WaveMobSpawnerCoordinator WaveMobSpawnerCoordinator { get; }
             public ReactiveCommand<float> WaveStartedReactiveCommand { get; }
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(FieldController player1FieldController, FieldController player2FieldController,
+                MatchStateCheckSumComputerController checkSumComputerController,
                 WaveMobSpawnerCoordinator waveMobSpawnerCoordinator,
                 ReactiveCommand<float> waveStartedReactiveCommand,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 Player1FieldController = player1FieldController;
                 Player2FieldController = player2FieldController;
+                CheckSumComputerController = checkSumComputerController;
                 WaveMobSpawnerCoordinator = waveMobSpawnerCoordinator;
                 WaveStartedReactiveCommand = waveStartedReactiveCommand;
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
 
-        private readonly Context _context;
         private const int SaveDelayInEngineFrames = 50;
-        private MatchState _lastMatchState; 
+        
+        private readonly Context _context;
+        private MatchState _lastMatchState;
 
         public MatchStateSaver(Context context)
         {
@@ -50,6 +53,8 @@ namespace Match
                 _context.Player2FieldController.GetPlayerState(),
                 _context.WaveMobSpawnerCoordinator.GetWavesState(),
                 Randomizer.CurrentSeed, Randomizer.RandomCallsCountReactiveProperty.Value);
+            
+            _context.CheckSumComputerController.UpdateCheckSumHistory(_context.CurrentEngineFrameReactiveProperty.Value, _lastMatchState);
         }
 
         public ref MatchState GetCurrentMatchState()
