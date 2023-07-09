@@ -170,6 +170,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _networkMatchStatus.CurrentProcessGameRoleReactiveProperty,
             _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
             _connectionMaintainer.IsConnectedReactiveProperty,
+            RequestState,
             LeaveRoom,
             OnQuitMatchHandler,
             _isMultiPlayerGame); //ProcessRoles.Player1
@@ -239,6 +240,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _networkMatchStatus.CurrentProcessGameRoleReactiveProperty,
             _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
             _connectionMaintainer.IsConnectedReactiveProperty,
+            RequestState,
             LeaveRoom,
             OnQuitMatchHandler,
             _isMultiPlayerGame);

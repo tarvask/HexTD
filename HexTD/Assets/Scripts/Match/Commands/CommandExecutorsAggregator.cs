@@ -36,6 +36,7 @@ namespace Match.Commands
         private UpgradeTowerCommandExecutor _upgradeTowerCommandExecutor;
         private SellTowerCommandExecutor _sellTowerCommandExecutor;
         private StartWaveSpawnCommandExecutor _startWaveSpawnCommandExecutor;
+        private BroadcastStateCheckSumCommandExecutor _broadcastStateCheckSumCommandExecutor;
 
         public CommandExecutorsAggregator(Context context)
         {
@@ -54,6 +55,7 @@ namespace Match.Commands
             _upgradeTowerCommandExecutor = new UpgradeTowerCommandExecutor(commandContext);
             _sellTowerCommandExecutor = new SellTowerCommandExecutor(commandContext);
             _startWaveSpawnCommandExecutor = new StartWaveSpawnCommandExecutor(commandContext);
+            _broadcastStateCheckSumCommandExecutor = new BroadcastStateCheckSumCommandExecutor(commandContext);
         }
         
         public async void ProcessEvent(byte eventCode, Hashtable parametersTable, int senderId)
@@ -95,6 +97,11 @@ namespace Match.Commands
                 // start wave spawn
                 case PhotonEventsConstants.StartWaveSpawn.ApplyEventId:
                     await _startWaveSpawnCommandExecutor.Apply(parametersTable);
+                    break;
+                
+                // broadcast state checksum
+                case PhotonEventsConstants.BroadcastStateCheckSum.ApplyEventId:
+                    await _broadcastStateCheckSumCommandExecutor.Apply(parametersTable);
                     break;
             }
         }

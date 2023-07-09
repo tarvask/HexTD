@@ -10,7 +10,8 @@ namespace Match
 {
     public class TestMatchEngine : BaseMonoBehaviour
     {
-        public const float FrameLength = 0.5f;
+        public const byte LogicFramesPerSecond = 60;
+        public const float FrameLength = 1f / LogicFramesPerSecond;
         public const byte TowersInHandCount = 8;
         
         [SerializeField] private MatchView matchPrefab;
@@ -20,6 +21,7 @@ namespace Match
         private IncomingCommandsProcessor _incomingCommandsProcessor;
         private ServerCommandsProcessor _serverCommandsProcessor;
         private ReactiveCommand _rollbackStateReactiveCommand;
+        private Action _onRequestMatchStateAction;
         private Action _onQuitGameAction;
         private Action _onMatchEndAction;
         
@@ -47,13 +49,14 @@ namespace Match
 
         private void Awake()
         {
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = LogicFramesPerSecond;
         }
 
         public void Init(MatchInitDataParameters matchInitDataParameters, IEventBus eventBus,
             IReadOnlyReactiveProperty<ProcessRoles> currentProcessGameRoleReactiveProperty,
             IReadOnlyReactiveProperty<NetworkRoles> currentProcessNetworkRoleReactiveProperty,
             IReadOnlyReactiveProperty<bool> isConnectedReactiveProperty,
+            Action onRequestStateAction,
             Action onMatchEndAction,
             Action onQuitGameAction,
             bool isMultiPlayerGame)
@@ -69,14 +72,15 @@ namespace Match
             MatchCommonCommands.ServerCommands matchServerCommands = new MatchCommonCommands.ServerCommands();
             MatchCommonCommands.IncomingGeneralCommands matchIncomingCommandsCommon = new MatchCommonCommands.IncomingGeneralCommands();
             MatchCommonCommands matchCommonCommands = new MatchCommonCommands(matchServerCommands, matchIncomingCommandsCommon);
-            
+
+            ReactiveCommand requestMatchStateReactiveCommand = new ReactiveCommand();
             ReactiveCommand quitMatchReactiveCommand = new ReactiveCommand();
             ReactiveCommand<int> syncFrameCounterCommand = new ReactiveCommand<int>();
             _rollbackStateReactiveCommand = new ReactiveCommand();
             
             MatchController.Context matchControllerContext = new MatchController.Context( matchInitDataParameters,
                 matchCommandsEnemy, matchCommandsOur, matchCommonCommands,
-                CurrentEngineFrameReactiveProperty, quitMatchReactiveCommand, syncFrameCounterCommand,
+                CurrentEngineFrameReactiveProperty, requestMatchStateReactiveCommand, quitMatchReactiveCommand, syncFrameCounterCommand,
                 currentProcessGameRoleReactiveProperty, currentProcessNetworkRoleReactiveProperty, isConnectedReactiveProperty,
                 _rollbackStateReactiveCommand,
                 isMultiPlayerGame,
@@ -94,11 +98,14 @@ namespace Match
             ServerCommandsProcessor.Context serverCommandsProcessorContext = new ServerCommandsProcessor.Context(
                 this, eventBus, matchCommonCommands.Server);
             _serverCommandsProcessor = new ServerCommandsProcessor(serverCommandsProcessorContext);
-
-            quitMatchReactiveCommand.Subscribe((Unit unit) => QuitMatch());
-            syncFrameCounterCommand.Subscribe(SyncFrameCounter);
+            
+            _onRequestMatchStateAction = onRequestStateAction;
             _onQuitGameAction = onQuitGameAction;
             _onMatchEndAction = onMatchEndAction;
+
+            requestMatchStateReactiveCommand.Subscribe((Unit unit) => RequestMatchState());
+            quitMatchReactiveCommand.Subscribe((Unit unit) => QuitMatch());
+            syncFrameCounterCommand.Subscribe(SyncFrameCounter);
 
             CurrentEngineFrameReactiveProperty.Value = 0;
             _currentEngineFrameTimestamp = Time.time;
@@ -126,13 +133,18 @@ namespace Match
             if (!_isInited || !_isConnected)
                 return;
 
-            if (_currentEngineFrameTimestamp + FrameLength >= Time.time)
+            if (_currentEngineFrameTimestamp + FrameLength <= Time.time)
             {
                 _currentEngineFrameTimestamp = Time.time;
                 CurrentEngineFrameReactiveProperty.Value++;
             }
             
             _matchController.OuterLogicUpdate(Time.deltaTime);
+        }
+
+        private void RequestMatchState()
+        {
+            _onRequestMatchStateAction();
         }
 
         private void QuitMatch()

@@ -15,7 +15,7 @@ namespace Match.Wave
         {
             public ConfigsRetriever ConfigsRetriever { get; }
             public FieldConfig FieldConfig { get; }
-            public MatchCommonCommands.IncomingGeneralCommands IncomingGeneralGeneralCommands { get; }
+            public MatchCommonCommands.IncomingGeneralCommands IncomingGeneralCommands { get; }
             public MatchCommands.IncomingCommands Player1IncomingCommands { get; }
             public MatchCommands.IncomingCommands Player2IncomingCommands { get; }
             public MatchCommonCommands.ServerCommands ServerCommands { get; }
@@ -58,7 +58,7 @@ namespace Match.Wave
             {
                 ConfigsRetriever = configsRetriever;
                 FieldConfig = fieldConfig;
-                IncomingGeneralGeneralCommands = incomingGeneralCommands;
+                IncomingGeneralCommands = incomingGeneralCommands;
                 Player1IncomingCommands = player1IncomingCommands;
                 Player2IncomingCommands = player2IncomingCommands;
                 ServerCommands = serverCommands;
@@ -95,7 +95,7 @@ namespace Match.Wave
 
             WaveMobSpawnerBaseNoReinforcements.Context waveMobSpawnerImplementationContext = new WaveMobSpawnerBaseNoReinforcements.Context(
                 _context.ConfigsRetriever, _context.FieldConfig,
-                _context.IncomingGeneralGeneralCommands,
+                _context.IncomingGeneralCommands,
                 _context.Player1IncomingCommands, _context.Player2IncomingCommands, _context.ServerCommands,
                 _context.Waves,
                 _context.IsMultiPlayer,

@@ -2,15 +2,17 @@ using Tools;
 
 namespace Match.State.CheckSum
 {
-    public class MatchStateCheckSumComputerCoordinator : BaseDisposable
+    public class MatchStateCheckSumComputerController : BaseDisposable
     {
         private const MatchStateCheckSumComputeTacticType CheckSumComputeTacticType = MatchStateCheckSumComputeTacticType.FieldObjectsCount;
         private const byte CheckSumHistorySize = 20;
         
         private readonly MatchStateCheckSumComputeTacticCoordinator _tacticCoordinator;
         private readonly MatchStateCheckSumHistoryHolder _historyHolder;
+        
+        public MatchStateCheckSum LastCheckSum => _historyHolder.LastCheckSum;
 
-        public MatchStateCheckSumComputerCoordinator()
+        public MatchStateCheckSumComputerController()
         {
             _tacticCoordinator = AddDisposable(new MatchStateCheckSumComputeTacticCoordinator(CheckSumComputeTacticType));
             _historyHolder = AddDisposable(new MatchStateCheckSumHistoryHolder(CheckSumHistorySize));
@@ -20,6 +22,11 @@ namespace Match.State.CheckSum
         {
             MatchStateCheckSum checkSum = _tacticCoordinator.GetMatchCheckSum(currentEngineFrame, matchState);
             _historyHolder.AddCheckSumToHistory(checkSum);
+        }
+
+        public bool TryGetCheckSumForEngineFrame(int engineFrame, out MatchStateCheckSum checkSum)
+        {
+            return _historyHolder.TryGetCheckSumForEngineFrame(engineFrame, out checkSum);
         }
     }
 }

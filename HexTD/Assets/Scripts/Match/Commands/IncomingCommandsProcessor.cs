@@ -1,6 +1,7 @@
 using HexSystem;
 using Match.Field.Tower;
 using Match.State;
+using Match.State.CheckSum;
 using Match.Wave;
 using Tools;
 using UniRx;
@@ -73,6 +74,11 @@ namespace Match.Commands
         public void StartWaveSpawn(BuiltWaveParams waveParams, int randomSeed, int timestamp)
         {
             _context.IncomingCommandsCommon.StartWaveSpawn.Fire(waveParams, randomSeed);
+        }
+        
+        public void BroadcastStateCheckSum(MatchStateCheckSum matchStateCheckSum, int timestamp)
+        {
+            _context.IncomingCommandsCommon.BroadcastStateCheckSum.Fire(matchStateCheckSum);
         }
     }
 }

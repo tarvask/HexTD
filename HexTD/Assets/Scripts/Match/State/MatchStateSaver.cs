@@ -1,4 +1,5 @@
 using Match.Field;
+using Match.State.CheckSum;
 using Match.Wave;
 using Tools;
 using UniRx;
@@ -14,12 +15,14 @@ namespace Match.State
             public MatchStateCheckSumComputerController CheckSumComputerController { get; }
             public WaveMobSpawnerCoordinator WaveMobSpawnerCoordinator { get; }
             public ReactiveCommand<float> WaveStartedReactiveCommand { get; }
+            public ReactiveCommand<MatchStateCheckSum> MatchStateCheckSumComputedReactiveCommand { get; }
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(FieldController player1FieldController, FieldController player2FieldController,
                 MatchStateCheckSumComputerController checkSumComputerController,
                 WaveMobSpawnerCoordinator waveMobSpawnerCoordinator,
                 ReactiveCommand<float> waveStartedReactiveCommand,
+                ReactiveCommand<MatchStateCheckSum> matchStateCheckSumComputedReactiveCommand,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 Player1FieldController = player1FieldController;
@@ -27,6 +30,7 @@ namespace Match.State
                 CheckSumComputerController = checkSumComputerController;
                 WaveMobSpawnerCoordinator = waveMobSpawnerCoordinator;
                 WaveStartedReactiveCommand = waveStartedReactiveCommand;
+                MatchStateCheckSumComputedReactiveCommand = matchStateCheckSumComputedReactiveCommand;
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
@@ -55,6 +59,7 @@ namespace Match.State
                 Randomizer.CurrentSeed, Randomizer.RandomCallsCountReactiveProperty.Value);
             
             _context.CheckSumComputerController.UpdateCheckSumHistory(_context.CurrentEngineFrameReactiveProperty.Value, _lastMatchState);
+            _context.MatchStateCheckSumComputedReactiveCommand.Execute(_context.CheckSumComputerController.LastCheckSum);
         }
 
         public ref MatchState GetCurrentMatchState()

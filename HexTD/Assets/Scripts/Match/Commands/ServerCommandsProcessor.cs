@@ -1,6 +1,7 @@
 using ExitGames.Client.Photon;
 using Match.EventBus;
 using Match.State;
+using Match.State.CheckSum;
 using Match.Wave;
 using Tools;
 
@@ -31,6 +32,7 @@ namespace Match.Commands
 
             _context.ServerCommands.SendState.Subscribe(ApplySyncState);
             _context.ServerCommands.StartWaveSpawn.Subscribe(StartWaveSpawn);
+            _context.ServerCommands.BroadcastStateCheckSum.Subscribe(BroadcastStateCheckSum);
         }
 
         private void ApplySyncState(MatchState matchState)
@@ -61,6 +63,17 @@ namespace Match.Commands
                 {PhotonEventsConstants.StartWaveSpawn.TimeParam, _context.TestMatchEngine.CurrentEngineFrameReactiveProperty.Value}
             };
             _context.EventBus.RaiseEvent(PhotonEventsConstants.StartWaveSpawn.ApplyEventId, startWaveSpawnProperties);
+        }
+
+        private void BroadcastStateCheckSum(MatchStateCheckSum matchStateCheckSum)
+        {
+            Hashtable broadcastStateCheckSumProperties = new Hashtable
+            {
+                {PhotonEventsConstants.BroadcastStateCheckSum.Player1CheckSumParam, matchStateCheckSum.Player1CheckSum},
+                {PhotonEventsConstants.BroadcastStateCheckSum.Player2CheckSumParam, matchStateCheckSum.Player2CheckSum},
+                {PhotonEventsConstants.BroadcastStateCheckSum.TimeParam, matchStateCheckSum.EngineFrame}
+            };
+            _context.EventBus.RaiseEvent(PhotonEventsConstants.BroadcastStateCheckSum.ApplyEventId, broadcastStateCheckSumProperties);
         }
     }
 }

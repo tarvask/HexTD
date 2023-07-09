@@ -32,6 +32,7 @@ namespace Match
             public MatchCommands MatchCommandsOur { get; }
             public MatchCommonCommands MatchCommandsCommon { get; }
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
+            public ReactiveCommand RequestMatchStateReactiveCommand { get; }
             public ReactiveCommand QuitMatchReactiveCommand { get; }
             public ReactiveCommand<int> SyncFrameCounterReactiveCommand { get; }
             public IReadOnlyReactiveProperty<ProcessRoles> OurGameRoleReactiveProperty { get; }
@@ -45,6 +46,7 @@ namespace Match
                 MatchInitDataParameters matchInitDataParameters,
                 MatchCommands matchCommandsEnemy, MatchCommands matchCommandsOur, MatchCommonCommands matchCommandsCommon,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
+                ReactiveCommand requestMatchStateReactiveCommand,
                 ReactiveCommand quitMatchReactiveCommand,
                 ReactiveCommand<int> syncFrameCounterReactiveCommand,
                 IReadOnlyReactiveProperty<ProcessRoles> ourGameRoleReactiveProperty,
@@ -59,6 +61,7 @@ namespace Match
                 MatchCommandsOur = matchCommandsOur;
                 MatchCommandsCommon = matchCommandsCommon;
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
+                RequestMatchStateReactiveCommand = requestMatchStateReactiveCommand;
                 QuitMatchReactiveCommand = quitMatchReactiveCommand;
                 SyncFrameCounterReactiveCommand = syncFrameCounterReactiveCommand;
                 OurGameRoleReactiveProperty = ourGameRoleReactiveProperty;
@@ -91,6 +94,7 @@ namespace Match
         private readonly TowerPlacer _ourTowerPlacer;
         private readonly MatchStateCheckSumComputerController _checkSumComputerController;
         private readonly MatchStateSaver _stateSaver;
+        private readonly MatchStateVerificationCoordinator _stateVerificationCoordinator;
         
         private readonly MatchView _matchView;
         private readonly FieldConfig _fieldConfig;
@@ -138,6 +142,7 @@ namespace Match
             ReactiveCommand<int> ourCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<bool> dragCardChangeStatusCommand = AddDisposable(new ReactiveCommand<bool>());
             ReactiveCommand<Hex2d> placeForOurTowerSelectedCommand = AddDisposable(new ReactiveCommand<Hex2d>());
+            ReactiveCommand<MatchStateCheckSum> matchStateCheckSumComputedReactiveCommand = AddDisposable(new ReactiveCommand<MatchStateCheckSum>());
 
             ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_fieldConfig);
             _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
@@ -368,6 +373,16 @@ namespace Match
                 _checkSumComputerController, _waveMobSpawnerCoordinator,
                 waveStartedReactiveCommand, matchStateCheckSumComputedReactiveCommand, _context.CurrentEngineFrameReactiveProperty);
             _stateSaver = AddDisposable(new MatchStateSaver(stateSaverContext));
+            
+            // state verification
+            MatchStateVerificationCoordinator.Context verificationCoordinatorContext = new MatchStateVerificationCoordinator.Context(
+                _checkSumComputerController,
+                _context.OurNetworkRoleReactiveProperty,
+                matchStateCheckSumComputedReactiveCommand,
+                _context.RequestMatchStateReactiveCommand,
+                _context.MatchCommandsCommon.IncomingGeneral,
+                _context.MatchCommandsCommon.Server);
+            _stateVerificationCoordinator = AddDisposable(new MatchStateVerificationCoordinator(verificationCoordinatorContext));
 
             _context.MatchCommandsCommon.IncomingGeneral.RequestSyncState.Subscribe(SendState);
             _context.MatchCommandsCommon.IncomingGeneral.ApplySyncState.Subscribe(SyncState);

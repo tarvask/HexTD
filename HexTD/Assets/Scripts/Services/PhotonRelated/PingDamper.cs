@@ -12,8 +12,9 @@ namespace Services.PhotonRelated
 {
     public class PingDamper : BaseDisposable
     {
-        private const int PingDamperFramesMin = 5;
-        private const float CheckPingTimeout = 3f;
+        private const int PingDamperFramesMin = TestMatchEngine.LogicFramesPerSecond / 2;
+        private const float CheckPingTimeout = 2f;
+        private const float PingLerpCoefficient = 0.5f;
         
         private float _currentCheckPingTimeout;
         
@@ -55,8 +56,16 @@ namespace Services.PhotonRelated
             PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
             
             // update ping damper
-            int newPingDamper = Mathf.CeilToInt(maxCachedPing * 0.001f / TestMatchEngine.FrameLength);
-            _pingDamperFramesDeltaReactiveProperty.Value = Mathf.Max(PingDamperFramesMin, newPingDamper);
+            int newDesiredPingDamper = Mathf.CeilToInt(maxCachedPing * 0.001f / TestMatchEngine.FrameLength);
+            
+            if (newDesiredPingDamper < _pingDamperFramesDeltaReactiveProperty.Value)
+                _pingDamperFramesDeltaReactiveProperty.Value = Mathf.CeilToInt( 
+                    Mathf.Lerp(
+                        _pingDamperFramesDeltaReactiveProperty.Value,
+                        Mathf.Max(PingDamperFramesMin, newDesiredPingDamper),
+                        PingLerpCoefficient));
+            else
+                _pingDamperFramesDeltaReactiveProperty.Value = newDesiredPingDamper;
         }
     }
 }

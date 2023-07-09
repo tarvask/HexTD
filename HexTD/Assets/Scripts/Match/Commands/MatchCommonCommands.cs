@@ -1,4 +1,5 @@
 using Match.State;
+using Match.State.CheckSum;
 using Match.Wave;
 using Tools;
 
@@ -11,11 +12,13 @@ namespace Match.Commands
         {
             public ObservableEvent<MatchState> SendState { get; }
             public ObservableEvent<BuiltWaveParams, int> StartWaveSpawn { get; }
+            public ObservableEvent<MatchStateCheckSum> BroadcastStateCheckSum { get; }
 
             public ServerCommands()
             {
                 SendState = AddDisposable(new ObservableEvent<MatchState>());
                 StartWaveSpawn = AddDisposable(new ObservableEvent<BuiltWaveParams, int>());
+                BroadcastStateCheckSum = AddDisposable(new ObservableEvent<MatchStateCheckSum>());
             }
         }
 
@@ -24,12 +27,14 @@ namespace Match.Commands
             public ObservableEvent RequestSyncState { get; }
             public ObservableEvent<MatchState, int> ApplySyncState { get; }
             public ObservableEvent<BuiltWaveParams, int> StartWaveSpawn { get; }
+            public ObservableEvent<MatchStateCheckSum> BroadcastStateCheckSum { get; }
 
             public IncomingGeneralCommands()
             {
                 RequestSyncState = AddDisposable(new ObservableEvent());
                 ApplySyncState = AddDisposable(new ObservableEvent<MatchState, int>());
                 StartWaveSpawn = AddDisposable(new ObservableEvent<BuiltWaveParams, int>());
+                BroadcastStateCheckSum = AddDisposable(new ObservableEvent<MatchStateCheckSum>());
             }
         }
         
