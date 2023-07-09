@@ -14,32 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   propsObjectConfigs:
     keyData:
-    - bush
-    - mushroom_cluster
-    - mushroom_single
-    - stone_wall
     - tree
     valueData:
-    - propsObject: {fileID: 3886770764703070816, guid: e5f25b3784e6af84a834b9ec3c6ee919, type: 3}
-      propsPlacingConfig:
-        isReplacesHex: 1
-        isBuildingBlock: 0
-        isRangeAttackBlock: 0
-    - propsObject: {fileID: 6593607727555220473, guid: b5e03f0223378924da0979393d214c4e, type: 3}
-      propsPlacingConfig:
-        isReplacesHex: 0
-        isBuildingBlock: 1
-        isRangeAttackBlock: 0
-    - propsObject: {fileID: 1301886653320489606, guid: 85a54485069f6ed40adbe1dc72d1d4c0, type: 3}
-      propsPlacingConfig:
-        isReplacesHex: 0
-        isBuildingBlock: 0
-        isRangeAttackBlock: 1
-    - propsObject: {fileID: 8873025157617540482, guid: 805ca666bf9e5a947bbd6c221a95e5b1, type: 3}
-      propsPlacingConfig:
-        isReplacesHex: 1
-        isBuildingBlock: 1
-        isRangeAttackBlock: 0
     - propsObject: {fileID: 5954365473827557662, guid: fbfc6ef16ba0e4043bf5a10610794587, type: 3}
       propsPlacingConfig:
         isReplacesHex: 0
