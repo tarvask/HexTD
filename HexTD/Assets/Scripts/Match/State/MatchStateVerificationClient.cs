@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using Match.State.CheckSum;
 using UnityEngine;
 
@@ -21,6 +22,8 @@ namespace Match.State
 
         public override void VerifyCheckSum(MatchStateCheckSum serverCheckSum)
         {
+            Debug.Log($"Received checksum for frame {serverCheckSum.EngineFrame}, " +
+                      $"current frame is {_context.MatchStateCheckSumComputerController.LastCheckSum.EngineFrame}");
             _serverCheckSumHistory.Enqueue(serverCheckSum);
 
             if (CheckHistory())
