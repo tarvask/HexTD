@@ -14,16 +14,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hexObjects:
     keyData:
-    - road180
-    - simpleRocky
-    - bridge
-    - invisible
-    - road120
-    - road60
+    - Inactive_Path
+    - Bridge
+    - Path_60_1
+    - Inactive_Stone2
+    - Inactive_Stone
+    - Inactive_Grass
+    - Path_60_2
+    - Path_120_1
+    - Path_120_2
+    - Path_120_3
+    - Path_120_4
+    - Path_120_5
+    - Path_180_1
+    - Path_180_2
+    - Path_180_3
+    - Path_180_4
+    - Path_180_5
+    - Path_Intersection_124_1
+    - Path_Intersection_124_2
+    - Path_Intersection_125_1
+    - Path_Intersection_125_2
+    - Path_Intersection_135_1
+    - Path_Intersection_135_2
+    - Path_Intersection_1234_1
+    - Path_Intersection_1234_2
+    - Path_Intersection_1235_1
+    - Path_Intersection_1235_2
+    - Path_Intersection_1245_1
+    - Path_Intersection_1245_2
+    - Stone
     valueData:
-    - {fileID: 2843427230044144718, guid: 209d45949411164459c0a95bdb0f06c1, type: 3}
-    - {fileID: 8178014620764492173, guid: aa4ccc29e553d4affb86787a7ae7e635, type: 3}
-    - {fileID: 7008967563772727906, guid: 08f7f7bf444f98341bf3feca9c3881ff, type: 3}
-    - {fileID: 7008967563772727906, guid: 22c0bcbd210a562458fad878a05f23cf, type: 3}
-    - {fileID: 2843427230044144718, guid: 9ea3089d00089934093cd3c07dd5c5ea, type: 3}
+    - {fileID: 2843427230044144718, guid: 84238f652c9b50346b8e2e86eb7ee848, type: 3}
+    - {fileID: 2843427230044144718, guid: 1c093898f68a10f41be6ee031e7b29b0, type: 3}
+    - {fileID: 2843427230044144718, guid: 360c851e073b53b42b04b5a180c395fc, type: 3}
+    - {fileID: 2843427230044144718, guid: 329a2166a3fed4848b99fd301e219bfe, type: 3}
+    - {fileID: 2843427230044144718, guid: 66936279eedec9c44bd64fa44a0f5bc2, type: 3}
+    - {fileID: 2843427230044144718, guid: f74b19c8e30bb004ca39f01f22929224, type: 3}
+    - {fileID: 2843427230044144718, guid: 51f2f285648d25f4c9063c8584bd5337, type: 3}
+    - {fileID: 2843427230044144718, guid: a4e059e587aa4e44c92b757057101c09, type: 3}
     - {fileID: 2843427230044144718, guid: aec180fb1934caf458c5277d277f08f1, type: 3}
+    - {fileID: 2843427230044144718, guid: 5f553b95a736a75438301a8d07397b04, type: 3}
+    - {fileID: 2843427230044144718, guid: ef0ac036837fab249b13fb457bb24540, type: 3}
+    - {fileID: 2843427230044144718, guid: 365ac2041c96f124bb723cae0745709e, type: 3}
+    - {fileID: 2843427230044144718, guid: 31bfa57ea93922a4f995b03df93e649a, type: 3}
+    - {fileID: 2843427230044144718, guid: 4c3fefa44a9e77847b710bb5b5b987bf, type: 3}
+    - {fileID: 2843427230044144718, guid: 7aaa9b485a3d242419fa1f09144c3c31, type: 3}
+    - {fileID: 2843427230044144718, guid: 0eef2b2ff12671a4a87eb3476403cbc0, type: 3}
+    - {fileID: 2843427230044144718, guid: dd692231edd613446bdd285c29cffcef, type: 3}
+    - {fileID: 2843427230044144718, guid: a0111cc7b81ef604fb139dfba06ba345, type: 3}
+    - {fileID: 2843427230044144718, guid: 6c9f3811b57e4e44bb667144346b3405, type: 3}
+    - {fileID: 2843427230044144718, guid: 90f60cf7d443d6b488fa5c8061cef3b1, type: 3}
+    - {fileID: 2843427230044144718, guid: 4dc590398726f824a9d821d752c87f83, type: 3}
+    - {fileID: 2843427230044144718, guid: c22250fea6f7f93489a137ae12b6f011, type: 3}
+    - {fileID: 2843427230044144718, guid: 5fc286588beae8447b0eb24037f175a9, type: 3}
+    - {fileID: 2843427230044144718, guid: cad6b41e894bca040bd37098d617d0e2, type: 3}
+    - {fileID: 2843427230044144718, guid: 39a6af46b0128e64eb588d51967046e7, type: 3}
+    - {fileID: 2843427230044144718, guid: 18eefa112fdd54648b68eef03d981dab, type: 3}
+    - {fileID: 2843427230044144718, guid: 634c581a5448c3c468763e6e69490fa3, type: 3}
+    - {fileID: 2843427230044144718, guid: 009b0a18dd15eb9498ec74990fa55596, type: 3}
+    - {fileID: 2843427230044144718, guid: 191cef1b049e4de4391232e93928291a, type: 3}
+    - {fileID: 2843427230044144718, guid: 84645bcf0dcd0e04a9681e6159d128eb, type: 3}

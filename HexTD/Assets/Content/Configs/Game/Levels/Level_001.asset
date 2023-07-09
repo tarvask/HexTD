@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26833b72e33446b998b33ef306ac9186, type: 3}
+  m_Name: Level_001
+  m_EditorClassIdentifier: 
+  pathsWithWaves:
+  - pathId: 1
+    waves:
+    - waveDelay: 0
+      waveConfig: {fileID: 11400000, guid: 856c013e54ed057478982d77d1affdd0, type: 2}
+  initialEnergy: 10
+  energyRecoveryTime: 1.6
+  castleHealth: 3
+  levelMap: {fileID: 4900000, guid: 5e5126ff4cc5bd643896ad1dd2e25089, type: 3}

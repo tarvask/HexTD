@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: MatchConfig
   m_EditorClassIdentifier: 
   levels:
-    keyData: 020103
+    keyData: 02040301
     valueData:
     - {fileID: 11400000, guid: 10ea635a97cdd1a4e981b75971e65190, type: 2}
     - {fileID: 11400000, guid: e87a9ebfe01622140a77d46a0f133870, type: 2}
     - {fileID: 11400000, guid: bb0da8ee12936334680887d91f713e25, type: 2}
+    - {fileID: 11400000, guid: a30b6d23cb76a604488a171cf36ba11a, type: 2}
