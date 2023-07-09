@@ -33,28 +33,36 @@ namespace Match.State.CheckSum
             _maxEngineFrameInHistory = checkSum.EngineFrame;
         }
 
-        public bool TryGetCheckSumForEngineFrame(int engineFrame, out MatchStateCheckSum checkSum)
+        public MatchStateCheckSumFindingResultType TryGetCheckSumForEngineFrame(int engineFrame, out MatchStateCheckSum checkSum)
         {
             checkSum = default;
             
-            if (!IsEngineFrameInsideHistoryBounds(engineFrame))
-                return false;
+            if (IsEngineFrameTooOldForHistoryBounds(engineFrame))
+                return MatchStateCheckSumFindingResultType.TooOld;
+            
+            if (IsEngineFrameTooOldForHistoryBounds(engineFrame))
+                return MatchStateCheckSumFindingResultType.TooNew;
 
             foreach (MatchStateCheckSum matchStateCheckSum in _checkSumHistory)
             {
                 if (matchStateCheckSum.EngineFrame == engineFrame)
                 {
                     checkSum = matchStateCheckSum;
-                    return true;
+                    return MatchStateCheckSumFindingResultType.ExistInRange;
                 }
             }
 
-            return false;
+            return MatchStateCheckSumFindingResultType.NotExistInRange;
         }
 
-        private bool IsEngineFrameInsideHistoryBounds(int engineFrame)
+        private bool IsEngineFrameTooOldForHistoryBounds(int engineFrame)
         {
-            return _minEngineFrameInHistory <= engineFrame && engineFrame <= _maxEngineFrameInHistory;
+            return engineFrame < _minEngineFrameInHistory;
+        }
+        
+        private bool IsEngineFrameTooNewForHistoryBounds(int engineFrame)
+        {
+            return _maxEngineFrameInHistory < engineFrame;
         }
 
         protected override void OnDispose()

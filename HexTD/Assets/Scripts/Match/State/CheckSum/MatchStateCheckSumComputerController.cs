@@ -24,7 +24,7 @@ namespace Match.State.CheckSum
             _historyHolder.AddCheckSumToHistory(checkSum);
         }
 
-        public bool TryGetCheckSumForEngineFrame(int engineFrame, out MatchStateCheckSum checkSum)
+        public MatchStateCheckSumFindingResultType TryGetCheckSumForEngineFrame(int engineFrame, out MatchStateCheckSum checkSum)
         {
             return _historyHolder.TryGetCheckSumForEngineFrame(engineFrame, out checkSum);
         }

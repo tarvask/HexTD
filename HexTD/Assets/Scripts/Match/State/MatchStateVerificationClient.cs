@@ -39,16 +39,30 @@ namespace Match.State
             foreach (MatchStateCheckSum serverCheckSum in _serverCheckSumHistory)
             {
                 // stop checking on absent checksum
-                if (!_context.MatchStateCheckSumComputerController.TryGetCheckSumForEngineFrame(serverCheckSum.EngineFrame,
-                        out MatchStateCheckSum clientCheckSum))
+                MatchStateCheckSumFindingResultType checkSumFindingResult =
+                    _context.MatchStateCheckSumComputerController.TryGetCheckSumForEngineFrame(
+                        serverCheckSum.EngineFrame, out MatchStateCheckSum clientCheckSum);
+
+                // do not drop and exit, because further elements are even newer
+                if (checkSumFindingResult is MatchStateCheckSumFindingResultType.TooNew)
                     break;
 
+                // drop, because there is no chance to get such checksums in history later
+                if (checkSumFindingResult is MatchStateCheckSumFindingResultType.TooOld or MatchStateCheckSumFindingResultType.NotExistInRange)
+                {
+                    checkSumsToDequeue++;
+                    continue;
+                }
+
                 // count checksums to drop
-                if (clientCheckSum.Equals(serverCheckSum))
+                if (checkSumFindingResult is MatchStateCheckSumFindingResultType.ExistInRange
+                    && clientCheckSum.Equals(serverCheckSum))
                     checkSumsToDequeue++;
                 else
                 {
-                    Debug.LogError($"Different checksums for engine frame {clientCheckSum.EngineFrame}, requesting state from server");
+                    Debug.LogError($"Different checksums for engine frame {clientCheckSum.EngineFrame}: " +
+                                   $"{GetDecodedMessageForCheckSumComparison(clientCheckSum, serverCheckSum)}, " +
+                                   $"requesting state from server");
                     isStateCorrupted = true;
                     break;
                 }
