@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4807451813310202245}
   - component: {fileID: 8437674639490453024}
   - component: {fileID: 5979745839377447658}
+  - component: {fileID: 2194196171879305676}
   m_Layer: 0
   m_Name: H_Path_180_3
   m_TagString: Untagged
@@ -31,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1869687777679634704}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8437674639490453024
 MeshFilter:
@@ -83,6 +84,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2194196171879305676
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5331328854035913535}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6481400946128123881, guid: 6d2f5714526c3f24eb6d7f1afe40c1e1, type: 3}
 --- !u!1001 &3988801306230891877
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92,7 +107,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1371744611869071208, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3362331327838442613, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_RootOrder
@@ -140,7 +155,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3646412295363312249, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4093040146474971571, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_Name

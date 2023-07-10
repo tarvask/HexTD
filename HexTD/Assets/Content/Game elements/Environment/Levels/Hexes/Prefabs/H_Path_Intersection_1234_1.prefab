@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 307482377912031441}
   - component: {fileID: 3741292834216253300}
   - component: {fileID: 1445454593394500542}
+  - component: {fileID: 2192126577257689606}
   m_Layer: 0
   m_Name: H_Path_Intersection_1234_1
   m_TagString: Untagged
@@ -31,7 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1869687777679634704}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3741292834216253300
 MeshFilter:
@@ -83,6 +84,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &2192126577257689606
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1085285302048899691}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6801345827304717943, guid: 556b8a60f27da5941a2626c2fc834147, type: 3}
 --- !u!1001 &3988801306230891877
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -92,7 +107,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1371744611869071208, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3362331327838442613, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_RootOrder
@@ -140,7 +155,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3646412295363312249, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4093040146474971571, guid: a102689a499b4d54fae1c3c9c27944a5, type: 3}
       propertyPath: m_Name
