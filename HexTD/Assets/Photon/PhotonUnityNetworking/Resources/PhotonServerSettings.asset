@@ -21,10 +21,10 @@ MonoBehaviour:
     UseNameServer: 0
     FixedRegion: 
     Server: 74.235.82.34
-    Port: 4530
+    Port: 5055
     ProxyServer: 
-    Protocol: 1
-    EnableProtocolFallback: 1
+    Protocol: 0
+    EnableProtocolFallback: 0
     AuthMode: 0
     EnableLobbyStatistics: 0
     NetworkLogging: 3
