@@ -42,6 +42,7 @@ namespace Match.State
         
         private readonly Context _context;
         private MatchState _lastMatchState;
+        private bool _hasSavedStateOnMatchEnd;
 
         public MatchStateSaver(Context context)
         {
@@ -54,8 +55,13 @@ namespace Match.State
 
         private void OnCurrentEngineFrameChanged(int currentEngineFrame)
         {
-            if (currentEngineFrame % SaveDelayInEngineFrames == 0 && _context.IsMatchRunningReactiveProperty.Value)
+            if (currentEngineFrame % SaveDelayInEngineFrames == 0 && !_hasSavedStateOnMatchEnd)
+            {
                 SaveMatchState();
+
+                if (!_context.IsMatchRunningReactiveProperty.Value)
+                    _hasSavedStateOnMatchEnd = true;
+            }
         }
 
         private void SaveMatchState()
