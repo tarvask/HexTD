@@ -14,11 +14,14 @@ namespace Installers
         public override void InstallBindings()
         {
 //            Hex2d editableAreaSize = new Hex2d(14, 10);
-            Hex2d editableAreaSize = new Hex2d(8, 15);
+//            Hex2d editableAreaSize = new Hex2d(8, 15);
+            Hex2d editableAreaSize = new Hex2d(12, 23);
+            Hex2d editableAreaMin = new Hex2d(-1, -4);
             
             Container.Bind<EditorPointerInputHandler>().FromNew().AsSingle();
             
-            Container.BindInstance(editableAreaSize).WithId(EditorHexesController.KeyEditableAreaSize).AsSingle();
+            Container.BindInstance(editableAreaSize).WithId(EditorHexesController.KeyEditableAreaSize);
+            Container.BindInstance(editableAreaMin).WithId(EditorHexesController.KeyEditableAreaMin);
             
             Container.Bind<EditorHexesController>().FromNew().AsSingle();
             Container.Bind<HeightHexSetController>().FromNew().AsSingle();
