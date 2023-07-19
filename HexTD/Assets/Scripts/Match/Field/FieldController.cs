@@ -274,7 +274,6 @@ namespace Match.Field
             _constructionProcessController.OuterLogicUpdate(frameLength);
             _mobsManager.OuterLogicUpdate(frameLength);
             _model.TowersManager.OuterLogicUpdate(frameLength);
-            
             _shootingProcessManager.OuterLogicUpdate(frameLength);
         }
 

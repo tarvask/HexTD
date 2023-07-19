@@ -54,8 +54,12 @@ namespace Services.PhotonRelated
                 : (playerCurrentPing + maxCachedPing) / 2 + 1;
             Hashtable playerProperties = new Hashtable(){ {"Ping", generalPing}};
             PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
-            
-            // update ping damper
+
+            UpdatePingDamper(maxCachedPing);
+        }
+
+        private void UpdatePingDamper(int maxCachedPing)
+        {
             int newDesiredPingDamper = Mathf.CeilToInt(maxCachedPing * 0.001f / TestMatchEngine.FrameLength);
             
             if (newDesiredPingDamper < _pingDamperFramesDeltaReactiveProperty.Value)

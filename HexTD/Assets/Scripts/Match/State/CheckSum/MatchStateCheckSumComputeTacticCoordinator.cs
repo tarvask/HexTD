@@ -1,8 +1,7 @@
 using System;
-using Match.State.CheckSum;
 using UI.Tools;
 
-namespace Match.State
+namespace Match.State.CheckSum
 {
     public class MatchStateCheckSumComputeTacticCoordinator : BaseDisposable, IMatchStateCheckSumComputeTactic
     {

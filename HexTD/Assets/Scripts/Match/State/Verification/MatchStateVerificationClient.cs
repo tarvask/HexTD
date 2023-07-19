@@ -3,7 +3,7 @@ using System.Text;
 using Match.State.CheckSum;
 using UnityEngine;
 
-namespace Match.State
+namespace Match.State.Verification
 {
     public class MatchStateVerificationClient : MatchStateVerificationBase
     {
@@ -22,8 +22,6 @@ namespace Match.State
 
         public override void VerifyCheckSum(MatchStateCheckSum serverCheckSum)
         {
-            Debug.Log($"Received checksum for frame {serverCheckSum.EngineFrame}, " +
-                      $"current frame is {_context.MatchStateCheckSumComputerController.LastCheckSum.EngineFrame}");
             _serverCheckSumHistory.Enqueue(serverCheckSum);
 
             if (CheckHistory())
@@ -65,7 +63,7 @@ namespace Match.State
                 {
                     Debug.LogError($"Different checksums for engine frame {clientCheckSum.EngineFrame}: " +
                                    $"{GetDecodedMessageForCheckSumComparison(clientCheckSum, serverCheckSum)}, " +
-                                   $"requesting state from server");
+                                   "requesting state from server");
                     isStateCorrupted = true;
                     break;
                 }

@@ -4,7 +4,7 @@ using Match.State.CheckSum;
 using Tools;
 using UniRx;
 
-namespace Match.State
+namespace Match.State.Verification
 {
     public class MatchStateVerificationCoordinator : BaseDisposable
     {
@@ -12,7 +12,7 @@ namespace Match.State
         {
             public MatchStateCheckSumComputerController MatchStateCheckSumComputerController { get; }
             public IReadOnlyReactiveProperty<NetworkRoles> OurNetworkRoleReactiveProperty { get; }
-            public ReactiveCommand<MatchStateCheckSum> MatchCheckSumComputedReactiveCommand { get; }
+            public ReactiveCommand<MatchStateCheckSum> MatchStateCheckSumComputedReactiveCommand { get; }
             public ReactiveCommand RequestMatchStateReactiveCommand { get; }
             public MatchCommonCommands.IncomingGeneralCommands IncomingGeneralCommands { get; }
             public MatchCommonCommands.ServerCommands ServerCommands { get; }
@@ -20,14 +20,14 @@ namespace Match.State
             public Context(
                 MatchStateCheckSumComputerController matchStateCheckSumComputerController,
                 IReadOnlyReactiveProperty<NetworkRoles> ourNetworkRoleReactiveProperty,
-                ReactiveCommand<MatchStateCheckSum> matchCheckSumComputedReactiveCommand,
+                ReactiveCommand<MatchStateCheckSum> matchStateCheckSumComputedReactiveCommand,
                 ReactiveCommand requestMatchStateReactiveCommand,
                 MatchCommonCommands.IncomingGeneralCommands incomingGeneralCommands,
                 MatchCommonCommands.ServerCommands serverCommands)
             {
                 MatchStateCheckSumComputerController = matchStateCheckSumComputerController;
                 OurNetworkRoleReactiveProperty = ourNetworkRoleReactiveProperty;
-                MatchCheckSumComputedReactiveCommand = matchCheckSumComputedReactiveCommand;
+                MatchStateCheckSumComputedReactiveCommand = matchStateCheckSumComputedReactiveCommand;
                 RequestMatchStateReactiveCommand = requestMatchStateReactiveCommand;
                 IncomingGeneralCommands = incomingGeneralCommands;
                 ServerCommands = serverCommands;
@@ -51,7 +51,7 @@ namespace Match.State
             _clientImplementation = new MatchStateVerificationClient(stateVerificationImplementationContext);
 
             _context.OurNetworkRoleReactiveProperty.Subscribe(UpdateRole);
-            _context.MatchCheckSumComputedReactiveCommand.Subscribe(_currentImplementation.BroadcastMatchCheckSum);
+            _context.MatchStateCheckSumComputedReactiveCommand.Subscribe(_currentImplementation.BroadcastMatchCheckSum);
             _context.IncomingGeneralCommands.BroadcastStateCheckSum.Subscribe(_currentImplementation.VerifyCheckSum);
         }
         
