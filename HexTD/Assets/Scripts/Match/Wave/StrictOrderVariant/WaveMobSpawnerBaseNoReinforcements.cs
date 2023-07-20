@@ -31,6 +31,7 @@ namespace Match.Wave
             public ReactiveCommand<int> WaveNumberChangedReactiveCommand { get; }
             public ReactiveCommand<MobSpawnParameters> SpawnPlayer1MobReactiveCommand { get; }
             public ReactiveCommand<MobSpawnParameters> SpawnPlayer2MobReactiveCommand { get; }
+            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(
                 ConfigsRetriever configsRetriever,
@@ -48,7 +49,8 @@ namespace Match.Wave
                 ReactiveCommand<float> betweenWavesPlanningStartedReactiveCommand,
                 ReactiveCommand<int> waveNumberChangedReactiveCommand,
                 ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand,
-                ReactiveCommand<MobSpawnParameters> spawnPlayer2MobReactiveCommand)
+                ReactiveCommand<MobSpawnParameters> spawnPlayer2MobReactiveCommand,
+                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 ConfigsRetriever = configsRetriever;
                 FieldConfig = fieldConfig;
@@ -66,6 +68,7 @@ namespace Match.Wave
                 WaveNumberChangedReactiveCommand = waveNumberChangedReactiveCommand;
                 SpawnPlayer1MobReactiveCommand = spawnPlayer1MobReactiveCommand;
                 SpawnPlayer2MobReactiveCommand = spawnPlayer2MobReactiveCommand;
+                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
         
@@ -286,7 +289,7 @@ namespace Match.Wave
             _currentPlayer1Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player1MobsWithDelaysAndPaths, builtWaveParams.Duration));
             _currentPlayer2Waves.Enqueue(new WaveMobsQueue(builtWaveParams.Player2MobsWithDelaysAndPaths, builtWaveParams.Duration));
             
-            Debug.Log($"Changing wave number to {_currentWaveNumber + 1}, has {_currentPlayer1Waves.Count} more waves");
+            Debug.Log($"Changing wave number to {_currentWaveNumber + 1}, has {_currentPlayer1Waves.Count} more waves, frame is {_context.CurrentEngineFrameReactiveProperty.Value}");
             // send +1 to avoid counting from 0
             _context.WaveNumberChangedReactiveCommand.Execute(_currentWaveNumber + 1);
 

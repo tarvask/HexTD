@@ -33,6 +33,7 @@ namespace Match.Wave
             public ReactiveCommand<MobSpawnParameters> SpawnPlayer2MobReactiveCommand { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnEnemyField { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnOurField { get; }
+            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(
                 ConfigsRetriever configsRetriever,
@@ -54,7 +55,8 @@ namespace Match.Wave
                 ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand,
                 ReactiveCommand<MobSpawnParameters> spawnPlayer2MobReactiveCommand,
                 IReadOnlyReactiveProperty<bool> hasMobsOnEnemyField,
-                IReadOnlyReactiveProperty<bool> hasMobsOnOurField)
+                IReadOnlyReactiveProperty<bool> hasMobsOnOurField,
+                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 ConfigsRetriever = configsRetriever;
                 FieldConfig = fieldConfig;
@@ -76,6 +78,7 @@ namespace Match.Wave
                 SpawnPlayer2MobReactiveCommand = spawnPlayer2MobReactiveCommand;
                 HasMobsOnEnemyField = hasMobsOnEnemyField;
                 HasMobsOnOurField = hasMobsOnOurField;
+                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
         
@@ -104,7 +107,8 @@ namespace Match.Wave
                 _context.WaveStartedReactiveCommand, _context.WaveEndedReactiveCommand,
                 _context.BetweenWavesPlanningStartedReactiveCommand,
                 _context.WaveNumberChangedReactiveCommand,
-                _context.SpawnPlayer1MobReactiveCommand, _context.SpawnPlayer2MobReactiveCommand);
+                _context.SpawnPlayer1MobReactiveCommand, _context.SpawnPlayer2MobReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
             _serverImplementation = new WaveMobSpawnerServerNoReinforcements(waveMobSpawnerImplementationContext);
             _clientImplementation = new WaveMobSpawnerClientNoReinforcements(waveMobSpawnerImplementationContext);
 
