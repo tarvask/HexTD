@@ -8,7 +8,9 @@ namespace Match.State.Verification
     public class MatchStateVerificationClient : MatchStateVerificationBase
     {
         private const byte CheckSumHistoryMaxLength = 5;
+        private const byte MaxNumberCorruptedCheckSums = 4;
         private readonly Queue<MatchStateCheckSum> _serverCheckSumHistory;
+        private int _currentNumberOfCorruptedCheckSums;
         
         public MatchStateVerificationClient(Context context) : base(context)
         {
@@ -58,14 +60,24 @@ namespace Match.State.Verification
                 // count checksums to drop
                 if (checkSumFindingResult is MatchStateCheckSumFindingResultType.ExistInRange
                     && clientCheckSum.Equals(serverCheckSum))
+                {
+                    _currentNumberOfCorruptedCheckSums = 0;
                     checkSumsToDequeue++;
+                }
                 else
                 {
                     Debug.LogError($"Different checksums for engine frame {clientCheckSum.EngineFrame}: " +
-                                   $"{GetDecodedMessageForCheckSumComparison(clientCheckSum, serverCheckSum)}, " +
-                                   "requesting state from server");
-                    isStateCorrupted = true;
-                    break;
+                                   $"{GetDecodedMessageForCheckSumComparison(clientCheckSum, serverCheckSum)}");
+                    _currentNumberOfCorruptedCheckSums++;
+
+                    if (_currentNumberOfCorruptedCheckSums > MaxNumberCorruptedCheckSums)
+                    {
+                        Debug.LogError($"Different checksums for {_currentNumberOfCorruptedCheckSums} frames straight: requesting state from server");
+                        isStateCorrupted = true;
+                        break;
+                    }
+                    
+                    checkSumsToDequeue++;
                 }
             }
 
