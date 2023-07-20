@@ -62,7 +62,7 @@ namespace Match.Field.Mob
 
         public int Id => _context.Id;
         public override int TargetId => _context.TargetId;
-        public override Vector3 Position => _context.View.transform.localPosition;
+        public override Vector3 Position => _currentPosition;
         public IReadOnlyReactiveProperty<float> Health => _reactiveModel.Health;
         public float PathLength => _currentPathLength;
         public float RemainingPathDistance => _context.PathEnumerator.PathLength - _currentPathLength;
