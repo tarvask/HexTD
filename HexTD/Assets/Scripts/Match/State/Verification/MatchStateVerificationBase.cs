@@ -3,7 +3,7 @@ using Match.State.CheckSum;
 using Tools;
 using UniRx;
 
-namespace Match.State
+namespace Match.State.Verification
 {
     public abstract class MatchStateVerificationBase : BaseDisposable
     {

@@ -86,7 +86,6 @@ namespace Match.Wave
         {
             _context = context;
             
-            RoleSpecialConstructorActions();
             _currentWaveNumber = -1;
             _currentPlayer1Waves = new Queue<WaveMobsQueue>(MaxOverlappingWaves);
             _currentPlayer2Waves = new Queue<WaveMobsQueue>(MaxOverlappingWaves);
@@ -94,8 +93,6 @@ namespace Match.Wave
             _context.MatchStartedReactiveCommand.Execute(_context.FieldConfig.MatchInfoShowDuration);
         }
 
-        protected abstract void RoleSpecialConstructorActions();
-        
         private void SetState(WaveStateType newState)
         {
             _state = newState;
@@ -257,7 +254,27 @@ namespace Match.Wave
             }
         }
 
-        protected abstract void NextWave();
+        protected void NextWave()
+        {
+            // set new seed for every wave
+            int newRandomSeed = Randomizer.CurrentSeed + 1;
+            
+            // do not increase for starting wave
+            byte nextWaveNumber = (byte)(CurrentWaveNumber + 1);
+
+            // show last wave as many times as needed
+            byte operatingWaveNumber = (byte)Mathf.Min(nextWaveNumber, _context.Waves.Length - 1);
+            
+            List<WaveElementDelayAndPath> player1NextWaveElementsAndDelays = WaveBuilderInStrictOrder.BuildWave(_context.Waves[operatingWaveNumber]);
+            List<WaveElementDelayAndPath> player2NextWaveElementsAndDelays = new List<WaveElementDelayAndPath>(player1NextWaveElementsAndDelays);
+
+            BuiltWaveParams nextBuiltWaveParams = new BuiltWaveParams(
+                player1NextWaveElementsAndDelays, player2NextWaveElementsAndDelays,
+                _context.Waves[operatingWaveNumber].WaveParameters.Duration,
+                _context.Waves[operatingWaveNumber].WaveParameters.PauseBeforeWave);
+            
+            StartWave(nextBuiltWaveParams, newRandomSeed);
+        }
         
         // use builtPlayer1WaveParams, if no branching for player1/player2 is needed
         protected void StartWave(BuiltWaveParams builtWaveParams, int randomSeed)

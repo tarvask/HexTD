@@ -12,6 +12,7 @@ using Match.Field.Tower;
 using Match.Field.VFX;
 using Match.State;
 using Match.State.CheckSum;
+using Match.State.Verification;
 using Match.Wave;
 using Services;
 using Tools;
@@ -362,7 +363,8 @@ namespace Match
             MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
                 _windowsManager.WinLoseWindowController,
                 enemyCastleDestroyedReactiveCommand,
-                ourCastleDestroyedReactiveCommand);
+                ourCastleDestroyedReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
             _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
             
             // state saver

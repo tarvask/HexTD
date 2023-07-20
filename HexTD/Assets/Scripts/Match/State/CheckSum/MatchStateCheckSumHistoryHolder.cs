@@ -40,7 +40,7 @@ namespace Match.State.CheckSum
             if (IsEngineFrameTooOldForHistoryBounds(engineFrame))
                 return MatchStateCheckSumFindingResultType.TooOld;
             
-            if (IsEngineFrameTooOldForHistoryBounds(engineFrame))
+            if (IsEngineFrameTooNewForHistoryBounds(engineFrame))
                 return MatchStateCheckSumFindingResultType.TooNew;
 
             foreach (MatchStateCheckSum matchStateCheckSum in _checkSumHistory)

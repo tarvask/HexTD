@@ -1,6 +1,7 @@
 using Match.Windows;
 using Tools;
 using UniRx;
+using UnityEngine;
 
 namespace Match
 {
@@ -11,20 +12,23 @@ namespace Match
             public WinLoseWindowController WinLoseWindowController { get; }
             public ReactiveCommand EnemyCastleDestroyedReactiveCommand { get; }
             public ReactiveCommand OurCastleDestroyedReactiveCommand { get; }
+            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             
             public Context(WinLoseWindowController winLoseWindowController,
                 ReactiveCommand enemyCastleDestroyedReactiveCommand,
-                ReactiveCommand ourCastleDestroyedReactiveCommand)
+                ReactiveCommand ourCastleDestroyedReactiveCommand,
+                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 WinLoseWindowController = winLoseWindowController;
                 
                 EnemyCastleDestroyedReactiveCommand = enemyCastleDestroyedReactiveCommand;
                 OurCastleDestroyedReactiveCommand = ourCastleDestroyedReactiveCommand;
+                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
         
         private readonly Context _context;
-        private ReactiveProperty<bool> _isMatchRunning;
+        private readonly ReactiveProperty<bool> _isMatchRunning;
         private bool _isEnemyCastleDestroyed, _isOurCastleDestroyed;
         private MatchResultType _matchResult;
 
@@ -54,9 +58,12 @@ namespace Match
             }
 
             _isMatchRunning.Value = _matchResult == MatchResultType.Undefined;
-            
+
             if (!_isMatchRunning.Value)
+            {
+                Debug.Log($"Match ended on frame {_context.CurrentEngineFrameReactiveProperty.Value} with {_matchResult} result");
                 _context.WinLoseWindowController.ShowWindow(_matchResult);
+            }
         }
 
         private void OnEnemyCastleDestroyedEventHandler(Unit unit)

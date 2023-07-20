@@ -61,13 +61,13 @@ namespace Match.Field.Shooting
         public ProjectileController(Context context)
         {
             _context = context;
+            _currentPosition = _context.View.transform.localPosition;
             AddComponent(_context.View);
             AddComponent(_context.View.gameObject);
         }
 
         public void LogicMove(Vector3 targetPosition, float frameLength)
         {
-            _currentPosition = _context.View.transform.localPosition;
             _currentTargetPosition = targetPosition;
             float distanceToTargetSqr = Vector3.SqrMagnitude(_currentPosition - targetPosition);
             float distancePerFrameSqr = _context.Speed * frameLength;

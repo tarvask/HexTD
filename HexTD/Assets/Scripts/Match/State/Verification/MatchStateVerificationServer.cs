@@ -1,6 +1,6 @@
 using Match.State.CheckSum;
 
-namespace Match.State
+namespace Match.State.Verification
 {
     public class MatchStateVerificationServer : MatchStateVerificationBase
     {
