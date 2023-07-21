@@ -40,6 +40,7 @@ namespace Match.Field
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
             public ReactiveCommand<IReadOnlyCollection<Hex2d>> EnableHexesHighlightReactiveCommand { get; }
             public ReactiveCommand RemoveAllHexesHighlightsReactiveCommand { get; }
+            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(Transform fieldRoot,
                 HexObjectFabric hexObjectFabric,
@@ -54,7 +55,8 @@ namespace Match.Field
                 ReactiveCommand<int> reachCastleByMobReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<IReadOnlyCollection<Hex2d>> enableHexesHighlightReactiveCommand ,
-                ReactiveCommand removeAllHexesHighlightsReactiveCommand
+                ReactiveCommand removeAllHexesHighlightsReactiveCommand,
+                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty
                 )
             {
                 FieldRoot = fieldRoot;
@@ -74,6 +76,7 @@ namespace Match.Field
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
                 EnableHexesHighlightReactiveCommand = enableHexesHighlightReactiveCommand;
                 RemoveAllHexesHighlightsReactiveCommand = removeAllHexesHighlightsReactiveCommand;
+                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
 
@@ -82,7 +85,7 @@ namespace Match.Field
         private readonly ScreenSpaceOverlayController _screenSpaceOverlayController;
 
         private Transform _groundRoot;
-        private Transform _hexsRoot;
+        private Transform _hexesRoot;
         private Transform _propsRoot;
         private Transform _buildingsRoot;
         private Transform _crystalsRoot;
@@ -94,7 +97,6 @@ namespace Match.Field
         private int _lastMobId;
         private int _lastProjectileId;
         private int _lastArtifactId;
-        // TODO: use for blockers on map 
         private int _lastTargetId;
 
         public FieldFactory(Context context, ScreenSpaceOverlayController screenSpaceOverlayController)
@@ -116,11 +118,11 @@ namespace Match.Field
             _groundRoot.localScale = Vector3.one;
             
             // create cells root
-            _hexsRoot = AddComponent(new GameObject("Hexes")).transform;
-            _hexsRoot.SetParent(_context.FieldRoot);
-            _hexsRoot.SetAsLastSibling();
-            _hexsRoot.localPosition = Vector3.zero;
-            _hexsRoot.localScale = Vector3.one;
+            _hexesRoot = AddComponent(new GameObject("Hexes")).transform;
+            _hexesRoot.SetParent(_context.FieldRoot);
+            _hexesRoot.SetAsLastSibling();
+            _hexesRoot.localPosition = Vector3.zero;
+            _hexesRoot.localScale = Vector3.one;
             
             // create props root
             _propsRoot = AddComponent(new GameObject("Props")).transform;
@@ -216,6 +218,7 @@ namespace Match.Field
         {
             _lastMobId++;
             _lastTargetId++;
+            Debug.Log($"Created mob with id={_lastMobId} and target={_lastTargetId} on frame {_context.CurrentEngineFrameReactiveProperty.Value}");
 
             return CreateMobWithId(mobSpawnParameters, _lastMobId, _lastTargetId, spawnPosition);
         }
@@ -263,6 +266,7 @@ namespace Match.Field
             int towerId, int targetId)
         {
             _lastProjectileId++;
+            Debug.Log($"Created projectile with id={_lastProjectileId} on frame {_context.CurrentEngineFrameReactiveProperty.Value}");
 
             return CreateProjectileWithId(attack, attackIndex,
                 _lastProjectileId, spawnPosition, hasSplashDamage, 
@@ -317,7 +321,7 @@ namespace Match.Field
         private void CreateHexTile(HexModel hexModel)
         {
             Vector3 spawnPosition = _context.HexagonalFieldModel.GetHexPosition((Hex3d)hexModel);
-            var hexObject = _context.HexObjectFabric.Create(hexModel, _hexsRoot, spawnPosition);
+            var hexObject = _context.HexObjectFabric.Create(hexModel, _hexesRoot, spawnPosition);
             _context.HexObjectsContainer.HexObjects.Add(hexModel.GetHashCode(), hexObject);
         }
 

@@ -216,7 +216,8 @@ namespace Match
                 enemyCastleHealthChangedReactiveCommand,
                 enemyCastleDestroyedReactiveCommand,
                 enemyGoldenCoinsCountChangedReactiveCommand,
-                enemyCrystalsCountChangedReactiveCommand);
+                enemyCrystalsCountChangedReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
                
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _matchView.OurFieldRoot,
@@ -237,7 +238,8 @@ namespace Match
                 ourCastleHealthChangedReactiveCommand,
                 ourCastleDestroyedReactiveCommand,
                 ourGoldenCoinsCountChangedReactiveCommand,
-                ourCrystalsCountChangedReactiveCommand);
+                ourCrystalsCountChangedReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
 
             ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
             MatchCommands player1MatchCommands, player2MatchCommands;
@@ -313,7 +315,8 @@ namespace Match
                 spawnPlayer1MobReactiveCommand,
                 spawnPlayer2MobReactiveCommand,
                 hasMobsOnEnemyField,
-                hasMobsOnOurField);
+                hasMobsOnOurField,
+                _context.CurrentEngineFrameReactiveProperty);
             _waveMobSpawnerCoordinator = new WaveMobSpawnerCoordinator(waveMobSpawnerContext);
 
             // input

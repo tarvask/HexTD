@@ -7,6 +7,7 @@ using Tools;
 using Tools.Interfaces;
 using UI.ScreenSpaceOverlaySystem;
 using UniRx;
+using UnityEngine;
 using Zenject;
 
 namespace Match.Field.Services
@@ -23,6 +24,7 @@ namespace Match.Field.Services
             public ReactiveCommand<int> ReachCastleByMobReactiveCommand { get; }
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
             public ReactiveCommand<MobSpawnParameters> SpawnMobReactiveCommand { get; }
+            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(
                 VfxManager vfxManager,
@@ -32,7 +34,8 @@ namespace Match.Field.Services
                 ReactiveCommand<MobController> attackTowerByMobReactiveCommand,
                 ReactiveCommand<int> reachCastleByMobReactiveCommand,
                 ReactiveCommand<MobController> removeMobReactiveCommand,
-                ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand)
+                ReactiveCommand<MobSpawnParameters> spawnMobReactiveCommand,
+                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 VfxManager = vfxManager;
                 MobsByTowersBlocker = mobsByTowersBlocker;
@@ -42,6 +45,7 @@ namespace Match.Field.Services
                 ReachCastleByMobReactiveCommand = reachCastleByMobReactiveCommand;
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
                 SpawnMobReactiveCommand = spawnMobReactiveCommand;
+                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
 
@@ -84,6 +88,7 @@ namespace Match.Field.Services
 
         public void RemoveMob(MobController mobController)
         {
+            Debug.Log($"Removed mob with id={mobController.Id} and target={mobController.TargetId} on position {mobController.Position} on frame {_context.CurrentEngineFrameReactiveProperty.Value}");
             _mobsContainer.RemoveMob(mobController);
             _context.RemoveMobReactiveCommand.Execute(mobController);
         }

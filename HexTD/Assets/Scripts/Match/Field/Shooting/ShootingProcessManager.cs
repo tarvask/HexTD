@@ -10,6 +10,7 @@ using Match.Field.VFX;
 using Match.Wave;
 using Tools;
 using Tools.Interfaces;
+using UniRx;
 using UnityEngine;
 
 namespace Match.Field.Shooting
@@ -23,18 +24,21 @@ namespace Match.Field.Shooting
             public FieldFactory Factory { get; }
             public BuffManager BuffManager { get; }
             public VfxManager VfxManager { get; }
+            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(FieldModel fieldModel, 
                 HexMapReachableService hexMapReachableService,
                 FieldFactory factory,
                 BuffManager buffManager,
-                VfxManager vfxManager)
+                VfxManager vfxManager,
+                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 FieldModel = fieldModel;
                 HexMapReachableService = hexMapReachableService;
                 Factory = factory;
                 BuffManager = buffManager;
                 VfxManager = vfxManager;
+                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
 
@@ -175,6 +179,7 @@ namespace Match.Field.Shooting
             // dispose every fully splashed projectile
             foreach (ProjectileController projectile in _endSplashingProjectiles)
             {
+                Debug.Log($"Removed projectile with id={projectile.Id} with target {projectile.TargetId} in position {projectile.CurrentPosition} on frame {_context.CurrentEngineFrameReactiveProperty.Value}");
                 _context.FieldModel.RemoveProjectile(projectile.Id);
                 projectile.Dispose();
             }

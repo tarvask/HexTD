@@ -113,6 +113,7 @@ namespace Match
             isConnectedReactiveProperty.Subscribe(UpdateConnectionState);
             
             _isInited = true;
+            Debug.Log($"Engine inited, frame is {CurrentEngineFrameReactiveProperty.Value}");
         }
 
         public void RollbackState()
