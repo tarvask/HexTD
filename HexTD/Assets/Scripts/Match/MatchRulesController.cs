@@ -12,17 +12,20 @@ namespace Match
             public WinLoseWindowController WinLoseWindowController { get; }
             public ReactiveCommand EnemyCastleDestroyedReactiveCommand { get; }
             public ReactiveCommand OurCastleDestroyedReactiveCommand { get; }
+            public ReactiveCommand EndMatchReactiveCommand { get; }
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             
             public Context(WinLoseWindowController winLoseWindowController,
                 ReactiveCommand enemyCastleDestroyedReactiveCommand,
                 ReactiveCommand ourCastleDestroyedReactiveCommand,
+                ReactiveCommand endMatchReactiveCommand,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 WinLoseWindowController = winLoseWindowController;
                 
                 EnemyCastleDestroyedReactiveCommand = enemyCastleDestroyedReactiveCommand;
                 OurCastleDestroyedReactiveCommand = ourCastleDestroyedReactiveCommand;
+                EndMatchReactiveCommand = endMatchReactiveCommand;
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
@@ -62,6 +65,7 @@ namespace Match
             if (!_isMatchRunning.Value)
             {
                 Debug.Log($"Match ended on frame {_context.CurrentEngineFrameReactiveProperty.Value} with {_matchResult} result");
+                _context.EndMatchReactiveCommand.Execute();
                 _context.WinLoseWindowController.ShowWindow(_matchResult);
             }
         }
