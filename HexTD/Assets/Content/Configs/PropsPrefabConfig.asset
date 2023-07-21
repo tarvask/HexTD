@@ -26,7 +26,7 @@ MonoBehaviour:
     valueData:
     - propsObject: {fileID: 5954365473827557662, guid: 6cb3d501100db724ab803cd48c9d6486, type: 3}
       propsPlacingConfig:
-        isReplacesHex: 1
+        isReplacesHex: 0
         isBuildingBlock: 1
         isRangeAttackBlock: 0
     - propsObject: {fileID: 5954365473827557662, guid: 0da1bc67b29bcdf4d868b0cbb283767f, type: 3}

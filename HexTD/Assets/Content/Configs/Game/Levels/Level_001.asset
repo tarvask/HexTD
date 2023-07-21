@@ -20,4 +20,4 @@ MonoBehaviour:
   initialEnergy: 10
   energyRecoveryTime: 1.6
   castleHealth: 3
-  levelMap: {fileID: 4900000, guid: 5e5126ff4cc5bd643896ad1dd2e25089, type: 3}
+  levelMap: {fileID: 4900000, guid: 95c4953f837f2754fac21216fdbf2228, type: 3}
