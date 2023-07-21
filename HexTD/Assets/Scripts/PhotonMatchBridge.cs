@@ -173,7 +173,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             RequestState,
             LeaveRoom,
             OnQuitMatchHandler,
-            _isMultiPlayerGame); //ProcessRoles.Player1
+            _isMultiPlayerGame);
 
         // re-init seed, because server had many calls to random while creating MatchConfig
         int randomSeed = startTimeSum;

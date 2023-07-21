@@ -15,6 +15,8 @@ namespace Services.PhotonRelated
         private const int PingDamperFramesMin = TestMatchEngine.LogicFramesPerSecond / 2;
         private const float CheckPingTimeout = 2f;
         private const float PingLerpCoefficient = 0.5f;
+        private const float OneMillisecond = 0.001f;
+        private const int AdditionalFakePing = 0;
         
         private float _currentCheckPingTimeout;
         
@@ -44,7 +46,7 @@ namespace Services.PhotonRelated
             foreach (Player player in players)
             {
                 if (player.CustomProperties.TryGetValue("Ping", out int playerPing))
-                    maxCachedPing = Mathf.Max(maxCachedPing, playerPing);
+                    maxCachedPing = Mathf.Max(maxCachedPing, playerPing + AdditionalFakePing);
             }
 
             // reduce ping by steps, if needed
@@ -56,11 +58,12 @@ namespace Services.PhotonRelated
             PhotonNetwork.LocalPlayer.SetCustomProperties(playerProperties);
 
             UpdatePingDamper(maxCachedPing);
+            Debug.Log($"Game ping is {generalPing}, damper in frames is {_pingDamperFramesDeltaReactiveProperty.Value}");
         }
 
         private void UpdatePingDamper(int maxCachedPing)
         {
-            int newDesiredPingDamper = Mathf.CeilToInt(maxCachedPing * 0.001f / TestMatchEngine.FrameLength);
+            int newDesiredPingDamper = Mathf.CeilToInt(maxCachedPing * OneMillisecond / TestMatchEngine.FrameLength);
             
             if (newDesiredPingDamper < _pingDamperFramesDeltaReactiveProperty.Value)
                 _pingDamperFramesDeltaReactiveProperty.Value = Mathf.CeilToInt( 
