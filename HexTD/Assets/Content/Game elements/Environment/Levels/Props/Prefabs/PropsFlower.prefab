@@ -29,7 +29,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1171338537834455462, guid: f1dffef190eefba4eacc218f1761755e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.59
+      value: 0.06
       objectReference: {fileID: 0}
     - target: {fileID: 1171338537834455462, guid: f1dffef190eefba4eacc218f1761755e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -130,7 +130,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6457512069685444885, guid: ca992cf95372f45c988477bb50f089d9, type: 3}
       propertyPath: m_Name
-      value: PropsBushBig 1
+      value: PropsFlower
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca992cf95372f45c988477bb50f089d9, type: 3}
