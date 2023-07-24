@@ -44,6 +44,7 @@ MonoBehaviour:
     - Path_Intersection_1245_1
     - Path_Intersection_1245_2
     - Stone
+    - invisible
     valueData:
     - {fileID: 2843427230044144718, guid: 84238f652c9b50346b8e2e86eb7ee848, type: 3}
     - {fileID: 2843427230044144718, guid: 1c093898f68a10f41be6ee031e7b29b0, type: 3}
@@ -75,3 +76,4 @@ MonoBehaviour:
     - {fileID: 2843427230044144718, guid: 009b0a18dd15eb9498ec74990fa55596, type: 3}
     - {fileID: 2843427230044144718, guid: 191cef1b049e4de4391232e93928291a, type: 3}
     - {fileID: 2843427230044144718, guid: 84645bcf0dcd0e04a9681e6159d128eb, type: 3}
+    - {fileID: 2843427230044144718, guid: 1c093898f68a10f41be6ee031e7b29b0, type: 3}
