@@ -18,8 +18,8 @@ MonoBehaviour:
     - BushBig
     - BushLiliya
     - BushPionBlue
-    - BushSimple
-    - Flower
+    - GrassSimple
+    - GrassFlower
     - TreeFir
     - TreeOak
     - TreeTuya
