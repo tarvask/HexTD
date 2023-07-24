@@ -347,7 +347,9 @@ public class PhotonMatchBridge : BaseMonoBehaviour
     private void OnEndMatchHandler()
     {
         _onEndMatch.OnNext(Unit.Default);
-        PhotonNetwork.LeaveRoom();
+        
+        if (_isMultiPlayerGame)
+            PhotonNetwork.LeaveRoom();
         
         if (_connectionMaintainer != null)
         {
