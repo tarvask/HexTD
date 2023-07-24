@@ -55,7 +55,7 @@ namespace Game
 		private void OnEndMatchHandler(Unit asd)
 		{
 			_onEndMatchSubscriptionDisposable.Dispose();
-			_photonConnectionService.Dispose();
+			_photonConnectionService?.Dispose();
 		}
 
 		private void OnQuitMatchHandler(Unit asd)
