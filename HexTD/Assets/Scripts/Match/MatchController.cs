@@ -34,6 +34,7 @@ namespace Match
             public MatchCommonCommands MatchCommandsCommon { get; }
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             public ReactiveCommand RequestMatchStateReactiveCommand { get; }
+            public ReactiveCommand EndMatchReactiveCommand { get; }
             public ReactiveCommand QuitMatchReactiveCommand { get; }
             public ReactiveCommand<int> SyncFrameCounterReactiveCommand { get; }
             public IReadOnlyReactiveProperty<ProcessRoles> OurGameRoleReactiveProperty { get; }
@@ -48,6 +49,7 @@ namespace Match
                 MatchCommands matchCommandsEnemy, MatchCommands matchCommandsOur, MatchCommonCommands matchCommandsCommon,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
                 ReactiveCommand requestMatchStateReactiveCommand,
+                ReactiveCommand endMatchReactiveCommand,
                 ReactiveCommand quitMatchReactiveCommand,
                 ReactiveCommand<int> syncFrameCounterReactiveCommand,
                 IReadOnlyReactiveProperty<ProcessRoles> ourGameRoleReactiveProperty,
@@ -63,6 +65,7 @@ namespace Match
                 MatchCommandsCommon = matchCommandsCommon;
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
                 RequestMatchStateReactiveCommand = requestMatchStateReactiveCommand;
+                EndMatchReactiveCommand = endMatchReactiveCommand;
                 QuitMatchReactiveCommand = quitMatchReactiveCommand;
                 SyncFrameCounterReactiveCommand = syncFrameCounterReactiveCommand;
                 OurGameRoleReactiveProperty = ourGameRoleReactiveProperty;
@@ -367,6 +370,7 @@ namespace Match
                 _windowsManager.WinLoseWindowController,
                 enemyCastleDestroyedReactiveCommand,
                 ourCastleDestroyedReactiveCommand,
+                _context.EndMatchReactiveCommand,
                 _context.CurrentEngineFrameReactiveProperty);
             _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
             

@@ -14,6 +14,8 @@ namespace MatchStarter
 	{
 		public IObservable<Unit> OnQuitMatch => _onQuitMatch;
 		private Subject<Unit> _onQuitMatch = new Subject<Unit>();
+		public IObservable<Unit> OnEndMatch => _onEndMatch;
+		private Subject<Unit> _onEndMatch = new Subject<Unit>();
 		
 		public bool IsLoaded { get; private set; }
 
@@ -22,7 +24,8 @@ namespace MatchStarter
 
 		private IMatchStarterLoader _matchStarterLoader;
 
-		private IDisposable _battleDisposable;
+		private IDisposable _endBattleDisposable;
+		private IDisposable _quitBattleDisposable;
 		
 		private bool _isDisposed;
 			
@@ -34,7 +37,8 @@ namespace MatchStarter
 
 		private void Awake()
 		{
-			_battleDisposable = FindObjectOfType<PhotonMatchBridge>().OnQuitMatch.Subscribe(_onQuitMatch);
+			_endBattleDisposable = FindObjectOfType<PhotonMatchBridge>().OnEndMatch.Subscribe(_onEndMatch);
+			_quitBattleDisposable = FindObjectOfType<PhotonMatchBridge>().OnQuitMatch.Subscribe(_onQuitMatch);
 		}
 
 		private async void Start()
@@ -93,8 +97,10 @@ namespace MatchStarter
 		{
 			RemoveLoadedSprites();
 			
-			_battleDisposable?.Dispose();
-			_battleDisposable = null;
+			_endBattleDisposable?.Dispose();
+			_endBattleDisposable = null;
+			_quitBattleDisposable?.Dispose();
+			_quitBattleDisposable = null;
 		}
 	}
 }

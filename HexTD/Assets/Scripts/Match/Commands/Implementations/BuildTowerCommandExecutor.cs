@@ -70,7 +70,7 @@ namespace Match.Commands.Implementations
                 // send further
                 Context.EventBus.RaiseEvent(PhotonEventsConstants.BuildTower.ApplyEventId, commandParametersTable);
                 
-                Debug.Log($"Building tower, current frame = {Context.CurrentEngineFrameReactiveProperty.Value}, " +
+                Debug.Log($"Requesting building tower, current frame = {Context.CurrentEngineFrameReactiveProperty.Value}, " +
                           $"target frame = {targetExecutionTimeStamp}");
                 // wait for target frame
                 await WaitForTargetFrame(targetExecutionTimeStamp);

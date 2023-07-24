@@ -75,12 +75,14 @@ namespace Match
 
             ReactiveCommand requestMatchStateReactiveCommand = new ReactiveCommand();
             ReactiveCommand quitMatchReactiveCommand = new ReactiveCommand();
+            ReactiveCommand endMatchReactiveCommand = new ReactiveCommand();
             ReactiveCommand<int> syncFrameCounterCommand = new ReactiveCommand<int>();
             _rollbackStateReactiveCommand = new ReactiveCommand();
             
             MatchController.Context matchControllerContext = new MatchController.Context( matchInitDataParameters,
                 matchCommandsEnemy, matchCommandsOur, matchCommonCommands,
-                CurrentEngineFrameReactiveProperty, requestMatchStateReactiveCommand, quitMatchReactiveCommand, syncFrameCounterCommand,
+                CurrentEngineFrameReactiveProperty,
+                requestMatchStateReactiveCommand, endMatchReactiveCommand, quitMatchReactiveCommand, syncFrameCounterCommand,
                 currentProcessGameRoleReactiveProperty, currentProcessNetworkRoleReactiveProperty, isConnectedReactiveProperty,
                 _rollbackStateReactiveCommand,
                 isMultiPlayerGame,
@@ -104,6 +106,7 @@ namespace Match
             _onMatchEndAction = onMatchEndAction;
 
             requestMatchStateReactiveCommand.Subscribe((Unit unit) => RequestMatchState());
+            endMatchReactiveCommand.Subscribe((Unit unit) => EndMatch());
             quitMatchReactiveCommand.Subscribe((Unit unit) => QuitMatch());
             syncFrameCounterCommand.Subscribe(SyncFrameCounter);
 
@@ -148,10 +151,14 @@ namespace Match
             _onRequestMatchStateAction();
         }
 
+        private void EndMatch()
+        {
+            _onMatchEndAction();
+        }
+
         private void QuitMatch()
         {
             _matchController.Dispose();
-            _onMatchEndAction();
             _onQuitGameAction();
         }
 
