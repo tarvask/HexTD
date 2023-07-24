@@ -18,7 +18,7 @@ namespace Match.Field
         {
             if (!_hexagonPrefabConfig.HexObjects.TryGetValue(hexTypeName, out var hexObject))
             {
-                throw new ArgumentException("Unknown or undefined hex type");
+                throw new ArgumentException($"Unknown or undefined hex type: {hexTypeName}");
             }
             
             return hexObject;
