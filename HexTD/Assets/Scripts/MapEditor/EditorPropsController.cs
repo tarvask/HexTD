@@ -34,13 +34,14 @@ namespace MapEditor
 
         public EditorPropsController(
             [Inject(Id = EditorHexesController.KeyEditableAreaSize)] Hex2d areaSize,
+            [Inject(Id = EditorHexesController.KeyEditableAreaMin)] Hex2d areaMin,
             EditorPropsModel editorPropsModel,
             PropsSpawnerController propsSpawnerController,
             HeightPropsSetController heightPropsSetController,
             RotationPropsSetController rotationPropsSetController)
         {
             _areaSize = areaSize;
-            _areaMin = new Hex2d(0, 0);
+            _areaMin = areaMin;
             _areaMax = _areaMin + _areaSize;
 
             _editorPropsModel = editorPropsModel;
