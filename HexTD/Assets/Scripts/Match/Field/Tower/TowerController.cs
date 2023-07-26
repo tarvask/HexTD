@@ -133,14 +133,12 @@ namespace Match.Field.Tower
 
         public override void Heal(float heal)
         {
-            float newHealth = _reactiveModel.Health.Value + heal;
-            newHealth = Mathf.Clamp(newHealth, 0, _reactiveModel.MaxHealth.Value);
-            _reactiveModel.SetHealth(newHealth);
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value.CurrentValue + heal);
         }
 
         public override void Hurt(float damage)
         {
-            _reactiveModel.SetHealth(_reactiveModel.Health.Value - damage);
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value.CurrentValue - damage);
         }
 
         public TowerShortParams GetShortParams()

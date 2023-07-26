@@ -18,7 +18,11 @@ namespace BuffLogic
 
         public void MergeConditions(ABuffConditionsCollection conditionCollection)
         {
-            Dispose();
+            foreach (var condition in Conditions)
+            {
+                condition.Dispose();
+            }
+            Conditions.Clear();
             
             foreach (var condition in conditionCollection.Conditions)
                 Conditions.AddFirst(condition);

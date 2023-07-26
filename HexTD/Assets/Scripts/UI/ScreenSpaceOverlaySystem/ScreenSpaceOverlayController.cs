@@ -21,8 +21,7 @@ namespace UI.ScreenSpaceOverlaySystem
 		{
 			var newTargetObjectInfoPanelView = _targetObjectInfoPanelViewFactory.Create(
 				new TargetObjectInfoPanelView.Context(
-					target.BaseReactiveModel.MaxHealth,
-					target.BaseReactiveModel.Health,
+					target.BaseReactiveModel.Health.Value,
 					targetView.InfoPanelPivot,
 					isShowHealthBarWhenFullHealth)
 			);

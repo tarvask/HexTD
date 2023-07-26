@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Match.Field.Shooting;
 using Tools;
 using Tools.Interfaces;
 using UnityEngine.UIElements;
@@ -25,10 +26,10 @@ namespace BuffLogic
             
             buffManager.AddBuff(targetValue, buff);
         }
-
-        public bool IsBuffs<TValue>(IBuffableValue<TValue> targetValue)
+        
+        public bool HasBuffs(IBuffableValue targetValue)
         {
-            if (_buffManagers.TryGetValue(typeof(TValue), out IBaseBuffManager buffManager))
+            if (_buffManagers.TryGetValue(typeof(IBuffableValue), out IBaseBuffManager buffManager))
             {
                 return buffManager.IsBuffs(targetValue);
             }

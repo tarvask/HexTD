@@ -16,7 +16,17 @@ namespace BuffLogic
     public interface IReadonlyBuffableValue<TValue> : IBuffableValue<TValue>
     {
         TValue Value { get; }
-        TValue CopyValue(TValue defaultValue);
         void Subscribe(Action<TValue> onChange);
+    }
+    
+    public interface IReadonlyImpactableBuff<TValue> : IReadonlyBuffableValue<TValue>
+    {
+        TValue CurrentValue { get; }
+        void SubscribeOnSetValue(Action<TValue> onChange);
+    }
+
+    public interface IImpactableBuff<TValue> : IReadonlyImpactableBuff<TValue>
+    {
+        void SetValue(TValue newValue);
     }
 }

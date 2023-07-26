@@ -1,4 +1,5 @@
 ﻿using System;
+using BuffLogic;
 using Tools;
 using Tools.Interfaces;
 using UI.Tools.SimpleProgressBar;
@@ -36,19 +37,16 @@ namespace UI.ScreenSpaceOverlaySystem
 
 		public class Context
 		{
-			public readonly IReadOnlyReactiveProperty<float> MaxHealth;
-			public readonly IReadOnlyReactiveProperty<float> CurrentHealth;
+			public readonly FloatImpactableBuffableValue Health;
 			public readonly Transform Pivot;
 			public readonly bool IsShowHealthBarWhenFullHealth;
 
 			public Context(
-				IReadOnlyReactiveProperty<float> maxHealth,
-				IReadOnlyReactiveProperty<float> currentHealth,
+				FloatImpactableBuffableValue health,
 				Transform pivot,
 				bool isShowHealthBarWhenFullHealth)
 			{
-				MaxHealth = maxHealth;
-				CurrentHealth = currentHealth;
+				Health = health;
 				Pivot = pivot;
 				IsShowHealthBarWhenFullHealth = isShowHealthBarWhenFullHealth;
 			}
@@ -59,10 +57,8 @@ namespace UI.ScreenSpaceOverlaySystem
 			_pool = pool;
 			_context = context;
 
-			_compositeDisposable = new CompositeDisposable();
-
-			context.CurrentHealth.Subscribe(health => healthProgressBar.SetProgress(health / context.MaxHealth.Value))
-				.AddTo(_compositeDisposable);
+			context.Health.SubscribeOnSetValue(health =>
+				healthProgressBar.SetProgress(health / context.Health.Value));
 
 			if (context.IsShowHealthBarWhenFullHealth)
 			{
@@ -70,9 +66,8 @@ namespace UI.ScreenSpaceOverlaySystem
 			}
 			else
 			{
-				context.CurrentHealth.Subscribe(health =>
-						healthProgressBar.gameObject.SetActive(health < context.MaxHealth.Value))
-					.AddTo(_compositeDisposable);
+				context.Health.SubscribeOnSetValue(health =>
+					healthProgressBar.gameObject.SetActive(health < context.Health.Value));
 			}
 		}
 
@@ -99,9 +94,6 @@ namespace UI.ScreenSpaceOverlaySystem
 		{
 			_pool = null;
 			_context = null;
-
-			_compositeDisposable.Dispose();
-			_compositeDisposable = null;
 		}
 
 		public class Factory : PlaceholderFactory<Context, TargetObjectInfoPanelView>

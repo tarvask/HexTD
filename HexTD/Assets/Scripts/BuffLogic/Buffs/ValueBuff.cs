@@ -22,16 +22,4 @@
 
         public override float RevokeBuff(float value) => value / BuffValue;
     }
-    
-    public class DivideFloatValueBuff : BaseValueBuff<float>
-    {
-        //buffValue - percentage
-        public DivideFloatValueBuff(float buffValue) : base(buffValue, EBuffConditionCollectionType.Once, 0)
-        {
-        }
-
-        public override float ApplyBuff(float value) => value / BuffValue;
-
-        public override float RevokeBuff(float value) => value * BuffValue;
-    }
 }

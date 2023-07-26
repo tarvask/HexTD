@@ -72,7 +72,7 @@ namespace Match.Field.Tower
             {
                 tower.OuterLogicUpdate(frameLength);
 
-                if (tower.BaseReactiveModel.Health.Value <= 0)
+                if (tower.BaseReactiveModel.Health.Value.CurrentValue <= 0)
                     _dyingTowers.Add(tower);
             }
 

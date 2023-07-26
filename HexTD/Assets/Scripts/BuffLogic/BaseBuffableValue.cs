@@ -6,7 +6,7 @@ using UniRx;
 
 namespace BuffLogic
 {
-    public class BaseBuffableValue<TValue> : BaseDisposable, IReadonlyBuffableValue<TValue>, IBuffableValue<TValue>
+    public class BaseBuffableValue<TValue> : BaseDisposable, IReadonlyBuffableValue<TValue>
     {
         #region Fields
 
@@ -40,15 +40,7 @@ namespace BuffLogic
             return value;
         }
 
-        public TValue CopyValue(TValue defaultValue)
-        {
-            if (_buffs == null)
-                return defaultValue;
-            
-            return ApplyBuffs(defaultValue, _buffs);
-        }
-
-        private void ApplyBuffs()
+        protected virtual void ApplyBuffs()
         {
             _value.Value = ApplyBuffs(_defaultValue, _buffs);
         }

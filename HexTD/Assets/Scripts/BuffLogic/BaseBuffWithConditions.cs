@@ -24,7 +24,7 @@ namespace BuffLogic
         
         public abstract T RevokeBuff(T value);
 
-        public void Update()
+        public virtual void Update()
         {
             _buffConditionsCollection.Update();
         }

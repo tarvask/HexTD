@@ -3,32 +3,20 @@ using Match.Field.Shooting;
 
 namespace BuffLogic
 {
-    public abstract class BaseUnitBuff : IBuff<ITarget>
+    public abstract class BaseUnitBuff : IBuff<FloatImpactableBuffableValue>
     {
-        protected ITarget BuffableValue;
+        protected FloatImpactableBuffableValue BuffableValue;
 
         private Action _onEnd;
         private bool _isEndConditionDone;
 
-        public int Priority => int.MaxValue;
+        public virtual int Priority => int.MaxValue;
         public bool IsEndConditionDone => _isEndConditionDone;
 
-        public BaseUnitBuff()
+        protected BaseUnitBuff()
         {
             BuffableValue = null;
             _isEndConditionDone = false;
-        }
-
-        public ITarget ApplyBuff(ITarget value)
-        {
-            BuffableValue = value;
-            return value;
-        }
-
-        public ITarget RevokeBuff(ITarget value)
-        {
-            BuffableValue = null;
-            return value;
         }
 
         public void Update()
@@ -41,7 +29,20 @@ namespace BuffLogic
             _isEndConditionDone = ConditionCheck();
         }
 
-        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff<ITarget>;
+        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff<FloatImpactableBuffableValue>;
+        
+        public FloatImpactableBuffableValue ApplyBuff(FloatImpactableBuffableValue value)
+        {
+            BuffableValue = value;
+            return value;
+        }
+
+        public FloatImpactableBuffableValue RevokeBuff(FloatImpactableBuffableValue value)
+        {
+            BuffableValue = null;
+            return value;
+        }
+        
         protected abstract void UpdateBuff();
         protected abstract bool ConditionCheck();
 

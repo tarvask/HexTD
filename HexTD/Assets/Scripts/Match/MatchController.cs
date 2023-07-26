@@ -323,7 +323,7 @@ namespace Match
             _waveMobSpawnerCoordinator = new WaveMobSpawnerCoordinator(waveMobSpawnerContext);
 
             // input
-            HexInteractService hexInteractService = new HexInteractService(_matchView.OurFieldCamera);
+            HexInteractService hexInteractService = new HexInteractService();
             
             InputController.Context inputControllerContext = new InputController.Context(
                 hexInteractService, clickReactiveCommand);

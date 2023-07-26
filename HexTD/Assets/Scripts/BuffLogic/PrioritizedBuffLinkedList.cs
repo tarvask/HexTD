@@ -19,10 +19,20 @@ namespace BuffLogic
             _buffableValueTarget = buffableValue;
         }
 
-        public void AddBuff(IBuff<TValue> buff)
+        public void AddBuff(IBuff<TValue> newBuff)
         {
-            Add(buff);
-            _buffableValueTarget.UpdateAddBuff(this, buff);
+            foreach (var buff in ValueList)
+            {
+                if (buff.GetType() == newBuff.GetType())
+                {
+                    buff.MergeBuffs(newBuff);
+                    _buffableValueTarget.UpdateAddBuff(this, buff);
+                    return;
+                }
+            }
+            
+            Add(newBuff);
+            _buffableValueTarget.UpdateAddBuff(this, newBuff);
         }
 
         public void OuterLogicUpdate(float frameLength)

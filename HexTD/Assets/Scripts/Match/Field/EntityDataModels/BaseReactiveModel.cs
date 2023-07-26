@@ -1,42 +1,38 @@
 ﻿using BuffLogic;
 using UI.Tools;
-using UniRx;
 
 namespace Match.Field.Shooting
 {
     public class BaseReactiveModel : BaseDisposable
     {
-        private readonly BaseBuffableValue<float> _damage;
-        private readonly BaseBuffableValue<float> _maxHealth;
-        private readonly ReactiveProperty<float> _health;
+        private readonly FloatBuffableWithImpactValue _damage;
+        private readonly FloatBuffableWithImpactValue _health;
 
-        public IReadonlyBuffableValue<float> Damage => _damage;
-        public IReadonlyBuffableValue<float> MaxHealth => _maxHealth;
-        public IReadOnlyReactiveProperty<float> Health => _health;
+        public FloatBuffableWithImpactValue Damage => _damage;
+        public FloatBuffableWithImpactValue Health => _health;
 
-        public BaseReactiveModel(float health)
+        protected BaseReactiveModel(float health)
         {
-            _damage = AddDisposable(new BaseBuffableValue<float>(1));
-            _maxHealth = AddDisposable(new BaseBuffableValue<float>(health));
-            _health = AddDisposable(new ReactiveProperty<float>(health));
+            _damage = AddDisposable(new FloatBuffableWithImpactValue(1));
+            _health = AddDisposable(new FloatBuffableWithImpactValue(health));
         }
 
         public void SetMaxHealth(float newHealth)
         {
-            _maxHealth.Value = newHealth;
+            _health.Value.Value = newHealth;
         }
 
         public void SetHealth(float newHealth)
         {
-            _health.Value = newHealth;
+            _health.Value.SetValue(newHealth);
         }
 
-        public virtual bool TryGetBuffableValue(EntityBuffableValueType buffableValueType, out IBuffableValue<float> buffableValue)
+        public virtual bool TryGetBuffableValue(EntityBuffableValueType buffableValueType, out IBuffableValue buffableValue)
         {
             switch (buffableValueType)
             {
                 case EntityBuffableValueType.MaxHealth:
-                    buffableValue = _maxHealth;
+                    buffableValue = _health;
                     return true;
                 
                 case EntityBuffableValueType.Damage:

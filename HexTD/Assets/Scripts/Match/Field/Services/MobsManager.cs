@@ -110,7 +110,7 @@ namespace Match.Field.Services
         {
             foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
-                if (mobPair.Value.Health.Value <= 0)
+                if (mobPair.Value.Health.Value.CurrentValue <= 0)
                 {
                     _dyingMobs.Add(mobPair.Value);
                 }
@@ -232,8 +232,8 @@ namespace Match.Field.Services
                 if (mobPair.Value.IsBoss) continue;
                 
                 // hurt alive mobs to death
-                if (mobPair.Value.Health.Value > 0)
-                    mobPair.Value.Hurt(mobPair.Value.Health.Value);
+                if (mobPair.Value.Health.Value.CurrentValue > 0)
+                    mobPair.Value.Hurt(mobPair.Value.Health.Value.CurrentValue);
             }
         }
 
