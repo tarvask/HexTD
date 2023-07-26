@@ -1,6 +1,7 @@
 using Match.Windows;
 using Tools;
 using UniRx;
+using UnityEngine;
 
 namespace Match
 {
@@ -11,24 +12,30 @@ namespace Match
             public WinLoseWindowController WinLoseWindowController { get; }
             public ReactiveCommand EnemyCastleDestroyedReactiveCommand { get; }
             public ReactiveCommand OurCastleDestroyedReactiveCommand { get; }
+            public ReactiveCommand EndMatchReactiveCommand { get; }
+            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             
             public Context(WinLoseWindowController winLoseWindowController,
                 ReactiveCommand enemyCastleDestroyedReactiveCommand,
-                ReactiveCommand ourCastleDestroyedReactiveCommand)
+                ReactiveCommand ourCastleDestroyedReactiveCommand,
+                ReactiveCommand endMatchReactiveCommand,
+                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 WinLoseWindowController = winLoseWindowController;
                 
                 EnemyCastleDestroyedReactiveCommand = enemyCastleDestroyedReactiveCommand;
                 OurCastleDestroyedReactiveCommand = ourCastleDestroyedReactiveCommand;
+                EndMatchReactiveCommand = endMatchReactiveCommand;
+                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
         
         private readonly Context _context;
-        private bool _isMatchRunning;
+        private readonly ReactiveProperty<bool> _isMatchRunning;
         private bool _isEnemyCastleDestroyed, _isOurCastleDestroyed;
         private MatchResultType _matchResult;
 
-        public bool IsMatchRunning => _isMatchRunning;
+        public IReadOnlyReactiveProperty<bool> IsMatchRunning => _isMatchRunning;
 
         public MatchRulesController(Context context)
         {
@@ -37,7 +44,7 @@ namespace Match
             _context.EnemyCastleDestroyedReactiveCommand.Subscribe(OnEnemyCastleDestroyedEventHandler);
             _context.OurCastleDestroyedReactiveCommand.Subscribe(OnOurCastleDestroyedEventHandler);
 
-            _isMatchRunning = true;
+            _isMatchRunning = AddDisposable(new ReactiveProperty<bool>(true));
             _matchResult = MatchResultType.Undefined;
         }
 
@@ -53,10 +60,14 @@ namespace Match
                     _matchResult = MatchResultType.Draw;
             }
 
-            _isMatchRunning = _matchResult == MatchResultType.Undefined;
-            
-            if (!_isMatchRunning)
+            _isMatchRunning.Value = _matchResult == MatchResultType.Undefined;
+
+            if (!_isMatchRunning.Value)
+            {
+                Debug.Log($"Match ended on frame {_context.CurrentEngineFrameReactiveProperty.Value} with {_matchResult} result");
+                _context.EndMatchReactiveCommand.Execute();
                 _context.WinLoseWindowController.ShowWindow(_matchResult);
+            }
         }
 
         private void OnEnemyCastleDestroyedEventHandler(Unit unit)

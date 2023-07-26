@@ -70,6 +70,7 @@ namespace SRDebugger.Internal
             {
                 json = BuildJsonRequest(_bugReport);
                 jsonBytes = Encoding.UTF8.GetBytes(json);
+                SendEmail(json);
             }
             catch (Exception e)
             {
@@ -169,7 +170,7 @@ namespace SRDebugger.Internal
 
             if (report.ScreenshotData != null)
             {
-                ht.Add("screenshot", Convert.ToBase64String(report.ScreenshotData));
+                //ht.Add("screenshot", Convert.ToBase64String(report.ScreenshotData));
             }
 
             var json = Json.Serialize(ht);
@@ -200,6 +201,19 @@ namespace SRDebugger.Internal
             }
 
             return list;
+        }
+        
+        public void SendEmail(string jsonData)
+        {
+            string email = "tech@triogames.net";
+            string subject = MyEscapeURL("Bug report");
+            string body = MyEscapeURL("Body\r\njsonData");
+            Application.OpenURL ("mailto:" + email + "?subject=" + subject + "&amp;body=" + body);
+        }
+
+        string MyEscapeURL (string URL)
+        {
+            return WWW.EscapeURL(URL).Replace("+","%20");
         }
     }
 }

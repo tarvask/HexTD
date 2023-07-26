@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fae58e43fb445699eda86d8b9974ca4, type: 3}
+  m_Name: Level_02_full
+  m_EditorClassIdentifier: 
+  waveParameters:
+    pauseBeforeWave: 0
+    elements:
+    - mobId: 1
+      delay: 5
+    - mobId: 1
+      delay: 7
+    - mobId: 1
+      delay: 9
+    - mobId: 2
+      delay: 16
+    - mobId: 2
+      delay: 18
+    - mobId: 2
+      delay: 20
+    - mobId: 2
+      delay: 22
+    - mobId: 3
+      delay: 34
+    - mobId: 4
+      delay: 36
+    - mobId: 3
+      delay: 40
+    - mobId: 4
+      delay: 42
+    - mobId: 3
+      delay: 46
+    - mobId: 4
+      delay: 48
+    - mobId: 5
+      delay: 56
+    - mobId: 4
+      delay: 61
+    - mobId: 4
+      delay: 62
+    - mobId: 4
+      delay: 63
+    - mobId: 7
+      delay: 68
+    - mobId: 7
+      delay: 70
+    - mobId: 6
+      delay: 72
+    - mobId: 6
+      delay: 74
+    - mobId: 7
+      delay: 76
+    - mobId: 7
+      delay: 78
+    - mobId: 7
+      delay: 80
+    - mobId: 6
+      delay: 82
+    - mobId: 6
+      delay: 84
+    - mobId: 6
+      delay: 86
+    - mobId: 8
+      delay: 88
+    - mobId: 7
+      delay: 90
+    - mobId: 7
+      delay: 91
+    - mobId: 7
+      delay: 92
+    - mobId: 7
+      delay: 93
+    - mobId: 7
+      delay: 94
+    - mobId: 7
+      delay: 95

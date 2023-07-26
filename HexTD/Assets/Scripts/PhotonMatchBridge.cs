@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ExitGames.Client.Photon;
-using MapEditor;
 using Match;
 using Match.Commands;
 using Match.EventBus;
@@ -21,6 +20,8 @@ public class PhotonMatchBridge : BaseMonoBehaviour
 {
     public IObservable<Unit> OnQuitMatch => _onQuitMatch;
     private Subject<Unit> _onQuitMatch = new Subject<Unit>();
+    public IObservable<Unit> OnEndMatch => _onEndMatch;
+    private Subject<Unit> _onEndMatch = new Subject<Unit>();
 
     [SerializeField] private MatchesConfig levelsConfig;
 
@@ -170,9 +171,10 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _networkMatchStatus.CurrentProcessGameRoleReactiveProperty,
             _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
             _connectionMaintainer.IsConnectedReactiveProperty,
-            LeaveRoom,
+            RequestState,
+            OnEndMatchHandler,
             OnQuitMatchHandler,
-            _isMultiPlayerGame); //ProcessRoles.Player1
+            _isMultiPlayerGame);
 
         // re-init seed, because server had many calls to random while creating MatchConfig
         int randomSeed = startTimeSum;
@@ -239,7 +241,8 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             _networkMatchStatus.CurrentProcessGameRoleReactiveProperty,
             _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
             _connectionMaintainer.IsConnectedReactiveProperty,
-            LeaveRoom,
+            RequestState,
+            OnEndMatchHandler,
             OnQuitMatchHandler,
             _isMultiPlayerGame);
             
@@ -341,9 +344,28 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
     }
 
-    private void LeaveRoom()
+    private void OnEndMatchHandler()
     {
-        PhotonNetwork.Disconnect();
+        _onEndMatch.OnNext(Unit.Default);
+        
+        if (_isMultiPlayerGame)
+            PhotonNetwork.LeaveRoom();
+        
+        if (_connectionMaintainer != null)
+        {
+            _connectionMaintainer.OnRequestStateEvent -= RequestState;
+            _connectionMaintainer.OnRollbackStateEvent -= RollbackState;
+            _connectionMaintainer.OnRoomReceivedPlayer -= _networkMatchStatus.AddUser;
+            _connectionMaintainer.OnRoomLostPlayer -= _networkMatchStatus.RemoveUser;
+            _connectionMaintainer.Clear();
+            Destroy(_connectionMaintainer);
+        }
+
+        _eventBus?.Dispose();
+        _processRolesDefiner?.Dispose();
+        _networkMatchStatus?.Dispose();
+        _commandExecutorsAggregator?.Dispose();
+        _pingDamper?.Dispose();
     }
 
     private void RequestState()
@@ -366,23 +388,6 @@ public class PhotonMatchBridge : BaseMonoBehaviour
     private void Dispose()
     {
         Destroy(_matchEngine);
-
-        if (_connectionMaintainer != null)
-        {
-            _connectionMaintainer.OnRequestStateEvent -= RequestState;
-            _connectionMaintainer.OnRollbackStateEvent -= RollbackState;
-            _connectionMaintainer.OnRoomReceivedPlayer -= _networkMatchStatus.AddUser;
-            _connectionMaintainer.OnRoomLostPlayer -= _networkMatchStatus.RemoveUser;
-            _connectionMaintainer.Clear();
-            Destroy(_connectionMaintainer);
-        }
-
-        _eventBus?.Dispose();
-        _processRolesDefiner?.Dispose();
-        _networkMatchStatus?.Dispose();
-        _commandExecutorsAggregator?.Dispose();
-        _pingDamper?.Dispose();
-
         _isDisposed = true;
     }
 }

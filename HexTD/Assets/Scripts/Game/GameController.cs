@@ -17,8 +17,10 @@ namespace Game
 		private readonly MatchSettingsProvider _matchSettingsProvider;
 		private readonly IWindowsManager _windowsManager;
 		private readonly IMainMenuFarmLoader _mainMenuFarmLoader;
-
-		private IDisposable _matchDisposable;
+		
+		private PhotonConnectionService _photonConnectionService;
+		private IDisposable _onEndMatchSubscriptionDisposable;
+		private IDisposable _onQuitMatchSubscriptionDisposable;
 
 		public GameController(
 			IMatchStarterLoader matchStarterLoader,
@@ -37,8 +39,8 @@ namespace Game
 		{
 			if (isMultiPlayer)
 			{
-				var photonConnectionService = new PhotonConnectionService().ConnectNow();
-				await new WaitWhile(() => photonConnectionService.IsConnectedToRoom);
+				_photonConnectionService = new PhotonConnectionService().ConnectNow();
+				await new WaitWhile(() => _photonConnectionService.IsConnectedToRoom);
 			}
 			
 			_matchSettingsProvider.Settings = new MatchSettings(isMultiPlayer);
@@ -46,12 +48,19 @@ namespace Game
 			_mainMenuFarmLoader.DestroyAndRelease();
 			var matchStarter = await _matchStarterLoader.LoadAsync();
 
-			_matchDisposable = matchStarter.OnQuitMatch.Subscribe(OnQuitMatchHandler);
+			_onEndMatchSubscriptionDisposable = matchStarter.OnEndMatch.Subscribe(OnEndMatchHandler);
+			_onQuitMatchSubscriptionDisposable = matchStarter.OnQuitMatch.Subscribe(OnQuitMatchHandler);
+		}
+
+		private void OnEndMatchHandler(Unit asd)
+		{
+			_onEndMatchSubscriptionDisposable.Dispose();
+			_photonConnectionService?.Dispose();
 		}
 
 		private void OnQuitMatchHandler(Unit asd)
 		{
-			_matchDisposable.Dispose();
+			_onQuitMatchSubscriptionDisposable.Dispose();
 			
 			_matchStarterLoader.DestroyAndRelease();
 			

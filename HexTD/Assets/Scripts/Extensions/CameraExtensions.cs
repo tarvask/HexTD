@@ -37,7 +37,7 @@ namespace Extensions
 		}
 
 		// Facto how far away the camera should be 
-		private const float cameraDistance = 1f;
+		private const float cameraDistance = 0.55f;
 
 		public static bool TryGetFocusTransforms(this Camera camera, GameObject targetGameObject,
 			out Vector3 targetPosition, out Quaternion targetRotation)

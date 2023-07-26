@@ -15,7 +15,7 @@ namespace Match.Wave
         {
             public ConfigsRetriever ConfigsRetriever { get; }
             public FieldConfig FieldConfig { get; }
-            public MatchCommonCommands.IncomingGeneralCommands IncomingGeneralGeneralCommands { get; }
+            public MatchCommonCommands.IncomingGeneralCommands IncomingGeneralCommands { get; }
             public MatchCommands.IncomingCommands Player1IncomingCommands { get; }
             public MatchCommands.IncomingCommands Player2IncomingCommands { get; }
             public MatchCommonCommands.ServerCommands ServerCommands { get; }
@@ -33,6 +33,7 @@ namespace Match.Wave
             public ReactiveCommand<MobSpawnParameters> SpawnPlayer2MobReactiveCommand { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnEnemyField { get; }
             public IReadOnlyReactiveProperty<bool> HasMobsOnOurField { get; }
+            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(
                 ConfigsRetriever configsRetriever,
@@ -54,11 +55,12 @@ namespace Match.Wave
                 ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand,
                 ReactiveCommand<MobSpawnParameters> spawnPlayer2MobReactiveCommand,
                 IReadOnlyReactiveProperty<bool> hasMobsOnEnemyField,
-                IReadOnlyReactiveProperty<bool> hasMobsOnOurField)
+                IReadOnlyReactiveProperty<bool> hasMobsOnOurField,
+                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 ConfigsRetriever = configsRetriever;
                 FieldConfig = fieldConfig;
-                IncomingGeneralGeneralCommands = incomingGeneralCommands;
+                IncomingGeneralCommands = incomingGeneralCommands;
                 Player1IncomingCommands = player1IncomingCommands;
                 Player2IncomingCommands = player2IncomingCommands;
                 ServerCommands = serverCommands;
@@ -76,6 +78,7 @@ namespace Match.Wave
                 SpawnPlayer2MobReactiveCommand = spawnPlayer2MobReactiveCommand;
                 HasMobsOnEnemyField = hasMobsOnEnemyField;
                 HasMobsOnOurField = hasMobsOnOurField;
+                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
         
@@ -95,7 +98,7 @@ namespace Match.Wave
 
             WaveMobSpawnerBaseNoReinforcements.Context waveMobSpawnerImplementationContext = new WaveMobSpawnerBaseNoReinforcements.Context(
                 _context.ConfigsRetriever, _context.FieldConfig,
-                _context.IncomingGeneralGeneralCommands,
+                _context.IncomingGeneralCommands,
                 _context.Player1IncomingCommands, _context.Player2IncomingCommands, _context.ServerCommands,
                 _context.Waves,
                 _context.IsMultiPlayer,
@@ -104,7 +107,8 @@ namespace Match.Wave
                 _context.WaveStartedReactiveCommand, _context.WaveEndedReactiveCommand,
                 _context.BetweenWavesPlanningStartedReactiveCommand,
                 _context.WaveNumberChangedReactiveCommand,
-                _context.SpawnPlayer1MobReactiveCommand, _context.SpawnPlayer2MobReactiveCommand);
+                _context.SpawnPlayer1MobReactiveCommand, _context.SpawnPlayer2MobReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
             _serverImplementation = new WaveMobSpawnerServerNoReinforcements(waveMobSpawnerImplementationContext);
             _clientImplementation = new WaveMobSpawnerClientNoReinforcements(waveMobSpawnerImplementationContext);
 

@@ -19,10 +19,22 @@ namespace Services.PhotonRelated
 
         public PhotonConnectionService ConnectNow()
         {
-            Debug.Log("ConnectAndJoinRandom.ConnectNow() will now call: PhotonNetwork.ConnectUsingSettings().");
+            if (PhotonNetwork.InLobby)
+            {
+                Debug.Log("Already in Lobby, PhotonConnectionService will now call: JoinRandomRoom().");
+                PhotonNetwork.JoinRandomRoom();
+            }
+            else if (PhotonNetwork.IsConnected)
+            {
+                Debug.Log("Already connected, but not in Lobby, PhotonConnectionService will now call: JoinLobby().");
+                PhotonNetwork.JoinLobby();
+            }
+            else
+            {
+                Debug.Log("Not connected, PhotonConnectionService will now call: PhotonNetwork.ConnectUsingSettings().");
+                PhotonNetwork.ConnectUsingSettings();
+            }
 
-            
-            PhotonNetwork.ConnectUsingSettings();
             PhotonNetwork.GameVersion = this._version + "." + SceneManagerHelper.ActiveSceneBuildIndex;
 
             return this;

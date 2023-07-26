@@ -4,6 +4,7 @@ using Match.EventBus;
 using Match.Field.Tower;
 using Tools;
 using UniRx;
+using UnityEngine;
 
 namespace Match.Commands
 {
@@ -39,6 +40,7 @@ namespace Match.Commands
 
         private void RequestBuildTower(Hex2d buildPosition, TowerShortParams towerShortParams)
         {
+            Debug.Log($"Requesting tower build, current frame = {_context.TestMatchEngine.CurrentEngineFrameReactiveProperty.Value}");
             Hashtable requestBuildTowerProperties = new Hashtable
             {
                 {PhotonEventsConstants.BuildTower.RoleParam, (byte)_context.OurRoleReactiveProperty.Value},

@@ -11,6 +11,8 @@ using Match.Field.State;
 using Match.Field.Tower;
 using Match.Field.VFX;
 using Match.State;
+using Match.State.CheckSum;
+using Match.State.Verification;
 using Match.Wave;
 using Services;
 using Tools;
@@ -31,6 +33,8 @@ namespace Match
             public MatchCommands MatchCommandsOur { get; }
             public MatchCommonCommands MatchCommandsCommon { get; }
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
+            public ReactiveCommand RequestMatchStateReactiveCommand { get; }
+            public ReactiveCommand EndMatchReactiveCommand { get; }
             public ReactiveCommand QuitMatchReactiveCommand { get; }
             public ReactiveCommand<int> SyncFrameCounterReactiveCommand { get; }
             public IReadOnlyReactiveProperty<ProcessRoles> OurGameRoleReactiveProperty { get; }
@@ -44,6 +48,8 @@ namespace Match
                 MatchInitDataParameters matchInitDataParameters,
                 MatchCommands matchCommandsEnemy, MatchCommands matchCommandsOur, MatchCommonCommands matchCommandsCommon,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
+                ReactiveCommand requestMatchStateReactiveCommand,
+                ReactiveCommand endMatchReactiveCommand,
                 ReactiveCommand quitMatchReactiveCommand,
                 ReactiveCommand<int> syncFrameCounterReactiveCommand,
                 IReadOnlyReactiveProperty<ProcessRoles> ourGameRoleReactiveProperty,
@@ -58,6 +64,8 @@ namespace Match
                 MatchCommandsOur = matchCommandsOur;
                 MatchCommandsCommon = matchCommandsCommon;
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
+                RequestMatchStateReactiveCommand = requestMatchStateReactiveCommand;
+                EndMatchReactiveCommand = endMatchReactiveCommand;
                 QuitMatchReactiveCommand = quitMatchReactiveCommand;
                 SyncFrameCounterReactiveCommand = syncFrameCounterReactiveCommand;
                 OurGameRoleReactiveProperty = ourGameRoleReactiveProperty;
@@ -88,7 +96,9 @@ namespace Match
         private readonly FieldClicksDistributor _ourClicksDistributor;
         private readonly FieldClicksDistributor _enemyClicksDistributor;
         private readonly TowerPlacer _ourTowerPlacer;
+        private readonly MatchStateCheckSumComputerController _checkSumComputerController;
         private readonly MatchStateSaver _stateSaver;
+        private readonly MatchStateVerificationCoordinator _stateVerificationCoordinator;
         
         private readonly MatchView _matchView;
         private readonly FieldConfig _fieldConfig;
@@ -136,6 +146,7 @@ namespace Match
             ReactiveCommand<int> ourCrystalsCountChangedReactiveCommand = AddDisposable(new ReactiveCommand<int>());
             ReactiveCommand<bool> dragCardChangeStatusCommand = AddDisposable(new ReactiveCommand<bool>());
             ReactiveCommand<Hex2d> placeForOurTowerSelectedCommand = AddDisposable(new ReactiveCommand<Hex2d>());
+            ReactiveCommand<MatchStateCheckSum> matchStateCheckSumComputedReactiveCommand = AddDisposable(new ReactiveCommand<MatchStateCheckSum>());
 
             ConfigsRetriever.Context configsRetrieverContext = new ConfigsRetriever.Context(_fieldConfig);
             _configsRetriever = AddDisposable(new ConfigsRetriever(configsRetrieverContext));
@@ -208,7 +219,8 @@ namespace Match
                 enemyCastleHealthChangedReactiveCommand,
                 enemyCastleDestroyedReactiveCommand,
                 enemyGoldenCoinsCountChangedReactiveCommand,
-                enemyCrystalsCountChangedReactiveCommand);
+                enemyCrystalsCountChangedReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
                
             FieldController.Context ourFieldContext = new FieldController.Context(
                 _matchView.OurFieldRoot,
@@ -229,7 +241,8 @@ namespace Match
                 ourCastleHealthChangedReactiveCommand,
                 ourCastleDestroyedReactiveCommand,
                 ourGoldenCoinsCountChangedReactiveCommand,
-                ourCrystalsCountChangedReactiveCommand);
+                ourCrystalsCountChangedReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
 
             ReactiveCommand<MobSpawnParameters> spawnPlayer1MobReactiveCommand, spawnPlayer2MobReactiveCommand;
             MatchCommands player1MatchCommands, player2MatchCommands;
@@ -258,32 +271,27 @@ namespace Match
                 ourField = _player2FieldController;
                 enemyField = _player1FieldController;
             }
-
+            
+            // setup our and enemy cameras
             {
-                {
-                    var ourFieldBounds = ourField.GetFieldBounds();
-                    DebugDrawingTools.DrawBounds(ourFieldBounds, Color.white, 5.0f);
+                var ourFieldBounds = ourField.GetFieldBounds();
+                DebugDrawingTools.DrawBounds(ourFieldBounds, Color.white, 5.0f);
 
-                    if (_matchView.OurFieldCamera.TryGetFocusTransforms(ourFieldBounds, out var pos,
-                            out var rot))
-                    {
-                        _matchView.OurFieldCamera.transform.SetPositionAndRotation(
-                            pos - _matchView.OurFieldCamera.transform.up * 5.0f,
-                            rot);
-                    }
-                }
-                {
-                    var enemyFieldBounds = enemyField.GetFieldBounds();
-                    DebugDrawingTools.DrawBounds(enemyFieldBounds, Color.white, 5.0f);
+                if (_matchView.OurFieldCamera.TryGetFocusTransforms(ourFieldBounds, out var pos,
+                        out var rot))
+                    _matchView.OurFieldCamera.transform.SetPositionAndRotation(
+                        pos - _matchView.OurFieldCamera.transform.up * 5.0f,
+                        rot);
+            }
+            {
+                var enemyFieldBounds = enemyField.GetFieldBounds();
+                DebugDrawingTools.DrawBounds(enemyFieldBounds, Color.white, 5.0f);
 
-                    if (_matchView.EnemyFieldCamera.TryGetFocusTransforms(enemyFieldBounds, out var pos,
-                            out var rot))
-                    {
-                        _matchView.EnemyFieldCamera.transform.SetPositionAndRotation(
-                            pos,
-                            rot);
-                    }
-                }
+                if (_matchView.EnemyFieldCamera.TryGetFocusTransforms(enemyFieldBounds, out var pos,
+                        out var rot))
+                    _matchView.EnemyFieldCamera.transform.SetPositionAndRotation(
+                        pos,
+                        rot);
             }
 
             ourField.InitPlayerHand(_ourPlayerHandController);
@@ -310,7 +318,8 @@ namespace Match
                 spawnPlayer1MobReactiveCommand,
                 spawnPlayer2MobReactiveCommand,
                 hasMobsOnEnemyField,
-                hasMobsOnOurField);
+                hasMobsOnOurField,
+                _context.CurrentEngineFrameReactiveProperty);
             _waveMobSpawnerCoordinator = new WaveMobSpawnerCoordinator(waveMobSpawnerContext);
 
             // input
@@ -360,14 +369,31 @@ namespace Match
             MatchRulesController.Context rulesControllerContext = new MatchRulesController.Context(
                 _windowsManager.WinLoseWindowController,
                 enemyCastleDestroyedReactiveCommand,
-                ourCastleDestroyedReactiveCommand);
+                ourCastleDestroyedReactiveCommand,
+                _context.EndMatchReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
             _rulesController = AddDisposable(new MatchRulesController(rulesControllerContext));
             
             // state saver
+            _checkSumComputerController = AddDisposable(new MatchStateCheckSumComputerController());
+            
             MatchStateSaver.Context stateSaverContext = new MatchStateSaver.Context(
-                _player1FieldController, _player2FieldController, _waveMobSpawnerCoordinator,
-                waveStartedReactiveCommand, _context.CurrentEngineFrameReactiveProperty);
+                _player1FieldController, _player2FieldController,
+                _checkSumComputerController, _waveMobSpawnerCoordinator,
+                waveStartedReactiveCommand, matchStateCheckSumComputedReactiveCommand,
+                _rulesController.IsMatchRunning,
+                _context.CurrentEngineFrameReactiveProperty);
             _stateSaver = AddDisposable(new MatchStateSaver(stateSaverContext));
+            
+            // state verification
+            MatchStateVerificationCoordinator.Context verificationCoordinatorContext = new MatchStateVerificationCoordinator.Context(
+                _checkSumComputerController,
+                _context.OurNetworkRoleReactiveProperty,
+                matchStateCheckSumComputedReactiveCommand,
+                _context.RequestMatchStateReactiveCommand,
+                _context.MatchCommandsCommon.IncomingGeneral,
+                _context.MatchCommandsCommon.Server);
+            _stateVerificationCoordinator = AddDisposable(new MatchStateVerificationCoordinator(verificationCoordinatorContext));
 
             _context.MatchCommandsCommon.IncomingGeneral.RequestSyncState.Subscribe(SendState);
             _context.MatchCommandsCommon.IncomingGeneral.ApplySyncState.Subscribe(SyncState);
@@ -380,9 +406,9 @@ namespace Match
             _context.MatchCommandsCommon.Server.SendState.Fire(_stateSaver.GetCurrentMatchState());
         }
         
-        private void SyncState(MatchState matchState, int timeStamp)
+        private void SyncState(MatchState matchState, int frameCounter)
         {
-            _context.SyncFrameCounterReactiveCommand.Execute(timeStamp);
+            _context.SyncFrameCounterReactiveCommand.Execute(frameCounter);
 
             if (_context.OurGameRoleReactiveProperty.Value == ProcessRoles.Player1)
             {
@@ -415,7 +441,7 @@ namespace Match
 
         public void OuterLogicUpdate(float frameLength)
         {
-            if (!_rulesController.IsMatchRunning)
+            if (!_rulesController.IsMatchRunning.Value)
                 return;
             
             _ourClicksDistributor.OuterLogicUpdate(frameLength);
@@ -438,6 +464,9 @@ namespace Match
 
         public void OuterViewUpdate(float frameLength)
         {
+            if (!_rulesController.IsMatchRunning.Value)
+                return;
+            
             _player1FieldController.OuterViewUpdate(frameLength);
             
             if (_context.IsMultiPlayerGame)

@@ -9,8 +9,9 @@ namespace MapEditor
     public class EditorHexesController : IPointerInputListener
     {
         public const string KeyEditableAreaSize = "EditableAreaSize";
+        public const string KeyEditableAreaMin = "EditableAreaMin";
         
-        public enum EditingHexMode
+        private enum EditingHexMode
         {
             Undefined = 0,
             
@@ -35,13 +36,14 @@ namespace MapEditor
 
         public EditorHexesController(
             [Inject(Id = KeyEditableAreaSize)] Hex2d areaSize,
+            [Inject(Id = KeyEditableAreaMin)] Hex2d areaMin,
             EditorHexesModel editorHexesModel,
             HexSpawnerController hexSpawnerController,
             HeightHexSetController heightHexSetController,
             RotationHexSetController rotationHexSetController)
         {
             _areaSize = areaSize;
-            _areaMin = new Hex2d(0, 0);
+            _areaMin = areaMin;
             _areaMax = _areaMin + _areaSize;
             
             _editorHexesModel = editorHexesModel;
@@ -54,7 +56,7 @@ namespace MapEditor
             UpdateEditingHexType();
         }
 
-        public void SwitchHexSetController()
+        private void SwitchHexSetController()
         {
             _currentHexEditorMode = GetNextEditingHexType(_currentHexEditorMode);
             UpdateEditingHexType();

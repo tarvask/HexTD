@@ -46,6 +46,7 @@ namespace Match.Field
             public ReactiveCommand CastleDestroyedReactiveCommand { get; }
             public ReactiveCommand<int> GoldenCoinsCountChangedReactiveCommand { get; }
             public ReactiveCommand<int> CrystalsCountChangedReactiveCommand { get; }
+            public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
 
             public Context(
                 Transform fieldRoot,
@@ -66,7 +67,8 @@ namespace Match.Field
                 ReactiveCommand<HealthInfo> castleHealthChangedReactiveCommand,
                 ReactiveCommand castleDestroyedReactiveCommand,
                 ReactiveCommand<int> goldenCoinsCountChangedReactiveCommand,
-                ReactiveCommand<int> crystalsCountChangedReactiveCommand)
+                ReactiveCommand<int> crystalsCountChangedReactiveCommand,
+                IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty)
             {
                 FieldRoot = fieldRoot;
                 HexObjectFabric = hexObjectFabric;
@@ -88,6 +90,7 @@ namespace Match.Field
                 CastleDestroyedReactiveCommand = castleDestroyedReactiveCommand;
                 GoldenCoinsCountChangedReactiveCommand = goldenCoinsCountChangedReactiveCommand;
                 CrystalsCountChangedReactiveCommand = crystalsCountChangedReactiveCommand;
+                CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
             }
         }
 
@@ -188,7 +191,8 @@ namespace Match.Field
                 castleReachedByMobReactiveCommand,
                 _context.CastleDestroyedReactiveCommand,
                 enableHexesHighlightReactiveCommand,
-                removeAllHexesHighlightsReactiveCommand);
+                removeAllHexesHighlightsReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
             _factory = AddDisposable(_fieldFactoryFactory.Create(factoryContext));
             
             MobsByTowersBlocker.Context mobsByTowersBlockerContext = new MobsByTowersBlocker.Context(
@@ -202,7 +206,8 @@ namespace Match.Field
                 attackTowerByMobReactiveCommand,
                 castleReachedByMobReactiveCommand,
                 removeMobReactiveCommand,
-                _context.SpawnMobReactiveCommand);
+                _context.SpawnMobReactiveCommand,
+                _context.CurrentEngineFrameReactiveProperty);
             _mobsManager = AddDisposable(_mobsManagerFactory.Create(mobsManagerContext));
             
             FieldModel.Context fieldModelContext = new FieldModel.Context(
@@ -231,7 +236,7 @@ namespace Match.Field
             
             // shooting
             ShootingProcessManager.Context shootingControllerContext = new ShootingProcessManager.Context(_model, 
-                _hexMapReachableService, _factory, _context.BuffManager, _context.VfxManager);
+                _hexMapReachableService, _factory, _context.BuffManager, _context.VfxManager, _context.CurrentEngineFrameReactiveProperty);
             _shootingProcessManager = AddDisposable(new ShootingProcessManager(shootingControllerContext));
             
             // currency
@@ -274,7 +279,6 @@ namespace Match.Field
             _constructionProcessController.OuterLogicUpdate(frameLength);
             _mobsManager.OuterLogicUpdate(frameLength);
             _model.TowersManager.OuterLogicUpdate(frameLength);
-            
             _shootingProcessManager.OuterLogicUpdate(frameLength);
         }
 

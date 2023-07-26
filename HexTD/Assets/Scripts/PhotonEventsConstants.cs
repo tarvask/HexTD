@@ -380,4 +380,14 @@ public static class PhotonEventsConstants
         public const string RoleParam = "role";
         public const string TimeParam = "timestamp";
     }
+    
+    public static class BroadcastStateCheckSum
+    {
+        public const byte ApplyEventId = 36;
+
+        public const string Player1CheckSumParam = "player1checksum";
+        public const string Player2CheckSumParam = "player2checksum";
+
+        public const string TimeParam = "timestamp";
+    }
 }

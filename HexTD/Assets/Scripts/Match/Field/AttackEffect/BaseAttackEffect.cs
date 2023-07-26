@@ -30,10 +30,11 @@ namespace Match.Field.AttackEffect
         public float ProjectileSpeed => projectileSpeed;
         public ProjectileView ProjectileView => projectileView;
 
-        public void ApplyAttackImpact(ITarget attackerController, float sqrDistance)
+        public void ApplyAttackImpact(ITarget targetController, float sqrDistance)
         {
-            float damage = attackerController.BaseReactiveModel.Damage.CopyValue(baseDamage);
-            attackerController.Hurt(damage);
+            float damage = targetController.BaseReactiveModel.Damage.CopyValue(baseDamage);
+            targetController.Hurt(damage);
+            Debug.Log($"Hurt target={targetController.TargetId} by {damage}, current health is {targetController.BaseReactiveModel.Health}");
         }
 
         public void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager, VfxManager vfxManager)

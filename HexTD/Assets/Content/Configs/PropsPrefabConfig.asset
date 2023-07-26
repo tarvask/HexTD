@@ -14,33 +14,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   propsObjectConfigs:
     keyData:
-    - bush
-    - mushroom_cluster
-    - mushroom_single
-    - stone_wall
-    - tree
+    - Farm
+    - BushBig
+    - BushLiliya
+    - BushPionBlue
+    - GrassSimple
+    - GrassFlower
+    - TreeFir
+    - TreeOak
+    - TreeTuya
     valueData:
-    - propsObject: {fileID: 3886770764703070816, guid: e5f25b3784e6af84a834b9ec3c6ee919, type: 3}
+    - propsObject: {fileID: 5954365473827557662, guid: 6cb3d501100db724ab803cd48c9d6486, type: 3}
       propsPlacingConfig:
-        isReplacesHex: 1
+        isReplacesHex: 0
         isBuildingBlock: 0
         isRangeAttackBlock: 0
-    - propsObject: {fileID: 6593607727555220473, guid: b5e03f0223378924da0979393d214c4e, type: 3}
+    - propsObject: {fileID: 5954365473827557662, guid: 0da1bc67b29bcdf4d868b0cbb283767f, type: 3}
       propsPlacingConfig:
         isReplacesHex: 0
         isBuildingBlock: 1
-        isRangeAttackBlock: 0
-    - propsObject: {fileID: 1301886653320489606, guid: 85a54485069f6ed40adbe1dc72d1d4c0, type: 3}
-      propsPlacingConfig:
-        isReplacesHex: 0
-        isBuildingBlock: 0
         isRangeAttackBlock: 1
-    - propsObject: {fileID: 8873025157617540482, guid: 805ca666bf9e5a947bbd6c221a95e5b1, type: 3}
+    - propsObject: {fileID: 5954365473827557662, guid: 784f7be2492d8e147a0c0a449d836d7c, type: 3}
       propsPlacingConfig:
-        isReplacesHex: 1
+        isReplacesHex: 0
         isBuildingBlock: 1
         isRangeAttackBlock: 0
-    - propsObject: {fileID: 5954365473827557662, guid: fbfc6ef16ba0e4043bf5a10610794587, type: 3}
+    - propsObject: {fileID: 5954365473827557662, guid: 64f3fa4c8eea2d8478e953cea387d13d, type: 3}
+      propsPlacingConfig:
+        isReplacesHex: 0
+        isBuildingBlock: 1
+        isRangeAttackBlock: 0
+    - propsObject: {fileID: 5954365473827557662, guid: 669fb6e259ec4164891fc91fcc3b2999, type: 3}
+      propsPlacingConfig:
+        isReplacesHex: 0
+        isBuildingBlock: 0
+        isRangeAttackBlock: 0
+    - propsObject: {fileID: 5954365473827557662, guid: 689361fc4edb21a44b8fff97716df46d, type: 3}
+      propsPlacingConfig:
+        isReplacesHex: 0
+        isBuildingBlock: 0
+        isRangeAttackBlock: 0
+    - propsObject: {fileID: 5954365473827557662, guid: f5775cf7bb9cd5343ad4f95cb0fa8ee8, type: 3}
+      propsPlacingConfig:
+        isReplacesHex: 0
+        isBuildingBlock: 1
+        isRangeAttackBlock: 1
+    - propsObject: {fileID: 5954365473827557662, guid: cc37a0df1bff59040a46c212f48de506, type: 3}
+      propsPlacingConfig:
+        isReplacesHex: 0
+        isBuildingBlock: 1
+        isRangeAttackBlock: 1
+    - propsObject: {fileID: 5954365473827557662, guid: 18fcfdbdd3a38cc46a7ce57e449db321, type: 3}
       propsPlacingConfig:
         isReplacesHex: 0
         isBuildingBlock: 1

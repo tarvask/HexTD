@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.Tower;
+using UnityEngine;
 
 namespace Match.Commands.Implementations
 {
@@ -69,6 +70,8 @@ namespace Match.Commands.Implementations
                 // send further
                 Context.EventBus.RaiseEvent(PhotonEventsConstants.BuildTower.ApplyEventId, commandParametersTable);
                 
+                Debug.Log($"Requesting building tower, current frame = {Context.CurrentEngineFrameReactiveProperty.Value}, " +
+                          $"target frame = {targetExecutionTimeStamp}");
                 // wait for target frame
                 await WaitForTargetFrame(targetExecutionTimeStamp);
                 // handle
@@ -100,6 +103,8 @@ namespace Match.Commands.Implementations
             {
                 Parameters commandParameters = ExtractParameters(commandParametersTable);
                 
+                Debug.Log($"Applying tower build, current frame = {Context.CurrentEngineFrameReactiveProperty.Value}, " +
+                          $"target frame = {commandParameters.TimeStamp}");
                 // wait for target frame
                 await WaitForTargetFrame(commandParameters.TimeStamp);
                 // handle
