@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ExitGames.Client.Photon;
+using UnityEngine;
 
 namespace BuffLogic
 {
@@ -21,9 +22,9 @@ namespace BuffLogic
             _healImpact = 0f;
         }
 
-        protected override void UpdateBuff()
+        protected override void UpdateBuff(float frameLength)
         {
-            _delayAccumulator += Time.deltaTime;
+            _delayAccumulator += frameLength;
 
             while (_delayAccumulator >= _healDelay)
             {
@@ -52,5 +53,34 @@ namespace BuffLogic
             _healImpact = buffTypizied._healImpact;
             BuffableValue = buffTypizied.BuffableValue;
         }
+        
+        public override Hashtable ToNetwork()
+        {
+            return new Hashtable()
+            {
+                {Match.Serialization.SerializerToNetwork.SerializedType, typeof(HealBuff).FullName},
+                {nameof(_healCapacity), _healCapacity},
+                {nameof(_healPerDelay), _healPerDelay},
+                {nameof(_healDelay), _healDelay},
+                {nameof(_delayAccumulator), _delayAccumulator},
+                {nameof(_healImpact), _healImpact},
+            };
+        }
+
+        public override object Restore(Hashtable hashtable)
+        {
+            float healCapacity = (float)hashtable[nameof(_healCapacity)];
+            float healPerDelay = (float)hashtable[nameof(_healPerDelay)];
+            float healDelay = (float)hashtable[nameof(_healDelay)];
+            float delayAccumulator = (float)hashtable[nameof(_delayAccumulator)];
+            float healImpact = (float)hashtable[nameof(_healImpact)];
+
+            var healBuff = new HealBuff(healCapacity, healPerDelay, healDelay);
+            healBuff._delayAccumulator = delayAccumulator;
+            healBuff._healImpact = healImpact;
+
+            return healBuff;
+        }
+
     }
 }

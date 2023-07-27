@@ -1,15 +1,18 @@
 ﻿using System;
-using Match.Field.Shooting;
+using ExitGames.Client.Photon;
+using Match.Serialization;
 
 namespace BuffLogic
 {
     public abstract class BaseUnitBuff : IBuff<FloatImpactableBuffableValue>
     {
+        [SerializableToNetwork("BuffableTarget")]
         protected FloatImpactableBuffableValue BuffableValue;
 
         private Action _onEnd;
         private bool _isEndConditionDone;
 
+        [SerializeToNetwork("Priority")]
         public virtual int Priority => int.MaxValue;
         public bool IsEndConditionDone => _isEndConditionDone;
 
@@ -19,17 +22,17 @@ namespace BuffLogic
             _isEndConditionDone = false;
         }
 
-        public void Update()
+        public void OuterLogicUpdate(float frameLength)
         {
-            if(BuffableValue == null)
+            if (BuffableValue == null)
                 return;
 
-            UpdateBuff();
+            UpdateBuff(frameLength);
 
             _isEndConditionDone = ConditionCheck();
         }
 
-        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff<FloatImpactableBuffableValue>;
+        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff;
         
         public FloatImpactableBuffableValue ApplyBuff(FloatImpactableBuffableValue value)
         {
@@ -43,8 +46,11 @@ namespace BuffLogic
             return value;
         }
         
-        protected abstract void UpdateBuff();
+        protected abstract void UpdateBuff(float frameLength);
         protected abstract bool ConditionCheck();
+        
+        public abstract Hashtable ToNetwork();
+        public abstract object Restore(Hashtable hashtable);
 
         public void SubscribeOnEnd(Action onEnd)
         {

@@ -1,4 +1,5 @@
 using Match.Field;
+using Match.Field.Hand;
 using Match.State.CheckSum;
 using Match.Wave;
 using Tools;
@@ -74,6 +75,11 @@ namespace Match.State
             
             _context.CheckSumComputerController.UpdateCheckSumHistory(_context.CurrentEngineFrameReactiveProperty.Value, _lastMatchState);
             _context.MatchStateCheckSumComputedReactiveCommand.Execute(_context.CheckSumComputerController.LastCheckSum);
+        }
+        
+        private void SaveField(int playerId, PlayerHandController playerHandController)
+        {
+                
         }
 
         public ref MatchState GetCurrentMatchState()

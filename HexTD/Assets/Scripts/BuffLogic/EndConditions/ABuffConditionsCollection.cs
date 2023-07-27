@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using ExitGames.Client.Photon;
+using Match.Serialization;
 using Tools;
 
 namespace BuffLogic
 {
-    public abstract class ABuffConditionsCollection : BaseDisposable
+    public abstract class ABuffConditionsCollection : BaseDisposable, ISerializableToNetwork
     {        
-        protected readonly LinkedList<IBuffCondition> Conditions;
+        [SerializableArrayToNetwork("Conditions", typeof(IBuffCondition))] protected readonly LinkedList<IBuffCondition> Conditions;
         private bool _isEndConditionDone;
 
         public bool IsEndConditionDone => _isEndConditionDone;
@@ -49,6 +51,11 @@ namespace BuffLogic
                 condition.Dispose();
             }
             Conditions.Clear();
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return Match.Serialization.SerializerToNetwork.EnumerableToNetwork(Conditions, Conditions.Count);
         }
     }
 }

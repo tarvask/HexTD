@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using BuffLogic;
 using Match.Field.Shooting;
 
 namespace Match.Field.Tower
 {
-    public interface ITowerContainer : ITypeTargetContainer, IShooterContainer
+    public interface ITowerContainer : ITypeTargetContainer, IShooterContainer, ISerializableToNetwork
     {
         IReadOnlyDictionary<int, TowerController> Towers { get; }
     }
@@ -99,6 +100,20 @@ namespace Match.Field.Tower
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+        
+        public ExitGames.Client.Photon.Hashtable ToNetwork()
+        {
+            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
+            
+            int i = 0;
+            foreach (var tower in Towers.Values)
+            {
+                hashtable.Add($"{PhotonEventsConstants.SyncState.PlayerState.TowersParam}{i++}",
+                    tower.ToNetwork());
+            }
+
+            return hashtable;
         }
     }
 }

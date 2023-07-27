@@ -106,7 +106,7 @@ namespace Match.Field.Services
                     projectileState.TowerId, projectileState.TargetId);
                 projectileController.LoadState(projectileState);
                 
-                _context.FieldModel.AddProjectile(projectileController);
+                _context.FieldModel.ProjectilesContainer.Add(projectileController);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Match.Field.Services
             PlayerState.MobsState mobsState = new PlayerState.MobsState(_context.FieldModel.MobsManager.Mobs);
             
             // projectiles
-            PlayerState.ProjectilesState projectilesState = new PlayerState.ProjectilesState(_context.FieldModel.Projectiles);
+            PlayerState.ProjectilesState projectilesState = new PlayerState.ProjectilesState(_context.FieldModel.ProjectilesContainer.Projectiles);
 
             return new PlayerState(0, coins, crystals,
                 castleState, towersState, mobsState, projectilesState);

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using BuffLogic;
+using ExitGames.Client.Photon;
 using Match.Field.VFX;
 using Tools;
 using Tools.Interfaces;
@@ -8,7 +10,7 @@ using Zenject;
 
 namespace Match.Field.Tower
 {
-    public class TowersManager : BaseDisposable, IOuterLogicUpdatable
+    public class TowersManager : BaseDisposable, IOuterLogicUpdatable, ISerializableToNetwork
     {
         private readonly VfxManager _vfxManager;
         private readonly TowerContainer _towerContainer;
@@ -87,6 +89,11 @@ namespace Match.Field.Tower
         public void Clear()
         {
             _towerContainer.Clear();
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return _towerContainer.ToNetwork();
         }
 
         public class Factory : PlaceholderFactory<VfxManager, int, TowersManager>

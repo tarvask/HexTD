@@ -1,4 +1,5 @@
 ﻿using System;
+using ExitGames.Client.Photon;
 using Tools;
 using UniRx;
 
@@ -19,6 +20,11 @@ namespace BuffLogic
         public bool Invoke()
         {
             return _isConditionDone;
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            throw new NotImplementedException();
         }
     }
 }

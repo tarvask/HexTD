@@ -1,4 +1,5 @@
 ﻿using System;
+using ExitGames.Client.Photon;
 using Tools;
 using UniRx;
 using UnityEngine;
@@ -7,6 +8,7 @@ namespace BuffLogic
 {
     public class TimerBuffCondition : BaseDisposable, IBuffCondition
     {
+        private const string TimeName = "Time";
         private readonly IReactiveProperty<float> _timerProperty;
 
         public TimerBuffCondition(float timerDuration)
@@ -23,6 +25,14 @@ namespace BuffLogic
         {
             _timerProperty.Value -= Time.deltaTime;
             return _timerProperty.Value <= 0f;
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            Hashtable hashtable = new Hashtable();
+            hashtable.Add(TimeName, _timerProperty.Value);
+
+            return hashtable;
         }
     }
 }

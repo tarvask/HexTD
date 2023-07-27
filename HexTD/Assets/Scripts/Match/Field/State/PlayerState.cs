@@ -58,7 +58,7 @@ namespace Match.Field.State
             _castleState = new CastleState(fieldModel.Castle);
             _towersState = new TowersState(fieldModel.TowersManager.Towers);
             _mobsState = new MobsState(fieldModel.MobsManager.Mobs);
-            _projectilesState = new ProjectilesState(fieldModel.Projectiles);
+            _projectilesState = new ProjectilesState(fieldModel.ProjectilesContainer.Projectiles);
         }
 
         public static PlayerState FromHashtable(Hashtable playerStateHashtable)
@@ -367,7 +367,7 @@ namespace Match.Field.State
                 _activeProjectilesCount = _projectiles.Length;
             }
             
-            public ProjectilesState(Dictionary<int, ProjectileController> projectilesControllers)
+            public ProjectilesState(IReadOnlyDictionary<int, ProjectileController> projectilesControllers)
             {
                 _projectiles = new ProjectileState[projectilesControllers.Count];
                 int projectileIndex = 0;

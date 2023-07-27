@@ -1,4 +1,6 @@
 using System.Threading.Tasks;
+using BuffLogic;
+using ExitGames.Client.Photon;
 using Match.Field.AttackEffect;
 using Match.Field.State;
 using Tools;
@@ -6,7 +8,7 @@ using UnityEngine;
 
 namespace Match.Field.Shooting
 {
-    public class ProjectileController : BaseDisposable
+    public class ProjectileController : BaseDisposable, ISerializableToNetwork
     {
         public struct Context
         {
@@ -120,6 +122,11 @@ namespace Match.Field.Shooting
             return new PlayerState.ProjectileState(_context.Id, _context.SpawnTowerId, _context.TargetId,
                 _context.AttackIndex, CurrentPosition.x, CurrentPosition.y, _context.Speed,
                 _context.HasSplashDamage);
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return PlayerState.ProjectileState.ProjectileToHashtable(GetProjectileState());
         }
     }
 }

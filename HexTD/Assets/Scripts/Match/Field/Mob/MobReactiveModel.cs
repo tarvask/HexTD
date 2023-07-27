@@ -12,9 +12,9 @@ namespace Match.Field.Mob
 
         public FloatBuffableWithImpactValue Speed => _speed;
 
-        public MobReactiveModel(float speed, float health) : base(health)
+        public MobReactiveModel(float speed, float health, int targetId) : base(health, targetId)
         {
-            _speed = AddDisposable(new FloatBuffableWithImpactValue(speed));
+            _speed = AddDisposable(new FloatBuffableWithImpactValue(speed, targetId, EntityBuffableValueType.Speed));
         }
 
         public void SubscribeOnHexPositionChange(Action<MobController, Hex2d> actionOnChange)

@@ -74,7 +74,7 @@ namespace Match.Field.Shooting
 
         public void OuterViewUpdate(float frameLength)
         {
-            foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.Projectiles)
+            foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.ProjectilesContainer.Projectiles)
             {
                 projectilePair.Value.VisualMove(frameLength);
             }
@@ -94,7 +94,7 @@ namespace Match.Field.Shooting
 
         private void UpdateMovingProjectiles(float frameLength)
         {
-            foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.Projectiles)
+            foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.ProjectilesContainer.Projectiles)
             {
                 // if reached before movement
                 if (projectilePair.Value.HasReachedTarget)
@@ -168,7 +168,7 @@ namespace Match.Field.Shooting
         private void UpdateSplashingProjectiles()
         {
             // check splash ending
-            foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.Projectiles)
+            foreach (KeyValuePair<int, ProjectileController> projectilePair in _context.FieldModel.ProjectilesContainer.Projectiles)
             {
                 if (!projectilePair.Value.HasPlayedSplash)
                     continue;
@@ -180,7 +180,7 @@ namespace Match.Field.Shooting
             foreach (ProjectileController projectile in _endSplashingProjectiles)
             {
                 Debug.Log($"Removed projectile with id={projectile.Id} with target {projectile.TargetId} in position {projectile.CurrentPosition} on frame {_context.CurrentEngineFrameReactiveProperty.Value}");
-                _context.FieldModel.RemoveProjectile(projectile.Id);
+                _context.FieldModel.ProjectilesContainer.Remove(projectile.Id);
                 projectile.Dispose();
             }
             
@@ -195,7 +195,7 @@ namespace Match.Field.Shooting
         private void Shoot(IShooter tower)
         {
             var projectileController = tower.CreateAndInitProjectile(_context.Factory);
-            _context.FieldModel.AddProjectile(projectileController);
+            _context.FieldModel.ProjectilesContainer.Add(projectileController);
         }
 
         private void GetTargetsWithSqrDistancesForProjectile(ProjectileController projectile,

@@ -1,6 +1,6 @@
 ﻿namespace Match.Field.Shooting
 {
-    public enum EntityBuffableValueType
+    public enum EntityBuffableValueType : byte
     {
         Undefined = 0,
         

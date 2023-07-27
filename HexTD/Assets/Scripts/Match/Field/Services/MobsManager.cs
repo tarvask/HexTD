@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using BuffLogic;
+using ExitGames.Client.Photon;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.VFX;
@@ -12,7 +14,7 @@ using Zenject;
 
 namespace Match.Field.Services
 {
-    public class MobsManager : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable
+    public class MobsManager : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable, ISerializableToNetwork
     {
         public struct Context
         {
@@ -257,6 +259,11 @@ namespace Match.Field.Services
             
             _deadBodies.Clear();
             _escapingMobs.Clear();
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return _mobsContainer.ToNetwork();
         }
 
         public class Factory : PlaceholderFactory<Context, MobsManager>

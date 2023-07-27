@@ -12,6 +12,8 @@ namespace Match.Field.Shooting
     public abstract class BaseTargetEntity : BaseDisposable, ITarget
     {
         public abstract int TargetId { get; }
+        public EntityBuffableValueType EntityBuffableValueType { get; }
+
         public abstract Hex2d HexPosition { get; }
         public abstract Vector3 Position { get; }
         public abstract BaseReactiveModel BaseReactiveModel { get; }
@@ -31,6 +33,16 @@ namespace Match.Field.Shooting
             {
                 removedBuff.ApplyBuff(this);
             }
+        }
+
+        public void UpdateAddBuff(IEnumerable<IBuff> buffs, IBuff addedBuff)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateRemoveBuffs(IEnumerable<IBuff> buffs, IEnumerable<IBuff> removedBuffs)
+        {
+            throw new NotImplementedException();
         }
 
         public ITarget Value => throw new NotImplementedException();

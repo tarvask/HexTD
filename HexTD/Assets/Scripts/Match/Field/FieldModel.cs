@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using BuffLogic;
+using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.Castle;
 using Match.Field.Hexagons;
@@ -13,7 +15,7 @@ using UniRx;
 
 namespace Match.Field
 {
-    public class FieldModel : BaseDisposable
+    public class FieldModel : BaseDisposable, ISerializableToNetwork
     {
         public struct Context
         {
@@ -51,8 +53,7 @@ namespace Match.Field
 
         // main state data
         private readonly CastleController _castle;
-        private readonly Dictionary<int, ProjectileController> _projectiles;
-        private readonly Dictionary<int, int> _artifactsOnTowers;
+        private readonly ProjectileContainer _projectilesContainer;
         
         // supporting data
         // objects that can be shot
@@ -69,7 +70,7 @@ namespace Match.Field
         // mobs by ids
         public MobsManager MobsManager => _context.MobsManager;
         // projectiles by ids
-        public Dictionary<int, ProjectileController> Projectiles => _projectiles;
+        public ProjectileContainer ProjectilesContainer => _projectilesContainer;
         public TargetContainer Targets => _targets;
         public ShooterContainer Shooters => _shooters;
         public IHexPositionConversionService HexPositionConversionService => _context.HexPositionConversionService;
@@ -80,8 +81,8 @@ namespace Match.Field
 
             _castle = AddDisposable(_context.Factory.CreateCastle());
             
-            _projectiles = new Dictionary<int, ProjectileController>(WaveMobSpawnerCoordinator.MaxMobsInWave * 8); // random stuff
-            _targets = new TargetContainer(MobsManager.MobContainer, TowersManager.TowerContainer);
+            _projectilesContainer = AddDisposable(new ProjectileContainer(WaveMobSpawnerCoordinator.MaxMobsInWave * 8)); // random stuff
+            _targets = AddDisposable(new TargetContainer(MobsManager.MobContainer, TowersManager.TowerContainer));
             _shooters = new ShooterContainer(_context.TowersManager.TowerContainer); 
             
             AddDisposable(_context.RemoveMobReactiveCommand.Subscribe(RemoveMob));
@@ -138,14 +139,17 @@ namespace Match.Field
                 _context.HasMobsOnFieldReactiveProperty.Value = false;
         }
 
-        public void AddProjectile(ProjectileController projectileController)
+        public Hashtable ToNetwork()
         {
-            _projectiles.Add(projectileController.Id, projectileController);
-        }
+            Hashtable hashtable = new Hashtable()
+            {
+                { PhotonEventsConstants.SyncState.PlayerState.CastleParam, Castle.ToNetwork() },
+                { PhotonEventsConstants.SyncState.PlayerState.TowersParam, TowersManager.ToNetwork() },
+                { PhotonEventsConstants.SyncState.PlayerState.MobsParam, MobsManager.ToNetwork() },
+                { PhotonEventsConstants.SyncState.PlayerState.ProjectilesParam, ProjectilesContainer.ToNetwork() }
+            };
 
-        public void RemoveProjectile(int projectileId)
-        {
-            _projectiles.Remove(projectileId);
+            return hashtable;
         }
 
         public void ClearState()
@@ -165,10 +169,10 @@ namespace Match.Field
             MobsManager.Clear();
             
             // projectiles
-            foreach (KeyValuePair<int, ProjectileController> projectilePair in Projectiles)
+            foreach (KeyValuePair<int, ProjectileController> projectilePair in ProjectilesContainer.Projectiles)
                 projectilePair.Value.Dispose();
             
-            Projectiles.Clear();
+            ProjectilesContainer.Clear();
         }
     }
 }

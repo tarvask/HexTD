@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using BuffLogic;
+using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.AttackEffect;
 using Match.Field.Hexagons;
@@ -16,7 +18,7 @@ using Object = UnityEngine.Object;
 
 namespace Match.Field.Tower
 {
-    public class TowerController : BaseTargetEntity, IOuterLogicUpdatable, IShooter
+    public class TowerController : BaseTargetEntity, IOuterLogicUpdatable, IShooter, ISerializableToNetwork
     {
         public struct Context
         {
@@ -82,7 +84,7 @@ namespace Match.Field.Tower
 
             _shootModel = AddDisposable(new EntityShootModel(_context.TowerConfig.AttacksConfig));
             _stableModel = AddDisposable(new TowerStableModel());
-            _reactiveModel = AddDisposable(new TowerReactiveModel(CurrentLevel.HealthPoint));
+            _reactiveModel = AddDisposable(new TowerReactiveModel(CurrentLevel.HealthPoint, _context.TargetId));
             
             _context.View.SetType(_context.TowerConfig.RegularParameters.TowerName);
             _stableModel.SetHexPosition(_context.HexPosition);
@@ -285,6 +287,11 @@ namespace Match.Field.Tower
                 (byte)_stableModel.Level,
                 // save remaining time
                 _stableModel.IsConstructing ? (int)((CurrentLevel.BuildTime - (Time.time - _stableModel.ConstructionTimeLabel)) * 1000) : 0);
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return PlayerState.TowerState.TowerToHashtable(GetTowerState());
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BuffLogic;
+using ExitGames.Client.Photon;
 using HexSystem;
 using MapEditor;
 using Match.Commands;
@@ -23,7 +24,7 @@ using Zenject;
 
 namespace Match.Field
 {
-    public class FieldController : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable
+    public class FieldController : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable, ISerializableToNetwork
     {
         public struct Context
         {
@@ -308,6 +309,11 @@ namespace Match.Field
         }
 
         public Bounds GetFieldBounds() => _hexagonalFieldModel.GetBounds();
+        
+        public Hashtable ToNetwork()
+        {
+            return _model.ToNetwork();
+        }
 
         public class Factory : PlaceholderFactory<Context, FieldController>
         {

@@ -1,10 +1,17 @@
 ﻿using System;
+using ExitGames.Client.Photon;
+using Match.Serialization;
 using UnityEngine;
 
 namespace BuffLogic
 {
     public abstract class BaseBuffWithConditions<T>: IBuff<T>
     {
+        private const string PriorityParam = "priority";
+
+        [SerializeToNetwork("BuffConditionCollectionType")]
+        private readonly EBuffConditionCollectionType _buffConditionCollectionType;
+        [SerializableToNetwork("EndConditions")]
         private readonly ABuffConditionsCollection _buffConditionsCollection;
 
         private Action _onEnd;
@@ -16,7 +23,8 @@ namespace BuffLogic
 
         protected BaseBuffWithConditions(EBuffConditionCollectionType buffConditionCollectionType, int priority = int.MaxValue)
         {
-            _buffConditionsCollection = CreateBuffConditionsCollection(buffConditionCollectionType);
+            _buffConditionCollectionType = buffConditionCollectionType;
+            _buffConditionsCollection = CreateBuffConditionsCollection(_buffConditionCollectionType);
             _priority = priority;
         }
 
@@ -24,12 +32,12 @@ namespace BuffLogic
         
         public abstract T RevokeBuff(T value);
 
-        public virtual void Update()
+        public virtual void OuterLogicUpdate(float frameLength)
         {
             _buffConditionsCollection.Update();
         }
 
-        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff<T>;
+        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff;
 
         protected void MergeConditions<TBuff>(TBuff buff) where TBuff : BaseBuffWithConditions<T>
         {
@@ -70,6 +78,21 @@ namespace BuffLogic
         {
             _buffConditionsCollection?.Dispose();
             _onEnd.Invoke();
+        }
+        
+        public virtual Hashtable ToNetwork()
+        {
+            Hashtable hashtable = new Hashtable();
+            
+            hashtable.Add(PhotonEventsConstants.SyncState.PlayerState.Buffs.BuffConditionName, _buffConditionsCollection.ToNetwork());
+            hashtable.Add(PriorityParam, _priority);
+
+            return hashtable;
+        }
+
+        public object Restore(Hashtable hashtable)
+        {
+            return null;
         }
     }
 }

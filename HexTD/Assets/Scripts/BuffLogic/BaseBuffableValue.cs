@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Match.Field.Shooting;
 using Tools;
 using Tools.PriorityTools;
 using UniRx;
@@ -13,19 +14,25 @@ namespace BuffLogic
         private readonly ReactiveProperty<TValue> _value;
         private readonly TValue _defaultValue;
         private IEnumerable<IBuff<TValue>> _buffs;
-        
+        private IReadonlyBuffableValue<TValue> readonlyBuffableValueImplementation;
+
         public TValue Value
         {
             get => _value.Value;
             set => _value.Value = value;
         }
+        
+        public int TargetId { get; }
+        public EntityBuffableValueType EntityBuffableValueType { get; }
 
         #endregion
 
         #region BuffMethods
         
-        public BaseBuffableValue(TValue defaultValue)
+        public BaseBuffableValue(TValue defaultValue, int targetId, EntityBuffableValueType entityBuffableValueType)
         {
+            TargetId = targetId;
+            EntityBuffableValueType = entityBuffableValueType;
             _defaultValue = defaultValue;
             _value = AddDisposable(new ReactiveProperty<TValue>(defaultValue));
         }
@@ -55,6 +62,28 @@ namespace BuffLogic
         {
             _buffs = buffs;
             ApplyBuffs();
+        }
+        
+        public void UpdateAddBuff(IEnumerable<IBuff<TValue>> buffs, IBuff<TValue> addedBuff)
+        {
+            _buffs = buffs;
+            ApplyBuffs();
+        }
+
+        public void UpdateRemoveBuffs(IEnumerable<IBuff<TValue>> buffs, IEnumerable<IBuff<TValue>> removedBuffs)
+        {
+            _buffs = buffs;
+            ApplyBuffs();
+        }
+        
+        public void UpdateAddBuff(IEnumerable<IBuff> buffs, IBuff addedBuff)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateRemoveBuffs(IEnumerable<IBuff> buffs, IEnumerable<IBuff> removedBuffs)
+        {
+            throw new NotImplementedException();
         }
 
         public void Subscribe(Action<TValue> onChangeAction)

@@ -1,4 +1,5 @@
 using System;
+using Match.Field.Shooting;
 using UniRx;
 using UnityEngine;
 
@@ -9,7 +10,8 @@ namespace BuffLogic
         protected ReactiveProperty<TValue> CurrentReactiveValue;
         public TValue CurrentValue => CurrentReactiveValue.Value;
 
-        protected BaseImpactableBuffableValue(TValue defaultValue) : base(defaultValue)
+        public BaseImpactableBuffableValue(TValue defaultValue, int targetId, EntityBuffableValueType entityBuffableValueType) 
+            : base(defaultValue, targetId, entityBuffableValueType)
         {
             CurrentReactiveValue = AddDisposable(new ReactiveProperty<TValue>(defaultValue));
         }
@@ -24,7 +26,8 @@ namespace BuffLogic
 
     public class FloatImpactableBuffableValue : BaseImpactableBuffableValue<float>
     {
-        public FloatImpactableBuffableValue(float defaultValue) : base(defaultValue)
+        public FloatImpactableBuffableValue(float defaultValue, int targetId, EntityBuffableValueType entityBuffableValueType) 
+            : base(defaultValue, targetId, entityBuffableValueType)
         {
             
         }

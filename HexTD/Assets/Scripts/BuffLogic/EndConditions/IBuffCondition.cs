@@ -2,7 +2,7 @@
 
 namespace BuffLogic
 {
-    public interface IBuffCondition : IDisposable
+    public interface IBuffCondition : IDisposable, ISerializableToNetwork
     {
         bool Invoke();
     }

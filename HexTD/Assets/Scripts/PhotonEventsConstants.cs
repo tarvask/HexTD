@@ -124,19 +124,6 @@ public static class PhotonEventsConstants
             public const string PlayerId = "playerId";
             public const string Coins = "coins";
             public const string Crystals = "crystals";
-            public const string RerollCount = "reroll";
-                
-            // artifacts
-            public const string ArtifactsParam = "artifacts";
-                
-            public static class Artifacts
-            {
-                public const string ArtifactIdParam = "id";
-                public const string TypeIdParam = "typeId";
-                public const string TowerTypeParam = "towerType";
-                public const string IsUsedParam = "used";
-                public const string TowerIdParam = "towerId";
-            }
                 
             // castle
             public const string CastleParam = "castle";
@@ -146,22 +133,10 @@ public static class PhotonEventsConstants
                 public const string CurrentHealthParam = "curHealth";
                 public const string MaxHealthParam = "maxHealth";
             }
-                
-            // blockers
-            public const string BlockersParam = "blockers";
 
-            public static class Blockers
-            {
-                public const string BlockerIdParam = "id";
-                public const string TargetIdParam = "targetId";
-                public const string PositionXParam = "xposition";
-                public const string PositionYParam = "yposition";
-                public const string BlockerTypeParam = "type";
-                public const string CurrentHealthParam = "curHealth";
-            }
-                
             // towers
             public const string TowersParam = "towers";
+            public const string TowersSizeParam = "towerSize";
 
             public static class Towers
             {
@@ -176,6 +151,7 @@ public static class PhotonEventsConstants
 
             // mobs
             public const string MobsParam = "mobs";
+            public const string MobsSizeParam = "mobSize";
 
             public static class Mobs
             {
@@ -192,6 +168,7 @@ public static class PhotonEventsConstants
                 
             // projectiles
             public const string ProjectilesParam = "projectiles";
+            public const string ProjectilesSizeParam = "projectileSize";
 
             public static class Projectiles
             {
@@ -205,15 +182,22 @@ public static class PhotonEventsConstants
                 public const string SpeedParam = "speed";
                 public const string HasSplashDamageParam = "hasSplash";
             }
-
-            // magic
-            public const string MagicSpellsParam = "magicSpells";
-
-            public static class MagicSpells
+            
+            // buffs
+            public static class Buffs
             {
-                public const string MagicSpellTypeParam = "type";
-                public const string MagicSpellCountParam = "count";
-                public const string MagicSpellTimerParam = "timer";
+                public const string TargetId = "targetId";
+                public const string EntityBuffableValueType = "entityBuffableValueType";
+                
+                public const string BuffConditionName = "BuffConditionParam";
+                
+                public const string BuffSizeParam = "buffCount";
+                public const string BuffValueParam = "buffValue";
+
+                public const string TypedBuffManagerSize = "typedBuffManagerSize";
+                public const string TypedBuffManager = "typedBuffManager";
+                public const string TypedBuffManagerType = "SerializedType";
+                public const string BuffManager = "BuffManager";
             }
         }
             
@@ -259,28 +243,6 @@ public static class PhotonEventsConstants
         public const string TimeParam = "timestamp";
     }
 
-    public static class TargetBlocker
-    {
-        public const byte RequestEventId = 16;
-        public const byte ApplyEventId = 17;
-
-        public const string RoleParam = "role";
-        public const string PositionXParam = "xposition";
-        public const string PositionYParam = "yposition";
-        public const string TimeParam = "timestamp";
-    }
-        
-    public static class UntargetBlocker
-    {
-        public const byte RequestEventId = 18;
-        public const byte ApplyEventId = 19;
-
-        public const string RoleParam = "role";
-        public const string PositionXParam = "xposition";
-        public const string PositionYParam = "yposition";
-        public const string TimeParam = "timestamp";
-    }
-
     public static class StartWaveSpawn
     {
         public const byte ApplyEventId = 20;
@@ -294,90 +256,6 @@ public static class PhotonEventsConstants
         public const string Player2WaveMobsDelays = "player2mobsDelays";
         public const string Player2WaveMobsPaths = "player2mobsPaths";
         public const string RandomSeed = "randomSeed";
-        public const string TimeParam = "timestamp";
-    }
-
-    public static class SendReinforcements
-    {
-        public const byte RequestEventId = 21;
-            
-        public const string RoleParam = "role";
-        public const string MobsIds = "mobsIds";
-        public const string MobsCounts = "mobsCounts";
-        public const string TimeParam = "timestamp";
-    }
-
-    public static class CastMagicSpell
-    {
-        public const byte RequestEventId = 22;
-        public const byte ApplyEventId = 23;
-
-        public const string RoleParam = "role";
-        public const string SpellTypeParam = "type";
-        public const string IsFreeParam = "isFree";
-        public const string TimeParam = "timestamp";
-    }
-
-    public static class CollectCrystal
-    {
-        public const byte RequestEventId = 24;
-        public const byte ApplyEventId = 25;
-
-        public const string RoleParam = "role";
-        public const string PositionXParam = "xposition";
-        public const string PositionYParam = "yposition";
-        public const string TimeParam = "timestamp";
-    }
-
-    public static class UseReinforcementsItem
-    {
-        public const byte EventId = 27;
-
-        public const string RoleParam = "role";
-        public const string MobIdParam = "mobId";
-        public const string ToUseParam = "use";
-        public const string TimeParam = "timestamp";
-    }
-
-    public static class ChooseArtifactItem
-    {
-        public const byte RequestEventId = 28;
-        public const byte ApplyEventId = 29;
-
-        public const string RoleParam = "role";
-        public const string ArtifactTypeIdParam = "artifactTypeId";
-        public const string TowerTypeParam = "towerType";
-        public const string TimeParam = "timestamp";
-    }
-
-    public static class PutArtifactOnTower
-    {
-        public const byte RequestEventId = 30;
-        public const byte ApplyEventId = 31;
-
-        public const string RoleParam = "role";
-        public const string ArtifactIdParam = "artifactId";
-        public const string TowerIdParam = "towerId";
-        public const string TimeParam = "timestamp";
-    }
-        
-    public static class TakeArtifactOffFromTower
-    {
-        public const byte RequestEventId = 32;
-        public const byte ApplyEventId = 33;
-
-        public const string RoleParam = "role";
-        public const string ArtifactIdParam = "artifactId";
-        public const string TowerIdParam = "towerId";
-        public const string TimeParam = "timestamp";
-    }
-
-    public static class RerollArtifacts
-    {
-        public const byte RequestEventId = 34;
-        public const byte ApplyEventId = 35;
-            
-        public const string RoleParam = "role";
         public const string TimeParam = "timestamp";
     }
     

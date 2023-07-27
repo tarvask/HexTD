@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ExitGames.Client.Photon;
+using UnityEngine;
 
 namespace BuffLogic
 {
@@ -21,9 +22,9 @@ namespace BuffLogic
             _damageImpact = 0f;
         }
 
-        protected override void UpdateBuff()
+        protected override void UpdateBuff(float frameLength)
         {
-            _delayAccumulator += Time.deltaTime;
+            _delayAccumulator += frameLength;
 
             while (_delayAccumulator >= _damageDelay)
             {
@@ -51,6 +52,35 @@ namespace BuffLogic
             _damageDelay = buffTypizied._damageDelay;
             _damageImpact = buffTypizied._damageImpact;
             BuffableValue = buffTypizied.BuffableValue;
+        }
+        
+        public override Hashtable ToNetwork()
+        {
+            return new Hashtable()
+            {
+                {Match.Serialization.SerializerToNetwork.SerializedType, typeof(PoisonBuff)},
+                {$"{Match.Serialization.SerializerToNetwork.SerializedType}In", typeof(FloatImpactableBuffableValue)},
+                { nameof(_damageCapacity), _damageCapacity },
+                { nameof(_damagePerDelay), _damagePerDelay },
+                { nameof(_damageDelay), _damageDelay },
+                { nameof(_delayAccumulator), _delayAccumulator },
+                { nameof(_damageImpact), _damageImpact }
+            };
+        }
+        
+        public override object Restore(Hashtable hashtable)
+        {
+            float damageCapacity = (float)hashtable[nameof(_damageCapacity)];
+            float damagePerDelay = (float)hashtable[nameof(_damagePerDelay)];
+            float damageDelay = (float)hashtable[nameof(_damageDelay)];
+            float delayAccumulator = (float)hashtable[nameof(_delayAccumulator)];
+            float damageImpact = (float)hashtable[nameof(_damageImpact)];
+
+            var healBuff = new PoisonBuff(damageCapacity, damagePerDelay, damageDelay);
+            healBuff._delayAccumulator = delayAccumulator;
+            healBuff._damageImpact = damageImpact;
+
+            return healBuff;
         }
     }
 }

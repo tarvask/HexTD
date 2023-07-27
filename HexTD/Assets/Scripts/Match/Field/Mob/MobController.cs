@@ -1,19 +1,19 @@
 using System;
 using System.Threading.Tasks;
 using BuffLogic;
+using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.State;
 using PathSystem;
 using UI.ScreenSpaceOverlaySystem;
-using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Match.Field.Mob
 {
-    public class MobController : BaseTargetEntity
+    public class MobController : BaseTargetEntity, ISerializableToNetwork
     {
         public struct Context
         {
@@ -87,7 +87,7 @@ namespace Match.Field.Mob
         {
             _context = context;
 
-            _reactiveModel = AddDisposable(new MobReactiveModel(_context.Parameters.Speed, _context.Parameters.HealthPoints));
+            _reactiveModel = AddDisposable(new MobReactiveModel(_context.Parameters.Speed, _context.Parameters.HealthPoints, _context.TargetId));
             
             _currentPathLength = 0;
 
@@ -259,6 +259,11 @@ namespace Match.Field.Mob
             base.OnDispose();
             
             Object.Destroy(_context.View.gameObject);
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return PlayerState.MobState.MobToHashtable(GetMobState());
         }
     }
 }

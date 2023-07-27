@@ -11,10 +11,10 @@ namespace Match.Field.Shooting
         public FloatBuffableWithImpactValue Damage => _damage;
         public FloatBuffableWithImpactValue Health => _health;
 
-        protected BaseReactiveModel(float health)
+        protected BaseReactiveModel(float health, int targetId)
         {
-            _damage = AddDisposable(new FloatBuffableWithImpactValue(1));
-            _health = AddDisposable(new FloatBuffableWithImpactValue(health));
+            _damage = AddDisposable(new FloatBuffableWithImpactValue(1, targetId, EntityBuffableValueType.Damage));
+            _health = AddDisposable(new FloatBuffableWithImpactValue(health, targetId, EntityBuffableValueType.MaxHealth));
         }
 
         public void SetMaxHealth(float newHealth)

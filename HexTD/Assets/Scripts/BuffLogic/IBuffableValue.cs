@@ -1,18 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using Tools.PriorityTools;
-using UniRx;
+using Match.Field.Shooting;
+using Match.Serialization;
 
 namespace BuffLogic
 {
-    public interface IBuffableValue { }
-    
-    public interface IBuffableValue<TValue> : IBuffableValue, IReadOnlyReactiveProperty<TValue>
+    public interface IBuffableValue
     {
-        void UpdateAddBuff(PrioritizeLinkedList<IBuff<TValue>> buffs, IBuff<TValue> addedBuff);
-        void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<TValue>> buffs, IEnumerable<IBuff<TValue>> removedBuffs);
+        [SerializeToNetwork("TargetId")] int TargetId { get; }
+        [SerializeToNetwork("EntityBuffable")] EntityBuffableValueType EntityBuffableValueType { get; }
+        void UpdateAddBuff(IEnumerable<IBuff> buffs, IBuff addedBuff);
+        void UpdateRemoveBuffs(IEnumerable<IBuff> buffs, IEnumerable<IBuff> removedBuffs);
     }
-    
+
+    public interface IBuffableValue<TValue> : IBuffableValue
+    {
+        void UpdateAddBuff(IEnumerable<IBuff<TValue>> buffs, IBuff<TValue> addedBuff);
+        void UpdateRemoveBuffs(IEnumerable<IBuff<TValue>> buffs, IEnumerable<IBuff<TValue>> removedBuffs);
+    }
+
     public interface IReadonlyBuffableValue<TValue> : IBuffableValue<TValue>
     {
         TValue Value { get; }
@@ -21,7 +27,7 @@ namespace BuffLogic
     
     public interface IReadonlyImpactableBuff<TValue> : IReadonlyBuffableValue<TValue>
     {
-        TValue CurrentValue { get; }
+        [SerializeToNetwork("CurrentValue")] TValue CurrentValue { get; }
         void SubscribeOnSetValue(Action<TValue> onChange);
     }
 
