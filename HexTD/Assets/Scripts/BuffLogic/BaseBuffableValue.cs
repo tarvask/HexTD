@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Match.Field.Shooting;
 using Tools;
-using Tools.PriorityTools;
 using UniRx;
 
 namespace BuffLogic
@@ -11,10 +10,10 @@ namespace BuffLogic
     {
         #region Fields
 
+        private readonly ReactiveCommand<IBuffableValue> _onDispose;
         private readonly ReactiveProperty<TValue> _value;
         private readonly TValue _defaultValue;
-        private IEnumerable<IBuff<TValue>> _buffs;
-        private IReadonlyBuffableValue<TValue> readonlyBuffableValueImplementation;
+        private IEnumerable<IBuff> _buffs;
 
         public TValue Value
         {
@@ -37,12 +36,12 @@ namespace BuffLogic
             _value = AddDisposable(new ReactiveProperty<TValue>(defaultValue));
         }
 
-        public static TValue ApplyBuffs(TValue defaultValue, IEnumerable<IBuff<TValue>> buffs)
+        public static TValue ApplyBuffs(TValue defaultValue, IEnumerable<IBuff> buffs)
         {
             TValue value = defaultValue;
             
             foreach (var buff in buffs)
-                value = buff.ApplyBuff(value);
+                value = ((IBuff<TValue>)buff).ApplyBuff(value);
 
             return value;
         }
@@ -51,50 +50,38 @@ namespace BuffLogic
         {
             _value.Value = ApplyBuffs(_defaultValue, _buffs);
         }
-
-        public void UpdateAddBuff(PrioritizeLinkedList<IBuff<TValue>> buffs, IBuff<TValue> addedBuff)
-        {
-            _buffs = buffs;
-            ApplyBuffs();
-        }
-
-        public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<TValue>> buffs, IEnumerable<IBuff<TValue>> removedBuffs)
-        {
-            _buffs = buffs;
-            ApplyBuffs();
-        }
-        
-        public void UpdateAddBuff(IEnumerable<IBuff<TValue>> buffs, IBuff<TValue> addedBuff)
-        {
-            _buffs = buffs;
-            ApplyBuffs();
-        }
-
-        public void UpdateRemoveBuffs(IEnumerable<IBuff<TValue>> buffs, IEnumerable<IBuff<TValue>> removedBuffs)
-        {
-            _buffs = buffs;
-            ApplyBuffs();
-        }
         
         public void UpdateAddBuff(IEnumerable<IBuff> buffs, IBuff addedBuff)
         {
-            throw new NotImplementedException();
+            _buffs = buffs;
+            ApplyBuffs();
         }
 
         public void UpdateRemoveBuffs(IEnumerable<IBuff> buffs, IEnumerable<IBuff> removedBuffs)
         {
-            throw new NotImplementedException();
+            _buffs = buffs;
+            ApplyBuffs();
+        }
+
+        public void SubscribeOnDispose(Action<IBuffableValue> onDispose)
+        {
+            AddDisposable(_onDispose.Subscribe(onDispose));
         }
 
         public void Subscribe(Action<TValue> onChangeAction)
         {
             AddDisposable(_value.Subscribe(onChangeAction));
         }
-
-        #endregion
-
+        
         public bool HasValue => _value.HasValue;
         
         public IDisposable Subscribe(IObserver<TValue> observer) => _value.Subscribe(observer);
+        
+        protected override void OnDispose()
+        {
+            _onDispose.Execute(this);
+        }
+
+        #endregion
     }
 }

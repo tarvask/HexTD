@@ -1,18 +1,15 @@
 ﻿using System;
 using ExitGames.Client.Photon;
-using Match.Serialization;
 
 namespace BuffLogic
 {
     public abstract class BaseUnitBuff : IBuff<FloatImpactableBuffableValue>
     {
-        [SerializableToNetwork("BuffableTarget")]
         protected FloatImpactableBuffableValue BuffableValue;
 
         private Action _onEnd;
         private bool _isEndConditionDone;
-
-        [SerializeToNetwork("Priority")]
+        
         public virtual int Priority => int.MaxValue;
         public bool IsEndConditionDone => _isEndConditionDone;
 
@@ -50,7 +47,6 @@ namespace BuffLogic
         protected abstract bool ConditionCheck();
         
         public abstract Hashtable ToNetwork();
-        public abstract object Restore(Hashtable hashtable);
 
         public void SubscribeOnEnd(Action onEnd)
         {

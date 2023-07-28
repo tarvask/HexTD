@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using BuffLogic;
 using Match.Field.Shooting;
+using Match.Serialization;
+using Services;
 
 namespace Match.Field.Tower
 {
-    public interface ITowerContainer : ITypeTargetContainer, IShooterContainer, ISerializableToNetwork
+    public interface ITowerContainer : ITypeTargetContainer, IShooterContainer
     {
         IReadOnlyDictionary<int, TowerController> Towers { get; }
     }
@@ -104,16 +106,21 @@ namespace Match.Field.Tower
         
         public ExitGames.Client.Photon.Hashtable ToNetwork()
         {
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
+            return SerializerToNetwork.EnumerableToNetwork(Towers.Values, Towers.Count);
+        }
+        
+        public static object FromNetwork(ExitGames.Client.Photon.Hashtable hashtable, ConfigsRetriever configsRetriever)
+        {
+            TowerContainer towerContainer = new TowerContainer(configsRetriever.TowerCount);
+            towerContainer.Clear();
             
-            int i = 0;
-            foreach (var tower in Towers.Values)
+            foreach (var elementHashtable in SerializerToNetwork.IterateSerializedEnumerable(hashtable))
             {
-                hashtable.Add($"{PhotonEventsConstants.SyncState.PlayerState.TowersParam}{i++}",
-                    tower.ToNetwork());
+                var tower = SerializerToNetwork.FromNetwork(elementHashtable) as TowerController;
+                towerContainer.AddTower(tower);
             }
 
-            return hashtable;
+            return towerContainer;
         }
     }
 }

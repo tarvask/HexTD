@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using BuffLogic;
 using HexSystem;
 using Match.Field.Shooting;
+using Match.Serialization;
 
 namespace Match.Field.Mob
 {
-    public class MobsContainer : ITypeTargetContainer, ISerializableToNetwork
+    public class MobsContainer : ITypeTargetContainer
     {
         private readonly Dictionary<int, MobController> _mobs;
         private readonly Dictionary<int, List<ITarget>> _mobsByPosition;
@@ -84,18 +84,19 @@ namespace Match.Field.Mob
         
         public ExitGames.Client.Photon.Hashtable ToNetwork()
         {
-            ExitGames.Client.Photon.Hashtable hashtable = new ExitGames.Client.Photon.Hashtable();
-            
-            hashtable.Add(PhotonEventsConstants.SyncState.PlayerState.MobsSizeParam, Mobs.Count);
-            
-            int i = 0;
-            foreach (var mob in Mobs.Values)
+            return SerializerToNetwork.EnumerableToNetwork(_mobs.Values, _mobs.Count);
+        }
+        
+        public static object FromNetwork(ExitGames.Client.Photon.Hashtable hashtable)
+        {
+            MobsContainer mobsContainer = new MobsContainer();
+            foreach (var elementHashtable in SerializerToNetwork.IterateSerializedEnumerable(hashtable))
             {
-                hashtable.Add($"{PhotonEventsConstants.SyncState.PlayerState.MobsParam}{i++}",
-                    mob.ToNetwork());
+                MobController mobController = SerializerToNetwork.FromNetwork(elementHashtable) as MobController;
+                mobsContainer.AddMob(mobController);
             }
 
-            return hashtable;
+            return mobsContainer;
         }
     }
 }

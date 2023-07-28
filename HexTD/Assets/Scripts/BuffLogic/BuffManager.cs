@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
+using Match.Field.Shooting;
+using Match.Serialization;
 using Tools;
 using Tools.Interfaces;
 
@@ -19,7 +21,7 @@ namespace BuffLogic
         {
             if (!_buffManagers.TryGetValue(type, out ITypedBuffManager buffManager))
             {
-                buffManager = AddDisposable(new TypedBuffManager());
+                buffManager = AddDisposable(new TypedBuffManager(type));
                 _buffManagers.Add(type, buffManager);
             }
             
@@ -43,7 +45,7 @@ namespace BuffLogic
 
         protected override void OnDispose()
         {
-            _buffManagers.Clear();
+            Clear();
         }
 
         public void OuterLogicUpdate(float frameLength)
@@ -54,10 +56,30 @@ namespace BuffLogic
             }
         }
         
+        public void Clear()
+        {
+            foreach (var typedBuffManager in _buffManagers)
+            {
+                typedBuffManager.Value.Clear();
+            }
+            
+            _buffManagers.Clear();
+        }
+        
         public Hashtable ToNetwork()
         {
-            return Match.Serialization.SerializerToNetwork.EnumerableToNetwork(_buffManagers.Values,
+            return SerializerToNetwork.EnumerableToNetwork(_buffManagers.Values,
                 _buffManagers.Values.Count);
+        }
+        
+        public void FromNetwork(TargetContainer targetContainer1, TargetContainer targetContainer2, Hashtable hashtable)
+        {
+            Clear();
+            foreach (var elementHashtable in SerializerToNetwork.IterateSerializedEnumerable(hashtable))
+            {
+                var typedBuffManager = TypedBuffManager.FromNetwork(targetContainer1, targetContainer2, elementHashtable.Item1);
+                _buffManagers.Add(typedBuffManager.Type, typedBuffManager);
+            }
         }
     }
 }

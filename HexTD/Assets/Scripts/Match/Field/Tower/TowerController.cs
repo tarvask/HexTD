@@ -10,6 +10,8 @@ using Match.Field.Shooting;
 using Match.Field.Shooting.TargetFinding;
 using Match.Field.State;
 using Match.Field.Tower.TowerConfigs;
+using Match.Serialization;
+using Services;
 using Tools.Interfaces;
 using UI.ScreenSpaceOverlaySystem;
 using UniRx;
@@ -292,6 +294,20 @@ namespace Match.Field.Tower
         public Hashtable ToNetwork()
         {
             return PlayerState.TowerState.TowerToHashtable(GetTowerState());
+        }
+        
+        public static object FromNetwork(Hashtable hashtable, ConfigsRetriever configsRetriever, FieldFactory factory)
+        {
+            var towerState = PlayerState.TowerState.TowerFromHashtable(hashtable);    
+            
+            TowerConfigNew towerConfig = configsRetriever.GetTowerByType(towerState.Type);
+            Hex2d towerHexPosition = new Hex2d(towerState.PositionQ, towerState.PositionR);
+            TowerController towerController = factory.CreateTowerWithId(towerConfig,
+                towerHexPosition, towerState.Id, towerState.TargetId);
+            
+            towerController.LoadState(towerState);
+
+            return towerController;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Match.Serialization;
 
 namespace BuffLogic
 {

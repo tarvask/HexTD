@@ -13,6 +13,12 @@ namespace BuffLogic
             BuffValue = buffValue;
         }
         
+        protected BaseValueBuff(float buffValue, ABuffConditionsCollection buffConditionsCollection, int priority)
+            : base(buffConditionsCollection, priority)
+        {
+            BuffValue = buffValue;
+        }
+        
         public override void MergeBuffs<TBuff>(TBuff buff)
         {
             var buffTypizied = buff as BaseValueBuff<T>;

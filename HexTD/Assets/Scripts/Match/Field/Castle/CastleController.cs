@@ -2,6 +2,7 @@ using System;
 using BuffLogic;
 using ExitGames.Client.Photon;
 using Match.Field.State;
+using Match.Serialization;
 using Tools;
 using UniRx;
 using UnityEngine;
@@ -74,6 +75,11 @@ namespace Match.Field.Castle
         public Hashtable ToNetwork()
         {
             return PlayerState.CastleState.CastleToHashtable(GetCastleState());
+        }
+        
+        public static object FromNetwork(Hashtable hashtable)
+        {
+            return PlayerState.CastleState.CastleFromHashtable(hashtable);
         }
     }
 }

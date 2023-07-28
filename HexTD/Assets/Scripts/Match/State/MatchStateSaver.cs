@@ -1,5 +1,8 @@
+using BuffLogic;
+using ExitGames.Client.Photon;
 using Match.Field;
 using Match.Field.Hand;
+using Match.Serialization;
 using Match.State.CheckSum;
 using Match.Wave;
 using Tools;
@@ -15,6 +18,7 @@ namespace Match.State
             public FieldController Player2FieldController { get; }
             public MatchStateCheckSumComputerController CheckSumComputerController { get; }
             public WaveMobSpawnerCoordinator WaveMobSpawnerCoordinator { get; }
+            public BuffManager BuffManager { get; }
             public ReactiveCommand<float> WaveStartedReactiveCommand { get; }
             public ReactiveCommand<MatchStateCheckSum> MatchStateCheckSumComputedReactiveCommand { get; }
             public IReadOnlyReactiveProperty<bool> IsMatchRunningReactiveProperty { get; }
@@ -23,6 +27,7 @@ namespace Match.State
             public Context(FieldController player1FieldController, FieldController player2FieldController,
                 MatchStateCheckSumComputerController checkSumComputerController,
                 WaveMobSpawnerCoordinator waveMobSpawnerCoordinator,
+                BuffManager buffManager,
                 ReactiveCommand<float> waveStartedReactiveCommand,
                 ReactiveCommand<MatchStateCheckSum> matchStateCheckSumComputedReactiveCommand,
                 IReadOnlyReactiveProperty<bool> isMatchRunningReactiveProperty,
@@ -32,6 +37,7 @@ namespace Match.State
                 Player2FieldController = player2FieldController;
                 CheckSumComputerController = checkSumComputerController;
                 WaveMobSpawnerCoordinator = waveMobSpawnerCoordinator;
+                BuffManager = buffManager;
                 WaveStartedReactiveCommand = waveStartedReactiveCommand;
                 MatchStateCheckSumComputedReactiveCommand = matchStateCheckSumComputedReactiveCommand;
                 IsMatchRunningReactiveProperty = isMatchRunningReactiveProperty;
@@ -71,17 +77,13 @@ namespace Match.State
                 _context.Player1FieldController.GetPlayerState(),
                 _context.Player2FieldController.GetPlayerState(),
                 _context.WaveMobSpawnerCoordinator.GetWavesState(),
+                _context.BuffManager.ToNetwork(),
                 Randomizer.CurrentSeed, Randomizer.RandomCallsCountReactiveProperty.Value);
             
             _context.CheckSumComputerController.UpdateCheckSumHistory(_context.CurrentEngineFrameReactiveProperty.Value, _lastMatchState);
             _context.MatchStateCheckSumComputedReactiveCommand.Execute(_context.CheckSumComputerController.LastCheckSum);
         }
         
-        private void SaveField(int playerId, PlayerHandController playerHandController)
-        {
-                
-        }
-
         public ref MatchState GetCurrentMatchState()
         {
             SaveMatchState();
@@ -91,6 +93,22 @@ namespace Match.State
         public ref MatchState GetLastSavedMatchState()
         {
             return ref _lastMatchState;
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            Hashtable hashtable = new Hashtable();
+            
+            SerializerToNetwork.AddToHashTable(_context.Player1FieldController, hashtable, "1");
+            SerializerToNetwork.AddToHashTable(_context.Player2FieldController, hashtable, "2");
+            SerializerToNetwork.AddToHashTable(_context.WaveMobSpawnerCoordinator, hashtable, PhotonEventsConstants.SyncState.MatchState.WaveStateParam);
+            
+            hashtable.Add(PhotonEventsConstants.SyncState.MatchState.RandomSeedParam, Randomizer.CurrentSeed);
+            hashtable.Add(PhotonEventsConstants.SyncState.MatchState.RandomCounterParam, Randomizer.RandomCallsCountReactiveProperty.Value);
+
+            SerializerToNetwork.AddToHashTable(_context.BuffManager, hashtable, PhotonEventsConstants.SyncState.MatchState.BuffsParam);
+            
+            return hashtable;
         }
     }
 }

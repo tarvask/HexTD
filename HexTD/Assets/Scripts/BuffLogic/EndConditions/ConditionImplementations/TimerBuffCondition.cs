@@ -34,5 +34,13 @@ namespace BuffLogic
 
             return hashtable;
         }
+        
+        public static object FromNetwork(Hashtable hashtable)
+        {
+            float time = (float)hashtable[TimeName];
+            TimerBuffCondition timerBuffCondition = new TimerBuffCondition(time);
+
+            return timerBuffCondition;
+        }
     }
 }

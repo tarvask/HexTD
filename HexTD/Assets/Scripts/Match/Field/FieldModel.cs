@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using BuffLogic;
 using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.Castle;
@@ -9,6 +8,7 @@ using Match.Field.Mob;
 using Match.Field.Services;
 using Match.Field.Shooting;
 using Match.Field.Tower;
+using Match.Serialization;
 using Match.Wave;
 using Tools;
 using UniRx;
@@ -141,13 +141,12 @@ namespace Match.Field
 
         public Hashtable ToNetwork()
         {
-            Hashtable hashtable = new Hashtable()
-            {
-                { PhotonEventsConstants.SyncState.PlayerState.CastleParam, Castle.ToNetwork() },
-                { PhotonEventsConstants.SyncState.PlayerState.TowersParam, TowersManager.ToNetwork() },
-                { PhotonEventsConstants.SyncState.PlayerState.MobsParam, MobsManager.ToNetwork() },
-                { PhotonEventsConstants.SyncState.PlayerState.ProjectilesParam, ProjectilesContainer.ToNetwork() }
-            };
+            Hashtable hashtable = new Hashtable();
+            
+            SerializerToNetwork.AddToHashTable(_castle, hashtable, PhotonEventsConstants.SyncState.PlayerState.CastleParam);
+            SerializerToNetwork.AddToHashTable(TowersManager.TowerContainer, hashtable, PhotonEventsConstants.SyncState.PlayerState.TowersParam);
+            SerializerToNetwork.AddToHashTable(MobsManager.MobContainer, hashtable, PhotonEventsConstants.SyncState.PlayerState.MobsParam);
+            SerializerToNetwork.AddToHashTable(ProjectilesContainer, hashtable, PhotonEventsConstants.SyncState.PlayerState.ProjectilesParam);
 
             return hashtable;
         }

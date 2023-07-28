@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using BuffLogic;
 using HexSystem;
 using Tools;
-using Tools.PriorityTools;
 using UI.ScreenSpaceOverlaySystem;
 using UnityEngine;
 
@@ -22,25 +21,20 @@ namespace Match.Field.Shooting
 
         public abstract void Hurt(float damage);
 
-        public void UpdateAddBuff(PrioritizeLinkedList<IBuff<ITarget>> buffs, IBuff<ITarget> addedBuff)
-        {
-            addedBuff.ApplyBuff(this);
-        }
-
-        public void UpdateRemoveBuffs(PrioritizeLinkedList<IBuff<ITarget>> buffs, IEnumerable<IBuff<ITarget>> removedBuffs)
-        {
-            foreach (var removedBuff in removedBuffs)
-            {
-                removedBuff.ApplyBuff(this);
-            }
-        }
-
         public void UpdateAddBuff(IEnumerable<IBuff> buffs, IBuff addedBuff)
         {
-            throw new NotImplementedException();
+            ((IBuff<ITarget>)addedBuff).ApplyBuff(this);
         }
 
         public void UpdateRemoveBuffs(IEnumerable<IBuff> buffs, IEnumerable<IBuff> removedBuffs)
+        {
+            foreach (var removedBuff in removedBuffs)
+            {
+                ((IBuff<ITarget>)removedBuff).ApplyBuff(this);
+            }
+        }
+
+        public void SubscribeOnDispose(Action<IBuffableValue> onDispose)
         {
             throw new NotImplementedException();
         }

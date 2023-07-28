@@ -1,103 +1,113 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using BuffLogic;
 using ExitGames.Client.Photon;
-using Match.Field.Shooting;
-using Newtonsoft.Json;
-using Unity.VisualScripting;
+using Match.Field;
+using Match.Field.Castle;
+using Match.Field.Mob;
+using Match.Field.Tower;
+using Services;
 
 namespace Match.Serialization
 {
-    public static class SerializerToNetwork
+    public class SerializerToNetwork
     {
+        private struct SerializableData
+        {
+            public string FullName { get; }
+            public Type Type { get; }
+            public Func<Hashtable, object> DeserializeObject { get; }
+            
+            public SerializableData(Type type, Func<Hashtable, object> deserializeObject)
+            {
+                FullName = type.FullName;
+                Type = type;    
+                DeserializeObject = deserializeObject;
+            }
+        }
+        
         public const string SerializedType = "SerializedType";
-        private const string EnumerableElement = "EnumerableElement";
-        private const string EnumerableSize = "EnumerableSize";
+        public const string EnumerableElement = "EnumerableElement";
+        public const string EnumerableSize = "EnumerableSize";
+        
+        private static Dictionary<Type, SerializableData> _serializableDatas;
+
+        public static void InitSerializableData(ConfigsRetriever configsRetriever, FieldFactory factory)
+        {
+            if (_serializableDatas == null)
+                _serializableDatas = new Dictionary<Type, SerializableData>();
+            
+            _serializableDatas.Clear();
+            
+            _serializableDatas.Add(typeof(CastleController), new SerializableData(typeof(CastleController), CastleController.FromNetwork));
+            
+            _serializableDatas.Add(typeof(MobsContainer), new SerializableData(typeof(MobsContainer), MobsContainer.FromNetwork));
+            _serializableDatas.Add(typeof(MobController), new SerializableData(typeof(MobController), 
+                hashtable => MobController.FromNetwork(hashtable, configsRetriever, factory)));
+            
+            _serializableDatas.Add(typeof(TowerController), new SerializableData(typeof(TowerController), 
+                hashtable => TowerController.FromNetwork(hashtable, configsRetriever, factory)));
+            _serializableDatas.Add(typeof(TowerContainer), new SerializableData(typeof(TowerContainer), 
+                hashtable => TowerContainer.FromNetwork(hashtable, configsRetriever)));
+            
+            _serializableDatas.Add(typeof(HealBuff), new SerializableData(typeof(HealBuff), HealBuff.FromNetwork));
+            _serializableDatas.Add(typeof(PoisonBuff), new SerializableData(typeof(PoisonBuff), HealBuff.FromNetwork));
+            _serializableDatas.Add(typeof(MultiFloatValueBuff), new SerializableData(typeof(MultiFloatValueBuff), MultiFloatValueBuff.FromNetwork));
+            
+            _serializableDatas.Add(typeof(BuffConditionOnceCollection), new SerializableData(typeof(BuffConditionOnceCollection), BuffConditionOnceCollection.FromNetwork));
+        }
 
         public static Hashtable EnumerableToNetwork<T>(IEnumerable<T> enumerable, int size) where T : ISerializableToNetwork
         {
             Hashtable hashtable = new Hashtable();
-            
             hashtable.Add(EnumerableSize, size);
-
+            
             int i = 0;
-            foreach (var buffCondition in enumerable)
+            foreach (var serializableToNetwork in enumerable)
             {
-                hashtable.Add($"{EnumerableElement}{i++}", buffCondition.ToNetwork());
+                AddToHashTable(serializableToNetwork, hashtable, i.ToString());
             }
 
             return hashtable;
         }
-
-        public static Hashtable ToNetwork(object value)
+        
+        public static void AddToHashTable<T>(T element, Hashtable targetHashtable, string key) where T : ISerializableToNetwork
         {
-            var iSerializable = value as ISerializableToNetwork;
-            if (iSerializable != null)
-            {
-                return iSerializable.ToNetwork();
-            }
-            
-            Hashtable hashtable = new Hashtable();
-            var type = value.GetType();
-
-            FieldInfo[] fields = type.GetFields();
-            hashtable.Add(SerializedType, type.FullName);
-            foreach (var field in fields)
-            {
-                if (TryGetCustomAttribute<SerializeToNetwork>(type, out var serialize))
-                {
-                    if (TryGetCustomAttribute<SerializableToNetwork>(type, out var serializable))
-                    {
-                        hashtable.Add(serialize.Key, ToNetwork(serializable));
-                    }
-                    else
-                    {
-                        object fieldValue = field.GetValue(null);
-                        hashtable.Add(serialize.Key, fieldValue);
-                    }
-                }
-            }
-            
-            return hashtable;
+            Hashtable hashtable = element.ToNetwork();
+            hashtable.Add($"{SerializedType}{key}", _serializableDatas[typeof(T)].FullName);
+            targetHashtable.Add(key, hashtable);
         }
 
-        public static void CreateBuffs(TargetContainer targetContainer, BuffManager buffManager, Hashtable hashtable)
-        {
-            int i = 0;
-            foreach (var typedBuffManagerHashtable in IterateSerializedEnumerable(hashtable))
-            {
-                int targetId = (int)hashtable[$"{PhotonEventsConstants.SyncState.PlayerState.Buffs.TargetId}{i}"];
-                EntityBuffableValueType entityBuffableValueType = (EntityBuffableValueType)hashtable[$"{PhotonEventsConstants.SyncState.PlayerState.Buffs.EntityBuffableValueType}{i}"];
-
-                targetContainer.TryGetTargetById(targetId, out var target);
-                target.BaseReactiveModel.TryGetBuffableValue(entityBuffableValueType, out var buffableTarget);
-
-                Hashtable buffsHashtable = (Hashtable)hashtable[$"{PhotonEventsConstants.SyncState.PlayerState.Buffs.BuffValueParam}{i}"];
-
-                foreach (var buffTable in IterateSerializedEnumerable(buffsHashtable))
-                {
-                    if (!TryGetType(buffTable, out Type type))
-                        continue;
-
-                    var buff = FromNetwork(buffTable, type) as IBuff;
-                    buffManager.AddBuff(buffableTarget, buff, type);
-                }
-            }
-        }
-
-        public static IEnumerable<Hashtable> IterateSerializedEnumerable(Hashtable hashtable)
+        public static IEnumerable<(Hashtable, Type)> IterateSerializedEnumerable(Hashtable hashtable)
         {
             int size = (int)hashtable[EnumerableSize];
             for(int i = 0; i < size; i++)
             {
-                yield return (Hashtable)hashtable[$"{EnumerableElement}{i}"];
+                Hashtable elementHashtable = (Hashtable)hashtable[i.ToString()];
+                if(!TryGetType(elementHashtable, out var type))
+                    continue;
+                
+                yield return ((Hashtable)hashtable[$"{EnumerableElement}{i}"], type);
             }
         }
-
-        private static bool TryGetType(Hashtable hashtable, out Type type)
+        
+        public static object FromNetwork((Hashtable, Type) hashtableTypePair)
         {
-            if (!hashtable.TryGetValue(SerializedType, out object value))
+            return _serializableDatas[hashtableTypePair.Item2].DeserializeObject.Invoke(hashtableTypePair.Item1);
+        }
+        
+        public static object FromNetwork(string key, Hashtable hashtable)
+        {
+            Hashtable typedHashtable = (Hashtable)hashtable[key];
+            if (!TryGetType(typedHashtable, out var type))
+                return null;
+            
+            return _serializableDatas[type].DeserializeObject.Invoke(typedHashtable);
+        }
+
+        public static bool TryGetType(Hashtable hashtable, string key, out Type type)
+        {
+            if (!hashtable.TryGetValue(key, out object value))
             {
                 type = null;
                 return false;
@@ -108,16 +118,10 @@ namespace Match.Serialization
 
             return true;
         }
-        
-        public static object FromNetwork(Hashtable hashtable, Type type)
-        {
-            return type.GetConstructor(new Type[] { typeof(Hashtable) })?.Invoke(new object[] { hashtable });
-        }
 
-        private static bool TryGetCustomAttribute<T>(Type type, out T attribute) where T : Attribute
+        private static bool TryGetType(Hashtable hashtable, out Type type)
         {
-            attribute = type.GetCustomAttribute<T>();
-            return attribute != null;
+            return TryGetType(hashtable, SerializedType, out type);
         }
     }
 }

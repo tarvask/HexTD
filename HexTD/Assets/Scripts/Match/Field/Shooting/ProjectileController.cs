@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
-using BuffLogic;
 using ExitGames.Client.Photon;
 using Match.Field.AttackEffect;
 using Match.Field.State;
+using Match.Serialization;
 using Tools;
 using UnityEngine;
 
@@ -91,7 +91,7 @@ namespace Match.Field.Shooting
                 _context.View.transform.localPosition, _currentPosition, FieldController.MoveLerpCoeff);
         }
 
-        public void Stop()
+        private void Stop()
         {
             _hasReachedTarget = true;
         }

@@ -88,6 +88,7 @@ public static class PhotonEventsConstants
             public const string Player1StateParam = "player1State";
             public const string Player2StateParam = "player2State";
             public const string WaveStateParam = "waveState";
+            public const string BuffsParam = "buffState";
             public const string RandomSeedParam = "currentSeed";
             public const string RandomCounterParam = "currentRandom";
         }

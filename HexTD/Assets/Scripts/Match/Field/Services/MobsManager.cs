@@ -4,6 +4,7 @@ using ExitGames.Client.Photon;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.VFX;
+using Match.Serialization;
 using Match.Wave;
 using Tools;
 using Tools.Interfaces;
@@ -263,7 +264,7 @@ namespace Match.Field.Services
         
         public Hashtable ToNetwork()
         {
-            return _mobsContainer.ToNetwork();
+            return SerializerToNetwork.EnumerableToNetwork(_mobsContainer.Mobs.Values, _mobsContainer.Mobs.Count);
         }
 
         public class Factory : PlaceholderFactory<Context, MobsManager>

@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Match.Field.Shooting;
-using Match.Serialization;
 
 namespace BuffLogic
 {
     public interface IBuffableValue
     {
-        [SerializeToNetwork("TargetId")] int TargetId { get; }
-        [SerializeToNetwork("EntityBuffable")] EntityBuffableValueType EntityBuffableValueType { get; }
+        int TargetId { get; }
+        EntityBuffableValueType EntityBuffableValueType { get; }
         void UpdateAddBuff(IEnumerable<IBuff> buffs, IBuff addedBuff);
         void UpdateRemoveBuffs(IEnumerable<IBuff> buffs, IEnumerable<IBuff> removedBuffs);
+        void SubscribeOnDispose(Action<IBuffableValue> onDispose);
     }
 
-    public interface IBuffableValue<TValue> : IBuffableValue
-    {
-        void UpdateAddBuff(IEnumerable<IBuff<TValue>> buffs, IBuff<TValue> addedBuff);
-        void UpdateRemoveBuffs(IEnumerable<IBuff<TValue>> buffs, IEnumerable<IBuff<TValue>> removedBuffs);
-    }
-
-    public interface IReadonlyBuffableValue<TValue> : IBuffableValue<TValue>
+    public interface IReadonlyBuffableValue<TValue> : IBuffableValue
     {
         TValue Value { get; }
         void Subscribe(Action<TValue> onChange);
@@ -27,7 +21,7 @@ namespace BuffLogic
     
     public interface IReadonlyImpactableBuff<TValue> : IReadonlyBuffableValue<TValue>
     {
-        [SerializeToNetwork("CurrentValue")] TValue CurrentValue { get; }
+        TValue CurrentValue { get; }
         void SubscribeOnSetValue(Action<TValue> onChange);
     }
 

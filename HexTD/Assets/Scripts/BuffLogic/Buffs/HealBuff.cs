@@ -41,17 +41,17 @@ namespace BuffLogic
 
         public override void MergeBuffs<TBuff>(TBuff buff)
         {
-            var buffTypizied = buff as HealBuff;
-            if(buffTypizied == null)
+            var typedBuff = buff as HealBuff;
+            if (typedBuff == null)
             {
                 Debug.LogError("Try to cast buff into strange type!");
                 return;
             }
 
-            _healCapacity = buffTypizied._healCapacity;
-            _healDelay = buffTypizied._healDelay;
-            _healImpact = buffTypizied._healImpact;
-            BuffableValue = buffTypizied.BuffableValue;
+            _healCapacity = typedBuff._healCapacity;
+            _healDelay = typedBuff._healDelay;
+            _healImpact = typedBuff._healImpact;
+            BuffableValue = typedBuff.BuffableValue;
         }
         
         public override Hashtable ToNetwork()
@@ -67,7 +67,7 @@ namespace BuffLogic
             };
         }
 
-        public override object Restore(Hashtable hashtable)
+        public static object FromNetwork(Hashtable hashtable)
         {
             float healCapacity = (float)hashtable[nameof(_healCapacity)];
             float healPerDelay = (float)hashtable[nameof(_healPerDelay)];
@@ -81,6 +81,5 @@ namespace BuffLogic
 
             return healBuff;
         }
-
     }
 }

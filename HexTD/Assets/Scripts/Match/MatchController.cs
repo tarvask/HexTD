@@ -379,7 +379,7 @@ namespace Match
             
             MatchStateSaver.Context stateSaverContext = new MatchStateSaver.Context(
                 _player1FieldController, _player2FieldController,
-                _checkSumComputerController, _waveMobSpawnerCoordinator,
+                _checkSumComputerController, _waveMobSpawnerCoordinator, _buffManager,
                 waveStartedReactiveCommand, matchStateCheckSumComputedReactiveCommand,
                 _rulesController.IsMatchRunning,
                 _context.CurrentEngineFrameReactiveProperty);
@@ -422,6 +422,8 @@ namespace Match
             }
 
             _waveMobSpawnerCoordinator.LoadState(matchState.WavesState);
+            _buffManager.FromNetwork(_player1FieldController.FieldModel.Targets, 
+                _player2FieldController.FieldModel.Targets, matchState.BuffManagerHashtable);
 
             if (_waveMobSpawnerCoordinator.CurrentWaveNumber != matchState.WavesState.CurrentWaveNumber)
             {

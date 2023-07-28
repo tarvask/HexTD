@@ -41,25 +41,24 @@ namespace BuffLogic
 
         public override void MergeBuffs<TBuff>(TBuff buff)
         {
-            var buffTypizied = buff as PoisonBuff;
-            if(buffTypizied == null)
+            var typedBuff = buff as PoisonBuff;
+            if (typedBuff == null)
             {
                 Debug.LogError("Try to cast buff into strange type!");
                 return;
             }
 
-            _damageCapacity = buffTypizied._damageCapacity;
-            _damageDelay = buffTypizied._damageDelay;
-            _damageImpact = buffTypizied._damageImpact;
-            BuffableValue = buffTypizied.BuffableValue;
+            _damageCapacity = typedBuff._damageCapacity;
+            _damageDelay = typedBuff._damageDelay;
+            _damageImpact = typedBuff._damageImpact;
+            BuffableValue = typedBuff.BuffableValue;
         }
         
         public override Hashtable ToNetwork()
         {
             return new Hashtable()
             {
-                {Match.Serialization.SerializerToNetwork.SerializedType, typeof(PoisonBuff)},
-                {$"{Match.Serialization.SerializerToNetwork.SerializedType}In", typeof(FloatImpactableBuffableValue)},
+                {Match.Serialization.SerializerToNetwork.SerializedType, typeof(PoisonBuff).FullName},
                 { nameof(_damageCapacity), _damageCapacity },
                 { nameof(_damagePerDelay), _damagePerDelay },
                 { nameof(_damageDelay), _damageDelay },
@@ -68,7 +67,7 @@ namespace BuffLogic
             };
         }
         
-        public override object Restore(Hashtable hashtable)
+        public static object FromNetwork(Hashtable hashtable)
         {
             float damageCapacity = (float)hashtable[nameof(_damageCapacity)];
             float damagePerDelay = (float)hashtable[nameof(_damagePerDelay)];

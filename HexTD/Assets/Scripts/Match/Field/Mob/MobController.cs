@@ -6,7 +6,9 @@ using HexSystem;
 using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.State;
+using Match.Serialization;
 using PathSystem;
+using Services;
 using UI.ScreenSpaceOverlaySystem;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -264,6 +266,21 @@ namespace Match.Field.Mob
         public Hashtable ToNetwork()
         {
             return PlayerState.MobState.MobToHashtable(GetMobState());
+        }
+        
+        public static object FromNetwork(Hashtable hashtable, ConfigsRetriever configsRetriever, FieldFactory factory)
+        {
+            var mobState = PlayerState.MobState.MobFromHashtable(hashtable);
+            
+            MobSpawnParameters mobSpawnParameters = new MobSpawnParameters(configsRetriever.GetMobById(mobState.TypeId), mobState.PathId);
+            Vector2 mobPosition = new Vector2(mobState.PositionX, mobState.PositionZ);
+            MobController mobController = factory.CreateMobWithId(mobSpawnParameters,
+                mobState.Id, mobState.TargetId,
+                mobPosition);
+            
+            mobController.LoadState(mobState);
+
+            return mobController;
         }
     }
 }

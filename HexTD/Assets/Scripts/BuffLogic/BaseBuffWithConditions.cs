@@ -1,17 +1,19 @@
 ﻿using System;
 using ExitGames.Client.Photon;
 using Match.Serialization;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace BuffLogic
 {
     public abstract class BaseBuffWithConditions<T>: IBuff<T>
     {
-        private const string PriorityParam = "priority";
+        protected const string EndConditions = "EndConditions";
+        protected const string PriorityParam = "priority";
 
-        [SerializeToNetwork("BuffConditionCollectionType")]
+        [JsonProperty("BuffConditionCollectionType")]
         private readonly EBuffConditionCollectionType _buffConditionCollectionType;
-        [SerializableToNetwork("EndConditions")]
+        [JsonProperty("EndConditions")]
         private readonly ABuffConditionsCollection _buffConditionsCollection;
 
         private Action _onEnd;
@@ -25,6 +27,12 @@ namespace BuffLogic
         {
             _buffConditionCollectionType = buffConditionCollectionType;
             _buffConditionsCollection = CreateBuffConditionsCollection(_buffConditionCollectionType);
+            _priority = priority;
+        }
+        
+        protected BaseBuffWithConditions(ABuffConditionsCollection buffConditionsCollection, int priority)
+        {
+            _buffConditionsCollection = buffConditionsCollection;
             _priority = priority;
         }
 
@@ -84,7 +92,7 @@ namespace BuffLogic
         {
             Hashtable hashtable = new Hashtable();
             
-            hashtable.Add(PhotonEventsConstants.SyncState.PlayerState.Buffs.BuffConditionName, _buffConditionsCollection.ToNetwork());
+            SerializerToNetwork.AddToHashTable(_buffConditionsCollection, hashtable, EndConditions);
             hashtable.Add(PriorityParam, _priority);
 
             return hashtable;

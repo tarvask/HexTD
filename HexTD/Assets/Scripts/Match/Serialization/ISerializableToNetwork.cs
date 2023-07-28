@@ -1,6 +1,6 @@
 using ExitGames.Client.Photon;
 
-namespace BuffLogic
+namespace Match.Serialization
 {
     public interface ISerializableFromNetwork : ISerializableToNetwork
     {
