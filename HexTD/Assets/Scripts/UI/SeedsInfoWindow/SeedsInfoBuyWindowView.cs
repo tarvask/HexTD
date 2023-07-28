@@ -69,7 +69,7 @@ namespace UI.SeedsInfoBuyWindow
         private void UpdatePhLevelValues()
         {
             _rangeSlider.CalculateSliderPosition(_phLevelSlider, _phLevelValuesTest[0], _phLevelValuesTest[1]);
-            _phLevelMin.text = _phLevelValuesTest[0].ToString();
+            //_phLevelMin.text = _phLevelValuesTest[0].ToString();
             _phLevelMax.text = _phLevelValuesTest[1].ToString();
         }
 
