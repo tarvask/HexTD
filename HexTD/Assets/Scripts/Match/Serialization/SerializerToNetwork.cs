@@ -51,10 +51,20 @@ namespace Match.Serialization
                 hashtable => TowerContainer.FromNetwork(hashtable, configsRetriever)));
             
             _serializableDatas.Add(typeof(HealBuff), new SerializableData(typeof(HealBuff), HealBuff.FromNetwork));
-            _serializableDatas.Add(typeof(PoisonBuff), new SerializableData(typeof(PoisonBuff), HealBuff.FromNetwork));
+            _serializableDatas.Add(typeof(PoisonBuff), new SerializableData(typeof(PoisonBuff), PoisonBuff.FromNetwork));
             _serializableDatas.Add(typeof(MultiFloatValueBuff), new SerializableData(typeof(MultiFloatValueBuff), MultiFloatValueBuff.FromNetwork));
             
             _serializableDatas.Add(typeof(BuffConditionOnceCollection), new SerializableData(typeof(BuffConditionOnceCollection), BuffConditionOnceCollection.FromNetwork));
+        }
+
+        public static void PartlyReinitSerializableData(ConfigsRetriever configsRetriever, FieldFactory factory)
+        {
+            _serializableDatas[typeof(MobController)] = new SerializableData(typeof(MobController), 
+                hashtable => MobController.FromNetwork(hashtable, configsRetriever, factory));
+            _serializableDatas[typeof(TowerController)] = new SerializableData(typeof(TowerController), 
+                hashtable => TowerController.FromNetwork(hashtable, configsRetriever, factory));
+            _serializableDatas[typeof(TowerContainer)] = new SerializableData(typeof(TowerContainer), 
+                hashtable => TowerContainer.FromNetwork(hashtable, configsRetriever));
         }
 
         public static Hashtable EnumerableToNetwork<T>(IEnumerable<T> enumerable, int size) where T : ISerializableToNetwork

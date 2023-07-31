@@ -10,6 +10,7 @@ using Match.Field.Mob;
 using Match.Field.State;
 using Match.Field.Tower;
 using Match.Field.VFX;
+using Match.Serialization;
 using Match.State;
 using Match.State.CheckSum;
 using Match.State.Verification;
@@ -384,7 +385,7 @@ namespace Match
                 _rulesController.IsMatchRunning,
                 _context.CurrentEngineFrameReactiveProperty);
             _stateSaver = AddDisposable(new MatchStateSaver(stateSaverContext));
-            
+
             // state verification
             MatchStateVerificationCoordinator.Context verificationCoordinatorContext = new MatchStateVerificationCoordinator.Context(
                 _checkSumComputerController,

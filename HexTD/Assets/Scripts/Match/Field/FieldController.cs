@@ -253,14 +253,15 @@ namespace Match.Field
             //    _model, towerBuiltReactiveCommand, towerPreUpgradedReactiveCommand, towerUpgradedReactiveCommand, towerRemovedReactiveCommand);
             //_towersAreaBuffsManager = AddDisposable(new FieldTowersAreaBuffsManager(towersAreaBuffsManagerContext));
 
-            // clicks distribution
-
+            // state loader
             PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model,
                 _factory,
                 _constructionProcessController,
                 _context.ConfigsRetriever,
                 _currencyController);
             _stateLoader = AddDisposable(new PlayerStateLoader(stateLoaderContext));
+            
+            SerializerToNetwork.InitSerializableData(_context.ConfigsRetriever, _factory);
 
             _context.StateSyncedReactiveCommand.Subscribe(LoadState);
 
@@ -292,6 +293,7 @@ namespace Match.Field
 
         private void LoadState(PlayerState playerState)
         {
+            SerializerToNetwork.PartlyReinitSerializableData(_context.ConfigsRetriever, _factory);
             _stateLoader.ClearState();
             _stateLoader.LoadState(playerState);
         }
@@ -306,6 +308,7 @@ namespace Match.Field
 
         public PlayerState GetPlayerState()
         {
+            SerializerToNetwork.InitSerializableData(_context.ConfigsRetriever, _factory);
             return _stateLoader.SaveState();
         }
 

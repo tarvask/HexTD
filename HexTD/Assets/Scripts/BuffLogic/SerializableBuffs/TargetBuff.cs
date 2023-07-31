@@ -24,7 +24,9 @@ namespace BuffLogic.SerializableBuffs
         public override void ApplyBuff(ITarget target, BuffManager buffManager, VfxManager vfxManager)
         {
             BaseUnitBuff unitBuff = GetTypedBuff();
-            buffManager.AddBuff(target, unitBuff);
+            target.BaseReactiveModel.TryGetBuffableValue(EntityBuffableValueType.MaxHealth,
+                out IBuffableValue buffableValue);
+            buffManager.AddBuff(buffableValue, unitBuff);
             ApplyVfx(unitBuff, target, buffManager, vfxManager);
         }
 

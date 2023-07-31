@@ -28,15 +28,16 @@ namespace BuffLogic
 
         #region BuffMethods
         
-        public BaseBuffableValue(TValue defaultValue, int targetId, EntityBuffableValueType entityBuffableValueType)
+        protected BaseBuffableValue(TValue defaultValue, int targetId, EntityBuffableValueType entityBuffableValueType)
         {
+            _onDispose = AddDisposable(new ReactiveCommand<IBuffableValue>());
             TargetId = targetId;
             EntityBuffableValueType = entityBuffableValueType;
             _defaultValue = defaultValue;
             _value = AddDisposable(new ReactiveProperty<TValue>(defaultValue));
         }
 
-        public static TValue ApplyBuffs(TValue defaultValue, IEnumerable<IBuff> buffs)
+        private static TValue ApplyBuffs(TValue defaultValue, IEnumerable<IBuff> buffs)
         {
             TValue value = defaultValue;
             

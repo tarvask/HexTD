@@ -55,7 +55,8 @@ namespace BuffLogic
 
         public void Dispose()
         {
-            _onEnd.Invoke();
+            _onEnd?.Invoke();
+            _onEnd = null;
         }
     }
 }
