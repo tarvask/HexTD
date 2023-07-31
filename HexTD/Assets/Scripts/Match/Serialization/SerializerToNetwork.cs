@@ -84,7 +84,13 @@ namespace Match.Serialization
         public static void AddToHashTable<T>(T element, Hashtable targetHashtable, string key) where T : ISerializableToNetwork
         {
             Hashtable hashtable = element.ToNetwork();
-            hashtable.Add($"{SerializedType}{key}", _serializableDatas[typeof(T)].FullName);
+            // Type elementType = element.GetType();
+            
+            // not nice
+            // if (element is IBuff buff)
+            //     elementType = buff.TargetType;
+            
+            //hashtable.Add($"{SerializedType}{key}", _serializableDatas[elementType].FullName);
             targetHashtable.Add(key, hashtable);
         }
 
