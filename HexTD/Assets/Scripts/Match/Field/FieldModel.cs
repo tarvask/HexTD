@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using BuffLogic;
 using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.Castle;
@@ -23,6 +24,7 @@ namespace Match.Field
             public FieldHexTypesController FieldHexTypesController { get; }
             public TowersManager TowersManager { get; }
             public MobsManager MobsManager { get; }
+            public BuffManager BuffManager { get; }
             public FieldFactory Factory { get; }
             public ReactiveCommand<MobController> RemoveMobReactiveCommand { get; }
             public ReactiveCommand<MobController> MobSpawnedReactiveCommand { get; }
@@ -32,6 +34,7 @@ namespace Match.Field
                 FieldHexTypesController fieldHexTypesController,
                 TowersManager towersManager,
                 MobsManager mobsManager,
+                BuffManager buffManager,
                 FieldFactory factory,
                 ReactiveCommand<MobController> removeMobReactiveCommand,
                 ReactiveCommand<MobController> mobSpawnedReactiveCommand,
@@ -41,6 +44,7 @@ namespace Match.Field
                 FieldHexTypesController = fieldHexTypesController;
                 TowersManager = towersManager;
                 MobsManager = mobsManager;
+                BuffManager = buffManager;
                 Factory = factory;
                 
                 RemoveMobReactiveCommand = removeMobReactiveCommand;
@@ -69,6 +73,8 @@ namespace Match.Field
         public CastleController Castle => _castle;
         // mobs by ids
         public MobsManager MobsManager => _context.MobsManager;
+        //Buff's manager
+        public BuffManager BuffManager => _context.BuffManager;
         // projectiles by ids
         public ProjectileContainer ProjectilesContainer => _projectilesContainer;
         public TargetContainer Targets => _targets;

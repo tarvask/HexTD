@@ -93,7 +93,7 @@ namespace BuffLogic
             return hashtable;
         }
         
-        public static TypedBuffManager FromNetwork(TargetContainer targetContainer1, TargetContainer targetContainer2, Hashtable hashtable)
+        public static TypedBuffManager FromNetwork(TargetContainer targetContainer, Hashtable hashtable)
         {
             if (!SerializerToNetwork.TryGetType(hashtable, BuffTargetType, out Type type))
                 return new TypedBuffManager(null);
@@ -106,9 +106,9 @@ namespace BuffLogic
                 EntityBuffableValueType entityBuffableValueType = 
                     (EntityBuffableValueType)hashtable[$"{PhotonEventsConstants.SyncState.PlayerState.Buffs.EntityBuffableValueType}{i}"];
 
-                if(!targetContainer1.TryGetTargetById(targetId, out var target) &&
-                   !targetContainer2.TryGetTargetById(targetId, out target))
+                if(!targetContainer.TryGetTargetById(targetId, out var target))
                     continue;
+                
                 target.BaseReactiveModel.TryGetBuffableValue(entityBuffableValueType, out var buffableTarget);
 
                 var buffsHashtable = (Hashtable)hashtable[$"{PhotonEventsConstants.SyncState.PlayerState.Buffs.BuffValueParam}{i}"];

@@ -72,12 +72,12 @@ namespace BuffLogic
                 _buffManagers.Values.Count);
         }
         
-        public void FromNetwork(TargetContainer targetContainer1, TargetContainer targetContainer2, Hashtable hashtable)
+        public void FromNetwork(TargetContainer targetContainer, Hashtable hashtable)
         {
             Clear();
             foreach (var elementHashtable in SerializerToNetwork.IterateSerializedEnumerable(hashtable))
             {
-                var typedBuffManager = TypedBuffManager.FromNetwork(targetContainer1, targetContainer2, elementHashtable.Item1);
+                var typedBuffManager = TypedBuffManager.FromNetwork(targetContainer, elementHashtable.Item1);
                 _buffManagers.Add(typedBuffManager.Type, typedBuffManager);
             }
         }

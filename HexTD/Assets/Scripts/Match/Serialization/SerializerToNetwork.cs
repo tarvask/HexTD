@@ -75,7 +75,8 @@ namespace Match.Serialization
             int i = 0;
             foreach (var serializableToNetwork in enumerable)
             {
-                AddToHashTable(serializableToNetwork, hashtable, i.ToString());
+                hashtable.Add(i.ToString(), serializableToNetwork.ToNetwork());
+                //AddToHashTable(serializableToNetwork, hashtable, i.ToString());
             }
 
             return hashtable;

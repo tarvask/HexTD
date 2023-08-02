@@ -26,6 +26,9 @@ namespace Match.Field.State
         
         // projectiles
         private readonly ProjectilesState _projectilesState;
+        
+        //buffs
+        private readonly Hashtable _buffManagerHashtable;
 
         public int PlayerId => _playerId;
         public int Coins => _coins;
@@ -34,10 +37,12 @@ namespace Match.Field.State
         public TowersState Towers => _towersState;
         public MobsState Mobs => _mobsState;
         public ProjectilesState Projectiles => _projectilesState;
+        public Hashtable BuffManagerHashtable => _buffManagerHashtable;
         
         public PlayerState(int playerId, int coins, int crystals,
             CastleState castleState, TowersState towersState, MobsState mobsState,
-            ProjectilesState projectilesState)
+            ProjectilesState projectilesState,
+            Hashtable buffManagerHashtable)
         {
             _playerId = playerId;
             _coins = coins;
@@ -47,6 +52,7 @@ namespace Match.Field.State
             _towersState = towersState;
             _mobsState = mobsState;
             _projectilesState = projectilesState;
+            _buffManagerHashtable = buffManagerHashtable;
         }
 
         public PlayerState(int playerId, int coins, int crystals, FieldModel fieldModel)
@@ -59,6 +65,7 @@ namespace Match.Field.State
             _towersState = new TowersState(fieldModel.TowersManager.Towers);
             _mobsState = new MobsState(fieldModel.MobsManager.Mobs);
             _projectilesState = new ProjectilesState(fieldModel.ProjectilesContainer.Projectiles);
+            _buffManagerHashtable = fieldModel.BuffManager.ToNetwork();
         }
 
         public static PlayerState FromHashtable(Hashtable playerStateHashtable)
@@ -71,9 +78,10 @@ namespace Match.Field.State
             TowersState towersState = TowersState.TowersFromHashtable((Hashtable) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.TowersParam]);
             MobsState mobsState = MobsState.MobsFromHashtable((Hashtable) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.MobsParam]);
             ProjectilesState projectilesState = ProjectilesState.ProjectilesFromHashtable((Hashtable) playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.ProjectilesParam]);
-
+            Hashtable buffHashtable = (Hashtable)playerStateHashtable[PhotonEventsConstants.SyncState.PlayerState.BuffsParam];
+            
             return new PlayerState(playerId, coins, crystals,
-                castleState, towersState, mobsState, projectilesState);
+                castleState, towersState, mobsState, projectilesState, buffHashtable);
         }
 
         public static Hashtable ToHashtable(in PlayerState playerState)
@@ -86,7 +94,8 @@ namespace Match.Field.State
                 {PhotonEventsConstants.SyncState.PlayerState.CastleParam, CastleState.CastleToHashtable(playerState.Castle)},
                 {PhotonEventsConstants.SyncState.PlayerState.TowersParam, TowersState.TowersToHashtable(playerState.Towers)},
                 {PhotonEventsConstants.SyncState.PlayerState.MobsParam, MobsState.MobsToHashtable(playerState.Mobs)},
-                {PhotonEventsConstants.SyncState.PlayerState.ProjectilesParam, ProjectilesState.ProjectilesToHashtable(playerState.Projectiles)}
+                {PhotonEventsConstants.SyncState.PlayerState.ProjectilesParam, ProjectilesState.ProjectilesToHashtable(playerState.Projectiles)},
+                {PhotonEventsConstants.SyncState.PlayerState.BuffsParam, playerState.BuffManagerHashtable}
             };
         }
 

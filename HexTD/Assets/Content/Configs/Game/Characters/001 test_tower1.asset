@@ -39,10 +39,19 @@ MonoBehaviour:
       cooldown: 0.9
       projectileSpeed: 80
       projectileView: {fileID: 1455519004008089238, guid: 46635d00832a300499c5c86b8a6555b7, type: 3}
-      serializableBuffs: []
+      serializableBuffs:
+      - rid: 367815281612161024
       attackRadiusInHex: 2
       splashRadiusInUnits: 0
     splashAttacks: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 367815281612161024
+      type: {class: TargetBuff, ns: BuffLogic.SerializableBuffs, asm: Assembly-CSharp}
+      data:
+        vfxPrefab: {fileID: 0}
+        influenceType: 2
+        capacity: 10
+        impactPerDelay: 1
+        delay: 0.5

@@ -10,7 +10,6 @@ using Match.Field.Mob;
 using Match.Field.State;
 using Match.Field.Tower;
 using Match.Field.VFX;
-using Match.Serialization;
 using Match.State;
 using Match.State.CheckSum;
 using Match.State.Verification;
@@ -85,7 +84,6 @@ namespace Match
         private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
-        private readonly BuffManager _buffManager;
         private readonly VfxManager _vfxManager;
         private readonly FieldController _player1FieldController;
         private readonly FieldController _player2FieldController;
@@ -193,7 +191,6 @@ namespace Match
                _context.WindowsManager);
            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
-           _buffManager = new BuffManager();
            _vfxManager = new VfxManager();
 
            // fields
@@ -209,7 +206,6 @@ namespace Match
                 matchConfig,
                 mapModel,
                 _configsRetriever,
-                _buffManager,
                 _vfxManager,
                 _context.IsMultiPlayerGame,
                false,
@@ -231,7 +227,6 @@ namespace Match
                 matchConfig,
                 mapModel,
                 _configsRetriever,
-                _buffManager,
                 _vfxManager,
                 true,
                 true,
@@ -380,7 +375,7 @@ namespace Match
             
             MatchStateSaver.Context stateSaverContext = new MatchStateSaver.Context(
                 _player1FieldController, _player2FieldController,
-                _checkSumComputerController, _waveMobSpawnerCoordinator, _buffManager,
+                _checkSumComputerController, _waveMobSpawnerCoordinator,
                 waveStartedReactiveCommand, matchStateCheckSumComputedReactiveCommand,
                 _rulesController.IsMatchRunning,
                 _context.CurrentEngineFrameReactiveProperty);
@@ -423,8 +418,6 @@ namespace Match
             }
 
             _waveMobSpawnerCoordinator.LoadState(matchState.WavesState);
-            _buffManager.FromNetwork(_player1FieldController.FieldModel.Targets, 
-                _player2FieldController.FieldModel.Targets, matchState.BuffManagerHashtable);
 
             if (_waveMobSpawnerCoordinator.CurrentWaveNumber != matchState.WavesState.CurrentWaveNumber)
             {
@@ -450,7 +443,6 @@ namespace Match
             _ourClicksDistributor.OuterLogicUpdate(frameLength);
 
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
-            _buffManager.OuterLogicUpdate(frameLength);
 
             _ourPlayerHandController.OuterLogicUpdate(frameLength);
             _windowsManager.OuterLogicUpdate(frameLength);

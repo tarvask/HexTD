@@ -20,6 +20,7 @@ using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
@@ -36,7 +37,6 @@ namespace Match.Field
             public MatchConfig LevelConfig { get; }
             public LevelMapModel LevelMapModel { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
-            public BuffManager BuffManager { get; }
             public VfxManager VfxManager { get; }
             public bool ShouldCreateMap { get; }
             public bool ShouldCreateObjectInfo { get; }
@@ -58,7 +58,6 @@ namespace Match.Field
                 MatchConfig levelConfig,
                 LevelMapModel levelMapModel,
                 ConfigsRetriever configsRetriever,
-                BuffManager buffManager,
                 VfxManager vfxManager,
                 bool shouldCreateMap,
                 bool shouldCreateObjectInfo,
@@ -80,7 +79,6 @@ namespace Match.Field
                 LevelConfig = levelConfig;
                 LevelMapModel = levelMapModel;
                 ConfigsRetriever = configsRetriever;
-                BuffManager = buffManager;
                 VfxManager = vfxManager;
                 ShouldCreateMap = shouldCreateMap;
                 ShouldCreateObjectInfo = shouldCreateObjectInfo;
@@ -109,6 +107,7 @@ namespace Match.Field
         private readonly MobsByTowersBlocker _mobsByTowersBlocker;
         private readonly MeleeCombatManager _meleeCombatManager;
         private readonly MobsManager _mobsManager;
+        private readonly BuffManager _buffManager;
         
         private readonly FieldClicksHandler _clicksHandler;
         private readonly FieldClicksDistributor _clicksDistributor;
@@ -211,12 +210,15 @@ namespace Match.Field
                 _context.SpawnMobReactiveCommand,
                 _context.CurrentEngineFrameReactiveProperty);
             _mobsManager = AddDisposable(_mobsManagerFactory.Create(mobsManagerContext));
-            
+
+            _buffManager = AddDisposable(new BuffManager());
+
             FieldModel.Context fieldModelContext = new FieldModel.Context(
                 _hexagonalFieldModel,
                 _hexagonalFieldModel.CurrentFieldHexTypes,
                 towersManager,
                 _mobsManager,
+                _buffManager,
                 _factory,
                 removeMobReactiveCommand,
                 mobSpawnedReactiveCommand,
@@ -238,7 +240,7 @@ namespace Match.Field
             
             // shooting
             ShootingProcessManager.Context shootingControllerContext = new ShootingProcessManager.Context(_model, 
-                _hexMapReachableService, _factory, _context.BuffManager, _context.VfxManager, _context.CurrentEngineFrameReactiveProperty);
+                _hexMapReachableService, _factory, _buffManager, _context.VfxManager, _context.CurrentEngineFrameReactiveProperty);
             _shootingProcessManager = AddDisposable(new ShootingProcessManager(shootingControllerContext));
             
             // currency
@@ -283,6 +285,7 @@ namespace Match.Field
             _mobsManager.OuterLogicUpdate(frameLength);
             _model.TowersManager.OuterLogicUpdate(frameLength);
             _shootingProcessManager.OuterLogicUpdate(frameLength);
+            _buffManager.OuterLogicUpdate(frameLength);
         }
 
         public void OuterViewUpdate(float frameLength)
