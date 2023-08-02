@@ -59,18 +59,18 @@ namespace HexSystem
         public Hashtable ToNetwork()
         {
             Hashtable hexNetwork = new Hashtable{
-                {PhotonEventsConstants.SyncMatch.HexStateParam.Q, Position.Q},
-                {PhotonEventsConstants.SyncMatch.HexStateParam.R, Position.R},
-                {PhotonEventsConstants.SyncMatch.HexStateParam.H, Height},
-                {PhotonEventsConstants.SyncMatch.HexStateParam.DataLength, (byte)Data.Count}
+                {PhotonEventsConstants.SyncMatchOnLoad.HexStateParam.Q, Position.Q},
+                {PhotonEventsConstants.SyncMatchOnLoad.HexStateParam.R, Position.R},
+                {PhotonEventsConstants.SyncMatchOnLoad.HexStateParam.H, Height},
+                {PhotonEventsConstants.SyncMatchOnLoad.HexStateParam.DataLength, (byte)Data.Count}
             };
 
             int i = 0;
             foreach (var hexProperty in Data)
             {
-                hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.HexStateParam.DataKey}{i}", 
+                hexNetwork.Add($"{PhotonEventsConstants.SyncMatchOnLoad.HexStateParam.DataKey}{i}", 
                     hexProperty.Key);
-                hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.HexStateParam.DataValue}{i}", 
+                hexNetwork.Add($"{PhotonEventsConstants.SyncMatchOnLoad.HexStateParam.DataValue}{i}", 
                     hexProperty.Value);
                 i++;
             }

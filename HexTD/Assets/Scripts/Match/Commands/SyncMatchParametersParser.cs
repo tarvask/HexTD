@@ -30,7 +30,7 @@ namespace Match.Commands
         public static Parameters ParseParameters(Hashtable parametersTable)
         {
             // roles and users
-            Dictionary<byte, int> rolesAndUsersBytes = (Dictionary<byte, int>) parametersTable[PhotonEventsConstants.SyncMatch.MatchConfigRolesAndUsers];
+            Dictionary<byte, int> rolesAndUsersBytes = (Dictionary<byte, int>) parametersTable[PhotonEventsConstants.SyncMatchOnLoad.MatchConfigRolesAndUsers];
             Dictionary<ProcessRoles, int> rolesAndUsers = new Dictionary<ProcessRoles, int>(rolesAndUsersBytes.Count);
 
             foreach (KeyValuePair<byte, int> roleAndUserPair in rolesAndUsersBytes)
@@ -39,7 +39,7 @@ namespace Match.Commands
             }
             
             // level id
-            byte levelId = (byte)parametersTable[PhotonEventsConstants.SyncMatch.MatchConfigLevelIdParam];
+            byte levelId = (byte)parametersTable[PhotonEventsConstants.SyncMatchOnLoad.MatchConfigLevelIdParam];
             
             // waves
             // byte wavesCount = (byte)parametersTable[PhotonEventsConstants.SyncMatch.MatchConfigWavesCount];
@@ -148,7 +148,7 @@ namespace Match.Commands
 
             // hand
             // towers
-            byte[] towersBytes = (byte[]) parametersTable[PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam];
+            byte[] towersBytes = (byte[]) parametersTable[PhotonEventsConstants.SyncMatchOnLoad.MatchConfigHandTowersParam];
             TowerType[] towers = new TowerType[towersBytes.Length];
 
             for (int towerIndex = 0; towerIndex < towersBytes.Length; towerIndex++)
@@ -160,7 +160,7 @@ namespace Match.Commands
             MatchInitDataParameters clientMatchParameters = new MatchInitDataParameters(levelId, clientPlayerHand);
 
             // random seed
-            int randomSeed = (int) parametersTable[PhotonEventsConstants.SyncMatch.RandomSeed];
+            int randomSeed = (int) parametersTable[PhotonEventsConstants.SyncMatchOnLoad.RandomSeed];
                     
             return new Parameters(rolesAndUsers, clientMatchParameters, randomSeed);
         }

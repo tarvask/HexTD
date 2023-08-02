@@ -33,16 +33,16 @@ namespace PathSystem
             public Hashtable ToNetwork()
             {
                 Hashtable hexNetwork = new Hashtable{
-                    {PhotonEventsConstants.SyncMatch.PathData.Name, PathId},
-                    {PhotonEventsConstants.SyncMatch.PathData.PointLength, (byte)Points.Count}
+                    {PhotonEventsConstants.SyncMatchOnLoad.PathData.Name, PathId},
+                    {PhotonEventsConstants.SyncMatchOnLoad.PathData.PointLength, (byte)Points.Count}
                 };
 
                 int i = 0;
                 foreach (var point in Points)
                 {
-                    hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.PathData.PointQ}{i}", 
+                    hexNetwork.Add($"{PhotonEventsConstants.SyncMatchOnLoad.PathData.PointQ}{i}", 
                         point.Q);
-                    hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.PathData.PointR}{i}", 
+                    hexNetwork.Add($"{PhotonEventsConstants.SyncMatchOnLoad.PathData.PointR}{i}", 
                         point.R);
                     i++;
                 }

@@ -22,8 +22,8 @@ namespace Match.Wave
         public Hashtable ToNetwork()
         {
             Hashtable waveNetwork = _waveParameters.ToNetwork();
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.WaveDelayParam] = _waveDelay;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.PathIdParam] = _pathId;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveStrictOrder.WaveDelayParam] = _waveDelay;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveStrictOrder.PathIdParam] = _pathId;
 
             return waveNetwork;
         }

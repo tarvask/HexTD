@@ -2,7 +2,7 @@ public static class PhotonEventsConstants
 {
     public const string MatchStarted = "matchStarted";
         
-    public static class SyncMatch
+    public static class SyncMatchOnLoad
     {
         public const byte SyncMatchConfigOnStartEventId = 0;
 

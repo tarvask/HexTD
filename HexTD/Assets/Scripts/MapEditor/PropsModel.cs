@@ -61,18 +61,18 @@ namespace MapEditor
         {
             Hashtable hexNetwork = new Hashtable
             {
-                { PhotonEventsConstants.SyncMatch.PropsStateParam.Q, Position.Q },
-                { PhotonEventsConstants.SyncMatch.PropsStateParam.R, Position.R },
-                { PhotonEventsConstants.SyncMatch.PropsStateParam.H, Height },
-                { PhotonEventsConstants.SyncMatch.PropsStateParam.DataLength, (byte)Data.Count }
+                { PhotonEventsConstants.SyncMatchOnLoad.PropsStateParam.Q, Position.Q },
+                { PhotonEventsConstants.SyncMatchOnLoad.PropsStateParam.R, Position.R },
+                { PhotonEventsConstants.SyncMatchOnLoad.PropsStateParam.H, Height },
+                { PhotonEventsConstants.SyncMatchOnLoad.PropsStateParam.DataLength, (byte)Data.Count }
             };
 
             int i = 0;
             foreach (var property in Data)
             {
-                hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.HexStateParam.DataKey}{i}",
+                hexNetwork.Add($"{PhotonEventsConstants.SyncMatchOnLoad.HexStateParam.DataKey}{i}",
                     property.Key);
-                hexNetwork.Add($"{PhotonEventsConstants.SyncMatch.HexStateParam.DataValue}{i}",
+                hexNetwork.Add($"{PhotonEventsConstants.SyncMatchOnLoad.HexStateParam.DataValue}{i}",
                     property.Value);
                 i++;
             }

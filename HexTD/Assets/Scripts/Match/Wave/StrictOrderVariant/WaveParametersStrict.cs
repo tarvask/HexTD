@@ -33,8 +33,8 @@ namespace Match.Wave
         public Hashtable ToNetwork()
         {
             Hashtable waveNetwork = new Hashtable();
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.DurationParam] = _duration;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.PauseBeforeWaveParam] = pauseBeforeWave;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveStrictOrder.DurationParam] = _duration;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveStrictOrder.PauseBeforeWaveParam] = pauseBeforeWave;
             byte[] mobsIdsBytes = new byte[elements.Length];
             float[] mobsDelaysBytes = new float[elements.Length];
 
@@ -44,8 +44,8 @@ namespace Match.Wave
                 mobsDelaysBytes[elementIndex] = elements[elementIndex].Delay;
             }
 
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsIdsParam] = mobsIdsBytes;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveStrictOrder.MobsDelaysParam] = mobsDelaysBytes;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveStrictOrder.MobsIdsParam] = mobsIdsBytes;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveStrictOrder.MobsDelaysParam] = mobsDelaysBytes;
 
             return waveNetwork;
         }

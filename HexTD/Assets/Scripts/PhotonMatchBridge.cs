@@ -130,7 +130,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             
         switch (eventCode)
         {
-            case PhotonEventsConstants.SyncMatch.SyncMatchConfigOnStartEventId:
+            case PhotonEventsConstants.SyncMatchOnLoad.SyncMatchConfigOnStartEventId:
                 if (IsServer)
                     return;
                 
@@ -191,8 +191,8 @@ public class PhotonMatchBridge : BaseMonoBehaviour
 
         Hashtable roomProperties = new Hashtable
         {
-            {PhotonEventsConstants.SyncMatch.MatchConfigRolesAndUsers, _networkMatchStatus.RolesAndUserIdsNetwork},
-            {PhotonEventsConstants.SyncMatch.MatchConfigLevelIdParam, matchParameters.LevelId},
+            {PhotonEventsConstants.SyncMatchOnLoad.MatchConfigRolesAndUsers, _networkMatchStatus.RolesAndUserIdsNetwork},
+            {PhotonEventsConstants.SyncMatchOnLoad.MatchConfigLevelIdParam, matchParameters.LevelId},
             // {PhotonEventsConstants.SyncMatch.MatchConfigWavesCount, (byte)matchParameters.Waves.Length},
             //{PhotonEventsConstants.SyncMatch.MatchConfigPathsCount, (byte)mapModel.PathDatas.Count},
             //{PhotonEventsConstants.SyncMatch.MatchConfigFieldTypesParam, matchParameters.GetHexesTypes()},
@@ -201,8 +201,8 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             // {PhotonEventsConstants.SyncMatch.MatchMaxEnergyParam, matchParameters.EnergyMaxCount},
             // {PhotonEventsConstants.SyncMatch.MatchRestoreEnergyDelay, matchParameters.EnergyRestoreDelay},
             // {PhotonEventsConstants.SyncMatch.MatchRestoreEnergyValue, matchParameters.EnergyRestoreValue},
-            {PhotonEventsConstants.SyncMatch.MatchConfigHandTowersParam, matchParameters.PlayerHandParams.TowersNetwork},
-            {PhotonEventsConstants.SyncMatch.RandomSeed, randomSeed}
+            {PhotonEventsConstants.SyncMatchOnLoad.MatchConfigHandTowersParam, matchParameters.PlayerHandParams.TowersNetwork},
+            {PhotonEventsConstants.SyncMatchOnLoad.RandomSeed, randomSeed}
         };
 
         // for (int waveIndex = 0; waveIndex < matchParameters.Waves.Length; waveIndex++)
@@ -220,7 +220,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         //     roomProperties[$"{PhotonEventsConstants.SyncMatch.MatchConfigPathFieldParam}{pathIndex}"] =
         //         paths[pathIndex].ToNetwork();
 
-        _eventBus.RaiseEvent(PhotonEventsConstants.SyncMatch.SyncMatchConfigOnStartEventId, roomProperties);
+        _eventBus.RaiseEvent(PhotonEventsConstants.SyncMatchOnLoad.SyncMatchConfigOnStartEventId, roomProperties);
             
         // no server room in single player
         if (_isMultiPlayerGame)

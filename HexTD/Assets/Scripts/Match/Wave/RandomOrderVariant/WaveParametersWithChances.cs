@@ -60,11 +60,11 @@ namespace Match.Wave
         public Hashtable ToNetwork()
         {
             Hashtable waveNetwork = new Hashtable();
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.SizeParam] = size;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.DurationParam] = duration;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.SpawnPauseMinParam] = minSpawnPause;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.SpawnPauseMaxParam] = maxSpawnPause;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.PauseBeforeWaveParam] = pauseBeforeWave;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveWithRandom.SizeParam] = size;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveWithRandom.DurationParam] = duration;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveWithRandom.SpawnPauseMinParam] = minSpawnPause;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveWithRandom.SpawnPauseMaxParam] = maxSpawnPause;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveWithRandom.PauseBeforeWaveParam] = pauseBeforeWave;
             byte[] mobsIdsBytes = new byte[elements.Length];
             byte[] mobsCountsBytes = new byte[elements.Length];
 
@@ -74,8 +74,8 @@ namespace Match.Wave
                 mobsCountsBytes[elementIndex] = elements[elementIndex].MaxCount;
             }
 
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.MobsIdsParam] = mobsIdsBytes;
-            waveNetwork[PhotonEventsConstants.SyncMatch.WaveWithRandom.MobsCountsParam] = mobsCountsBytes;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveWithRandom.MobsIdsParam] = mobsIdsBytes;
+            waveNetwork[PhotonEventsConstants.SyncMatchOnLoad.WaveWithRandom.MobsCountsParam] = mobsCountsBytes;
 
             return waveNetwork;
         }
