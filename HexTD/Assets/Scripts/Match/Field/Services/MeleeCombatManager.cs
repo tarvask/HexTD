@@ -1,6 +1,8 @@
 using Match.Field.Mob;
+using Match.Field.Tower;
 using Tools;
 using UniRx;
+using UnityEngine;
 
 namespace Match.Field.Services
 {
@@ -31,7 +33,10 @@ namespace Match.Field.Services
 
         private void AttackTowerByMob(MobController mob)
         {
-            _context.FieldModel.TowersManager.Towers[mob.BlockerId].Hurt(mob.Attack());
+            int damage = mob.Attack();
+            TowerController attackedTower = _context.FieldModel.TowersManager.Towers[mob.BlockerId];
+            attackedTower.Hurt(damage);
+            Debug.Log($"Mob={mob.Id} hurt tower={mob.BlockerId} by {damage}, current health is {attackedTower.BaseReactiveModel.Health.Value.CurrentValue}");
         }
     }
 }

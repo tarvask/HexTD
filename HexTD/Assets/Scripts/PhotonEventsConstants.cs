@@ -164,6 +164,8 @@ public static class PhotonEventsConstants
                 public const string NextWaypointParam = "waypoint";
                 public const string CurrentHealthParam = "curHealth";
                 public const string BlockerIdParam = "blockerid";
+                public const string AttackingTimerParam = "attackTimer";
+                public const string IsHittingForTheFirstTimeParam = "firstTimeHit";
             }
                 
             // projectiles

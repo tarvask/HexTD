@@ -299,6 +299,7 @@ namespace Match.Field
             SerializerToNetwork.PartlyReinitSerializableData(_context.ConfigsRetriever, _factory);
             _stateLoader.ClearState();
             _stateLoader.LoadState(playerState);
+            _mobsByTowersBlocker.LoadState(_model.MobsManager.Mobs);
         }
 
         public void InitPlayerHand(PlayerHandController playerHandController)

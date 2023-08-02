@@ -247,13 +247,17 @@ namespace Match.Field.Mob
             _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false);
             ComputePathLengthAfterTeleport();
             _reactiveModel.SetHealth(mobState.CurrentHealth);
+            _blockerId = mobState.BlockerId;
+            _isBlocked = _blockerId > 0;
+            _attackingTimer = mobState.AttackingTimer;
+            _isHittingForTheFirstTime = mobState.IsHittingForTheFirstTime;
         }
         
         public PlayerState.MobState GetMobState()
         {
             return new PlayerState.MobState(_context.Id, _context.TargetId, _context.Parameters.TypeId,
                 Position.x, Position.z, _context.PathId, _context.PathEnumerator.CurrentPointIndex,
-                _reactiveModel.Health.Value.CurrentValue, _blockerId);
+                _reactiveModel.Health.Value.CurrentValue, _blockerId, _attackingTimer, _isHittingForTheFirstTime);
         }
 
         protected override void OnDispose()

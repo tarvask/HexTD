@@ -303,6 +303,8 @@ namespace Match.Field.State
             private readonly byte _nextWaypoint;
             private readonly float _currentHealth;
             private readonly int _blockerId;
+            private readonly float _attackingTimer;
+            private readonly bool _isHittingForTheFirstTime;
 
             public int Id => _id;
             public int TargetId => _targetId;
@@ -313,11 +315,15 @@ namespace Match.Field.State
             public byte NextWaypoint => _nextWaypoint;
             public float CurrentHealth => _currentHealth;
             public int BlockerId => _blockerId;
+            public float AttackingTimer => _attackingTimer;
+            public bool IsHittingForTheFirstTime => _isHittingForTheFirstTime;
 
             public MobState(int id, int targetId, byte typeId, float xPosition, float zPosition,
                 byte pathId, byte nextWaypoint,
                 float currentHealth,
-                int blockerId)
+                int blockerId,
+                float attackingTimer,
+                bool isHittingForTheFirstTime)
             {
                 _id = id;
                 _targetId = targetId;
@@ -328,6 +334,8 @@ namespace Match.Field.State
                 _nextWaypoint = nextWaypoint;
                 _currentHealth = currentHealth;
                 _blockerId = blockerId;
+                _attackingTimer = attackingTimer;
+                _isHittingForTheFirstTime = isHittingForTheFirstTime;
             }
 
             public static MobState MobFromHashtable(Hashtable mobHashtable)
@@ -341,8 +349,11 @@ namespace Match.Field.State
                 byte nextWaypoint = (byte)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.NextWaypointParam];
                 float currentHealth = (float)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.CurrentHealthParam];
                 int blockerId = (int)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.BlockerIdParam];
+                float attackingTimer = (float)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.AttackingTimerParam];
+                bool isHittingForTheFirstTime = (bool)mobHashtable[PhotonEventsConstants.SyncState.PlayerState.Mobs.IsHittingForTheFirstTimeParam];
                 
-                return new MobState(id, targetId, typeId, xPosition, yPosition, pathId, nextWaypoint, currentHealth, blockerId);
+                return new MobState(id, targetId, typeId, xPosition, yPosition, pathId, nextWaypoint, currentHealth,
+                    blockerId, attackingTimer, isHittingForTheFirstTime);
             }
 
             public static Hashtable MobToHashtable(in MobState mobState)
@@ -358,6 +369,8 @@ namespace Match.Field.State
                     {PhotonEventsConstants.SyncState.PlayerState.Mobs.NextWaypointParam, mobState.NextWaypoint},
                     {PhotonEventsConstants.SyncState.PlayerState.Mobs.CurrentHealthParam, mobState.CurrentHealth},
                     {PhotonEventsConstants.SyncState.PlayerState.Mobs.BlockerIdParam, mobState.BlockerId},
+                    {PhotonEventsConstants.SyncState.PlayerState.Mobs.AttackingTimerParam, mobState.AttackingTimer},
+                    {PhotonEventsConstants.SyncState.PlayerState.Mobs.IsHittingForTheFirstTimeParam, mobState.IsHittingForTheFirstTime},
                 };
             }
         }
