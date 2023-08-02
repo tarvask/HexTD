@@ -13,8 +13,6 @@ namespace Match
         public const byte LogicFramesPerSecond = 60;
         public const float FrameLength = 1f / LogicFramesPerSecond;
         public const byte TowersInHandCount = 8;
-        
-        [SerializeField] private MatchView matchPrefab;
 
         private MatchController _matchController;
         private OutgoingCommandsProcessor _outgoingCommandsProcessor;
@@ -27,6 +25,7 @@ namespace Match
         
         private float _currentEngineFrameTimestamp;
         private bool _isInited;
+        private bool _isStarted;
         private bool _isConnected;
 
         public bool IsInited => _isInited;
@@ -119,6 +118,11 @@ namespace Match
             Debug.Log($"Engine inited, frame is {CurrentEngineFrameReactiveProperty.Value}");
         }
 
+        public void StartMatch()
+        {
+            _isStarted = true;
+        }
+
         public void RollbackState()
         {
             _rollbackStateReactiveCommand.Execute();
@@ -126,7 +130,7 @@ namespace Match
 
         private void Update()
         {
-            if (!_isInited || !_isConnected)
+            if (!_isInited || !_isStarted || !_isConnected)
                 return;
             
             _matchController.OuterViewUpdate(Time.deltaTime);
@@ -134,7 +138,7 @@ namespace Match
 
         private void FixedUpdate()
         {
-            if (!_isInited || !_isConnected)
+            if (!_isInited || !_isStarted || !_isConnected)
                 return;
 
             if (_currentEngineFrameTimestamp + FrameLength <= Time.time)

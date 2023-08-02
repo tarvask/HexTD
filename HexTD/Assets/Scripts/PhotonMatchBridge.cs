@@ -85,6 +85,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             
         if (IsServer)
         {
+            // remove?
             await Task.Delay(3000);
             CreateNetworkMatchStatus();
             CreateEventBus();
@@ -130,11 +131,29 @@ public class PhotonMatchBridge : BaseMonoBehaviour
         switch (eventCode)
         {
             case PhotonEventsConstants.SyncMatch.SyncMatchConfigOnStartEventId:
+                if (IsServer)
+                    return;
+                
                 if (_matchEngine != null && _matchEngine.IsInited)
                     return;
                     
                 SyncMatchParametersParser.Parameters syncMatchParameters = SyncMatchParametersParser.ParseParameters(parametersTable);
                 InitAsClient(syncMatchParameters.ClientMatchParameters, syncMatchParameters.RolesAndUsers, syncMatchParameters.RandomSeed);
+                break;
+            
+            case PhotonEventsConstants.SyncMatchAfterLoad.RequestEventId:
+                if (!IsServer)
+                    return;
+                
+                _eventBus.RaiseEvent(PhotonEventsConstants.SyncMatchAfterLoad.ApplyEventId, new Hashtable());
+                _matchEngine.StartMatch();
+                break;
+            
+            case PhotonEventsConstants.SyncMatchAfterLoad.ApplyEventId:
+                if (IsServer)
+                    return;
+                
+                _matchEngine.StartMatch();
                 break;
 
             default:
@@ -165,16 +184,6 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             // levelsConfig.Levels[levelIdToPlay].EnergyRestoreDelay,
             // MatchConfig.EnergyRestoreValue,
             playerHand);
-        
-        _matchEngine = FindObjectOfType<TestMatchEngine>();
-        _matchEngine.Init(matchParameters, _eventBus,
-            _networkMatchStatus.CurrentProcessGameRoleReactiveProperty,
-            _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
-            _connectionMaintainer.IsConnectedReactiveProperty,
-            RequestState,
-            OnEndMatchHandler,
-            OnQuitMatchHandler,
-            _isMultiPlayerGame);
 
         // re-init seed, because server had many calls to random while creating MatchConfig
         int randomSeed = startTimeSum;
@@ -219,6 +228,20 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             PhotonNetwork.CurrentRoom.SetCustomProperties(roomProperties);
             PhotonNetwork.CurrentRoom.EmptyRoomTtl = EmptyRoomTimeToLive;
         }
+        
+        _matchEngine = FindObjectOfType<TestMatchEngine>();
+        _matchEngine.Init(matchParameters, _eventBus,
+            _networkMatchStatus.CurrentProcessGameRoleReactiveProperty,
+            _networkMatchStatus.CurrentProcessNetworkRoleReactiveProperty,
+            _connectionMaintainer.IsConnectedReactiveProperty,
+            RequestState,
+            OnEndMatchHandler,
+            OnQuitMatchHandler,
+            _isMultiPlayerGame);
+
+        // start in single mode
+        if (!_isMultiPlayerGame)
+            _eventBus.RaiseEvent(PhotonEventsConstants.SyncMatchAfterLoad.RequestEventId, new Hashtable());
 
         CreateCommandExecutors();
     }
@@ -245,6 +268,8 @@ public class PhotonMatchBridge : BaseMonoBehaviour
             OnEndMatchHandler,
             OnQuitMatchHandler,
             _isMultiPlayerGame);
+        
+        _eventBus.RaiseEvent(PhotonEventsConstants.SyncMatchAfterLoad.RequestEventId, new Hashtable());
             
         // mark room 
         Hashtable roomProperties = new Hashtable

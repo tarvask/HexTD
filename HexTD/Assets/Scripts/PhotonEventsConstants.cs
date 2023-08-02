@@ -390,4 +390,10 @@ public static class PhotonEventsConstants
 
         public const string TimeParam = "timestamp";
     }
+    
+    public static class SyncMatchAfterLoad
+    {
+        public const byte RequestEventId = 38;
+        public const byte ApplyEventId = 39;
+    }
 }
