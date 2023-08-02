@@ -90,7 +90,7 @@ namespace Match.Field.Mob
         public static object FromNetwork(ExitGames.Client.Photon.Hashtable hashtable)
         {
             MobsContainer mobsContainer = new MobsContainer();
-            foreach (var elementHashtable in SerializerToNetwork.IterateSerializedEnumerable(hashtable))
+            foreach (var elementHashtable in SerializerToNetwork.IterateSerializedTypePairEnumerable(hashtable))
             {
                 MobController mobController = SerializerToNetwork.FromNetwork(elementHashtable) as MobController;
                 mobsContainer.AddMob(mobController);

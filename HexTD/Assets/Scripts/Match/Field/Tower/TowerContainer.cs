@@ -114,7 +114,7 @@ namespace Match.Field.Tower
             TowerContainer towerContainer = new TowerContainer(configsRetriever.TowerCount);
             towerContainer.Clear();
             
-            foreach (var elementHashtable in SerializerToNetwork.IterateSerializedEnumerable(hashtable))
+            foreach (var elementHashtable in SerializerToNetwork.IterateSerializedTypePairEnumerable(hashtable))
             {
                 var tower = SerializerToNetwork.FromNetwork(elementHashtable) as TowerController;
                 towerContainer.AddTower(tower);

@@ -26,7 +26,7 @@ namespace BuffLogic
         {
             BuffConditionComplexCollection buffConditionComplexCollection = new BuffConditionComplexCollection();
             
-            foreach (var hashtableTypePair in SerializerToNetwork.IterateSerializedEnumerable(hashtable))
+            foreach (var hashtableTypePair in SerializerToNetwork.IterateSerializedTypePairEnumerable(hashtable))
             {
                 var condition = SerializerToNetwork.FromNetwork(hashtableTypePair) as IBuffCondition;
                 buffConditionComplexCollection.AddCondition(condition);

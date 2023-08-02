@@ -77,7 +77,7 @@ namespace BuffLogic
             Clear();
             foreach (var elementHashtable in SerializerToNetwork.IterateSerializedEnumerable(hashtable))
             {
-                var typedBuffManager = TypedBuffManager.FromNetwork(targetContainer, elementHashtable.Item1);
+                var typedBuffManager = TypedBuffManager.FromNetwork(targetContainer, elementHashtable);
                 _buffManagers.Add(typedBuffManager.Type, typedBuffManager);
             }
         }

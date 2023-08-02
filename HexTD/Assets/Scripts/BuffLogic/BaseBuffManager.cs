@@ -112,7 +112,7 @@ namespace BuffLogic
                 target.BaseReactiveModel.TryGetBuffableValue(entityBuffableValueType, out var buffableTarget);
 
                 var buffsHashtable = (Hashtable)hashtable[$"{PhotonEventsConstants.SyncState.PlayerState.Buffs.BuffValueParam}{i}"];
-                foreach (var buffHashtable in SerializerToNetwork.IterateSerializedEnumerable(buffsHashtable))
+                foreach (var buffHashtable in SerializerToNetwork.IterateSerializedTypePairEnumerable(buffsHashtable))
                 {
                     IBuff buff = SerializerToNetwork.FromNetwork(buffHashtable) as IBuff;
                     typedBuffManager.AddBuff(buffableTarget, buff);

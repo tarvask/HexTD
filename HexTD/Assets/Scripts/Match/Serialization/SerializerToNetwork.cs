@@ -7,6 +7,7 @@ using Match.Field.Castle;
 using Match.Field.Mob;
 using Match.Field.Tower;
 using Services;
+using UnityEngine;
 
 namespace Match.Serialization
 {
@@ -27,7 +28,6 @@ namespace Match.Serialization
         }
         
         public const string SerializedType = "SerializedType";
-        public const string EnumerableElement = "EnumerableElement";
         public const string EnumerableSize = "EnumerableSize";
         
         private static Dictionary<Type, SerializableData> _serializableDatas;
@@ -76,7 +76,6 @@ namespace Match.Serialization
             foreach (var serializableToNetwork in enumerable)
             {
                 hashtable.Add(i.ToString(), serializableToNetwork.ToNetwork());
-                //AddToHashTable(serializableToNetwork, hashtable, i.ToString());
             }
 
             return hashtable;
@@ -85,26 +84,31 @@ namespace Match.Serialization
         public static void AddToHashTable<T>(T element, Hashtable targetHashtable, string key) where T : ISerializableToNetwork
         {
             Hashtable hashtable = element.ToNetwork();
-            // Type elementType = element.GetType();
-            
-            // not nice
-            // if (element is IBuff buff)
-            //     elementType = buff.TargetType;
-            
-            //hashtable.Add($"{SerializedType}{key}", _serializableDatas[elementType].FullName);
             targetHashtable.Add(key, hashtable);
         }
 
-        public static IEnumerable<(Hashtable, Type)> IterateSerializedEnumerable(Hashtable hashtable)
+        public static IEnumerable<Hashtable> IterateSerializedEnumerable(Hashtable hashtable)
+        {
+            int size = (int)hashtable[EnumerableSize];
+            for(int i = 0; i < size; i++)
+            {
+                yield return (Hashtable)hashtable[i.ToString()];
+            }
+        }
+
+        public static IEnumerable<(Hashtable, Type)> IterateSerializedTypePairEnumerable(Hashtable hashtable)
         {
             int size = (int)hashtable[EnumerableSize];
             for(int i = 0; i < size; i++)
             {
                 Hashtable elementHashtable = (Hashtable)hashtable[i.ToString()];
                 if(!TryGetType(elementHashtable, out var type))
+                {
+                    Debug.LogError("Try to iterate serialization by type undefined!");
                     continue;
+                }
                 
-                yield return ((Hashtable)hashtable[$"{EnumerableElement}{i}"], type);
+                yield return (elementHashtable, type);
             }
         }
         
