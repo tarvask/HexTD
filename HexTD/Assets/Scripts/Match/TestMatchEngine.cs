@@ -143,7 +143,7 @@ namespace Match
                 CurrentEngineFrameReactiveProperty.Value++;
             }
             
-            _matchController.OuterLogicUpdate(Time.deltaTime);
+            _matchController.OuterLogicUpdate(Time.fixedDeltaTime);
         }
 
         private void RequestMatchState()
