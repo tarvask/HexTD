@@ -11,17 +11,20 @@ namespace Match.Commands
         {
             public TestMatchEngine MatchEngine { get; }
             public IEventBus EventBus { get; }
+            public IReadOnlyReactiveProperty<int> MinEngineFrameToProcessReactiveProperty { get; }
             public IReadOnlyReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; }
             public IReadOnlyReactiveProperty<int> PingDamperFramesDeltaReactiveProperty { get; }
             public IReadOnlyReactiveProperty<NetworkRoles> CurrentProcessRoleReactiveProperty { get; }
 
             public Context(TestMatchEngine matchEngine, IEventBus eventBus,
+                IReadOnlyReactiveProperty<int> minEngineFrameToProcessReactiveProperty,
                 IReadOnlyReactiveProperty<int> currentEngineFrameReactiveProperty,
                 IReadOnlyReactiveProperty<int> pingDamperFramesDeltaReactiveProperty,
                 IReadOnlyReactiveProperty<NetworkRoles> currentProcessRoleReactiveProperty)
             {
                 MatchEngine = matchEngine;
                 EventBus = eventBus;
+                MinEngineFrameToProcessReactiveProperty = minEngineFrameToProcessReactiveProperty;
                 CurrentEngineFrameReactiveProperty = currentEngineFrameReactiveProperty;
                 PingDamperFramesDeltaReactiveProperty = pingDamperFramesDeltaReactiveProperty;
                 CurrentProcessRoleReactiveProperty = currentProcessRoleReactiveProperty;

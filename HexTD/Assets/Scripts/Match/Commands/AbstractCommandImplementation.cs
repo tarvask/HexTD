@@ -16,10 +16,15 @@ namespace Match.Commands
 
         public abstract Task Apply(Hashtable commandParametersTable);
         
-        protected async Task WaitForTargetFrame(int frameNumber)
+        protected async Task<bool> WaitForTargetFrame(int frameNumber)
         {
+            if (frameNumber < Context.MinEngineFrameToProcessReactiveProperty.Value)
+                return false;
+            
             while (Context.CurrentEngineFrameReactiveProperty.Value < frameNumber)
                 await Task.Delay(2);
+
+            return true;
         }
     }
 }

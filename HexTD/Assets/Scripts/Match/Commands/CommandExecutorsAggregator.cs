@@ -48,7 +48,10 @@ namespace Match.Commands
         private void CreateCommandExecutors()
         {
             AbstractCommandExecutor.Context commandContext = new AbstractCommandExecutor.Context(_context.MatchEngine, _context.EventBus,
-                _context.MatchEngine.CurrentEngineFrameReactiveProperty, _context.PingDamperFramesDeltaReactiveProperty, _context.NetworkMatchStatus.CurrentProcessNetworkRoleReactiveProperty);
+                _context.MatchEngine.MinEngineFrameToProcessReactiveProperty,
+                _context.MatchEngine.CurrentEngineFrameReactiveProperty,
+                _context.PingDamperFramesDeltaReactiveProperty,
+                _context.NetworkMatchStatus.CurrentProcessNetworkRoleReactiveProperty);
             _syncStateRequestCommandExecutor = new SyncStateRequestCommandExecutor(commandContext);
             _syncStateApplyCommandExecutor = new SyncStateApplyCommandExecutor(commandContext);
             _buildTowerCommandExecutor = new BuildTowerCommandExecutor(commandContext);

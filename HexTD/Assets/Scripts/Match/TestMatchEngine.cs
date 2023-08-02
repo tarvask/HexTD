@@ -32,6 +32,7 @@ namespace Match
 
         public IncomingCommandsProcessor IncomingCommandsProcessor => _incomingCommandsProcessor;
         public ReactiveProperty<int> CurrentEngineFrameReactiveProperty { get; private set; }
+        public ReactiveProperty<int> MinEngineFrameToProcessReactiveProperty { get; private set; }
 
         private MatchController.Factory _matchControllerFactory;
         private WindowSystem.IWindowsManager _newWindowsManager;
@@ -61,6 +62,7 @@ namespace Match
             bool isMultiPlayerGame)
         {
             CurrentEngineFrameReactiveProperty = new ReactiveProperty<int>();
+            MinEngineFrameToProcessReactiveProperty = new ReactiveProperty<int>();
             
             MatchCommands.OutgoingCommands matchOutgoingCommands = new MatchCommands.OutgoingCommands();
             MatchCommands.IncomingCommands matchIncomingCommandsEnemy = new MatchCommands.IncomingCommands();
@@ -110,6 +112,7 @@ namespace Match
             syncFrameCounterCommand.Subscribe(SyncFrameCounter);
 
             CurrentEngineFrameReactiveProperty.Value = 0;
+            MinEngineFrameToProcessReactiveProperty.Value = 0;
             _currentEngineFrameTimestamp = Time.time;
 
             isConnectedReactiveProperty.Subscribe(UpdateConnectionState);
@@ -175,6 +178,7 @@ namespace Match
         {
             CurrentEngineFrameReactiveProperty.Value = currentFrame;
             _currentEngineFrameTimestamp = Time.time;
+            MinEngineFrameToProcessReactiveProperty.Value = currentFrame;
         }
     }
 }

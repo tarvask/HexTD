@@ -105,8 +105,10 @@ namespace Match.Commands.Implementations
                 
                 Debug.Log($"Applying tower build, current frame = {Context.CurrentEngineFrameReactiveProperty.Value}, " +
                           $"target frame = {commandParameters.TimeStamp}");
-                // wait for target frame
-                await WaitForTargetFrame(commandParameters.TimeStamp);
+                // wait for target frame, skip old commands
+                if (!await WaitForTargetFrame(commandParameters.TimeStamp))
+                    return;
+                
                 // handle
                 Context.MatchEngine.IncomingCommandsProcessor.BuildTower(commandParameters.SenderRole,
                     commandParameters.TowerPosition, commandParameters.TowerConfig,

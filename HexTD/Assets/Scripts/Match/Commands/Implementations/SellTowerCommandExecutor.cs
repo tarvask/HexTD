@@ -99,8 +99,10 @@ namespace Match.Commands.Implementations
             {
                 Parameters commandParameters = ExtractParameters(commandParametersTable);
                 
-                // wait for target frame
-                await WaitForTargetFrame(commandParameters.TimeStamp);
+                // wait for target frame, skip old commands
+                if (!await WaitForTargetFrame(commandParameters.TimeStamp))
+                    return;
+                
                 // handle
                 Context.MatchEngine.IncomingCommandsProcessor.SellTower(commandParameters.SenderRole,
                     commandParameters.TowerPosition, commandParameters.TowerConfig, commandParameters.TimeStamp);
