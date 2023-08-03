@@ -245,6 +245,10 @@ namespace Match.Field.Mob
             _currentTargetPosition = _context.HexPositionConversionService.GetHexPosition(
                 _context.PathEnumerator.Current, false);
             _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false);
+            // recalculate to get real y-coord
+            _currentPosition.Set(_currentPosition.x, _context.HexPositionConversionService.GetHexPosition(_currentHexPosition, false).y, _currentPosition.z);
+            // set view to right position
+            _context.View.transform.localPosition = _currentPosition;
             ComputePathLengthAfterTeleport();
             _reactiveModel.SetHealth(mobState.CurrentHealth);
             _blockerId = mobState.BlockerId;
