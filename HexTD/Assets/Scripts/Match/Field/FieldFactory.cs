@@ -266,7 +266,7 @@ namespace Match.Field
             int towerId, int targetId)
         {
             _lastProjectileId++;
-            Debug.Log($"Created projectile with id={_lastProjectileId} on frame {_context.CurrentEngineFrameReactiveProperty.Value}");
+            Debug.Log($"Created projectile with id={_lastProjectileId} and target={targetId} on frame {_context.CurrentEngineFrameReactiveProperty.Value}");
 
             return CreateProjectileWithId(attack, attackIndex,
                 _lastProjectileId, spawnPosition, hasSplashDamage, 

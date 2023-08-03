@@ -370,6 +370,7 @@ public class PhotonMatchBridge : BaseMonoBehaviour
 
     private void RequestState()
     {
+        Debug.LogError("Requesting state on frame " + _matchEngine.CurrentEngineFrameReactiveProperty.Value);
         _eventBus.RaiseEvent(PhotonEventsConstants.SyncState.RequestEventId,
             new Hashtable{{PhotonEventsConstants.SyncState.TimeParam, _matchEngine.CurrentEngineFrameReactiveProperty.Value}});
     }

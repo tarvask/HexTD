@@ -428,6 +428,8 @@ namespace Match
             // rewind Randomizer to target counter value
             while (Randomizer.RandomCallsCountReactiveProperty.Value < matchState.RandomCounter)
                 Randomizer.GetRandomInRange(0, 1);
+            
+            Debug.LogError($"Loading state on frame {frameCounter}");
         }
 
         private void RollbackState(Unit unit)
