@@ -134,7 +134,7 @@ namespace Match.Serialization
                 return false;
             }
                     
-            string serializedTypeName = hashtable[SerializedType] as string;
+            string serializedTypeName = (string)value;
             type = Type.GetType(serializedTypeName);
 
             return true;
