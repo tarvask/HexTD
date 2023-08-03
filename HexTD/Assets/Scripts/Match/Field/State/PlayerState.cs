@@ -200,6 +200,8 @@ namespace Match.Field.State
             private readonly int _constructionTime;
             private readonly float _currentHealth;
             private readonly int _currentTargetId;
+            private readonly IReadOnlyDictionary<int, float> _cooldowns;
+            private readonly int _readyTowerAttackId;
 
             public int Id => _id;
             public int TargetId => _targetId;
@@ -210,9 +212,11 @@ namespace Match.Field.State
             public int ConstructionTime => _constructionTime;
             public float CurrentHealth => _currentHealth;
             public int CurrentTargetId => _currentTargetId;
+            public IReadOnlyDictionary<int, float> Cooldowns => _cooldowns;
+            public int ReadyTowerAttackId => _readyTowerAttackId;
 
             public TowerState(int id, int targetId, short qPosition, short rPosition, TowerType type, byte level, int constructionTime,
-                float currentHealth, int currentTargetId)
+                float currentHealth, int currentTargetId, IReadOnlyDictionary<int, float> cooldowns, int readyTowerAttackId)
             {
                 _id = id;
                 _targetId = targetId;
@@ -223,6 +227,8 @@ namespace Match.Field.State
                 _constructionTime = constructionTime;
                 _currentHealth = currentHealth;
                 _currentTargetId = currentTargetId;
+                _cooldowns = cooldowns;
+                _readyTowerAttackId = readyTowerAttackId;
             }
 
             public static TowerState TowerFromHashtable(Hashtable towerHashtable)
@@ -236,23 +242,43 @@ namespace Match.Field.State
                 int constructionTime = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerConstructionTimeParam];
                 float currentHealth = (float)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentHealthParam];
                 int currentTargetId = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentTargetIdParam];
+                
+                Hashtable cooldownsHashtable = (Hashtable)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.CooldownsParam];
+                Dictionary<int, float> cooldowns = new Dictionary<int, float>(cooldownsHashtable.Count);
 
-                return new TowerState(id, targetId, qPosition, rPosition, type, level, constructionTime, currentHealth, currentTargetId);
+                foreach (var cooldownPair in cooldownsHashtable)
+                {
+                    cooldowns.Add((int)cooldownPair.Key, (float)cooldownPair.Value);
+                }
+                
+                int readyTowerAttackId = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.ReadyAttackIdParam];
+
+                return new TowerState(id, targetId, qPosition, rPosition, type, level, constructionTime,
+                    currentHealth, currentTargetId, cooldowns, readyTowerAttackId);
             }
 
-            public static Hashtable TowerToHashtable(in TowerState towersState)
+            public static Hashtable TowerToHashtable(in TowerState towerState)
             {
+                Hashtable cooldownsHashtable = new Hashtable(towerState.Cooldowns.Count);
+
+                foreach (KeyValuePair<int,float> cooldownPair in towerState.Cooldowns)
+                {
+                    cooldownsHashtable.Add(cooldownPair.Key, cooldownPair.Value);
+                }
+                
                 return new Hashtable
                 {
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerIdParam, towersState.Id},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTargetIdParam, towersState.TargetId},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionQParam, towersState.PositionQ},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionRParam, towersState.PositionR},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTypeParam, (byte)towersState.Type},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerLevelParam, towersState.Level},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerConstructionTimeParam, towersState.ConstructionTime},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentHealthParam, towersState.CurrentHealth},
-                    {PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentTargetIdParam, towersState.CurrentTargetId},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerIdParam, towerState.Id},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTargetIdParam, towerState.TargetId},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionQParam, towerState.PositionQ},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.PositionRParam, towerState.PositionR},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTypeParam, (byte)towerState.Type},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerLevelParam, towerState.Level},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerConstructionTimeParam, towerState.ConstructionTime},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentHealthParam, towerState.CurrentHealth},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentTargetIdParam, towerState.CurrentTargetId},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.CooldownsParam, cooldownsHashtable},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.ReadyAttackIdParam, towerState.ReadyTowerAttackId},
                 };
             }
         }

@@ -279,6 +279,7 @@ namespace Match.Field.Tower
             SetLevel(towerState.Level, towerState.ConstructionTime);
             _reactiveModel.SetHealth(towerState.CurrentHealth);
             _stableModel.SetTarget(towerState.CurrentTargetId);
+            _shootModel.LoadState(towerState.Cooldowns, towerState.ReadyTowerAttackId);
         }
 
         public PlayerState.TowerState GetTowerState()
@@ -290,7 +291,7 @@ namespace Match.Field.Tower
                 (byte)_stableModel.Level,
                 // save remaining time
                 _stableModel.IsConstructing ? (int)((CurrentLevel.BuildTime - (Time.time - _stableModel.ConstructionTimeLabel)) * 1000) : 0,
-                _reactiveModel.Health.Value.CurrentValue, _stableModel.CurrentTargetId);
+                _reactiveModel.Health.Value.CurrentValue, _stableModel.CurrentTargetId, _shootModel.Cooldowns, _shootModel.ReadyTowerAttackId);
         }
         
         public Hashtable ToNetwork()

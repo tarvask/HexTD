@@ -149,6 +149,8 @@ public static class PhotonEventsConstants
                 public const string TowerConstructionTimeParam = "buildTime";
                 public const string CurrentHealthParam = "curHealth";
                 public const string CurrentTargetIdParam = "curTarget";
+                public const string ReadyAttackIdParam = "readyAttackId";
+                public const string CooldownsParam = "cooldown";
             }
 
             // mobs
