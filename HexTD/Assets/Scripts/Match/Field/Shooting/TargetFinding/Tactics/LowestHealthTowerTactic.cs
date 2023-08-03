@@ -15,15 +15,15 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
             foreach (ITarget target in targets)
             {
                 // do not aim at targets with full health 
-                if (target.BaseReactiveModel.Health.Value >= target.BaseReactiveModel.MaxHealth.Value)
+                if (target.BaseReactiveModel.Health.Value.CurrentValue >= target.BaseReactiveModel.Health.Value.Value)
                     continue;
                 
-                float healthPart = target.BaseReactiveModel.Health.Value / target.BaseReactiveModel.MaxHealth.Value;
+                float healthPart = target.BaseReactiveModel.Health.Value.CurrentValue / target.BaseReactiveModel.Health.Value.Value;
                 float healthDelta = lowestHealth - healthPart;
 
                 if (healthDelta > 0)
                 {
-                    lowestHealth = target.BaseReactiveModel.Health.Value;
+                    lowestHealth = target.BaseReactiveModel.Health.Value.CurrentValue;
                     towerWithLowestHealthId = target.TargetId;
                 }
             }

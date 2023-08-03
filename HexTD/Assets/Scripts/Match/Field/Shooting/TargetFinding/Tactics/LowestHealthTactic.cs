@@ -16,7 +16,7 @@ namespace Match.Field.Shooting.TargetFinding.Tactics
 
             foreach (ITarget target in targets)
             {
-                float healthPart = target.BaseReactiveModel.Health.Value / target.BaseReactiveModel.MaxHealth.Value;
+                float healthPart = target.BaseReactiveModel.Health.Value.CurrentValue / target.BaseReactiveModel.Health.Value.Value;
                 float healthDelta = lowestHealth - healthPart;
                 MobController mobController = (MobController)target;
                 

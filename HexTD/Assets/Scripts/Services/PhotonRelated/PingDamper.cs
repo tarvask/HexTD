@@ -64,12 +64,13 @@ namespace Services.PhotonRelated
         private void UpdatePingDamper(int maxCachedPing)
         {
             int newDesiredPingDamper = Mathf.CeilToInt(maxCachedPing * OneMillisecond / TestMatchEngine.FrameLength);
-            
+            newDesiredPingDamper = Mathf.Max(PingDamperFramesMin, newDesiredPingDamper);
+
             if (newDesiredPingDamper < _pingDamperFramesDeltaReactiveProperty.Value)
                 _pingDamperFramesDeltaReactiveProperty.Value = Mathf.CeilToInt( 
                     Mathf.Lerp(
                         _pingDamperFramesDeltaReactiveProperty.Value,
-                        Mathf.Max(PingDamperFramesMin, newDesiredPingDamper),
+                        newDesiredPingDamper,
                         PingLerpCoefficient));
             else
                 _pingDamperFramesDeltaReactiveProperty.Value = newDesiredPingDamper;

@@ -1,56 +1,67 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using ExitGames.Client.Photon;
+using Match.Field.Shooting;
+using Match.Serialization;
 using Tools;
 using Tools.Interfaces;
 
 namespace BuffLogic
 {
-    public interface IBaseBuffManager : IOuterLogicUpdatable
+    public interface ITypedBuffManager : IOuterLogicUpdatable, ISerializableToNetwork
     {
-        void AddBuff<T>(IBuffableValue targetValue, IBuff<T> buff);
+        void AddBuff(IBuffableValue targetValue, IBuff buff);
         bool IsBuffs(IBuffableValue targetValue);
-        IEnumerable<T> GetBuffOf<T>(IBuffableValue<T> targetValue);
+        void Clear();
     }
     
-    public class BaseBuffManager<TValue> : BaseDisposable, IBaseBuffManager
+    public class TypedBuffManager : BaseDisposable, ITypedBuffManager
     {
-        private readonly Dictionary<IBuffableValue<TValue>, PrioritizedBuffLinkedList<TValue>> _buffs;
+        private const string BuffTargetType = "BuffTargetType";
+        
+        public Type Type { get; }
+        private readonly Dictionary<IBuffableValue, PrioritizedBuffLinkedList> _buffs;
 
-        public BaseBuffManager()
+        public TypedBuffManager(Type type)
         {
-            _buffs = new Dictionary<IBuffableValue<TValue>, PrioritizedBuffLinkedList<TValue>>(5);
+            Type = type;
+            _buffs = new Dictionary<IBuffableValue, PrioritizedBuffLinkedList>(5);
         }
 
-        public void AddBuff(IBuffableValue<TValue> targetValue, IBuff<TValue> buff)
+        public void AddBuff(IBuffableValue targetValue, IBuff buff)
         {
+            if (Type != buff.TargetType)
+                return;
+            
             if (!_buffs.TryGetValue(targetValue, out var buffList))
             {
-                buffList = new PrioritizedBuffLinkedList<TValue>(targetValue);
+                buffList = new PrioritizedBuffLinkedList(targetValue);
+                targetValue.SubscribeOnDispose(RemoveBuffableValue);
                 _buffs.Add(targetValue, buffList);
             }
             
             buffList.AddBuff(buff);
         }
 
-        public void AddBuff<T>(IBuffableValue targetValue, IBuff<T> buff)
-        {
-            AddBuff((IBuffableValue<TValue>)targetValue, (IBuff<TValue>)buff);
-        }
-
         public bool IsBuffs(IBuffableValue targetValue)
         {
-            var target = (IBuffableValue<TValue>)targetValue;
-
-            return _buffs.ContainsKey(target);
+            return _buffs.ContainsKey(targetValue);
+        }
+        
+        public void RemoveBuffableValue(IBuffableValue buffableValue)
+        {
+            _buffs[buffableValue].Dispose();
+            _buffs.Remove(buffableValue);
         }
 
-        public IEnumerable<T> GetBuffOf<T>(IBuffableValue<T> targetValue)
+        public void Clear()
         {
-            var target = (IBuffableValue<TValue>)targetValue;
-
-            if (!_buffs.TryGetValue(target, out var buffList))
-                return new List<T>();
-
-            return (IEnumerable<T>) buffList;
+            foreach (var buffPair in _buffs)
+            {
+                buffPair.Value.Dispose();
+            }
+            
+            _buffs.Clear();
         }
 
         public void OuterLogicUpdate(float frameLength)
@@ -59,6 +70,58 @@ namespace BuffLogic
             {
                 buffValuePair.Value.OuterLogicUpdate(frameLength);
             }
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            Hashtable hashtable = new Hashtable();
+            
+            hashtable.Add(BuffTargetType, Type.FullName);
+            hashtable.Add(SerializerToNetwork.EnumerableSize, _buffs.Count);
+            
+            int i = 0;
+            foreach (var buffPair in _buffs)
+            {
+                hashtable.Add($"{PhotonEventsConstants.SyncState.PlayerState.Buffs.TargetId}{i}", buffPair.Key.TargetId);
+                hashtable.Add($"{PhotonEventsConstants.SyncState.PlayerState.Buffs.EntityBuffableValueType}{i}", 
+                    (byte)buffPair.Key.EntityBuffableValueType);
+                hashtable.Add($"{PhotonEventsConstants.SyncState.PlayerState.Buffs.BuffValueParam}{i}", 
+                    SerializerToNetwork.EnumerableToNetwork(buffPair.Value, buffPair.Value.Count));
+                i++;
+            }
+
+            return hashtable;
+        }
+        
+        public static TypedBuffManager FromNetwork(TargetContainer targetContainer, Hashtable hashtable)
+        {
+            if (!SerializerToNetwork.TryGetType(hashtable, BuffTargetType, out Type type))
+                return new TypedBuffManager(null);
+
+            TypedBuffManager typedBuffManager = new TypedBuffManager(type);
+            int size = (int)hashtable[SerializerToNetwork.EnumerableSize];
+            for(int i = 0; i < size; i++)
+            {
+                int targetId = (int)hashtable[$"{PhotonEventsConstants.SyncState.PlayerState.Buffs.TargetId}{i}"];
+                EntityBuffableValueType entityBuffableValueType = 
+                    (EntityBuffableValueType)hashtable[$"{PhotonEventsConstants.SyncState.PlayerState.Buffs.EntityBuffableValueType}{i}"];
+
+                if(!targetContainer.TryGetTargetById(targetId, out var target))
+                    continue;
+                
+                target.BaseReactiveModel.TryGetBuffableValue(entityBuffableValueType, out var buffableTarget);
+
+                var buffsHashtable = (Hashtable)hashtable[$"{PhotonEventsConstants.SyncState.PlayerState.Buffs.BuffValueParam}{i}"];
+                foreach (var buffHashtable in SerializerToNetwork.IterateSerializedTypePairEnumerable(buffsHashtable))
+                {
+                    IBuff buff = SerializerToNetwork.FromNetwork(buffHashtable) as IBuff;
+                    typedBuffManager.AddBuff(buffableTarget, buff);
+                }
+                
+                i++;
+            }
+
+            return typedBuffManager;
         }
     }
 }

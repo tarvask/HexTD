@@ -1,7 +1,9 @@
 using System;
+using ExitGames.Client.Photon;
 using Match.Commands;
 using Match.Field;
 using Match.Field.Mob;
+using Match.Serialization;
 using Services;
 using Tools;
 using Tools.Interfaces;
@@ -9,7 +11,7 @@ using UniRx;
 
 namespace Match.Wave
 {
-    public class WaveMobSpawnerCoordinator : BaseDisposable, IOuterLogicUpdatable
+    public class WaveMobSpawnerCoordinator : BaseDisposable, IOuterLogicUpdatable, ISerializableToNetwork
     {
         public struct Context
         {
@@ -165,6 +167,11 @@ namespace Match.Wave
         public WavesState GetWavesState()
         {
             return _currentImplementation.SaveState();
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return WavesState.ToHashtable(GetWavesState());
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using ExitGames.Client.Photon;
 using Match.Field.AttackEffect;
+using Match.Serialization;
 using Tools;
 using Tools.Interfaces;
 
 namespace Match.Field.Tower
 {
-    public class EntityShootModel : BaseDisposable, IOuterLogicUpdatable
+    public class EntityShootModel : BaseDisposable, IOuterLogicUpdatable, ISerializableToNetwork
     {
         private readonly AttacksConfig _attacksConfig;
         private Dictionary<int, float> _cooldowns;
@@ -19,11 +21,14 @@ namespace Match.Field.Tower
             ? _readyTowerAttackId - _attacksConfig.Attacks.Count
             : _readyTowerAttackId;
 
+        public IReadOnlyDictionary<int, float> Cooldowns => _cooldowns;
+        public int ReadyTowerAttackId => _readyTowerAttackId; 
+
         public EntityShootModel(AttacksConfig attacksConfig)
         {
             _attacksConfig = attacksConfig;
             
-            _cooldowns = new Dictionary<int, float>();
+            _cooldowns = new Dictionary<int, float>(_attacksConfig.Attacks.Count + _attacksConfig.SplashAttacks.Count);
             int id = 0;
             
             foreach (var towerAttack in _attacksConfig.Attacks)
@@ -38,10 +43,20 @@ namespace Match.Field.Tower
                 id++;
             }
         }
-        
+
+        public void LoadState(IReadOnlyDictionary<int, float> cooldowns, int readyTowerAttackId)
+        {
+            foreach (KeyValuePair<int,float> cooldownPair in cooldowns)
+            {
+                _cooldowns[cooldownPair.Key] = cooldownPair.Value;
+            }
+
+            _readyTowerAttackId = readyTowerAttackId;
+        }
+
         public void OuterLogicUpdate(float frameLength)
         {
-            for(int id = 0; id < _cooldowns.Count; id++)
+            for (int id = 0; id < _cooldowns.Count; id++)
             {
                 if(_cooldowns[id] > 0)
                     _cooldowns[id] -= frameLength;
@@ -80,6 +95,21 @@ namespace Match.Field.Tower
         protected override void OnDispose()
         {
             _cooldowns.Clear();
+        }
+
+        public Hashtable ToNetwork()
+        {
+            Hashtable result = new Hashtable(_cooldowns.Count + 1)
+            {
+                { PhotonEventsConstants.SyncState.PlayerState.Towers.TowerIdParam, _readyTowerAttackId }
+            };
+
+            foreach (KeyValuePair<int,float> cooldownPair in _cooldowns)
+            {
+                result.Add(cooldownPair.Key, cooldownPair.Value);
+            }
+
+            return result;
         }
     }
 }

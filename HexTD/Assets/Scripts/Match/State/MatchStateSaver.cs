@@ -1,4 +1,8 @@
+using BuffLogic;
+using ExitGames.Client.Photon;
 using Match.Field;
+using Match.Field.Hand;
+using Match.Serialization;
 using Match.State.CheckSum;
 using Match.Wave;
 using Tools;
@@ -75,7 +79,7 @@ namespace Match.State
             _context.CheckSumComputerController.UpdateCheckSumHistory(_context.CurrentEngineFrameReactiveProperty.Value, _lastMatchState);
             _context.MatchStateCheckSumComputedReactiveCommand.Execute(_context.CheckSumComputerController.LastCheckSum);
         }
-
+        
         public ref MatchState GetCurrentMatchState()
         {
             SaveMatchState();
@@ -85,6 +89,20 @@ namespace Match.State
         public ref MatchState GetLastSavedMatchState()
         {
             return ref _lastMatchState;
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            Hashtable hashtable = new Hashtable();
+            
+            SerializerToNetwork.AddToHashTable(_context.Player1FieldController, hashtable, "1");
+            SerializerToNetwork.AddToHashTable(_context.Player2FieldController, hashtable, "2");
+            SerializerToNetwork.AddToHashTable(_context.WaveMobSpawnerCoordinator, hashtable, PhotonEventsConstants.SyncState.MatchState.WaveStateParam);
+            
+            hashtable.Add(PhotonEventsConstants.SyncState.MatchState.RandomSeedParam, Randomizer.CurrentSeed);
+            hashtable.Add(PhotonEventsConstants.SyncState.MatchState.RandomCounterParam, Randomizer.RandomCallsCountReactiveProperty.Value);
+            
+            return hashtable;
         }
     }
 }

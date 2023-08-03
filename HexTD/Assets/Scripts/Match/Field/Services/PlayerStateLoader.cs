@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.Currency;
 using Match.Field.Mob;
@@ -106,8 +107,10 @@ namespace Match.Field.Services
                     projectileState.TowerId, projectileState.TargetId);
                 projectileController.LoadState(projectileState);
                 
-                _context.FieldModel.AddProjectile(projectileController);
+                _context.FieldModel.ProjectilesContainer.Add(projectileController);
             }
+            
+            _context.FieldModel.BuffManager.FromNetwork(_context.FieldModel.Targets, playerState.BuffManagerHashtable);
         }
 
         public PlayerState SaveState()
@@ -128,10 +131,12 @@ namespace Match.Field.Services
             PlayerState.MobsState mobsState = new PlayerState.MobsState(_context.FieldModel.MobsManager.Mobs);
             
             // projectiles
-            PlayerState.ProjectilesState projectilesState = new PlayerState.ProjectilesState(_context.FieldModel.Projectiles);
+            PlayerState.ProjectilesState projectilesState = new PlayerState.ProjectilesState(_context.FieldModel.ProjectilesContainer.Projectiles);
 
+            Hashtable buffHashtable = _context.FieldModel.BuffManager.ToNetwork();
+            
             return new PlayerState(0, coins, crystals,
-                castleState, towersState, mobsState, projectilesState);
+                castleState, towersState, mobsState, projectilesState, buffHashtable);
         }
         
         public void ClearState()

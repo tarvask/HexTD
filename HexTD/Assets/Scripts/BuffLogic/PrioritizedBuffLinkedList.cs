@@ -6,23 +6,33 @@ using UnityEngine;
 
 namespace BuffLogic
 {
-    public class PrioritizedBuffLinkedList<TValue> : PrioritizeLinkedList<IBuff<TValue>>, IOuterLogicUpdatable
+    public class PrioritizedBuffLinkedList : PrioritizeLinkedList<IBuff>, IOuterLogicUpdatable
     {
-        private readonly List<IBuff<TValue>> _removedBuffs;
-        private readonly IBuffableValue<TValue> _buffableValueTarget;
+        private readonly List<IBuff> _removedBuffs;
+        private readonly IBuffableValue _buffableValueTarget;
 
         public bool IsAlive => ValueList.Count > 0;
 
-        public PrioritizedBuffLinkedList(IBuffableValue<TValue> buffableValue)
+        public PrioritizedBuffLinkedList(IBuffableValue buffableValue)
         {
-            _removedBuffs = new List<IBuff<TValue>>();
+            _removedBuffs = new List<IBuff>();
             _buffableValueTarget = buffableValue;
         }
 
-        public void AddBuff(IBuff<TValue> buff)
+        public void AddBuff(IBuff newBuff)
         {
-            Add(buff);
-            _buffableValueTarget.UpdateAddBuff(this, buff);
+            foreach (var buff in ValueList)
+            {
+                if (buff.GetType() == newBuff.GetType())
+                {
+                    buff.MergeBuffs(newBuff);
+                    _buffableValueTarget.UpdateAddBuff(this, buff);
+                    return;
+                }
+            }
+            
+            Add(newBuff);
+            _buffableValueTarget.UpdateAddBuff(this, newBuff);
         }
 
         public void OuterLogicUpdate(float frameLength)
@@ -32,7 +42,7 @@ namespace BuffLogic
 
             for (var valueNode = ValueList.First; valueNode != null;)
             {
-                TryToUpdateBuff(valueNode.Value);
+                TryToUpdateBuff(frameLength, valueNode.Value);
                 if (valueNode.Value.IsEndConditionDone)
                 {
                     wasUpdated = true;
@@ -54,11 +64,11 @@ namespace BuffLogic
                 removedBuff.Dispose();
         }
 
-        private void TryToUpdateBuff(IBuff<TValue> buff)
+        private void TryToUpdateBuff(float frameLength, IBuff buff)
         {
             try
             {
-                buff.Update();
+                buff.OuterLogicUpdate(frameLength);
             }
             catch (Exception e)
             {

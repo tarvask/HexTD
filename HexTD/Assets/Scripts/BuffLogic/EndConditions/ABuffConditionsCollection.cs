@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
+using ExitGames.Client.Photon;
+using Match.Serialization;
+using Newtonsoft.Json;
 using Tools;
 
 namespace BuffLogic
 {
-    public abstract class ABuffConditionsCollection : BaseDisposable
+    public abstract class ABuffConditionsCollection : BaseDisposable, ISerializableToNetwork
     {        
-        protected readonly LinkedList<IBuffCondition> Conditions;
-        private bool _isEndConditionDone;
+        [JsonProperty("Conditions")] protected readonly LinkedList<IBuffCondition> Conditions;
+        [JsonIgnore] private bool _isEndConditionDone;
 
-        public bool IsEndConditionDone => _isEndConditionDone;
+        [JsonIgnore] public bool IsEndConditionDone => _isEndConditionDone;
 
         protected ABuffConditionsCollection()
         {
@@ -18,7 +21,11 @@ namespace BuffLogic
 
         public void MergeConditions(ABuffConditionsCollection conditionCollection)
         {
-            Dispose();
+            foreach (var condition in Conditions)
+            {
+                condition.Dispose();
+            }
+            Conditions.Clear();
             
             foreach (var condition in conditionCollection.Conditions)
                 Conditions.AddFirst(condition);
@@ -45,6 +52,11 @@ namespace BuffLogic
                 condition.Dispose();
             }
             Conditions.Clear();
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return SerializerToNetwork.EnumerableToNetwork(Conditions, Conditions.Count);
         }
     }
 }

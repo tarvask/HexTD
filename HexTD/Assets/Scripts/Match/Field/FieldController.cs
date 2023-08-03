@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BuffLogic;
+using ExitGames.Client.Photon;
 using HexSystem;
 using MapEditor;
 using Match.Commands;
@@ -13,17 +14,19 @@ using Match.Field.Shooting;
 using Match.Field.State;
 using Match.Field.Tower;
 using Match.Field.VFX;
+using Match.Serialization;
 using PathSystem;
 using Services;
 using Tools;
 using Tools.Interfaces;
 using UniRx;
+using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
 
 namespace Match.Field
 {
-    public class FieldController : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable
+    public class FieldController : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable, ISerializableToNetwork
     {
         public struct Context
         {
@@ -34,7 +37,6 @@ namespace Match.Field
             public MatchConfig LevelConfig { get; }
             public LevelMapModel LevelMapModel { get; }
             public ConfigsRetriever ConfigsRetriever { get; }
-            public BuffManager BuffManager { get; }
             public VfxManager VfxManager { get; }
             public bool ShouldCreateMap { get; }
             public bool ShouldCreateObjectInfo { get; }
@@ -56,7 +58,6 @@ namespace Match.Field
                 MatchConfig levelConfig,
                 LevelMapModel levelMapModel,
                 ConfigsRetriever configsRetriever,
-                BuffManager buffManager,
                 VfxManager vfxManager,
                 bool shouldCreateMap,
                 bool shouldCreateObjectInfo,
@@ -78,7 +79,6 @@ namespace Match.Field
                 LevelConfig = levelConfig;
                 LevelMapModel = levelMapModel;
                 ConfigsRetriever = configsRetriever;
-                BuffManager = buffManager;
                 VfxManager = vfxManager;
                 ShouldCreateMap = shouldCreateMap;
                 ShouldCreateObjectInfo = shouldCreateObjectInfo;
@@ -107,6 +107,7 @@ namespace Match.Field
         private readonly MobsByTowersBlocker _mobsByTowersBlocker;
         private readonly MeleeCombatManager _meleeCombatManager;
         private readonly MobsManager _mobsManager;
+        private readonly BuffManager _buffManager;
         
         private readonly FieldClicksHandler _clicksHandler;
         private readonly FieldClicksDistributor _clicksDistributor;
@@ -209,12 +210,15 @@ namespace Match.Field
                 _context.SpawnMobReactiveCommand,
                 _context.CurrentEngineFrameReactiveProperty);
             _mobsManager = AddDisposable(_mobsManagerFactory.Create(mobsManagerContext));
-            
+
+            _buffManager = AddDisposable(new BuffManager());
+
             FieldModel.Context fieldModelContext = new FieldModel.Context(
                 _hexagonalFieldModel,
                 _hexagonalFieldModel.CurrentFieldHexTypes,
                 towersManager,
                 _mobsManager,
+                _buffManager,
                 _factory,
                 removeMobReactiveCommand,
                 mobSpawnedReactiveCommand,
@@ -236,7 +240,7 @@ namespace Match.Field
             
             // shooting
             ShootingProcessManager.Context shootingControllerContext = new ShootingProcessManager.Context(_model, 
-                _hexMapReachableService, _factory, _context.BuffManager, _context.VfxManager, _context.CurrentEngineFrameReactiveProperty);
+                _hexMapReachableService, _factory, _buffManager, _context.VfxManager, _context.CurrentEngineFrameReactiveProperty);
             _shootingProcessManager = AddDisposable(new ShootingProcessManager(shootingControllerContext));
             
             // currency
@@ -251,14 +255,15 @@ namespace Match.Field
             //    _model, towerBuiltReactiveCommand, towerPreUpgradedReactiveCommand, towerUpgradedReactiveCommand, towerRemovedReactiveCommand);
             //_towersAreaBuffsManager = AddDisposable(new FieldTowersAreaBuffsManager(towersAreaBuffsManagerContext));
 
-            // clicks distribution
-
+            // state loader
             PlayerStateLoader.Context stateLoaderContext = new PlayerStateLoader.Context(_model,
                 _factory,
                 _constructionProcessController,
                 _context.ConfigsRetriever,
                 _currencyController);
             _stateLoader = AddDisposable(new PlayerStateLoader(stateLoaderContext));
+            
+            SerializerToNetwork.InitSerializableData(_context.ConfigsRetriever, _factory);
 
             _context.StateSyncedReactiveCommand.Subscribe(LoadState);
 
@@ -280,6 +285,7 @@ namespace Match.Field
             _mobsManager.OuterLogicUpdate(frameLength);
             _model.TowersManager.OuterLogicUpdate(frameLength);
             _shootingProcessManager.OuterLogicUpdate(frameLength);
+            _buffManager.OuterLogicUpdate(frameLength);
         }
 
         public void OuterViewUpdate(float frameLength)
@@ -290,8 +296,10 @@ namespace Match.Field
 
         private void LoadState(PlayerState playerState)
         {
+            SerializerToNetwork.PartlyReinitSerializableData(_context.ConfigsRetriever, _factory);
             _stateLoader.ClearState();
             _stateLoader.LoadState(playerState);
+            _mobsByTowersBlocker.LoadState(_model.MobsManager.Mobs);
         }
 
         public void InitPlayerHand(PlayerHandController playerHandController)
@@ -304,10 +312,16 @@ namespace Match.Field
 
         public PlayerState GetPlayerState()
         {
+            SerializerToNetwork.InitSerializableData(_context.ConfigsRetriever, _factory);
             return _stateLoader.SaveState();
         }
 
         public Bounds GetFieldBounds() => _hexagonalFieldModel.GetBounds();
+        
+        public Hashtable ToNetwork()
+        {
+            return _model.ToNetwork();
+        }
 
         public class Factory : PlaceholderFactory<Context, FieldController>
         {

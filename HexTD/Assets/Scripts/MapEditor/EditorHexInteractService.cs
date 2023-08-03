@@ -9,8 +9,7 @@ namespace MapEditor
         private readonly Layout _layout;
         private readonly Plane _touchDetectionPlane;
 
-        public EditorHexInteractService(Layout layout,
-            Camera mainCamera) : base(mainCamera)
+        public EditorHexInteractService(Layout layout)
         {
             _layout = layout;
             _touchDetectionPlane = new Plane(Vector3.up, Vector3.zero);

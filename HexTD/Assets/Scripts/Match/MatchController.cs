@@ -84,7 +84,6 @@ namespace Match
         private readonly WindowsManager _windowsManager;
         // it's important to call updates of fields in right order,
         // so here we use player1/player2 stuff instead of our/enemy
-        private readonly BuffManager _buffManager;
         private readonly VfxManager _vfxManager;
         private readonly FieldController _player1FieldController;
         private readonly FieldController _player2FieldController;
@@ -192,7 +191,6 @@ namespace Match
                _context.WindowsManager);
            _windowsManager = AddDisposable(new WindowsManager(windowsControllerContext));
 
-           _buffManager = new BuffManager();
            _vfxManager = new VfxManager();
 
            // fields
@@ -208,7 +206,6 @@ namespace Match
                 matchConfig,
                 mapModel,
                 _configsRetriever,
-                _buffManager,
                 _vfxManager,
                 _context.IsMultiPlayerGame,
                false,
@@ -230,7 +227,6 @@ namespace Match
                 matchConfig,
                 mapModel,
                 _configsRetriever,
-                _buffManager,
                 _vfxManager,
                 true,
                 true,
@@ -323,7 +319,7 @@ namespace Match
             _waveMobSpawnerCoordinator = new WaveMobSpawnerCoordinator(waveMobSpawnerContext);
 
             // input
-            HexInteractService hexInteractService = new HexInteractService(_matchView.OurFieldCamera);
+            HexInteractService hexInteractService = new HexInteractService();
             
             InputController.Context inputControllerContext = new InputController.Context(
                 hexInteractService, clickReactiveCommand);
@@ -384,7 +380,7 @@ namespace Match
                 _rulesController.IsMatchRunning,
                 _context.CurrentEngineFrameReactiveProperty);
             _stateSaver = AddDisposable(new MatchStateSaver(stateSaverContext));
-            
+
             // state verification
             MatchStateVerificationCoordinator.Context verificationCoordinatorContext = new MatchStateVerificationCoordinator.Context(
                 _checkSumComputerController,
@@ -432,6 +428,8 @@ namespace Match
             // rewind Randomizer to target counter value
             while (Randomizer.RandomCallsCountReactiveProperty.Value < matchState.RandomCounter)
                 Randomizer.GetRandomInRange(0, 1);
+            
+            Debug.LogError($"Loading state on frame {frameCounter}");
         }
 
         private void RollbackState(Unit unit)
@@ -447,7 +445,6 @@ namespace Match
             _ourClicksDistributor.OuterLogicUpdate(frameLength);
 
             _waveMobSpawnerCoordinator.OuterLogicUpdate(frameLength);
-            _buffManager.OuterLogicUpdate(frameLength);
 
             _ourPlayerHandController.OuterLogicUpdate(frameLength);
             _windowsManager.OuterLogicUpdate(frameLength);

@@ -1,49 +1,52 @@
 ﻿using System;
-using Match.Field.Shooting;
+using ExitGames.Client.Photon;
 
 namespace BuffLogic
 {
-    public abstract class BaseUnitBuff : IBuff<ITarget>
+    public abstract class BaseUnitBuff : IBuff<FloatImpactableBuffableValue>
     {
-        protected ITarget BuffableValue;
+        protected FloatImpactableBuffableValue BuffableValue;
 
         private Action _onEnd;
         private bool _isEndConditionDone;
-
-        public int Priority => int.MaxValue;
+        
+        public virtual int Priority => int.MaxValue;
         public bool IsEndConditionDone => _isEndConditionDone;
 
-        public BaseUnitBuff()
+        protected BaseUnitBuff()
         {
             BuffableValue = null;
             _isEndConditionDone = false;
         }
 
-        public ITarget ApplyBuff(ITarget value)
+        public void OuterLogicUpdate(float frameLength)
+        {
+            if (BuffableValue == null)
+                return;
+
+            UpdateBuff(frameLength);
+
+            _isEndConditionDone = ConditionCheck();
+        }
+
+        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff;
+        
+        public FloatImpactableBuffableValue ApplyBuff(FloatImpactableBuffableValue value)
         {
             BuffableValue = value;
             return value;
         }
 
-        public ITarget RevokeBuff(ITarget value)
+        public FloatImpactableBuffableValue RevokeBuff(FloatImpactableBuffableValue value)
         {
             BuffableValue = null;
             return value;
         }
-
-        public void Update()
-        {
-            if(BuffableValue == null)
-                return;
-
-            UpdateBuff();
-
-            _isEndConditionDone = ConditionCheck();
-        }
-
-        public abstract void MergeBuffs<TBuff>(TBuff buff) where TBuff : IBuff<ITarget>;
-        protected abstract void UpdateBuff();
+        
+        protected abstract void UpdateBuff(float frameLength);
         protected abstract bool ConditionCheck();
+        
+        public abstract Hashtable ToNetwork();
 
         public void SubscribeOnEnd(Action onEnd)
         {
@@ -52,7 +55,8 @@ namespace BuffLogic
 
         public void Dispose()
         {
-            _onEnd.Invoke();
+            _onEnd?.Invoke();
+            _onEnd = null;
         }
     }
 }

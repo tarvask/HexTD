@@ -1,12 +1,14 @@
 using System.Threading.Tasks;
+using ExitGames.Client.Photon;
 using Match.Field.AttackEffect;
 using Match.Field.State;
+using Match.Serialization;
 using Tools;
 using UnityEngine;
 
 namespace Match.Field.Shooting
 {
-    public class ProjectileController : BaseDisposable
+    public class ProjectileController : BaseDisposable, ISerializableToNetwork
     {
         public struct Context
         {
@@ -89,7 +91,7 @@ namespace Match.Field.Shooting
                 _context.View.transform.localPosition, _currentPosition, FieldController.MoveLerpCoeff);
         }
 
-        public void Stop()
+        private void Stop()
         {
             _hasReachedTarget = true;
         }
@@ -112,14 +114,19 @@ namespace Match.Field.Shooting
         
         public void LoadState(in PlayerState.ProjectileState projectileState)
         {
-            _currentPosition = new Vector3(projectileState.PositionX, projectileState.PositionZ);
+            _currentPosition = new Vector3(projectileState.PositionX, projectileState.PositionY, projectileState.PositionZ);
         }
         
         public PlayerState.ProjectileState GetProjectileState()
         {
             return new PlayerState.ProjectileState(_context.Id, _context.SpawnTowerId, _context.TargetId,
-                _context.AttackIndex, CurrentPosition.x, CurrentPosition.y, _context.Speed,
+                _context.AttackIndex, CurrentPosition.x, CurrentPosition.y, CurrentPosition.z,
                 _context.HasSplashDamage);
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return PlayerState.ProjectileState.ProjectileToHashtable(GetProjectileState());
         }
     }
 }

@@ -1,18 +1,21 @@
 using System;
 using System.Threading.Tasks;
+using BuffLogic;
+using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.Hexagons;
 using Match.Field.Shooting;
 using Match.Field.State;
+using Match.Serialization;
 using PathSystem;
+using Services;
 using UI.ScreenSpaceOverlaySystem;
-using UniRx;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Match.Field.Mob
 {
-    public class MobController : BaseTargetEntity
+    public class MobController : BaseTargetEntity, ISerializableToNetwork
     {
         public struct Context
         {
@@ -63,7 +66,7 @@ namespace Match.Field.Mob
         public int Id => _context.Id;
         public override int TargetId => _context.TargetId;
         public override Vector3 Position => _currentPosition;
-        public IReadOnlyReactiveProperty<float> Health => _reactiveModel.Health;
+        public FloatBuffableWithImpactValue Health => _reactiveModel.Health;
         public float PathLength => _currentPathLength;
         public float RemainingPathDistance => _context.PathEnumerator.PathLength - _currentPathLength;
         public override BaseReactiveModel BaseReactiveModel => _reactiveModel;
@@ -86,7 +89,7 @@ namespace Match.Field.Mob
         {
             _context = context;
 
-            _reactiveModel = AddDisposable(new MobReactiveModel(_context.Parameters.Speed, _context.Parameters.HealthPoints));
+            _reactiveModel = AddDisposable(new MobReactiveModel(_context.Parameters.Speed, _context.Parameters.HealthPoints, _context.TargetId));
             
             _currentPathLength = 0;
 
@@ -103,7 +106,7 @@ namespace Match.Field.Mob
         public void LogicMove(float frameLength)
         {
             float distanceToTargetSqr = Vector3.SqrMagnitude(_currentPosition - _currentTargetPosition);
-            float distancePerFrame = _reactiveModel.Speed.Value; //_buffsManager.ParameterResultValue(BuffedParameterType.MovementSpeed) * frameLength;
+            float distancePerFrame = _reactiveModel.Speed.Value.CurrentValue;
 
             if (distancePerFrame * distancePerFrame < distanceToTargetSqr)
             {
@@ -182,14 +185,12 @@ namespace Match.Field.Mob
 
         public override void Heal(float heal)
         {
-            float newHealth = _reactiveModel.Health.Value + heal;
-            newHealth = Mathf.Clamp(newHealth, 0, _reactiveModel.MaxHealth.Value);
-            _reactiveModel.SetHealth(newHealth);
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value.CurrentValue + heal);
         }
 
         public override void Hurt(float damage)
         {
-            _reactiveModel.SetHealth(_reactiveModel.Health.Value - damage);
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value.CurrentValue - damage);
         }
 
         public void Die()
@@ -244,15 +245,23 @@ namespace Match.Field.Mob
             _currentTargetPosition = _context.HexPositionConversionService.GetHexPosition(
                 _context.PathEnumerator.Current, false);
             _currentHexPosition = _context.HexPositionConversionService.ToHexFromWorldPosition(_currentPosition, false);
+            // recalculate to get real y-coord
+            _currentPosition.Set(_currentPosition.x, _context.HexPositionConversionService.GetHexPosition(_currentHexPosition, false).y, _currentPosition.z);
+            // set view to right position
+            _context.View.transform.localPosition = _currentPosition;
             ComputePathLengthAfterTeleport();
             _reactiveModel.SetHealth(mobState.CurrentHealth);
+            _blockerId = mobState.BlockerId;
+            _isBlocked = _blockerId > 0;
+            _attackingTimer = mobState.AttackingTimer;
+            _isHittingForTheFirstTime = mobState.IsHittingForTheFirstTime;
         }
         
         public PlayerState.MobState GetMobState()
         {
             return new PlayerState.MobState(_context.Id, _context.TargetId, _context.Parameters.TypeId,
                 Position.x, Position.z, _context.PathId, _context.PathEnumerator.CurrentPointIndex,
-                _reactiveModel.Health.Value, _blockerId);
+                _reactiveModel.Health.Value.CurrentValue, _blockerId, _attackingTimer, _isHittingForTheFirstTime);
         }
 
         protected override void OnDispose()
@@ -260,6 +269,26 @@ namespace Match.Field.Mob
             base.OnDispose();
             
             Object.Destroy(_context.View.gameObject);
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return PlayerState.MobState.MobToHashtable(GetMobState());
+        }
+        
+        public static object FromNetwork(Hashtable hashtable, ConfigsRetriever configsRetriever, FieldFactory factory)
+        {
+            var mobState = PlayerState.MobState.MobFromHashtable(hashtable);
+            
+            MobSpawnParameters mobSpawnParameters = new MobSpawnParameters(configsRetriever.GetMobById(mobState.TypeId), mobState.PathId);
+            Vector2 mobPosition = new Vector2(mobState.PositionX, mobState.PositionZ);
+            MobController mobController = factory.CreateMobWithId(mobSpawnParameters,
+                mobState.Id, mobState.TargetId,
+                mobPosition);
+            
+            mobController.LoadState(mobState);
+
+            return mobController;
         }
     }
 }

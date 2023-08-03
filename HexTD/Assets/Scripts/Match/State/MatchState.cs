@@ -19,7 +19,8 @@ namespace Match.State
         public int RandomCounter => _randomCounter;
 
         public MatchState(in PlayerState player1State, in PlayerState player2State,
-            in WavesState wavesState, int randomSeed, int randomCounter)
+            in WavesState wavesState,
+            int randomSeed, int randomCounter)
         {
             _player1State = player1State;
             _player2State = player2State;

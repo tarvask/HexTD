@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HexSystem;
 using Match.Field.Shooting;
+using Match.Serialization;
 
 namespace Match.Field.Mob
 {
@@ -79,6 +80,23 @@ namespace Match.Field.Mob
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+        
+        public ExitGames.Client.Photon.Hashtable ToNetwork()
+        {
+            return SerializerToNetwork.EnumerableToNetwork(_mobs.Values, _mobs.Count);
+        }
+        
+        public static object FromNetwork(ExitGames.Client.Photon.Hashtable hashtable)
+        {
+            MobsContainer mobsContainer = new MobsContainer();
+            foreach (var elementHashtable in SerializerToNetwork.IterateSerializedTypePairEnumerable(hashtable))
+            {
+                MobController mobController = SerializerToNetwork.FromNetwork(elementHashtable) as MobController;
+                mobsContainer.AddMob(mobController);
+            }
+
+            return mobsContainer;
         }
     }
 }

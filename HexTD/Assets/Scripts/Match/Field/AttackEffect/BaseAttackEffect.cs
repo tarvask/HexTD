@@ -32,9 +32,9 @@ namespace Match.Field.AttackEffect
 
         public void ApplyAttackImpact(ITarget targetController, float sqrDistance)
         {
-            float damage = targetController.BaseReactiveModel.Damage.CopyValue(baseDamage);
+            float damage = targetController.BaseReactiveModel.Damage.Value.Value * baseDamage;
             targetController.Hurt(damage);
-            Debug.Log($"Hurt target={targetController.TargetId} by {damage}, current health is {targetController.BaseReactiveModel.Health}");
+            Debug.Log($"Hurt target={targetController.TargetId} by {damage}, current health is {targetController.BaseReactiveModel.Health.Value.CurrentValue}");
         }
 
         public void ApplyAttackEffect(ITarget attackerController, BuffManager buffManager, VfxManager vfxManager)

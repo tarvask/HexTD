@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ExitGames.Client.Photon;
+using UnityEngine;
 
 namespace BuffLogic
 {
@@ -21,13 +22,13 @@ namespace BuffLogic
             _healImpact = 0f;
         }
 
-        protected override void UpdateBuff()
+        protected override void UpdateBuff(float frameLength)
         {
-            _delayAccumulator += Time.deltaTime;
+            _delayAccumulator += frameLength;
 
             while (_delayAccumulator >= _healDelay)
             {
-                BuffableValue.Heal(_healPerDelay);
+                BuffableValue.SetValue(BuffableValue.CurrentValue + _healPerDelay);
                 _healImpact += _healPerDelay;
                 _delayAccumulator -= _healDelay;
             }
@@ -40,17 +41,45 @@ namespace BuffLogic
 
         public override void MergeBuffs<TBuff>(TBuff buff)
         {
-            var buffTypizied = buff as HealBuff;
-            if(buffTypizied == null)
+            var typedBuff = buff as HealBuff;
+            if (typedBuff == null)
             {
                 Debug.LogError("Try to cast buff into strange type!");
                 return;
             }
 
-            _healCapacity = buffTypizied._healCapacity;
-            _healDelay = buffTypizied._healDelay;
-            _healImpact = buffTypizied._healImpact;
-            BuffableValue = buffTypizied.BuffableValue;
+            _healCapacity = typedBuff._healCapacity;
+            _healDelay = typedBuff._healDelay;
+            _healImpact = typedBuff._healImpact;
+            BuffableValue = typedBuff.BuffableValue;
+        }
+        
+        public override Hashtable ToNetwork()
+        {
+            return new Hashtable()
+            {
+                {Match.Serialization.SerializerToNetwork.SerializedType, typeof(HealBuff).FullName},
+                {nameof(_healCapacity), _healCapacity},
+                {nameof(_healPerDelay), _healPerDelay},
+                {nameof(_healDelay), _healDelay},
+                {nameof(_delayAccumulator), _delayAccumulator},
+                {nameof(_healImpact), _healImpact},
+            };
+        }
+
+        public static object FromNetwork(Hashtable hashtable)
+        {
+            float healCapacity = (float)hashtable[nameof(_healCapacity)];
+            float healPerDelay = (float)hashtable[nameof(_healPerDelay)];
+            float healDelay = (float)hashtable[nameof(_healDelay)];
+            float delayAccumulator = (float)hashtable[nameof(_delayAccumulator)];
+            float healImpact = (float)hashtable[nameof(_healImpact)];
+
+            var healBuff = new HealBuff(healCapacity, healPerDelay, healDelay);
+            healBuff._delayAccumulator = delayAccumulator;
+            healBuff._healImpact = healImpact;
+
+            return healBuff;
         }
     }
 }

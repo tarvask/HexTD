@@ -10,7 +10,7 @@ namespace Match.Field.Tower
 
         public IReadOnlyReactiveProperty<int> KillsCountReactiveProperty => _killsCountReactiveProperty;
 
-        public TowerReactiveModel(float health) : base(health)
+        public TowerReactiveModel(float health, int targetId) : base(health, targetId)
         {
             _killsCountReactiveProperty = AddDisposable(new ReactiveProperty<int>(0));
         }

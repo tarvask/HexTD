@@ -1,7 +1,10 @@
 using System.Collections.Generic;
+using BuffLogic;
+using ExitGames.Client.Photon;
 using Match.Field.Mob;
 using Match.Field.Shooting;
 using Match.Field.VFX;
+using Match.Serialization;
 using Match.Wave;
 using Tools;
 using Tools.Interfaces;
@@ -12,7 +15,7 @@ using Zenject;
 
 namespace Match.Field.Services
 {
-    public class MobsManager : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable
+    public class MobsManager : BaseDisposable, IOuterLogicUpdatable, IOuterViewUpdatable, ISerializableToNetwork
     {
         public struct Context
         {
@@ -110,7 +113,7 @@ namespace Match.Field.Services
         {
             foreach (KeyValuePair<int, MobController> mobPair in _mobsContainer.Mobs)
             {
-                if (mobPair.Value.Health.Value <= 0)
+                if (mobPair.Value.Health.Value.CurrentValue <= 0)
                 {
                     _dyingMobs.Add(mobPair.Value);
                 }
@@ -232,8 +235,8 @@ namespace Match.Field.Services
                 if (mobPair.Value.IsBoss) continue;
                 
                 // hurt alive mobs to death
-                if (mobPair.Value.Health.Value > 0)
-                    mobPair.Value.Hurt(mobPair.Value.Health.Value);
+                if (mobPair.Value.Health.Value.CurrentValue > 0)
+                    mobPair.Value.Hurt(mobPair.Value.Health.Value.CurrentValue);
             }
         }
 
@@ -257,6 +260,11 @@ namespace Match.Field.Services
             
             _deadBodies.Clear();
             _escapingMobs.Clear();
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return SerializerToNetwork.EnumerableToNetwork(_mobsContainer.Mobs.Values, _mobsContainer.Mobs.Count);
         }
 
         public class Factory : PlaceholderFactory<Context, MobsManager>

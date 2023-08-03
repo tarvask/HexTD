@@ -1,4 +1,7 @@
-﻿namespace BuffLogic
+﻿using ExitGames.Client.Photon;
+using Match.Serialization;
+
+namespace BuffLogic
 {
     public class BuffConditionComplexCollection : ABuffConditionsCollection
     {
@@ -17,6 +20,19 @@
             }
 
             return Conditions.Count == 0;
+        }
+        
+        public static object FromNetwork(Hashtable hashtable)
+        {
+            BuffConditionComplexCollection buffConditionComplexCollection = new BuffConditionComplexCollection();
+            
+            foreach (var hashtableTypePair in SerializerToNetwork.IterateSerializedTypePairEnumerable(hashtable))
+            {
+                var condition = SerializerToNetwork.FromNetwork(hashtableTypePair) as IBuffCondition;
+                buffConditionComplexCollection.AddCondition(condition);
+            }
+            
+            return buffConditionComplexCollection;
         }
     }
 }

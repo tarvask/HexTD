@@ -7,13 +7,6 @@ namespace HexSystem
 {
     public class HexInteractService
     {
-        protected readonly Camera MainCamera;   
-
-        public HexInteractService(Camera mainCamera)
-        {
-            MainCamera = mainCamera;
-        }
-
         public bool TryClickHexTile(LeanFinger finger, out Hex2d hitHex)
         {
             var ray = finger.GetRay();

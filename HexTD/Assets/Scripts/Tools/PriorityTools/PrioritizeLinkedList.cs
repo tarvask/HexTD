@@ -1,12 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Tools.PriorityTools
 {
     public class PrioritizeLinkedList<T> : BaseDisposable, IEnumerable<T> where T : IPrioritizatedModule
     {
+        protected Action<IEnumerable<T>, T> _onChange;
         protected readonly LinkedList<T> ValueList;
 
+        public int Count => ValueList.Count;
+        
         public PrioritizeLinkedList()
         {
             ValueList = new LinkedList<T>();
@@ -46,6 +50,12 @@ namespace Tools.PriorityTools
         protected override void OnDispose()
         {
             ValueList.Clear();
+            _onChange = null;
+        }
+        
+        public void Subscribe(Action<IEnumerable<T>, T> onChange)
+        {
+            _onChange += onChange;
         }
     }
 }

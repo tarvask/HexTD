@@ -30,6 +30,24 @@ namespace Match.Field.Shooting
             target = null;
             return false;
         }
+        
+        public bool TryGetTargetById(int targetId, out ITarget target)
+        {
+            foreach (var targetTypedIterator in _targetsIterators.Values)
+            {
+                foreach (var potentialTarget in targetTypedIterator)
+                {
+                    if (potentialTarget.TargetId == targetId)
+                    {
+                        target = potentialTarget;
+                        return true;
+                    }
+                }
+            }
+
+            target = null;
+            return false;
+        }
 
         public IReadOnlyDictionary<int, List<ITarget>> GetTargetsByPosition(EnumAttackTargetType attackTargetType)
         {
@@ -43,6 +61,17 @@ namespace Match.Field.Shooting
                 ITypeTargetContainer targetTypedIterator = _targetsIterators[attackTargetType];
 
                 foreach (var target in targetTypedIterator)
+                {
+                    yield return target;
+                }
+            }
+        }
+        
+        public IEnumerable<ITarget> IterateTargets()
+        {
+            foreach (var targetsIterator in _targetsIterators)
+            {
+                foreach (var target in targetsIterator.Value)
                 {
                     yield return target;
                 }

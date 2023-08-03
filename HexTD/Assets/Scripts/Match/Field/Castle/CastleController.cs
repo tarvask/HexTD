@@ -1,5 +1,8 @@
 using System;
+using BuffLogic;
+using ExitGames.Client.Photon;
 using Match.Field.State;
+using Match.Serialization;
 using Tools;
 using UniRx;
 using UnityEngine;
@@ -7,7 +10,7 @@ using UnityEngine;
 namespace Match.Field.Castle
 {
     [Serializable]
-    public class CastleController : BaseDisposable
+    public class CastleController : BaseDisposable, ISerializableToNetwork
     {
         public struct Context
         {
@@ -67,6 +70,16 @@ namespace Match.Field.Castle
         {
             _castleHealthReactiveProperty.Value = castleState.CurrentHealth;
             _castleMaxHealthReactiveProperty.Value = castleState.MaxHealth;
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return PlayerState.CastleState.CastleToHashtable(GetCastleState());
+        }
+        
+        public static object FromNetwork(Hashtable hashtable)
+        {
+            return PlayerState.CastleState.CastleFromHashtable(hashtable);
         }
     }
 }

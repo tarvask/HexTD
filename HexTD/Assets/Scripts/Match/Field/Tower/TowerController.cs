@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.AttackEffect;
 using Match.Field.Hexagons;
@@ -8,6 +9,8 @@ using Match.Field.Shooting;
 using Match.Field.Shooting.TargetFinding;
 using Match.Field.State;
 using Match.Field.Tower.TowerConfigs;
+using Match.Serialization;
+using Services;
 using Tools.Interfaces;
 using UI.ScreenSpaceOverlaySystem;
 using UniRx;
@@ -16,7 +19,7 @@ using Object = UnityEngine.Object;
 
 namespace Match.Field.Tower
 {
-    public class TowerController : BaseTargetEntity, IOuterLogicUpdatable, IShooter
+    public class TowerController : BaseTargetEntity, IOuterLogicUpdatable, IShooter, ISerializableToNetwork
     {
         public struct Context
         {
@@ -65,7 +68,7 @@ namespace Match.Field.Tower
         public override Vector3 Position => _context.View.transform.localPosition;
 
         public bool IsAttackReady => _shootModel.IsReadyAttack && CanShoot;
-        public bool HasTarget => _stableModel.TargetId > 0;
+        public bool HasTarget => _stableModel.CurrentTargetId > 0;
         public override int TargetId => _context.TargetId;
         public bool CanShoot => _stableModel.CanShoot;
         public bool IsAlive => _stableModel.IsAlive;
@@ -82,7 +85,7 @@ namespace Match.Field.Tower
 
             _shootModel = AddDisposable(new EntityShootModel(_context.TowerConfig.AttacksConfig));
             _stableModel = AddDisposable(new TowerStableModel());
-            _reactiveModel = AddDisposable(new TowerReactiveModel(CurrentLevel.HealthPoint));
+            _reactiveModel = AddDisposable(new TowerReactiveModel(CurrentLevel.HealthPoint, _context.TargetId));
             
             _context.View.SetType(_context.TowerConfig.RegularParameters.TowerName);
             _stableModel.SetHexPosition(_context.HexPosition);
@@ -133,14 +136,12 @@ namespace Match.Field.Tower
 
         public override void Heal(float heal)
         {
-            float newHealth = _reactiveModel.Health.Value + heal;
-            newHealth = Mathf.Clamp(newHealth, 0, _reactiveModel.MaxHealth.Value);
-            _reactiveModel.SetHealth(newHealth);
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value.CurrentValue + heal);
         }
 
         public override void Hurt(float damage)
         {
-            _reactiveModel.SetHealth(_reactiveModel.Health.Value - damage);
+            _reactiveModel.SetHealth(_reactiveModel.Health.Value.CurrentValue - damage);
         }
 
         public TowerShortParams GetShortParams()
@@ -178,7 +179,7 @@ namespace Match.Field.Tower
                 _shootModel.ReadyTowerIndex,
                 Position,
                 _shootModel.IsSplashAttackReady,
-                _context.Id, _stableModel.TargetId);
+                _context.Id, _stableModel.CurrentTargetId);
             
             _shootModel.ReloadCurrentAttack();
 
@@ -276,6 +277,9 @@ namespace Match.Field.Tower
         public void LoadState(in PlayerState.TowerState towerState)
         {
             SetLevel(towerState.Level, towerState.ConstructionTime);
+            _reactiveModel.SetHealth(towerState.CurrentHealth);
+            _stableModel.SetTarget(towerState.CurrentTargetId);
+            _shootModel.LoadState(towerState.Cooldowns, towerState.ReadyTowerAttackId);
         }
 
         public PlayerState.TowerState GetTowerState()
@@ -286,7 +290,27 @@ namespace Match.Field.Tower
                 _context.TowerConfig.RegularParameters.TowerType,
                 (byte)_stableModel.Level,
                 // save remaining time
-                _stableModel.IsConstructing ? (int)((CurrentLevel.BuildTime - (Time.time - _stableModel.ConstructionTimeLabel)) * 1000) : 0);
+                _stableModel.IsConstructing ? (int)((CurrentLevel.BuildTime - (Time.time - _stableModel.ConstructionTimeLabel)) * 1000) : 0,
+                _reactiveModel.Health.Value.CurrentValue, _stableModel.CurrentTargetId, _shootModel.Cooldowns, _shootModel.ReadyTowerAttackId);
+        }
+        
+        public Hashtable ToNetwork()
+        {
+            return PlayerState.TowerState.TowerToHashtable(GetTowerState());
+        }
+        
+        public static object FromNetwork(Hashtable hashtable, ConfigsRetriever configsRetriever, FieldFactory factory)
+        {
+            var towerState = PlayerState.TowerState.TowerFromHashtable(hashtable);    
+            
+            TowerConfigNew towerConfig = configsRetriever.GetTowerByType(towerState.Type);
+            Hex2d towerHexPosition = new Hex2d(towerState.PositionQ, towerState.PositionR);
+            TowerController towerController = factory.CreateTowerWithId(towerConfig,
+                towerHexPosition, towerState.Id, towerState.TargetId);
+            
+            towerController.LoadState(towerState);
+
+            return towerController;
         }
     }
 }

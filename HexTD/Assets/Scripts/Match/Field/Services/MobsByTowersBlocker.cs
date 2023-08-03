@@ -48,7 +48,7 @@ namespace Match.Field.Services
                 return false;
 
             if (!_mobsByTowers.TryGetValue(possibleBlocker.Id, out var blockedMobs))
-                throw new ArgumentException($"Tried to block mob tower with id={possibleBlocker.Id} that is not in registry");
+                throw new ArgumentException($"Tried to block mob by tower with id={possibleBlocker.Id} that is not in registry");
 
             if (blockedMobs.Count < possibleBlocker.MaxEnemyBlocked)
             {
@@ -88,6 +88,27 @@ namespace Match.Field.Services
             
             mobsList.Clear();
             _mobsByTowers.Remove(tower.Id);
+        }
+
+        public void LoadState(IReadOnlyDictionary<int, MobController> mobs)
+        {
+            foreach (KeyValuePair<int,MobController> mobPair in mobs)
+            {
+                if (!mobPair.Value.IsBlocked)
+                    continue;
+                
+                if (!_mobsByTowers.TryGetValue(mobPair.Value.BlockerId, out var blockedMobs))
+                    throw new ArgumentException($"Tried to block mob by tower with id={mobPair.Value.BlockerId} that is not in registry");
+
+                if (blockedMobs.Count < _context.TowersManager.Towers[mobPair.Value.BlockerId].MaxEnemyBlocked)
+                {
+                    blockedMobs.Add(mobPair.Value);
+                }
+                else
+                {
+                    throw new ArgumentException($"Tried to block too many mobs by tower with id={mobPair.Value.BlockerId}: {blockedMobs.Count} is max");
+                }
+            }
         }
 
         public void Clear()

@@ -1,11 +1,10 @@
-using BuffLogic;
 using HexSystem;
 using UI.ScreenSpaceOverlaySystem;
 using UnityEngine;
 
 namespace Match.Field.Shooting
 {
-    public interface ITarget : IBuffableValue<ITarget>
+    public interface ITarget
     {
         int TargetId { get; }
         Hex2d HexPosition { get; }

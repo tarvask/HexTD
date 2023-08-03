@@ -1,9 +1,7 @@
 ﻿namespace BuffLogic
 {
-    public enum EBuffConditionCollectionType
+    public enum EBuffConditionCollectionType : byte
     {
-        Undefined = 0,
-        
         Once = 1,
         Complex = 2
     }
