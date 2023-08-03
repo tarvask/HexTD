@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using BuffLogic;
 using ExitGames.Client.Photon;
 using HexSystem;
 using Match.Field.AttackEffect;
@@ -69,7 +68,7 @@ namespace Match.Field.Tower
         public override Vector3 Position => _context.View.transform.localPosition;
 
         public bool IsAttackReady => _shootModel.IsReadyAttack && CanShoot;
-        public bool HasTarget => _stableModel.TargetId > 0;
+        public bool HasTarget => _stableModel.CurrentTargetId > 0;
         public override int TargetId => _context.TargetId;
         public bool CanShoot => _stableModel.CanShoot;
         public bool IsAlive => _stableModel.IsAlive;
@@ -180,7 +179,7 @@ namespace Match.Field.Tower
                 _shootModel.ReadyTowerIndex,
                 Position,
                 _shootModel.IsSplashAttackReady,
-                _context.Id, _stableModel.TargetId);
+                _context.Id, _stableModel.CurrentTargetId);
             
             _shootModel.ReloadCurrentAttack();
 
@@ -278,6 +277,8 @@ namespace Match.Field.Tower
         public void LoadState(in PlayerState.TowerState towerState)
         {
             SetLevel(towerState.Level, towerState.ConstructionTime);
+            _reactiveModel.SetHealth(towerState.CurrentHealth);
+            _stableModel.SetTarget(towerState.CurrentTargetId);
         }
 
         public PlayerState.TowerState GetTowerState()
@@ -288,7 +289,8 @@ namespace Match.Field.Tower
                 _context.TowerConfig.RegularParameters.TowerType,
                 (byte)_stableModel.Level,
                 // save remaining time
-                _stableModel.IsConstructing ? (int)((CurrentLevel.BuildTime - (Time.time - _stableModel.ConstructionTimeLabel)) * 1000) : 0);
+                _stableModel.IsConstructing ? (int)((CurrentLevel.BuildTime - (Time.time - _stableModel.ConstructionTimeLabel)) * 1000) : 0,
+                _reactiveModel.Health.Value.CurrentValue, _stableModel.CurrentTargetId);
         }
         
         public Hashtable ToNetwork()

@@ -147,6 +147,8 @@ public static class PhotonEventsConstants
                 public const string TowerTypeParam = "type";
                 public const string TowerLevelParam = "level";
                 public const string TowerConstructionTimeParam = "buildTime";
+                public const string CurrentHealthParam = "curHealth";
+                public const string CurrentTargetIdParam = "curTarget";
             }
 
             // mobs

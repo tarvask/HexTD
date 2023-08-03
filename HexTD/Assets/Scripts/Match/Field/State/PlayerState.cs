@@ -198,6 +198,8 @@ namespace Match.Field.State
             private readonly TowerType _type;
             private readonly byte _level;
             private readonly int _constructionTime;
+            private readonly float _currentHealth;
+            private readonly int _currentTargetId;
 
             public int Id => _id;
             public int TargetId => _targetId;
@@ -206,8 +208,11 @@ namespace Match.Field.State
             public TowerType Type => _type;
             public byte Level => _level;
             public int ConstructionTime => _constructionTime;
+            public float CurrentHealth => _currentHealth;
+            public int CurrentTargetId => _currentTargetId;
 
-            public TowerState(int id, int targetId, short qPosition, short rPosition, TowerType type, byte level, int constructionTime)
+            public TowerState(int id, int targetId, short qPosition, short rPosition, TowerType type, byte level, int constructionTime,
+                float currentHealth, int currentTargetId)
             {
                 _id = id;
                 _targetId = targetId;
@@ -216,6 +221,8 @@ namespace Match.Field.State
                 _type = type;
                 _level = level;
                 _constructionTime = constructionTime;
+                _currentHealth = currentHealth;
+                _currentTargetId = currentTargetId;
             }
 
             public static TowerState TowerFromHashtable(Hashtable towerHashtable)
@@ -227,8 +234,10 @@ namespace Match.Field.State
                 TowerType type = (TowerType)(byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTypeParam];
                 byte level = (byte)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerLevelParam];
                 int constructionTime = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.TowerConstructionTimeParam];
+                float currentHealth = (float)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentHealthParam];
+                int currentTargetId = (int)towerHashtable[PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentTargetIdParam];
 
-                return new TowerState(id, targetId, qPosition, rPosition, type, level, constructionTime);
+                return new TowerState(id, targetId, qPosition, rPosition, type, level, constructionTime, currentHealth, currentTargetId);
             }
 
             public static Hashtable TowerToHashtable(in TowerState towersState)
@@ -242,6 +251,8 @@ namespace Match.Field.State
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerTypeParam, (byte)towersState.Type},
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerLevelParam, towersState.Level},
                     {PhotonEventsConstants.SyncState.PlayerState.Towers.TowerConstructionTimeParam, towersState.ConstructionTime},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentHealthParam, towersState.CurrentHealth},
+                    {PhotonEventsConstants.SyncState.PlayerState.Towers.CurrentTargetIdParam, towersState.CurrentTargetId},
                 };
             }
         }

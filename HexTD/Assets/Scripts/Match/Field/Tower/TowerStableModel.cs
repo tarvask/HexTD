@@ -8,13 +8,13 @@ namespace Match.Field.Tower
         // main
         private int _level;
         private float _constructionTimeLabel;
-        private int _targetId;
+        private int _currentTargetId;
         private TowerState _towerState;
         private Hex2d _hexPosition;
         
         public int Level => _level;
         public float ConstructionTimeLabel => _constructionTimeLabel;
-        public int TargetId => _targetId;
+        public int CurrentTargetId => _currentTargetId;
         public bool CanShoot => _towerState == TowerState.Active;
         public bool IsAlive => _towerState != TowerState.Removing && _towerState != TowerState.ToDispose; 
         public bool IsConstructing => _towerState == TowerState.Constructing;
@@ -40,12 +40,12 @@ namespace Match.Field.Tower
 
         public void SetTarget(int targetId)
         {
-            _targetId = targetId;
+            _currentTargetId = targetId;
         }
 
         public void ResetTarget()
         {
-            _targetId = -1;
+            _currentTargetId = -1;
         }
 
         public void SetHexPosition(Hex2d hexPosition)
