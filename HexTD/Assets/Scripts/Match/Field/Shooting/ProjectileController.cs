@@ -114,13 +114,13 @@ namespace Match.Field.Shooting
         
         public void LoadState(in PlayerState.ProjectileState projectileState)
         {
-            _currentPosition = new Vector3(projectileState.PositionX, projectileState.PositionZ);
+            _currentPosition = new Vector3(projectileState.PositionX, projectileState.PositionY, projectileState.PositionZ);
         }
         
         public PlayerState.ProjectileState GetProjectileState()
         {
             return new PlayerState.ProjectileState(_context.Id, _context.SpawnTowerId, _context.TargetId,
-                _context.AttackIndex, CurrentPosition.x, CurrentPosition.y, _context.Speed,
+                _context.AttackIndex, CurrentPosition.x, CurrentPosition.y, CurrentPosition.z,
                 _context.HasSplashDamage);
         }
         

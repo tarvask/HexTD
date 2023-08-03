@@ -472,9 +472,9 @@ namespace Match.Field.State
             private readonly int _targetId;
             private readonly int _attackIndex;
             private readonly float _xPosition;
+            private readonly float _yPosition;
             private readonly float _zPosition;
             // can be computed by tower
-            private readonly float _speed;
             private readonly bool _hasSplash;
 
             public int Id => _id;
@@ -482,20 +482,21 @@ namespace Match.Field.State
             public int TargetId => _targetId;
             public int AttackIndex => _attackIndex;
             public float PositionX => _xPosition;
+            public float PositionY => _yPosition;
             public float PositionZ => _zPosition;
-            public float Speed => _speed;
             public bool HasSplash => _hasSplash;
 
-            public ProjectileState(int id, int towerId, int targetId, int attackIndex, float xPosition, float zPosition,
-                float speed, bool hasSplash)
+            public ProjectileState(int id, int towerId, int targetId, int attackIndex,
+                float xPosition, float yPosition, float zPosition,
+                bool hasSplash)
             {
                 _id = id;
                 _towerId = towerId;
                 _targetId = targetId;
                 _attackIndex = attackIndex;
                 _xPosition = xPosition;
+                _yPosition = yPosition;
                 _zPosition = zPosition;
-                _speed = speed;
                 _hasSplash = hasSplash;
             }
             
@@ -506,12 +507,13 @@ namespace Match.Field.State
                 int targetId = (int)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.TargetIdParam];
                 int attackIndex = (int)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.AttackIndex];
                 float xPosition = (float)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionXParam];
+                float yPosition = (float)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionYParam];
                 float zPosition = (float)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionZParam];
-                float speed = (float)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.SpeedParam];
+               
                 bool hasSplash = (bool)projectileHashtable[PhotonEventsConstants.SyncState.PlayerState.Projectiles.HasSplashDamageParam];
                 
-                return new ProjectileState(id, towerId, targetId, attackIndex, xPosition, zPosition,
-                    speed, hasSplash);
+                return new ProjectileState(id, towerId, targetId, attackIndex, xPosition, yPosition, zPosition,
+                    hasSplash);
             }
 
             public static Hashtable ProjectileToHashtable(in ProjectileState projectileState)
@@ -523,8 +525,8 @@ namespace Match.Field.State
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.TargetIdParam, projectileState.TargetId},
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.AttackIndex, projectileState.AttackIndex},
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionXParam, projectileState.PositionX},
+                    {PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionYParam, projectileState.PositionY},
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.PositionZParam, projectileState.PositionZ},
-                    {PhotonEventsConstants.SyncState.PlayerState.Projectiles.SpeedParam, projectileState.Speed},
                     {PhotonEventsConstants.SyncState.PlayerState.Projectiles.HasSplashDamageParam, projectileState.HasSplash}
                 };
             }
